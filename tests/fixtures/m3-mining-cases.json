@@ -1,0 +1,132 @@
+{
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "knownSystems": ["Nyx System", "Pyro System", "Stanton System"],
+  "commodities": {
+    "ship": {
+      "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef",
+      "key": "Ore_Agricium",
+      "name": "Agricium (Ore)",
+      "kind": "mineable",
+      "signature": 4000,
+      "methods": ["Ship"],
+      "has_ship_mineables": true,
+      "has_ground_vehicle_mineables": false,
+      "has_fps_mineables": false,
+      "has_harvestables": false,
+      "systems": ["Pyro System", "Stanton System"],
+      "locations": [
+        {
+          "uuid": "loc-stanton-1",
+          "name": "Arial",
+          "system": "Stanton System",
+          "type": "Moon",
+          "relative_probability_percent": 30,
+          "group_probability_percent": 20,
+          "quality_max": 1000,
+          "resources": [{
+            "key": "Ship_Agricium",
+            "group_name": "SpaceShip_Mineables",
+            "materials": [
+              {"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 400, "quality_max": 700},
+              {"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 701, "quality_max": 875},
+              {"uuid": "decoy-current-material", "is_current": true, "quality_min": 900, "quality_max": 999}
+            ]
+          }]
+        },
+        {
+          "uuid": "loc-stanton-2",
+          "name": "Ita",
+          "system": "Stanton System",
+          "type": "Moon",
+          "relative_probability_percent": 30,
+          "group_probability_percent": 20,
+          "resources": [{
+            "key": "Ship_Agricium_2",
+            "group_name": "SpaceShip_Mineables",
+            "materials": [{"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 400, "quality_max": 875}]
+          }]
+        },
+        {
+          "uuid": "loc-pyro-1",
+          "name": "Fuego",
+          "system": "Pyro System",
+          "type": "Moon",
+          "relative_probability_percent": 28.5,
+          "group_probability_percent": 7.5,
+          "resources": [{
+            "key": "Ship_Agricium_3",
+            "group_name": "SpaceShip_Mineables",
+            "materials": [{"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 395, "quality_max": 789}]
+          }]
+        }
+      ]
+    },
+    "vehicle": {
+      "uuid": "c339897c-d682-48ad-a16f-daf145bc0f4d",
+      "name": "Beradom",
+      "kind": "mineable",
+      "signature": 4000,
+      "methods": ["Ground Vehicle"],
+      "has_ship_mineables": false,
+      "has_ground_vehicle_mineables": true,
+      "has_fps_mineables": false,
+      "has_harvestables": false
+    },
+    "fps": {
+      "uuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a",
+      "name": "Aphorite",
+      "kind": "mineable",
+      "signature": null,
+      "methods": ["FPS"],
+      "has_ship_mineables": false,
+      "has_ground_vehicle_mineables": false,
+      "has_fps_mineables": true,
+      "has_harvestables": false
+    },
+    "harvestable": {
+      "uuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+      "name": "Bluemoon Fungus",
+      "kind": "harvestable",
+      "signature": 2000,
+      "methods": ["Harvestable"],
+      "has_ship_mineables": false,
+      "has_ground_vehicle_mineables": false,
+      "has_fps_mineables": false,
+      "has_harvestables": true
+    }
+  },
+  "heads": {
+    "oneSlot": {
+      "uuid": "8bfc261a-6c67-4bec-b5b5-71407e086ec9",
+      "name": "Arbor MH1 Mining Laser",
+      "size": 1,
+      "classification": "Ship.Mining.Gun",
+      "mining_laser": {"module_slots": 1}
+    },
+    "threeSlot": {
+      "uuid": "3bcde69d-3e3a-4f78-b2cb-8189b349e4d2",
+      "name": "Helix II Mining Laser",
+      "size": 2,
+      "classification": "Ship.Mining.Gun",
+      "mining_laser": {"module_slots": 3}
+    }
+  },
+  "mole": {
+    "uuid": "ecdfd0df-6c5f-4183-a24b-9e1546e00a4e",
+    "name": "MOLE",
+    "class_name": "ARGO_MOLE",
+    "role": "Medium Mining",
+    "career": "Industrial",
+    "ports": [
+      {"name": "station-left", "ports": [{"name": "hardpoint_weapon_mining", "equipped_item": {"uuid": "head-left", "name": "Arbor MH2", "type": "WeaponMining", "classification": "Ship.Mining.Gun"}}]},
+      {"name": "station-center", "ports": [{"name": "hardpoint_weapon_mining", "equipped_item": {"uuid": "head-center", "name": "Arbor MH2", "type": "WeaponMining", "classification": "Ship.Mining.Gun"}}]},
+      {"name": "station-right", "ports": [{"name": "hardpoint_weapon_mining", "equipped_item": {"uuid": "head-right", "name": "Arbor MH2", "type": "WeaponMining", "classification": "Ship.Mining.Gun"}}]}
+    ]
+  },
+  "catalog": {
+    "vehicles": [{"uuid": "ecdfd0df-6c5f-4183-a24b-9e1546e00a4e", "name": "MOLE"}],
+    "heads": [{"uuid": "8bfc261a-6c67-4bec-b5b5-71407e086ec9", "name": "Arbor MH1 Mining Laser"}],
+    "modules": [{"uuid": "18a62ae8-e1aa-453f-8631-df928a71abda", "name": "Brandt Module"}],
+    "gadgets": [{"uuid": "06be9c06-120f-46d8-8179-e95ccd1f137a", "name": "BoreMax"}]
+  }
+}

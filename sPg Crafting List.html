@@ -58,6 +58,7 @@
       <button id="craftingListNav" type="button" class="active" aria-current="page">Crafting List</button>
       <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
       <button id="myMaterialsNav" type="button">My Materials</button>
+      <button id="miningNav" type="button">Mining &amp; Loadouts</button>
       <button type="button" disabled>Material Database</button>
       <button type="button" disabled>Mining Loadouts</button>
       <button type="button" disabled>Combined Materials</button>
@@ -173,6 +174,78 @@
         </div>
       </section>
 
+      <section id="miningPanel" class="panel spg-m3-panel" aria-labelledby="miningTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M3 · verziózott Mining Game Data</p>
+            <h2 id="miningTitle">Mining Data &amp; Farm Locations</h2>
+          </div>
+          <span id="miningDatasetStatus" class="spg-badge spg-badge-neutral">Nincs aktív cache</span>
+        </div>
+        <div class="spg-mining-toolbar">
+          <label>
+            <span>Mining commodity</span>
+            <select id="miningCommoditySelect">
+              <option value="">Nincs betöltött commodity</option>
+            </select>
+          </label>
+          <button id="syncMiningDataButton" type="button">Mining Game Data frissítése</button>
+        </div>
+        <p id="miningDataMeta" class="spg-muted">A commodity lista és az equipment index dinamikusan, API-filterekből épül.</p>
+        <div id="miningCommoditySummary" class="spg-mining-summary" aria-live="polite"></div>
+        <div id="miningLocationRanking" class="spg-system-ranking" aria-live="polite">
+          <p class="spg-muted">Válassz mining commodityt a rendszerenkénti legjobb farmhelyhez.</p>
+        </div>
+
+        <div class="spg-mining-loadout-heading">
+          <div>
+            <p class="eyebrow">M3 · User Data</p>
+            <h3>Mining Loadouts</h3>
+          </div>
+          <span id="miningLoadoutCount" class="spg-badge spg-badge-neutral">0 loadout</span>
+        </div>
+        <div class="spg-loadout-toolbar">
+          <label>
+            <span>Mentett loadout</span>
+            <select id="miningLoadoutSelect">
+              <option value="">Nincs mentett loadout</option>
+            </select>
+          </label>
+          <button id="addMiningLoadoutButton" type="button" disabled>Új loadout ehhez a materialhoz</button>
+        </div>
+        <form id="miningLoadoutForm" class="spg-loadout-form" hidden>
+          <div class="spg-loadout-basics">
+            <label>
+              <span>Loadout neve</span>
+              <input id="miningLoadoutName" required maxlength="80" placeholder="pl. MOLE Safe">
+            </label>
+            <label>
+              <span>Mining vehicle</span>
+              <select id="miningVehicleSelect">
+                <option value="">Nincs kiválasztva</option>
+              </select>
+            </label>
+            <label>
+              <span>Station/head szám override</span>
+              <input id="miningStationOverride" type="number" min="1" step="1" placeholder="csak ha az API bizonytalan">
+            </label>
+            <button id="setDefaultMiningLoadoutButton" type="button">Default Loadout beállítása</button>
+          </div>
+          <p id="miningStationSource" class="spg-quality-notice">Station-szám forrása: UNKNOWN</p>
+          <div id="miningStationsContainer" class="spg-mining-stations"></div>
+          <div class="spg-gadget-heading">
+            <h4>Gadgetek</h4>
+            <button id="addMiningGadgetButton" type="button">+ Gadget hozzáadása</button>
+          </div>
+          <div id="miningGadgetsContainer" class="spg-mining-gadgets"></div>
+          <div class="spg-loadout-actions">
+            <button id="saveMiningLoadoutButton" type="submit" class="primary">Loadout mentése</button>
+            <button id="deleteMiningLoadoutButton" type="button">Loadout törlése</button>
+          </div>
+        </form>
+        <p id="miningNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+      </section>
+
       <section class="panel spg-baseline-panel" aria-labelledby="baselineTitle">
         <div class="spg-section-heading">
           <div>
@@ -190,7 +263,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu kilenc célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tíz célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -246,17 +319,19 @@
     var APP = Object.freeze({
       name: "sPg Crafting List",
       version: "V001-dev",
-      schemaVersion: 3,
-      cacheSchemaVersion: 2,
+      schemaVersion: 4,
+      cacheSchemaVersion: 3,
       dbName: "spg-crafting-list",
-      dbVersion: 2,
+      dbVersion: 3,
       apiBase: "https://api.star-citizen.wiki/api",
       sessionLogKey: "spgCraftingList.sessionLog.v1",
       maxLogProcesses: 30,
       maxLogBytes: 240000,
       requestTimeoutMs: 20000,
       blueprintPageSize: 200,
-      maxBlueprintPages: 100
+      maxBlueprintPages: 100,
+      miningPageSize: 200,
+      maxMiningPages: 20
     });
 
     var STORE_DEFINITIONS = Object.freeze({
@@ -273,6 +348,9 @@
       blueprintRawCache: "cacheKey",
       blueprintNormalizedCache: "cacheKey",
       blueprintDatasets: "version",
+      miningRawCache: "cacheKey",
+      miningNormalizedCache: "cacheKey",
+      miningDatasets: "version",
       userInventory: "id",
       materialBatches: "id",
       userLoadouts: "id",
@@ -297,6 +375,16 @@
       craftingCards: [],
       allocationResult: null,
       editingBatchId: null,
+      miningCommodityIndex: [],
+      miningEquipment: { heads: [], modules: [], gadgets: [] },
+      miningVehicles: [],
+      miningSystems: [],
+      activeMiningDataset: null,
+      miningDatasetSyncing: false,
+      selectedMiningCommodity: null,
+      miningLoadouts: [],
+      selectedMiningLoadoutId: null,
+      editingMiningLoadout: null,
       userDataReady: false,
       cssText: null,
       lastProbe: null
@@ -678,6 +766,112 @@
         });
       }
 
+      commitMiningLoadoutsSnapshot(loadouts) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction("userLoadouts", "readwrite");
+          var store = transaction.objectStore("userLoadouts");
+          store.clear();
+          loadouts.forEach(function (loadout) {
+            store.put(loadout);
+          });
+          transaction.oncomplete = function () { resolve(loadouts); };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A mining loadout snapshot mentése sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A mining loadout snapshot mentése megszakadt."));
+          };
+        });
+      }
+
+      commitMiningDataset(payload) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction([
+            "syncStaging",
+            "gameMetadata",
+            "miningDatasets",
+            "miningRawCache",
+            "miningNormalizedCache"
+          ], "readwrite");
+          var stageStore = transaction.objectStore("syncStaging");
+          var metadataStore = transaction.objectStore("gameMetadata");
+          var datasetStore = transaction.objectStore("miningDatasets");
+          var rawStore = transaction.objectStore("miningRawCache");
+          var normalizedStore = transaction.objectStore("miningNormalizedCache");
+          var stageKey = "miningDatasetCandidate:" + payload.version;
+          stageStore.put({
+            key: stageKey,
+            status: "COMMITTING",
+            version: payload.version,
+            startedAt: payload.fetchedAt,
+            recordCount: payload.normalizedRecords.length
+          });
+          (payload.previousRawKeys || []).forEach(function (key) { rawStore.delete(key); });
+          (payload.previousNormalizedKeys || []).forEach(function (key) { normalizedStore.delete(key); });
+          payload.rawRecords.forEach(function (record) { rawStore.put(record); });
+          payload.normalizedRecords.forEach(function (record) { normalizedStore.put(record); });
+          var dataset = {
+            version: payload.version,
+            status: "ACTIVE",
+            cacheSchemaVersion: APP.cacheSchemaVersion,
+            commodityCount: payload.commodityCount,
+            vehicleCount: payload.vehicleCount,
+            headCount: payload.headCount,
+            moduleCount: payload.moduleCount,
+            gadgetCount: payload.gadgetCount,
+            systems: payload.systems,
+            fetchedAt: payload.fetchedAt,
+            activatedAt: nowIso(),
+            source: APP.apiBase,
+            endpoints: payload.endpoints
+          };
+          datasetStore.put(dataset);
+          metadataStore.put({
+            key: "activeMiningDataset",
+            value: { version: payload.version, activatedAt: dataset.activatedAt },
+            updatedAt: dataset.activatedAt
+          });
+          stageStore.delete(stageKey);
+          transaction.oncomplete = function () { resolve(dataset); };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A mining Game Data tranzakció sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A mining Game Data tranzakció megszakadt."));
+          };
+        });
+      }
+
+      putMiningDetail(rawRecord, normalizedRecord) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["miningRawCache", "miningNormalizedCache"], "readwrite");
+          transaction.objectStore("miningRawCache").put(rawRecord);
+          transaction.objectStore("miningNormalizedCache").put(normalizedRecord);
+          transaction.oncomplete = function () { resolve(normalizedRecord); };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A mining részlet-cache mentése sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A mining részlet-cache mentése megszakadt."));
+          };
+        });
+      }
+
       commitBlueprintDataset(payload) {
         var self = this;
         return new Promise(function (resolve, reject) {
@@ -1039,6 +1233,98 @@
         }
         return response.data;
       }
+
+      async getAllPages(path, query, gameVersion) {
+        var records = [];
+        var rawPages = [];
+        var pageNumber = 1;
+        var lastPage = 1;
+        do {
+          var pageQuery = Object.assign({}, query || {}, {
+            "page[number]": pageNumber,
+            "page[size]": APP.miningPageSize,
+            version: gameVersion || null
+          });
+          var response = await this.request(path, { query: pageQuery });
+          if (!response || !Array.isArray(response.data) || !response.meta) {
+            throw new Error("A lapozott mining API sémája nem felismerhető: " + path);
+          }
+          rawPages.push(response);
+          records = records.concat(response.data);
+          lastPage = Number(response.meta.last_page || 1);
+          pageNumber += 1;
+          if (pageNumber > APP.maxMiningPages + 1) {
+            throw new Error("A mining API lapozása túllépte a biztonsági maximumot: " + path);
+          }
+        } while (pageNumber <= lastPage);
+        return { records: records, pages: rawPages, pageCount: rawPages.length };
+      }
+
+      async getCommodityFilters(gameVersion) {
+        var response = await this.request("/commodities/filters", { query: { version: gameVersion || null } });
+        if (!response || !response.filters || !Array.isArray(response.filters.kind)) {
+          throw new Error("A commodity filter API sémája nem felismerhető.");
+        }
+        return response;
+      }
+
+      getCommoditiesByKind(kind, gameVersion) {
+        return this.getAllPages("/commodities", { "filter[kind]": kind }, gameVersion);
+      }
+
+      async getCommodity(identifier, gameVersion) {
+        var response = await this.request("/commodities/" + encodeURIComponent(identifier), {
+          query: { version: gameVersion || null }
+        });
+        if (!response || !response.data || !response.data.uuid) {
+          throw new Error("A commodity detail API sémája nem felismerhető.");
+        }
+        return response.data;
+      }
+
+      async getItemFilters(gameVersion) {
+        var response = await this.request("/items/filters", { query: { version: gameVersion || null } });
+        if (!response || !response.filters || !Array.isArray(response.filters.classification)) {
+          throw new Error("Az item filter API sémája nem felismerhető.");
+        }
+        return response;
+      }
+
+      getItemsByClassification(classification, gameVersion) {
+        return this.getAllPages("/items", { "filter[classification]": classification }, gameVersion);
+      }
+
+      async getItem(identifier, gameVersion) {
+        var response = await this.request("/items/" + encodeURIComponent(identifier), {
+          query: { version: gameVersion || null }
+        });
+        if (!response || !response.data || !response.data.uuid) {
+          throw new Error("Az item detail API sémája nem felismerhető.");
+        }
+        return response.data;
+      }
+
+      async getVehicleFilters(gameVersion) {
+        var response = await this.request("/vehicles/filters", { query: { version: gameVersion || null } });
+        if (!response || !response.filters || !Array.isArray(response.filters.role)) {
+          throw new Error("A vehicle filter API sémája nem felismerhető.");
+        }
+        return response;
+      }
+
+      getVehiclesByRole(role, gameVersion) {
+        return this.getAllPages("/vehicles", { "filter[role]": role }, gameVersion);
+      }
+
+      async getVehicle(identifier, gameVersion) {
+        var response = await this.request("/vehicles/" + encodeURIComponent(identifier), {
+          query: { version: gameVersion || null, include: "ports,components" }
+        });
+        if (!response || !response.data || !response.data.uuid) {
+          throw new Error("A vehicle detail API sémája nem felismerhető.");
+        }
+        return response.data;
+      }
     }
 
     function canonicalizeJson(value) {
@@ -1097,6 +1383,34 @@
         return normalized;
       }
 
+      async loadMiningLoadouts() {
+        var loadouts = await this.database.getAll("userLoadouts");
+        return loadouts.map(normalizeStoredMiningLoadout).sort(function (a, b) {
+          return String(a.materialName).localeCompare(String(b.materialName), "hu") ||
+            String(a.name).localeCompare(String(b.name), "hu") ||
+            String(a.id).localeCompare(String(b.id));
+        });
+      }
+
+      async saveMiningLoadouts(loadouts) {
+        var normalized = loadouts.map(normalizeStoredMiningLoadout);
+        var byMaterial = new Map();
+        normalized.forEach(function (loadout) {
+          if (!byMaterial.has(loadout.materialUuid)) {
+            byMaterial.set(loadout.materialUuid, []);
+          }
+          byMaterial.get(loadout.materialUuid).push(loadout);
+        });
+        byMaterial.forEach(function (materialLoadouts) {
+          var selectedDefault = materialLoadouts.find(function (loadout) { return loadout.isDefault; }) || materialLoadouts[0];
+          materialLoadouts.forEach(function (loadout) {
+            loadout.isDefault = loadout.id === selectedDefault.id;
+          });
+        });
+        await this.database.commitMiningLoadoutsSnapshot(normalized);
+        return normalized;
+      }
+
       async fingerprint() {
         var storeNames = ["userInventory", "materialBatches", "userLoadouts", "craftingCards"];
         var payload = {};
@@ -1107,6 +1421,13 @@
           });
         }
         return fingerprintText(JSON.stringify(canonicalizeJson(payload)));
+      }
+
+      async miningLoadoutFingerprint() {
+        var loadouts = await this.database.getAll("userLoadouts");
+        return fingerprintText(JSON.stringify(canonicalizeJson(loadouts.slice().sort(function (a, b) {
+          return String(a.id).localeCompare(String(b.id));
+        }))));
       }
     }
 
@@ -1741,6 +2062,426 @@
     }
     /* M2_ALLOCATION_ENGINE_END */
 
+    /* M3_MINING_MODEL_START */
+    var M3_MINING_CATEGORIES = Object.freeze({
+      SHIP: "SHIP_MINING",
+      VEHICLE: "VEHICLE_MINING",
+      FPS: "FPS_MINING",
+      HARVESTABLE: "HARVESTABLE",
+      UNKNOWN: "UNKNOWN"
+    });
+
+    var M3_EQUIPMENT_TYPES = Object.freeze({
+      HEAD: "MINING_HEAD",
+      MODULE: "MINING_MODULE",
+      GADGET: "MINING_GADGET",
+      UNKNOWN: "UNKNOWN"
+    });
+
+    function m3FiniteNumber(value) {
+      if (value === null || value === undefined || value === "") {
+        return null;
+      }
+      var number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function m3Percentage(explicitPercent, ratio) {
+      var percent = m3FiniteNumber(explicitPercent);
+      if (percent !== null) {
+        return percent;
+      }
+      var normalizedRatio = m3FiniteNumber(ratio);
+      return normalizedRatio === null ? null : normalizedRatio * 100;
+    }
+
+    function classifyMiningCommodity(raw) {
+      var categories = [];
+      var flagMap = [
+        ["has_ship_mineables", M3_MINING_CATEGORIES.SHIP],
+        ["has_ground_vehicle_mineables", M3_MINING_CATEGORIES.VEHICLE],
+        ["has_fps_mineables", M3_MINING_CATEGORIES.FPS],
+        ["has_harvestables", M3_MINING_CATEGORIES.HARVESTABLE]
+      ];
+      flagMap.forEach(function (entry) {
+        if (raw && raw[entry[0]] === true) {
+          categories.push(entry[1]);
+        }
+      });
+      if (categories.length) {
+        return { categories: categories, source: "API_FLAGS" };
+      }
+      var methodMap = {
+        "ship": M3_MINING_CATEGORIES.SHIP,
+        "ground vehicle": M3_MINING_CATEGORIES.VEHICLE,
+        "fps": M3_MINING_CATEGORIES.FPS,
+        "harvestable": M3_MINING_CATEGORIES.HARVESTABLE
+      };
+      (raw && Array.isArray(raw.methods) ? raw.methods : []).forEach(function (method) {
+        var category = methodMap[String(method || "").trim().toLowerCase()];
+        if (category && categories.indexOf(category) === -1) {
+          categories.push(category);
+        }
+      });
+      return categories.length
+        ? { categories: categories, source: "API_METHODS" }
+        : { categories: [M3_MINING_CATEGORIES.UNKNOWN], source: "UNKNOWN" };
+    }
+
+    function miningCategoryFromResource(resource) {
+      var groupName = String(resource && resource.group_name || "").toLowerCase();
+      if (groupName.indexOf("spaceship") !== -1) {
+        return M3_MINING_CATEGORIES.SHIP;
+      }
+      if (groupName.indexOf("groundvehicle") !== -1 || groupName.indexOf("ground_vehicle") !== -1) {
+        return M3_MINING_CATEGORIES.VEHICLE;
+      }
+      if (groupName.indexOf("fps") !== -1) {
+        return M3_MINING_CATEGORIES.FPS;
+      }
+      if (groupName.indexOf("harvest") !== -1 || (resource && resource.harvestable_setup)) {
+        return M3_MINING_CATEGORIES.HARVESTABLE;
+      }
+      return M3_MINING_CATEGORIES.UNKNOWN;
+    }
+
+    function matchingCommodityMaterials(location, commodityUuid) {
+      var candidates = [];
+      (location && Array.isArray(location.resources) ? location.resources : []).forEach(function (resource, resourceIndex) {
+        (Array.isArray(resource.materials) ? resource.materials : []).forEach(function (material, materialIndex) {
+          if (!material) {
+            return;
+          }
+          candidates.push({
+            resource: resource,
+            resourceIndex: resourceIndex,
+            material: material,
+            materialIndex: materialIndex
+          });
+        });
+      });
+      var exactMatches = candidates.filter(function (candidate) {
+        return candidate.material.uuid === commodityUuid;
+      });
+      return exactMatches.length ? exactMatches : candidates.filter(function (candidate) {
+        return candidate.material.is_current === true;
+      });
+    }
+
+    function normalizeMiningLocation(location, commodity, provenance, index) {
+      var matches = matchingCommodityMaterials(location, commodity.uuid);
+      var qualityRanges = matches.map(function (match) {
+        return {
+          min: m3FiniteNumber(match.material.quality_min),
+          max: m3FiniteNumber(match.material.quality_max),
+          quantizedValues: Array.isArray(match.material.quality_quantized_values)
+            ? match.material.quality_quantized_values.slice()
+            : [],
+          resourceIndex: match.resourceIndex,
+          materialIndex: match.materialIndex,
+          resourceKey: match.resource.key || null,
+          materialUuid: match.material.uuid || null
+        };
+      });
+      var maximumQualityValues = qualityRanges.map(function (range) { return range.max; }).filter(function (value) {
+        return value !== null;
+      });
+      var resourceCategories = matches.map(function (match) {
+        return miningCategoryFromResource(match.resource);
+      }).filter(function (category) {
+        return category !== M3_MINING_CATEGORIES.UNKNOWN;
+      });
+      var distinctResourceCategories = Array.from(new Set(resourceCategories));
+      var commodityCategories = classifyMiningCommodity(commodity).categories.filter(function (category) {
+        return category !== M3_MINING_CATEGORIES.UNKNOWN;
+      });
+      var miningMethod = distinctResourceCategories.length === 1
+        ? distinctResourceCategories[0]
+        : (commodityCategories.length === 1 ? commodityCategories[0] : M3_MINING_CATEGORIES.UNKNOWN);
+      return {
+        id: commodity.uuid + "::location::" + (location.uuid || index),
+        rawLocationUuid: location.uuid || null,
+        rawIndex: index,
+        name: location.display_name || location.name || "Ismeretlen location",
+        designation: location.designation || null,
+        system: location.system || "UNKNOWN",
+        type: location.type || null,
+        parentName: location.parent_name || null,
+        miningMethod: miningMethod,
+        occurrence: m3Percentage(location.relative_probability_percent, location.relative_probability),
+        spawn: m3Percentage(location.group_probability_percent, location.group_probability),
+        maximumQuality: maximumQualityValues.length ? Math.max.apply(Math, maximumQualityValues) : null,
+        qualityRanges: qualityRanges,
+        resourceCount: Array.isArray(location.resources) ? location.resources.length : 0,
+        source: location.link || provenance.source,
+        provenance: Object.assign({}, provenance, {
+          rawCommodityUuid: commodity.uuid,
+          rawLocationUuid: location.uuid || null,
+          rawLocationIndex: index
+        })
+      };
+    }
+
+    function normalizeMiningCommodity(raw, provenance) {
+      if (!raw || !raw.uuid) {
+        throw new TypeError("A mining commodity API-rekordból hiányzik az UUID.");
+      }
+      var classification = classifyMiningCommodity(raw);
+      var locations = (Array.isArray(raw.locations) ? raw.locations : []).map(function (location, index) {
+        return normalizeMiningLocation(location, raw, provenance, index);
+      });
+      return {
+        cacheKey: provenance.gameVersion + "::commodity-detail::" + raw.uuid,
+        uuid: raw.uuid,
+        key: raw.key || null,
+        slug: raw.slug || null,
+        name: raw.display_name || raw.name || "Ismeretlen commodity",
+        kind: raw.kind || null,
+        categories: classification.categories,
+        classificationSource: classification.source,
+        radarSignature: m3FiniteNumber(raw.signature),
+        systems: Array.isArray(raw.systems) ? raw.systems.slice() : [],
+        locations: locations,
+        rawLocationCount: locations.length,
+        provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
+      };
+    }
+
+    function normalizeMiningCommodityIndex(raw, provenance) {
+      var classification = classifyMiningCommodity(raw || {});
+      return {
+        cacheKey: provenance.gameVersion + "::commodity-index::" + raw.uuid,
+        recordType: "COMMODITY_INDEX",
+        uuid: raw.uuid,
+        slug: raw.slug || null,
+        name: raw.display_name || raw.name || "Ismeretlen commodity",
+        kind: raw.kind || null,
+        categories: classification.categories,
+        classificationSource: classification.source,
+        radarSignature: m3FiniteNumber(raw.signature),
+        systems: Array.isArray(raw.systems) ? raw.systems.slice() : [],
+        provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
+      };
+    }
+
+    function compareMiningLocations(a, b) {
+      function sortable(value) {
+        return value === null || value === undefined || !Number.isFinite(Number(value)) ? -Infinity : Number(value);
+      }
+      return sortable(b.occurrence) - sortable(a.occurrence) ||
+        sortable(b.spawn) - sortable(a.spawn) ||
+        sortable(b.maximumQuality) - sortable(a.maximumQuality) ||
+        String(a.name).localeCompare(String(b.name), "hu") ||
+        String(a.id).localeCompare(String(b.id));
+    }
+
+    function sameMiningRank(a, b) {
+      return a.miningMethod === b.miningMethod &&
+        a.occurrence === b.occurrence &&
+        a.spawn === b.spawn &&
+        a.maximumQuality === b.maximumQuality;
+    }
+
+    function isLagrangeMiningLocation(location) {
+      return /(?:^|[\s-])L[1-5]$/i.test(String(location && location.name || "").trim());
+    }
+
+    function mergeBestMiningLocationsBySystem(locations, systems) {
+      var systemNames = Array.from(new Set((systems || []).concat((locations || []).map(function (location) {
+        return location.system;
+      })).filter(Boolean))).sort(function (a, b) {
+        return String(a).localeCompare(String(b), "hu");
+      });
+      return systemNames.map(function (system) {
+        var systemLocations = (locations || []).filter(function (location) { return location.system === system; });
+        var methods = Array.from(new Set(systemLocations.map(function (location) { return location.miningMethod; }))).sort();
+        if (!methods.length) {
+          return { system: system, status: "NO_KNOWN_LOCATION", methods: [] };
+        }
+        return {
+          system: system,
+          status: "AVAILABLE",
+          methods: methods.map(function (method) {
+            var methodLocations = systemLocations.filter(function (location) { return location.miningMethod === method; }).sort(compareMiningLocations);
+            var best = methodLocations[0];
+            var equalBest = methodLocations.filter(function (location) { return sameMiningRank(location, best); });
+            var relevantLagrangeLocations = methodLocations.filter(isLagrangeMiningLocation);
+            var allLagrangePoints = relevantLagrangeLocations.length > 1 && relevantLagrangeLocations.every(function (location) {
+              return sameMiningRank(location, best);
+            });
+            var labelParts = allLagrangePoints
+              ? ["All Lagrange Points"].concat(equalBest.filter(function (location) {
+                return !isLagrangeMiningLocation(location);
+              }).map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); }))
+              : equalBest.map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); });
+            return {
+              method: method,
+              occurrence: best.occurrence,
+              spawn: best.spawn,
+              maximumQuality: best.maximumQuality,
+              locationIds: equalBest.map(function (location) { return location.id; }),
+              locationNames: equalBest.map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); }),
+              locationLabel: labelParts.join(" / "),
+              allLagrangePoints: allLagrangePoints,
+              mergedCount: equalBest.length
+            };
+          })
+        };
+      });
+    }
+
+    function miningEquipmentTypeFromClassification(raw) {
+      var classification = String(raw && raw.classification || "");
+      if (classification === "Ship.Mining.Gun") {
+        return M3_EQUIPMENT_TYPES.HEAD;
+      }
+      if (classification === "Mining.Module") {
+        return M3_EQUIPMENT_TYPES.MODULE;
+      }
+      if (classification === "Mining.Gadget") {
+        return M3_EQUIPMENT_TYPES.GADGET;
+      }
+      return M3_EQUIPMENT_TYPES.UNKNOWN;
+    }
+
+    function normalizeMiningEquipmentIndex(raw, provenance) {
+      return {
+        cacheKey: provenance.gameVersion + "::equipment-index::" + raw.uuid,
+        recordType: "EQUIPMENT_INDEX",
+        uuid: raw.uuid,
+        name: raw.name || "Ismeretlen equipment",
+        size: m3FiniteNumber(raw.size),
+        classification: raw.classification || null,
+        equipmentType: miningEquipmentTypeFromClassification(raw),
+        provenance: Object.assign({}, provenance, { rawItemUuid: raw.uuid })
+      };
+    }
+
+    function normalizeMiningHeadDetail(raw, provenance) {
+      var slotValue = raw && raw.mining_laser ? raw.mining_laser.module_slots : null;
+      var slotCount = Number.isInteger(Number(slotValue)) && Number(slotValue) >= 0 ? Number(slotValue) : null;
+      return {
+        cacheKey: provenance.gameVersion + "::head-detail::" + raw.uuid,
+        recordType: "HEAD_DETAIL",
+        uuid: raw.uuid,
+        name: raw.name || "Ismeretlen mining head",
+        size: m3FiniteNumber(raw.size),
+        classification: raw.classification || null,
+        moduleSlotCount: slotCount,
+        moduleSlotCountSource: slotCount === null ? "UNKNOWN" : "API_ITEM_MINING_LASER",
+        provenance: Object.assign({}, provenance, { rawItemUuid: raw.uuid })
+      };
+    }
+
+    function collectVehicleMiningStations(ports, path, results) {
+      var target = results || [];
+      (Array.isArray(ports) ? ports : []).forEach(function (port, index) {
+        var currentPath = (path || "ports") + "." + index;
+        var equipped = port && port.equipped_item;
+        if (equipped && (equipped.classification === "Ship.Mining.Gun" || equipped.type === "WeaponMining")) {
+          target.push({
+            path: currentPath,
+            portName: port.name || null,
+            equippedHeadUuid: equipped.uuid || null,
+            equippedHeadName: equipped.name || null,
+            evidence: equipped.classification === "Ship.Mining.Gun" ? "API_CLASSIFICATION" : "API_ITEM_TYPE"
+          });
+        }
+        collectVehicleMiningStations(port && port.ports, currentPath + ".ports", target);
+      });
+      return target;
+    }
+
+    function normalizeMiningVehicleIndex(raw, provenance) {
+      return {
+        cacheKey: provenance.gameVersion + "::vehicle-index::" + raw.uuid,
+        recordType: "VEHICLE_INDEX",
+        uuid: raw.uuid,
+        name: raw.name || "Ismeretlen vehicle",
+        className: raw.class_name || null,
+        role: raw.role || null,
+        career: raw.career || null,
+        miningRecognitionSource: "API_MINING_ROLE_FACET",
+        stationCount: null,
+        stationCountSource: "UNKNOWN",
+        provenance: Object.assign({}, provenance, { rawVehicleUuid: raw.uuid })
+      };
+    }
+
+    function normalizeMiningVehicleDetail(raw, provenance) {
+      var stations = collectVehicleMiningStations(raw && raw.ports, "ports", []);
+      return {
+        cacheKey: provenance.gameVersion + "::vehicle-detail::" + raw.uuid,
+        recordType: "VEHICLE_DETAIL",
+        uuid: raw.uuid,
+        name: raw.name || "Ismeretlen vehicle",
+        className: raw.class_name || null,
+        role: raw.role || null,
+        career: raw.career || null,
+        stationCount: stations.length || null,
+        stationCountSource: stations.length ? "API_PORT_EQUIPPED_ITEM" : "UNKNOWN",
+        stations: stations,
+        provenance: Object.assign({}, provenance, { rawVehicleUuid: raw.uuid })
+      };
+    }
+
+    function resizeMiningModules(modules, count, idFactory) {
+      var source = Array.isArray(modules) ? modules : [];
+      var length = Number.isInteger(Number(count)) && Number(count) >= 0 ? Number(count) : 0;
+      return Array.from({ length: length }, function (_, index) {
+        return source[index] || { id: idFactory("module"), uuid: null, name: null };
+      });
+    }
+
+    function resizeMiningStations(stations, count, idFactory) {
+      var source = Array.isArray(stations) ? stations : [];
+      var length = Number.isInteger(Number(count)) && Number(count) >= 0 ? Number(count) : 0;
+      return Array.from({ length: length }, function (_, index) {
+        return source[index] || {
+          id: idFactory("station"),
+          head: { uuid: null, name: null, moduleSlotCount: null },
+          modules: []
+        };
+      });
+    }
+
+    function setDefaultMiningLoadout(loadouts, materialUuid, loadoutId) {
+      return (loadouts || []).map(function (loadout) {
+        if (loadout.materialUuid !== materialUuid) {
+          return Object.assign({}, loadout);
+        }
+        return Object.assign({}, loadout, { isDefault: loadout.id === loadoutId });
+      });
+    }
+
+    function reconcileMiningLoadout(loadout, catalog) {
+      var vehicleIds = new Set((catalog.vehicles || []).map(function (item) { return item.uuid; }));
+      var headIds = new Set((catalog.heads || []).map(function (item) { return item.uuid; }));
+      var moduleIds = new Set((catalog.modules || []).map(function (item) { return item.uuid; }));
+      var gadgetIds = new Set((catalog.gadgets || []).map(function (item) { return item.uuid; }));
+      function status(uuid, availableIds) {
+        return !uuid ? "EMPTY" : (availableIds.has(uuid) ? "AVAILABLE" : "MISSING_CURRENT_GAME_DATA");
+      }
+      return Object.assign({}, loadout, {
+        availability: {
+          vehicle: status(loadout.vehicle && loadout.vehicle.uuid, vehicleIds),
+          stations: (loadout.stations || []).map(function (station) {
+            return {
+              stationId: station.id,
+              head: status(station.head && station.head.uuid, headIds),
+              modules: (station.modules || []).map(function (module) {
+                return { moduleId: module.id, status: status(module.uuid, moduleIds) };
+              })
+            };
+          }),
+          gadgets: (loadout.gadgets || []).map(function (gadget) {
+            return { gadgetId: gadget.id, status: status(gadget.uuid, gadgetIds) };
+          })
+        }
+      });
+    }
+    /* M3_MINING_MODEL_END */
+
     function compareLocations(a, b) {
       function sortable(value) {
         var number = Number(value);
@@ -1867,6 +2608,459 @@
         return Boolean(record.provenance && record.provenance.rawBlueprintUuid && record.provenance.gameVersion && record.provenance.fetchedAt);
       }) ? "true" : "false";
       return counts;
+    }
+
+    function miningProvenance(version, source, fetchedAt, origin) {
+      return {
+        gameVersion: version,
+        dataSource: "Star Citizen Wiki API",
+        source: source,
+        fetchedAt: fetchedAt,
+        origin: origin || "API"
+      };
+    }
+
+    function miningRecordMap(records) {
+      var map = new Map();
+      (records || []).forEach(function (record) {
+        if (record && record.uuid) {
+          map.set(record.uuid, record);
+        }
+      });
+      return Array.from(map.values());
+    }
+
+    async function loadMiningIndexFromCache(version) {
+      var records = (await database.getAll("miningNormalizedCache")).filter(function (record) {
+        return record.provenance && record.provenance.gameVersion === version;
+      });
+      state.miningCommodityIndex = records.filter(function (record) {
+        return record.recordType === "COMMODITY_INDEX";
+      }).sort(function (a, b) { return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid); });
+      var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
+      state.miningEquipment = {
+        heads: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }),
+        modules: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.MODULE; }),
+        gadgets: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.GADGET; })
+      };
+      Object.keys(state.miningEquipment).forEach(function (key) {
+        state.miningEquipment[key].sort(function (a, b) { return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid); });
+      });
+      state.miningVehicles = records.filter(function (record) {
+        return record.recordType === "VEHICLE_INDEX";
+      }).sort(function (a, b) { return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid); });
+      records.filter(function (record) { return record.recordType === "HEAD_DETAIL"; }).forEach(function (detail) {
+        var target = state.miningEquipment.heads.find(function (head) { return head.uuid === detail.uuid; });
+        if (target) {
+          target.moduleSlotCount = detail.moduleSlotCount;
+          target.moduleSlotCountSource = detail.moduleSlotCountSource;
+        }
+      });
+      records.filter(function (record) { return record.recordType === "VEHICLE_DETAIL"; }).forEach(function (detail) {
+        var target = state.miningVehicles.find(function (vehicle) { return vehicle.uuid === detail.uuid; });
+        if (target) {
+          target.stationCount = detail.stationCount;
+          target.stationCountSource = detail.stationCountSource;
+          target.stations = detail.stations;
+        }
+      });
+      return records;
+    }
+
+    function renderMiningDatasetState() {
+      var dataset = state.activeMiningDataset;
+      var badge = document.getElementById("miningDatasetStatus");
+      if (state.miningDatasetSyncing) {
+        setBadge(badge, "PENDING", "Szinkron folyamatban");
+      } else if (dataset) {
+        setBadge(badge, "PASS", dataset.commodityCount + " commodity");
+      } else {
+        setBadge(badge, "NEUTRAL", "Nincs aktív cache");
+      }
+      setText("miningDataMeta", dataset
+        ? dataset.version + " · " + dataset.commodityCount + " commodity · " + dataset.vehicleCount + " vehicle · " +
+          dataset.headCount + " head · " + dataset.moduleCount + " module · " + dataset.gadgetCount + " gadget"
+        : "A commodity lista és az equipment index dinamikusan, API-filterekből épül.");
+      document.body.dataset.miningDatasetVersion = dataset ? dataset.version : "";
+      document.body.dataset.miningCommodityCount = String(state.miningCommodityIndex.length);
+      document.body.dataset.miningVehicleCount = String(state.miningVehicles.length);
+      document.body.dataset.miningHeadCount = String(state.miningEquipment.heads.length);
+    }
+
+    function populateMiningCommoditySelect() {
+      var select = document.getElementById("miningCommoditySelect");
+      var selected = state.selectedMiningCommodity ? state.selectedMiningCommodity.uuid : select.value;
+      select.replaceChildren();
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = state.miningCommodityIndex.length ? "Válassz commodityt" : "Nincs betöltött commodity";
+      select.append(empty);
+      state.miningCommodityIndex.forEach(function (commodity) {
+        var option = document.createElement("option");
+        option.value = commodity.uuid;
+        option.textContent = commodity.name + " · " + commodity.categories.join(" / ");
+        select.append(option);
+      });
+      select.value = state.miningCommodityIndex.some(function (commodity) { return commodity.uuid === selected; }) ? selected : "";
+      document.getElementById("addMiningLoadoutButton").disabled = !select.value;
+    }
+
+    function miningFacetEquipmentType(facet) {
+      var value = String(facet && facet.value || "");
+      return miningEquipmentTypeFromClassification({ classification: value });
+    }
+
+    async function syncMiningDataset(options) {
+      var settings = options || {};
+      var ownsProcess = settings.ownsProcess !== false;
+      if (state.miningDatasetSyncing) {
+        throw new Error("Már fut Mining Game Data szinkron.");
+      }
+      state.miningDatasetSyncing = true;
+      document.getElementById("syncMiningDataButton").disabled = true;
+      renderMiningDatasetState();
+      if (ownsProcess) {
+        logger.start("Mining Game Data Sync", { force: settings.force === true });
+      }
+      var loadoutFingerprintBefore = null;
+      var userFingerprintBefore = null;
+      try {
+        var versionRecord = state.gameVersion || await api.getDefaultGameVersion();
+        state.gameVersion = versionRecord;
+        var version = versionRecord.code;
+        var existingDataset = await database.get("miningDatasets", version);
+        if (existingDataset && existingDataset.status === "ACTIVE" && settings.force !== true) {
+          state.activeMiningDataset = existingDataset;
+          state.miningSystems = existingDataset.systems || [];
+          await loadMiningIndexFromCache(version);
+          populateMiningCommoditySelect();
+          renderMiningDatasetState();
+          if (ownsProcess) {
+            logger.finish("PASS", { origin: "CACHE", version: version, commodityCount: state.miningCommodityIndex.length });
+          }
+          return existingDataset;
+        }
+        userFingerprintBefore = await userDataRepository.fingerprint();
+        loadoutFingerprintBefore = await userDataRepository.miningLoadoutFingerprint();
+        var fetchedAt = nowIso();
+        var filterPayloads = await Promise.all([
+          api.getCommodityFilters(version),
+          api.getItemFilters(version),
+          api.getVehicleFilters(version)
+        ]);
+        var commodityFilters = filterPayloads[0];
+        var itemFilters = filterPayloads[1];
+        var vehicleFilters = filterPayloads[2];
+        var commodityKinds = (commodityFilters.filters.kind || []).filter(function (facet) {
+          return facet && (facet.value === "mineable" || facet.value === "harvestable");
+        });
+        var equipmentFacets = (itemFilters.filters.classification || []).map(function (facet) {
+          return { facet: facet, type: miningFacetEquipmentType(facet) };
+        }).filter(function (entry) { return entry.type !== M3_EQUIPMENT_TYPES.UNKNOWN; });
+        var miningRoles = (vehicleFilters.filters.role || []).filter(function (facet) {
+          return facet && /mining/i.test(String(facet.value || facet.label || ""));
+        });
+        if (!commodityKinds.length || !equipmentFacets.length || !miningRoles.length) {
+          throw new Error("A mining API-facetek nem tartalmazzák a szükséges dinamikus kategóriákat.");
+        }
+        var pageGroups = await Promise.all([
+          Promise.all(commodityKinds.map(function (facet) { return api.getCommoditiesByKind(facet.value, version); })),
+          Promise.all(equipmentFacets.map(function (entry) { return api.getItemsByClassification(entry.facet.value, version); })),
+          Promise.all(miningRoles.map(function (facet) { return api.getVehiclesByRole(facet.value, version); }))
+        ]);
+        var commodityRecords = miningRecordMap(pageGroups[0].reduce(function (all, page) { return all.concat(page.records); }, []));
+        var equipmentRecords = miningRecordMap(pageGroups[1].reduce(function (all, page) { return all.concat(page.records); }, []));
+        var vehicleRecords = miningRecordMap(pageGroups[2].reduce(function (all, page) { return all.concat(page.records); }, []));
+        var rawRecords = [
+          { cacheKey: version + "::filters::commodities", version: version, recordType: "RAW_FILTERS", endpoint: APP.apiBase + "/commodities/filters", fetchedAt: fetchedAt, raw: commodityFilters },
+          { cacheKey: version + "::filters::items", version: version, recordType: "RAW_FILTERS", endpoint: APP.apiBase + "/items/filters", fetchedAt: fetchedAt, raw: itemFilters },
+          { cacheKey: version + "::filters::vehicles", version: version, recordType: "RAW_FILTERS", endpoint: APP.apiBase + "/vehicles/filters", fetchedAt: fetchedAt, raw: vehicleFilters }
+        ];
+        commodityRecords.forEach(function (record) {
+          rawRecords.push({ cacheKey: version + "::raw::commodity-index::" + record.uuid, version: version, recordType: "RAW_COMMODITY_INDEX", endpoint: APP.apiBase + "/commodities", fetchedAt: fetchedAt, raw: record });
+        });
+        equipmentRecords.forEach(function (record) {
+          rawRecords.push({ cacheKey: version + "::raw::equipment-index::" + record.uuid, version: version, recordType: "RAW_EQUIPMENT_INDEX", endpoint: APP.apiBase + "/items", fetchedAt: fetchedAt, raw: record });
+        });
+        vehicleRecords.forEach(function (record) {
+          rawRecords.push({ cacheKey: version + "::raw::vehicle-index::" + record.uuid, version: version, recordType: "RAW_VEHICLE_INDEX", endpoint: APP.apiBase + "/vehicles", fetchedAt: fetchedAt, raw: record });
+        });
+        var normalizedRecords = commodityRecords.map(function (record) {
+          return normalizeMiningCommodityIndex(record, miningProvenance(version, APP.apiBase + "/commodities", fetchedAt));
+        }).concat(equipmentRecords.map(function (record) {
+          return normalizeMiningEquipmentIndex(record, miningProvenance(version, APP.apiBase + "/items", fetchedAt));
+        })).concat(vehicleRecords.map(function (record) {
+          return normalizeMiningVehicleIndex(record, miningProvenance(version, APP.apiBase + "/vehicles", fetchedAt));
+        }));
+        var previousRawKeys = (await database.getAll("miningRawCache")).filter(function (record) { return record.version === version; }).map(function (record) { return record.cacheKey; });
+        var previousNormalizedKeys = (await database.getAll("miningNormalizedCache")).filter(function (record) {
+          return record.provenance && record.provenance.gameVersion === version;
+        }).map(function (record) { return record.cacheKey; });
+        var systems = (commodityFilters.filters.system || []).map(function (facet) { return facet.value; }).filter(Boolean).sort();
+        var dataset = await database.commitMiningDataset({
+          version: version,
+          fetchedAt: fetchedAt,
+          rawRecords: rawRecords,
+          normalizedRecords: normalizedRecords,
+          previousRawKeys: previousRawKeys,
+          previousNormalizedKeys: previousNormalizedKeys,
+          commodityCount: commodityRecords.length,
+          vehicleCount: vehicleRecords.length,
+          headCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }).length,
+          moduleCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.MODULE; }).length,
+          gadgetCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.GADGET; }).length,
+          systems: systems,
+          endpoints: ["/commodities/filters", "/commodities", "/items/filters", "/items", "/vehicles/filters", "/vehicles"]
+        });
+        var loadoutFingerprintAfter = await userDataRepository.miningLoadoutFingerprint();
+        var userFingerprintAfter = await userDataRepository.fingerprint();
+        assert(loadoutFingerprintAfter === loadoutFingerprintBefore, "A Mining Game Data sync módosította a loadout User Data-t.");
+        assert(userFingerprintAfter === userFingerprintBefore, "A Mining Game Data sync módosította a User Data-t.");
+        document.body.dataset.miningLoadoutFingerprintPreserved = "true";
+        document.body.dataset.miningUserDataFingerprintPreserved = "true";
+        state.activeMiningDataset = dataset;
+        state.miningSystems = systems;
+        await loadMiningIndexFromCache(version);
+        populateMiningCommoditySelect();
+        renderMiningDatasetState();
+        logger.event("INFO", "MINING_DATASET_ACTIVATED", "A Mining Game Data tranzakciósan aktiválva.", {
+          version: version,
+          commodityCount: commodityRecords.length,
+          vehicleCount: vehicleRecords.length,
+          equipmentCount: equipmentRecords.length,
+          commodityClassificationCounts: normalizedRecords.filter(function (record) {
+            return record.recordType === "COMMODITY_INDEX";
+          }).reduce(function (counts, record) {
+            record.categories.forEach(function (category) { counts[category] = (counts[category] || 0) + 1; });
+            return counts;
+          }, {}),
+          equipmentClassificationCounts: equipmentRecords.reduce(function (counts, record) {
+            var classification = record.classification || "UNKNOWN";
+            counts[classification] = (counts[classification] || 0) + 1;
+            return counts;
+          }, {}),
+          userDataFingerprintPreserved: true,
+          miningLoadoutFingerprintPreserved: true
+        });
+        if (ownsProcess) {
+          logger.finish("PASS", { version: version, commodityCount: commodityRecords.length, vehicleCount: vehicleRecords.length });
+        }
+        return dataset;
+      } catch (error) {
+        logger.event("ERROR", "MINING_SYNC_FAILED", "A Mining Game Data szinkron sikertelen; az előző cache marad aktív.", { error: serializeError(error) });
+        if (ownsProcess) {
+          logger.finish("FAIL", { error: serializeError(error) });
+        }
+        throw error;
+      } finally {
+        state.miningDatasetSyncing = false;
+        document.getElementById("syncMiningDataButton").disabled = false;
+        renderMiningDatasetState();
+      }
+    }
+
+    async function loadMiningCommodityDetail(identifier, options) {
+      var settings = options || {};
+      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      if (!version) {
+        throw new Error("Nincs aktív SC-verzió a commodity részlethez.");
+      }
+      var cacheKey = version + "::commodity-detail::" + identifier;
+      var cached = await database.get("miningNormalizedCache", cacheKey);
+      var normalized = cached;
+      var origin = "CACHE";
+      if (!normalized) {
+        var raw = await api.getCommodity(identifier, version);
+        var fetchedAt = nowIso();
+        normalized = normalizeMiningCommodity(raw, miningProvenance(version, APP.apiBase + "/commodities/" + encodeURIComponent(identifier), fetchedAt));
+        normalized.recordType = "COMMODITY_DETAIL";
+        await database.putMiningDetail({
+          cacheKey: version + "::raw::commodity-detail::" + raw.uuid,
+          version: version,
+          recordType: "RAW_COMMODITY_DETAIL",
+          endpoint: APP.apiBase + "/commodities/" + encodeURIComponent(identifier),
+          fetchedAt: fetchedAt,
+          raw: raw
+        }, normalized);
+        origin = "API";
+      }
+      state.selectedMiningCommodity = normalized;
+      document.getElementById("miningCommoditySelect").value = normalized.uuid;
+      document.getElementById("addMiningLoadoutButton").disabled = false;
+      renderSelectedMiningCommodity(origin);
+      renderMiningLoadoutControls();
+      logger.event("INFO", "MINING_COMMODITY_DETAIL", "Mining commodity részlet betöltve.", {
+        commodityUuid: normalized.uuid,
+        name: normalized.name,
+        categories: normalized.categories,
+        classificationSource: normalized.classificationSource,
+        signature: normalized.radarSignature,
+        locationRecordCount: normalized.locations.length,
+        locationEvidence: normalized.locations.map(function (location) {
+          return {
+            rawLocationUuid: location.rawLocationUuid,
+            name: location.name,
+            system: location.system,
+            method: location.miningMethod,
+            occurrence: location.occurrence,
+            spawn: location.spawn,
+            maximumQuality: location.maximumQuality,
+            qualityRanges: location.qualityRanges
+          };
+        }),
+        origin: origin
+      });
+      return normalized;
+    }
+
+    async function selectDefaultMiningCommodity() {
+      if (!state.miningCommodityIndex.length) {
+        return null;
+      }
+      var selectedUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
+      var candidate = state.miningCommodityIndex.find(function (commodity) { return commodity.uuid === selectedUuid; }) ||
+        state.miningCommodityIndex.find(function (commodity) { return /^Agricium\b/i.test(commodity.name); }) ||
+        state.miningCommodityIndex[0];
+      try {
+        return await loadMiningCommodityDetail(candidate.uuid);
+      } catch (error) {
+        logger.event("WARN", "MINING_DEFAULT_DETAIL_UNAVAILABLE", "Az alapértelmezett mining commodity részlete nem tölthető be.", {
+          commodityUuid: candidate.uuid,
+          error: serializeError(error)
+        });
+        document.getElementById("miningCommoditySelect").value = candidate.uuid;
+        return null;
+      }
+    }
+
+    async function loadMiningHeadDetail(identifier) {
+      var version = state.activeMiningDataset.version;
+      var cacheKey = version + "::head-detail::" + identifier;
+      var normalized = await database.get("miningNormalizedCache", cacheKey);
+      if (!normalized) {
+        var raw = await api.getItem(identifier, version);
+        var fetchedAt = nowIso();
+        normalized = normalizeMiningHeadDetail(raw, miningProvenance(version, APP.apiBase + "/items/" + encodeURIComponent(identifier), fetchedAt));
+        await database.putMiningDetail({ cacheKey: version + "::raw::head-detail::" + raw.uuid, version: version, recordType: "RAW_HEAD_DETAIL", endpoint: APP.apiBase + "/items/" + encodeURIComponent(identifier), fetchedAt: fetchedAt, raw: raw }, normalized);
+      }
+      var target = state.miningEquipment.heads.find(function (head) { return head.uuid === normalized.uuid; });
+      if (target) {
+        target.moduleSlotCount = normalized.moduleSlotCount;
+        target.moduleSlotCountSource = normalized.moduleSlotCountSource;
+      }
+      logger.event(normalized.moduleSlotCount === null ? "WARN" : "INFO", "MINING_HEAD_DETAIL", "Mining head module slot adat betöltve.", {
+        headUuid: normalized.uuid,
+        moduleSlotCount: normalized.moduleSlotCount,
+        source: normalized.moduleSlotCountSource
+      });
+      return normalized;
+    }
+
+    async function loadMiningVehicleDetail(identifier) {
+      var version = state.activeMiningDataset.version;
+      var cacheKey = version + "::vehicle-detail::" + identifier;
+      var normalized = await database.get("miningNormalizedCache", cacheKey);
+      if (!normalized) {
+        var raw = await api.getVehicle(identifier, version);
+        var fetchedAt = nowIso();
+        normalized = normalizeMiningVehicleDetail(raw, miningProvenance(version, APP.apiBase + "/vehicles/" + encodeURIComponent(identifier), fetchedAt));
+        await database.putMiningDetail({ cacheKey: version + "::raw::vehicle-detail::" + raw.uuid, version: version, recordType: "RAW_VEHICLE_DETAIL", endpoint: APP.apiBase + "/vehicles/" + encodeURIComponent(identifier), fetchedAt: fetchedAt, raw: raw }, normalized);
+      }
+      var target = state.miningVehicles.find(function (vehicle) { return vehicle.uuid === normalized.uuid; });
+      if (target) {
+        target.stationCount = normalized.stationCount;
+        target.stationCountSource = normalized.stationCountSource;
+        target.stations = normalized.stations;
+      }
+      logger.event(normalized.stationCount === null ? "WARN" : "INFO", "MINING_VEHICLE_RECOGNITION", "Mining vehicle station felismerés lezárult.", {
+        vehicleUuid: normalized.uuid,
+        vehicleName: normalized.name,
+        stationCount: normalized.stationCount,
+        source: normalized.stationCountSource,
+        stations: normalized.stations
+      });
+      return normalized;
+    }
+
+    function formatMiningMetric(value, suffix) {
+      return value === null || value === undefined ? "Nincs adat" : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
+    }
+
+    function renderSelectedMiningCommodity(origin) {
+      var commodity = state.selectedMiningCommodity;
+      var summary = document.getElementById("miningCommoditySummary");
+      var ranking = document.getElementById("miningLocationRanking");
+      summary.replaceChildren();
+      ranking.replaceChildren();
+      if (!commodity) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Válassz mining commodityt.";
+        ranking.append(empty);
+        return;
+      }
+      [
+        ["Commodity", commodity.name],
+        ["Mining method", commodity.categories.join(" / ")],
+        ["Radar Signature", commodity.radarSignature === null ? "Nincs adat" : String(commodity.radarSignature)],
+        ["Raw location rekord", commodity.rawLocationCount],
+        ["Adat eredete", origin || commodity.provenance.origin]
+      ].forEach(function (row) {
+        var item = document.createElement("div");
+        var label = document.createElement("span");
+        label.textContent = row[0];
+        var value = document.createElement("strong");
+        value.textContent = String(row[1]);
+        item.append(label, value);
+        summary.append(item);
+      });
+      var results = mergeBestMiningLocationsBySystem(commodity.locations, state.miningSystems);
+      results.forEach(function (systemResult) {
+        var card = document.createElement("article");
+        card.className = "spg-system-card";
+        var heading = document.createElement("h3");
+        heading.textContent = systemResult.system.replace(/ System$/, "");
+        card.append(heading);
+        if (systemResult.status === "NO_KNOWN_LOCATION") {
+          var noData = document.createElement("p");
+          noData.className = "spg-muted";
+          noData.textContent = "Nincs ismert mining location";
+          card.append(noData);
+        } else {
+          systemResult.methods.forEach(function (method) {
+            var row = document.createElement("div");
+            row.className = "spg-location-result";
+            var methodName = document.createElement("span");
+            methodName.className = "spg-recipe-slot";
+            methodName.textContent = method.method;
+            var locationName = document.createElement("strong");
+            locationName.textContent = method.locationLabel;
+            var metrics = document.createElement("div");
+            metrics.className = "spg-location-metrics";
+            [["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Spawn", formatMiningMetric(method.spawn, "%")], ["Maximum Quality", formatMiningMetric(method.maximumQuality, "")]].forEach(function (metric) {
+              var metricItem = document.createElement("span");
+              metricItem.textContent = metric[0] + ": " + metric[1];
+              metrics.append(metricItem);
+            });
+            row.append(methodName, locationName, metrics);
+            card.append(row);
+            logger.event("INFO", "MINING_LOCATION_RANKED", "Rendszerenkénti legjobb mining location kiszámítva.", {
+              commodityUuid: commodity.uuid,
+              system: systemResult.system,
+              method: method.method,
+              occurrence: method.occurrence,
+              spawn: method.spawn,
+              maximumQuality: method.maximumQuality,
+              mergedLocations: method.locationNames,
+              allLagrangePoints: method.allLagrangePoints
+            });
+          });
+        }
+        ranking.append(card);
+      });
+      document.body.dataset.selectedMiningCommodity = commodity.uuid;
+      document.body.dataset.selectedMiningSignature = commodity.radarSignature === null ? "unknown" : String(commodity.radarSignature);
+      document.body.dataset.selectedMiningLocationCount = String(commodity.locations.length);
     }
 
     function visibleBlueprintIndex() {
@@ -2990,12 +4184,460 @@
     async function restoreUserDataState() {
       state.materialBatches = await userDataRepository.loadMaterialBatches();
       state.craftingCards = await userDataRepository.loadCraftingCards();
+      state.miningLoadouts = await userDataRepository.loadMiningLoadouts();
       state.userDataReady = true;
       recalculateAllocation("STARTUP_RESTORE");
       updateKnownMaterials();
+      renderMiningLoadoutControls();
       document.body.dataset.userDataReady = "true";
       document.body.dataset.materialBatchCount = String(state.materialBatches.length);
       document.body.dataset.craftingCardCount = String(state.craftingCards.length);
+      document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
+    }
+
+    function normalizeStoredMiningLoadout(loadout) {
+      var source = loadout || {};
+      var timestamp = nowIso();
+      function normalizeEquipment(item, prefix) {
+        var equipment = item || {};
+        return {
+          id: equipment.id || makeId(prefix),
+          uuid: equipment.uuid || null,
+          name: equipment.name || null
+        };
+      }
+      return {
+        id: source.id || makeId("loadout"),
+        materialUuid: source.materialUuid || "",
+        materialName: source.materialName || "Ismeretlen material",
+        name: source.name || "Névtelen mining loadout",
+        vehicle: {
+          uuid: source.vehicle && source.vehicle.uuid || null,
+          name: source.vehicle && source.vehicle.name || null
+        },
+        stationCountOverride: Number.isInteger(Number(source.stationCountOverride)) && Number(source.stationCountOverride) > 0
+          ? Number(source.stationCountOverride)
+          : null,
+        stations: (Array.isArray(source.stations) ? source.stations : []).map(function (station) {
+          return {
+            id: station.id || makeId("station"),
+            head: {
+              uuid: station.head && station.head.uuid || null,
+              name: station.head && station.head.name || null,
+              moduleSlotCount: Number.isInteger(Number(station.head && station.head.moduleSlotCount)) && Number(station.head.moduleSlotCount) >= 0
+                ? Number(station.head.moduleSlotCount)
+                : null
+            },
+            modules: (Array.isArray(station.modules) ? station.modules : []).map(function (module) {
+              return normalizeEquipment(module, "module");
+            })
+          };
+        }),
+        gadgets: (Array.isArray(source.gadgets) ? source.gadgets : []).map(function (gadget) {
+          return normalizeEquipment(gadget, "gadget");
+        }),
+        isDefault: source.isDefault === true,
+        createdAt: source.createdAt || timestamp,
+        updatedAt: source.updatedAt || timestamp
+      };
+    }
+
+    function miningCatalog() {
+      return {
+        vehicles: state.miningVehicles,
+        heads: state.miningEquipment.heads,
+        modules: state.miningEquipment.modules,
+        gadgets: state.miningEquipment.gadgets
+      };
+    }
+
+    function cloneMiningLoadout(loadout) {
+      return normalizeStoredMiningLoadout(JSON.parse(JSON.stringify(loadout)));
+    }
+
+    function currentMaterialMiningLoadouts() {
+      var materialUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
+      return state.miningLoadouts.filter(function (loadout) {
+        return loadout.materialUuid === materialUuid;
+      });
+    }
+
+    function setMiningNotice(message, tone) {
+      var notice = document.getElementById("miningNotice");
+      notice.textContent = message || "";
+      notice.dataset.tone = tone || "neutral";
+    }
+
+    function optionForMiningEquipment(item, selectedUuid, missingLabel) {
+      var option = document.createElement("option");
+      option.value = item.uuid || "";
+      option.textContent = item.name || "Ismeretlen equipment";
+      if (item.uuid && item.uuid === selectedUuid) {
+        option.selected = true;
+      }
+      if (missingLabel) {
+        option.textContent += " · Nem található az aktuális játékadatban";
+        option.dataset.missing = "true";
+      }
+      return option;
+    }
+
+    function populateMiningEquipmentSelect(select, items, selectedItem, emptyLabel) {
+      select.replaceChildren();
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = emptyLabel;
+      select.append(empty);
+      var selectedUuid = selectedItem && selectedItem.uuid;
+      var available = (items || []).some(function (item) { return item.uuid === selectedUuid; });
+      if (selectedUuid && !available) {
+        select.append(optionForMiningEquipment({
+          uuid: selectedUuid,
+          name: selectedItem.name || selectedUuid
+        }, selectedUuid, true));
+      }
+      (items || []).forEach(function (item) {
+        select.append(optionForMiningEquipment(item, selectedUuid, false));
+      });
+      select.value = selectedUuid || "";
+      select.classList.toggle("spg-missing-equipment", Boolean(selectedUuid && !available));
+      return available || !selectedUuid;
+    }
+
+    function selectedMiningEquipment(items, uuid, previous) {
+      var match = (items || []).find(function (item) { return item.uuid === uuid; });
+      return match ? { uuid: match.uuid, name: match.name } : {
+        uuid: uuid || null,
+        name: uuid && previous && previous.uuid === uuid ? previous.name : null
+      };
+    }
+
+    function resolvedMiningStationCount(loadout) {
+      if (loadout && Number.isInteger(Number(loadout.stationCountOverride)) && Number(loadout.stationCountOverride) > 0) {
+        return { count: Number(loadout.stationCountOverride), source: "USER_OVERRIDE" };
+      }
+      var vehicle = state.miningVehicles.find(function (candidate) {
+        return candidate.uuid === (loadout && loadout.vehicle && loadout.vehicle.uuid);
+      });
+      if (vehicle && Number.isInteger(Number(vehicle.stationCount)) && Number(vehicle.stationCount) > 0) {
+        return { count: Number(vehicle.stationCount), source: vehicle.stationCountSource || "API" };
+      }
+      return { count: null, source: "UNKNOWN" };
+    }
+
+    async function persistMiningLoadouts(nextLoadouts, eventCode) {
+      state.miningLoadouts = await userDataRepository.saveMiningLoadouts(nextLoadouts);
+      document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
+      document.body.dataset.miningLoadoutFingerprint = await userDataRepository.miningLoadoutFingerprint();
+      logger.event("INFO", eventCode, "Mining loadout User Data mentve.", {
+        loadoutCount: state.miningLoadouts.length,
+        selectedLoadoutId: state.selectedMiningLoadoutId
+      });
+      renderMiningLoadoutControls(true);
+    }
+
+    function createMiningLoadoutDraft() {
+      if (!state.selectedMiningCommodity) {
+        throw new Error("Előbb válassz mining commodityt.");
+      }
+      var materialLoadouts = currentMaterialMiningLoadouts();
+      var timestamp = nowIso();
+      return normalizeStoredMiningLoadout({
+        id: makeId("loadout"),
+        materialUuid: state.selectedMiningCommodity.uuid,
+        materialName: state.selectedMiningCommodity.name,
+        name: state.selectedMiningCommodity.name + " Loadout " + (materialLoadouts.length + 1),
+        isDefault: materialLoadouts.length === 0,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        stations: [],
+        gadgets: []
+      });
+    }
+
+    function openMiningLoadoutEditor(loadout) {
+      state.selectedMiningLoadoutId = loadout ? loadout.id : null;
+      state.editingMiningLoadout = loadout ? cloneMiningLoadout(loadout) : null;
+      renderMiningLoadoutControls(true);
+    }
+
+    function renderMiningStationEditor(station, index, reconciled) {
+      var card = document.createElement("article");
+      card.className = "spg-mining-station";
+      card.dataset.stationId = station.id;
+      var heading = document.createElement("div");
+      heading.className = "spg-mining-station-heading";
+      var title = document.createElement("h4");
+      title.textContent = "Station " + (index + 1);
+      var headState = reconciled && reconciled.availability.stations[index];
+      var status = document.createElement("span");
+      status.className = "spg-badge spg-badge-neutral";
+      status.textContent = station.head.moduleSlotCount === null
+        ? "Module slot: Nincs adat"
+        : station.head.moduleSlotCount + " module slot";
+      heading.append(title, status);
+
+      var headLabel = document.createElement("label");
+      var headCaption = document.createElement("span");
+      headCaption.textContent = "Mining head";
+      var headSelect = document.createElement("select");
+      headSelect.dataset.role = "mining-head";
+      headSelect.dataset.stationId = station.id;
+      populateMiningEquipmentSelect(headSelect, state.miningEquipment.heads, station.head, "Nincs kiválasztva");
+      if (headState && headState.head === "MISSING_CURRENT_GAME_DATA") {
+        card.classList.add("spg-missing-card");
+      }
+      headSelect.addEventListener("change", function () {
+        changeMiningStationHead(station.id, this.value).catch(function (error) {
+          setMiningNotice("Mining head hiba: " + error.message, "error");
+        });
+      });
+      headLabel.append(headCaption, headSelect);
+      card.append(heading, headLabel);
+
+      var moduleGrid = document.createElement("div");
+      moduleGrid.className = "spg-mining-modules";
+      if (!station.modules.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = station.head.uuid && station.head.moduleSlotCount === null
+          ? "A module-slotszám nem ismert; a program nem találgat."
+          : "Ehhez a headhez nincs module slot.";
+        moduleGrid.append(empty);
+      }
+      station.modules.forEach(function (module, moduleIndex) {
+        var label = document.createElement("label");
+        var caption = document.createElement("span");
+        caption.textContent = "Module " + (moduleIndex + 1);
+        var select = document.createElement("select");
+        select.dataset.role = "mining-module";
+        select.dataset.stationId = station.id;
+        select.dataset.moduleId = module.id;
+        populateMiningEquipmentSelect(select, state.miningEquipment.modules, module, "Üres slot");
+        select.addEventListener("change", function () {
+          changeMiningModule(station.id, module.id, this.value);
+        });
+        label.append(caption, select);
+        moduleGrid.append(label);
+      });
+      card.append(moduleGrid);
+      return card;
+    }
+
+    function renderMiningLoadoutEditor() {
+      var form = document.getElementById("miningLoadoutForm");
+      var loadout = state.editingMiningLoadout;
+      form.hidden = !loadout;
+      if (!loadout) {
+        return;
+      }
+      var reconciled = reconcileMiningLoadout(loadout, miningCatalog());
+      document.getElementById("miningLoadoutName").value = loadout.name;
+      populateMiningEquipmentSelect(document.getElementById("miningVehicleSelect"), state.miningVehicles, loadout.vehicle, "Nincs kiválasztva");
+      document.getElementById("miningStationOverride").value = loadout.stationCountOverride || "";
+      var stationResolution = resolvedMiningStationCount(loadout);
+      document.getElementById("miningStationSource").textContent = "Station-szám forrása: " + stationResolution.source +
+        (stationResolution.count === null ? " · Nincs adat" : " · " + stationResolution.count);
+      document.getElementById("setDefaultMiningLoadoutButton").textContent = loadout.isDefault
+        ? "Ez a Default Loadout"
+        : "Default Loadout beállítása";
+      document.getElementById("setDefaultMiningLoadoutButton").disabled = loadout.isDefault;
+      document.getElementById("deleteMiningLoadoutButton").hidden = !state.miningLoadouts.some(function (saved) { return saved.id === loadout.id; });
+
+      var stationContainer = document.getElementById("miningStationsContainer");
+      stationContainer.replaceChildren();
+      if (!loadout.stations.length) {
+        var stationEmpty = document.createElement("p");
+        stationEmpty.className = "spg-muted";
+        stationEmpty.textContent = stationResolution.count === null
+          ? "A station-szám nem ismert. Válassz felismerhető vehicle-t vagy adj meg kézi override-ot."
+          : "Nincs konfigurálható station.";
+        stationContainer.append(stationEmpty);
+      }
+      loadout.stations.forEach(function (station, index) {
+        stationContainer.append(renderMiningStationEditor(station, index, reconciled));
+      });
+
+      var gadgetContainer = document.getElementById("miningGadgetsContainer");
+      gadgetContainer.replaceChildren();
+      if (!loadout.gadgets.length) {
+        var gadgetEmpty = document.createElement("p");
+        gadgetEmpty.className = "spg-muted";
+        gadgetEmpty.textContent = "Nincs gadget hozzáadva; a lista tetszőlegesen bővíthető.";
+        gadgetContainer.append(gadgetEmpty);
+      }
+      loadout.gadgets.forEach(function (gadget, index) {
+        var row = document.createElement("div");
+        row.className = "spg-gadget-row";
+        var label = document.createElement("label");
+        var caption = document.createElement("span");
+        caption.textContent = "Gadget " + (index + 1);
+        var select = document.createElement("select");
+        populateMiningEquipmentSelect(select, state.miningEquipment.gadgets, gadget, "Nincs kiválasztva");
+        select.addEventListener("change", function () {
+          changeMiningGadget(gadget.id, this.value);
+        });
+        var remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Eltávolítás";
+        remove.addEventListener("click", function () {
+          state.editingMiningLoadout.gadgets = state.editingMiningLoadout.gadgets.filter(function (item) { return item.id !== gadget.id; });
+          renderMiningLoadoutEditor();
+        });
+        label.append(caption, select);
+        row.append(label, remove);
+        gadgetContainer.append(row);
+      });
+      var missingCount = JSON.stringify(reconciled.availability).match(/MISSING_CURRENT_GAME_DATA/g);
+      if (missingCount) {
+        logger.event("WARN", "MINING_LOADOUT_EQUIPMENT_MISSING", "A loadout olyan equipmentet őriz, amely nincs az aktuális Game Data indexben.", {
+          loadoutId: loadout.id,
+          missingReferenceCount: missingCount.length
+        });
+      }
+      document.body.dataset.editingMiningLoadout = loadout.id;
+      document.body.dataset.editingMiningStationCount = String(loadout.stations.length);
+      document.body.dataset.editingMiningGadgetCount = String(loadout.gadgets.length);
+    }
+
+    function renderMiningLoadoutControls(preserveDraft) {
+      var select = document.getElementById("miningLoadoutSelect");
+      var materialLoadouts = currentMaterialMiningLoadouts();
+      var currentId = state.selectedMiningLoadoutId;
+      select.replaceChildren();
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = materialLoadouts.length ? "Válassz loadoutot" : "Nincs mentett loadout ehhez a materialhoz";
+      select.append(empty);
+      materialLoadouts.forEach(function (loadout) {
+        var option = document.createElement("option");
+        option.value = loadout.id;
+        option.textContent = loadout.name + (loadout.isDefault ? " · Default" : "");
+        select.append(option);
+      });
+      var hasUnsavedDraft = Boolean(preserveDraft && state.editingMiningLoadout &&
+        state.editingMiningLoadout.materialUuid === (state.selectedMiningCommodity && state.selectedMiningCommodity.uuid) &&
+        !state.miningLoadouts.some(function (saved) { return saved.id === state.editingMiningLoadout.id; }));
+      var chosen = hasUnsavedDraft ? null : (materialLoadouts.find(function (loadout) { return loadout.id === currentId; }) ||
+        materialLoadouts.find(function (loadout) { return loadout.isDefault; }) || materialLoadouts[0] || null);
+      if (chosen) {
+        select.value = chosen.id;
+        state.selectedMiningLoadoutId = chosen.id;
+        if (!preserveDraft || !state.editingMiningLoadout || state.editingMiningLoadout.id !== chosen.id) {
+          state.editingMiningLoadout = cloneMiningLoadout(chosen);
+        }
+      } else if (!hasUnsavedDraft && (!preserveDraft || !state.editingMiningLoadout || state.editingMiningLoadout.materialUuid !== (state.selectedMiningCommodity && state.selectedMiningCommodity.uuid))) {
+        state.selectedMiningLoadoutId = null;
+        state.editingMiningLoadout = null;
+      }
+      setText("miningLoadoutCount", materialLoadouts.length + " loadout");
+      document.getElementById("addMiningLoadoutButton").disabled = !state.selectedMiningCommodity;
+      renderMiningLoadoutEditor();
+    }
+
+    async function changeMiningVehicle(uuid) {
+      var draft = state.editingMiningLoadout;
+      draft.vehicle = selectedMiningEquipment(state.miningVehicles, uuid, draft.vehicle);
+      draft.stationCountOverride = null;
+      if (!uuid) {
+        draft.stations = [];
+        renderMiningLoadoutEditor();
+        return;
+      }
+      var detail = await loadMiningVehicleDetail(uuid);
+      var resolution = resolvedMiningStationCount(draft);
+      draft.stations = resizeMiningStations(draft.stations, resolution.count, makeId);
+      logger.event(resolution.count === null ? "WARN" : "INFO", "MINING_STATION_COUNT_APPLIED", "A vehicle mining station-száma alkalmazva.", {
+        vehicleUuid: detail.uuid,
+        stationCount: resolution.count,
+        source: resolution.source
+      });
+      renderMiningLoadoutEditor();
+    }
+
+    function applyMiningStationOverride(value) {
+      var count = value === "" ? null : Number(value);
+      if (count !== null && (!Number.isInteger(count) || count < 1)) {
+        throw new Error("A station override pozitív egész szám legyen.");
+      }
+      state.editingMiningLoadout.stationCountOverride = count;
+      var resolution = resolvedMiningStationCount(state.editingMiningLoadout);
+      state.editingMiningLoadout.stations = resizeMiningStations(state.editingMiningLoadout.stations, resolution.count, makeId);
+      logger.event(count === null ? "INFO" : "WARN", "MINING_STATION_OVERRIDE", "A loadout station-száma újraértékelve.", {
+        count: resolution.count,
+        source: resolution.source
+      });
+      renderMiningLoadoutEditor();
+    }
+
+    async function changeMiningStationHead(stationId, uuid) {
+      var station = state.editingMiningLoadout.stations.find(function (candidate) { return candidate.id === stationId; });
+      if (!station) {
+        throw new Error("A mining station nem található.");
+      }
+      var prior = station.head;
+      station.head = Object.assign(selectedMiningEquipment(state.miningEquipment.heads, uuid, prior), { moduleSlotCount: null });
+      if (!uuid) {
+        station.modules = [];
+        renderMiningLoadoutEditor();
+        return;
+      }
+      var detail = await loadMiningHeadDetail(uuid);
+      station.head.moduleSlotCount = detail.moduleSlotCount;
+      if (detail.moduleSlotCount !== null) {
+        station.modules = resizeMiningModules(station.modules, detail.moduleSlotCount, makeId);
+      }
+      logger.event(detail.moduleSlotCount === null ? "WARN" : "INFO", "MINING_MODULE_SLOTS_APPLIED", "A head module-slotszáma alkalmazva.", {
+        stationId: stationId,
+        headUuid: uuid,
+        moduleSlotCount: detail.moduleSlotCount,
+        source: detail.moduleSlotCountSource
+      });
+      renderMiningLoadoutEditor();
+    }
+
+    function changeMiningModule(stationId, moduleId, uuid) {
+      var station = state.editingMiningLoadout.stations.find(function (candidate) { return candidate.id === stationId; });
+      var module = station && station.modules.find(function (candidate) { return candidate.id === moduleId; });
+      if (!module) {
+        return;
+      }
+      var selected = selectedMiningEquipment(state.miningEquipment.modules, uuid, module);
+      module.uuid = selected.uuid;
+      module.name = selected.name;
+    }
+
+    function changeMiningGadget(gadgetId, uuid) {
+      var gadget = state.editingMiningLoadout.gadgets.find(function (candidate) { return candidate.id === gadgetId; });
+      if (!gadget) {
+        return;
+      }
+      var selected = selectedMiningEquipment(state.miningEquipment.gadgets, uuid, gadget);
+      gadget.uuid = selected.uuid;
+      gadget.name = selected.name;
+    }
+
+    async function saveMiningLoadoutFromForm() {
+      var draft = state.editingMiningLoadout;
+      if (!draft) {
+        throw new Error("Nincs szerkeszthető mining loadout.");
+      }
+      var name = document.getElementById("miningLoadoutName").value.trim();
+      if (!name) {
+        throw new Error("A loadout neve kötelező.");
+      }
+      draft.name = name;
+      draft.updatedAt = nowIso();
+      var existing = state.miningLoadouts.some(function (loadout) { return loadout.id === draft.id; });
+      var next = existing ? state.miningLoadouts.map(function (loadout) {
+        return loadout.id === draft.id ? normalizeStoredMiningLoadout(draft) : loadout;
+      }) : state.miningLoadouts.concat(normalizeStoredMiningLoadout(draft));
+      if (draft.isDefault) {
+        next = setDefaultMiningLoadout(next, draft.materialUuid, draft.id);
+      }
+      state.selectedMiningLoadoutId = draft.id;
+      await persistMiningLoadouts(next, existing ? "MINING_LOADOUT_UPDATE" : "MINING_LOADOUT_CREATE");
+      setMiningNotice(existing ? "A mining loadout frissült." : "A mining loadout elmentve.", "success");
     }
 
     async function waitForApplicationStylesheet() {
@@ -3362,6 +5004,25 @@
         return "occurrence → spawn → max Quality";
       });
 
+      await check("M3 Mining modell", async function () {
+        var classification = classifyMiningCommodity({
+          has_ship_mineables: true,
+          has_ground_vehicle_mineables: false,
+          has_fps_mineables: false,
+          has_harvestables: false
+        });
+        assert(classification.categories.length === 1 && classification.categories[0] === M3_MINING_CATEGORIES.SHIP, "A mining kategória felismerése hibás.");
+        var head = normalizeMiningHeadDetail({
+          uuid: "probe-head",
+          name: "Probe Head",
+          classification: "Ship.Mining.Gun",
+          mining_laser: { module_slots: 3 }
+        }, miningProvenance("probe", "probe", nowIso()));
+        assert(head.moduleSlotCount === 3, "A module-slotszám normalizálása hibás.");
+        assert(resizeMiningStations([], 5, makeId).length === 5, "A dinamikus station-kezelés hibás.");
+        return "SHIP_MINING · 3 module slot · 5 dinamikus station";
+      });
+
       await check("Standalone HTML export", async function () {
         var html = await buildStandaloneExport();
         assert(!/<link[^>]+stylesheet/i.test(html), "Az export külső stylesheetet tartalmaz.");
@@ -3430,10 +5091,13 @@
       var versionRecord = await database.get("gameMetadata", "currentGameVersion");
       var syncRecord = await database.get("gameMetadata", "lastSuccessfulSync");
       var activeDatasetRecord = await database.get("gameMetadata", "activeBlueprintDataset");
+      var activeMiningDatasetRecord = await database.get("gameMetadata", "activeMiningDataset");
       var technicalProbeRecord = await database.get("settings", "technicalProbe");
       var lastProbeRecord = await database.get("settings", "lastTechnicalProbe");
       var activeVersion = activeDatasetRecord && activeDatasetRecord.value ? activeDatasetRecord.value.version : null;
       var dataset = activeVersion ? await database.get("blueprintDatasets", activeVersion) : null;
+      var activeMiningVersion = activeMiningDatasetRecord && activeMiningDatasetRecord.value ? activeMiningDatasetRecord.value.version : null;
+      var miningDataset = activeMiningVersion ? await database.get("miningDatasets", activeMiningVersion) : null;
       var blueprintRecord = null;
 
       if (versionRecord && versionRecord.value) {
@@ -3461,6 +5125,13 @@
         renderBlueprintBrowserDetail(blueprintRecord, "CACHE");
         document.getElementById("addCurrentBlueprintButton").disabled = false;
       }
+      if (miningDataset) {
+        state.activeMiningDataset = miningDataset;
+        state.miningSystems = miningDataset.systems || [];
+        await loadMiningIndexFromCache(miningDataset.version);
+        populateMiningCommoditySelect();
+        renderMiningDatasetState();
+      }
       if (lastProbeRecord && lastProbeRecord.value && Array.isArray(lastProbeRecord.value.results)) {
         state.lastProbe = lastProbeRecord.value;
         renderProbeResults(state.lastProbe.results);
@@ -3473,6 +5144,7 @@
       }
       renderBlueprintDatasetState();
       document.body.dataset.cacheRestored = dataset ? "true" : "false";
+      document.body.dataset.miningCacheRestored = miningDataset ? "true" : "false";
       document.body.dataset.technicalProbePersisted = technicalProbeRecord && technicalProbeRecord.value ? "true" : "false";
     }
 
@@ -3506,6 +5178,18 @@
               cacheAvailable: Boolean(state.gameVersion)
             });
           }
+          try {
+            await syncMiningDataset({ ownsProcess: false });
+          } catch (miningSyncError) {
+            logger.event("WARN", "STARTUP_MINING_SYNC_FAILED", "Az induláskori Mining Game Data szinkron sikertelen; cache marad aktív.", {
+              error: serializeError(miningSyncError),
+              cacheAvailable: Boolean(state.activeMiningDataset)
+            });
+          }
+        }
+
+        if (state.activeMiningDataset) {
+          await selectDefaultMiningCommodity();
         }
 
         updateEnvironmentUi();
@@ -3596,7 +5280,7 @@
     document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
     document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
     function navigateToPanel(navId, panelId, focusId) {
-      ["craftingListNav", "blueprintBrowserNav", "myMaterialsNav"].forEach(function (id) {
+      ["craftingListNav", "blueprintBrowserNav", "myMaterialsNav", "miningNav"].forEach(function (id) {
         var navigationButton = document.getElementById(id);
         var active = id === navId;
         navigationButton.classList.toggle("active", active);
@@ -3619,6 +5303,127 @@
     });
     document.getElementById("myMaterialsNav").addEventListener("click", function () {
       navigateToPanel("myMaterialsNav", "myMaterialsPanel", "batchMaterialName");
+    });
+    document.getElementById("miningNav").addEventListener("click", function () {
+      navigateToPanel("miningNav", "miningPanel", "miningCommoditySelect");
+    });
+
+    document.getElementById("syncMiningDataButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      setMiningNotice("A Mining Game Data tranzakciós frissítése folyamatban…", "neutral");
+      syncMiningDataset({ force: true }).then(function (dataset) {
+        return selectDefaultMiningCommodity().then(function () {
+          renderMiningLoadoutControls();
+          setMiningNotice(dataset.commodityCount + " commodity és a dinamikus equipment index aktiválva.", "success");
+        });
+      }).catch(function (error) {
+        setMiningNotice("Mining cache-frissítési hiba; az előző dataset maradt aktív: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("miningCommoditySelect").addEventListener("change", function () {
+      var uuid = this.value;
+      state.selectedMiningLoadoutId = null;
+      state.editingMiningLoadout = null;
+      if (!uuid) {
+        state.selectedMiningCommodity = null;
+        document.getElementById("addMiningLoadoutButton").disabled = true;
+        renderSelectedMiningCommodity();
+        renderMiningLoadoutControls();
+        return;
+      }
+      loadMiningCommodityDetail(uuid).catch(function (error) {
+        setMiningNotice("Commodity betöltési hiba: " + error.message, "error");
+      });
+    });
+
+    document.getElementById("miningLoadoutSelect").addEventListener("change", function () {
+      var loadout = state.miningLoadouts.find(function (candidate) { return candidate.id === this.value; }, this);
+      openMiningLoadoutEditor(loadout || null);
+    });
+
+    document.getElementById("addMiningLoadoutButton").addEventListener("click", function () {
+      try {
+        openMiningLoadoutEditor(createMiningLoadoutDraft());
+        document.getElementById("miningLoadoutName").focus();
+        setMiningNotice("Új loadout-tervezet. A User Data csak mentéskor változik.", "neutral");
+      } catch (error) {
+        setMiningNotice(error.message, "error");
+      }
+    });
+
+    document.getElementById("miningVehicleSelect").addEventListener("change", function () {
+      changeMiningVehicle(this.value).catch(function (error) {
+        setMiningNotice("Vehicle-felismerési hiba: " + error.message, "error");
+      });
+    });
+
+    document.getElementById("miningLoadoutName").addEventListener("input", function () {
+      if (state.editingMiningLoadout) {
+        state.editingMiningLoadout.name = this.value;
+      }
+    });
+
+    document.getElementById("miningStationOverride").addEventListener("input", function () {
+      try {
+        applyMiningStationOverride(this.value);
+      } catch (error) {
+        setMiningNotice(error.message, "error");
+      }
+    });
+
+    document.getElementById("addMiningGadgetButton").addEventListener("click", function () {
+      if (!state.editingMiningLoadout) {
+        return;
+      }
+      state.editingMiningLoadout.gadgets.push({ id: makeId("gadget"), uuid: null, name: null });
+      logger.event("INFO", "MINING_GADGET_ROW_ADDED", "Új tetszőleges gadget-hely hozzáadva.", {
+        gadgetCount: state.editingMiningLoadout.gadgets.length
+      });
+      renderMiningLoadoutEditor();
+    });
+
+    document.getElementById("setDefaultMiningLoadoutButton").addEventListener("click", function () {
+      var draft = state.editingMiningLoadout;
+      if (!draft) {
+        return;
+      }
+      draft.isDefault = true;
+      var exists = state.miningLoadouts.some(function (loadout) { return loadout.id === draft.id; });
+      if (!exists) {
+        renderMiningLoadoutEditor();
+        setMiningNotice("Ez a tervezet mentéskor Default Loadout lesz.", "neutral");
+        return;
+      }
+      persistMiningLoadouts(setDefaultMiningLoadout(state.miningLoadouts, draft.materialUuid, draft.id), "MINING_LOADOUT_DEFAULT")
+        .then(function () { setMiningNotice("A Default Loadout frissült.", "success"); })
+        .catch(function (error) { setMiningNotice("Default mentési hiba: " + error.message, "error"); });
+    });
+
+    document.getElementById("miningLoadoutForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var button = document.getElementById("saveMiningLoadoutButton");
+      button.disabled = true;
+      saveMiningLoadoutFromForm().catch(function (error) {
+        setMiningNotice("Loadout mentési hiba: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("deleteMiningLoadoutButton").addEventListener("click", function () {
+      var draft = state.editingMiningLoadout;
+      if (!draft || !window.confirm("Biztosan törlöd ezt a mining loadoutot?")) {
+        return;
+      }
+      state.selectedMiningLoadoutId = null;
+      state.editingMiningLoadout = null;
+      persistMiningLoadouts(state.miningLoadouts.filter(function (loadout) { return loadout.id !== draft.id; }), "MINING_LOADOUT_DELETE")
+        .then(function () { setMiningNotice("A mining loadout törölve.", "success"); })
+        .catch(function (error) { setMiningNotice("Törlési hiba: " + error.message, "error"); });
     });
 
     document.getElementById("addCurrentBlueprintButton").addEventListener("click", function () {
@@ -3698,7 +5503,19 @@
       loadBlueprintDetail: loadBlueprintDetail,
       visibleBlueprintIndex: visibleBlueprintIndex,
       recalculateAllocation: recalculateAllocation,
-      addCurrentBlueprintCard: addCurrentBlueprintCard
+      addCurrentBlueprintCard: addCurrentBlueprintCard,
+      classifyMiningCommodity: classifyMiningCommodity,
+      normalizeMiningCommodity: normalizeMiningCommodity,
+      compareMiningLocations: compareMiningLocations,
+      mergeBestMiningLocationsBySystem: mergeBestMiningLocationsBySystem,
+      normalizeMiningHeadDetail: normalizeMiningHeadDetail,
+      normalizeMiningVehicleDetail: normalizeMiningVehicleDetail,
+      resizeMiningModules: resizeMiningModules,
+      resizeMiningStations: resizeMiningStations,
+      reconcileMiningLoadout: reconcileMiningLoadout,
+      syncMiningDataset: syncMiningDataset,
+      loadMiningCommodityDetail: loadMiningCommodityDetail,
+      selectDefaultMiningCommodity: selectDefaultMiningCommodity
     });
 
     bootstrap();

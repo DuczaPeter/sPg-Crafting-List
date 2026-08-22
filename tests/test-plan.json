@@ -59,6 +59,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m2.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "m3-regression",
+      "level": "related-regression",
+      "description": "Validates dynamic mining categories, nullable signature, exact per-commodity quality, deterministic location ranking and merging, dynamic station/module/gadget loadouts, missing equipment preservation, sync boundaries, and a 5000-location performance fixture.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m3.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

@@ -49,3 +49,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: JS-300 es S00 Hofstede valos blueprint, tobb kartya, Quality batch, Target Q perzisztencia, 1591 rekordos sync, 9/9 technikai kapu, desktop es 390 px mobil nezet.
 - Mely fajlokat vagy donteseket erintett: `docs/M2_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C004/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M3 projektfolytatas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-22`, az M3 Mining Game Data, location rangsor es loadout rendszer megvalositasakor.
+- Mire segitett: haromsoros modositas elotti terv, feladatfokuszu fajlolvasas, M3 related-regression es `V001-C005` javitasi ciklus.
+- Mely fajlokat vagy donteseket erintett: `TEST_COMMANDS.md`, `tests/test-plan.json`, `STATUS.md`, `WORKLOG.md`, `VERSION.json`, `docs/M3_REPORT.md` es az M3 artifactok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## Chrome M3 regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-22`, a valos Mining API-cache, IndexedDB loadout es dinamikus UI ellenorzesekor.
+- Mire segitett: 72/14/20/28/6 API-index, Agricium/Aphorite location es signature, MOLE/Prospector, Helix II/Arbor MH1, default loadout, USER_OVERRIDE, fingerprint, 10/10 probe, konzol es desktop layout ellenorzese.
+- Mely fajlokat vagy donteseket erintett: `docs/M3_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C005/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

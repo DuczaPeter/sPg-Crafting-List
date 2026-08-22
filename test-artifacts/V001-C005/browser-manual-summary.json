@@ -1,0 +1,28 @@
+{
+  "cycleId": "V001-C005",
+  "browser": "Chrome",
+  "url": "http://127.0.0.1:4177/",
+  "technicalProbe": { "status": "PASS", "passed": 10, "failed": 0 },
+  "apiDataset": {
+    "version": "4.9.0-LIVE.12232306",
+    "commodities": 72,
+    "vehicles": 14,
+    "heads": 20,
+    "modules": 28,
+    "gadgets": 6
+  },
+  "verified": [
+    "Agricium multi-system ranking and signature 4000",
+    "Aphorite missing signature renders Nincs adat",
+    "MOLE renders 3 API-recognized stations",
+    "Helix II renders 3 module slots",
+    "Arbor MH1 renders 1 module slot",
+    "multiple loadouts and material default switch persist",
+    "station override renders 5 stations with USER_OVERRIDE source",
+    "forced Game Data sync preserves full loadout and User Data fingerprints",
+    "desktop mining and loadout layout"
+  ],
+  "consoleWarningErrorCount": 0,
+  "applicationErrorCount": 0,
+  "releaseGatesStillOpen": ["direct file://", "downloaded export offline reopen", "Edge regression"]
+}

@@ -15,11 +15,13 @@ Datum: 2026-08-22
 - RAM-alapu process log, lezart blokkonkenti sessionStorage iras.
 - Globalis `window.onerror` es `unhandledrejection` kezeles.
 - Standalone export builder beagyazott CSS-sel es tavoli fontimport nelkul.
-- Egykattintasos, kilenclepeses `Technikai proba`, benne tranzakcios rollback- es determinisztikus M2 allocation-ellenorzessel.
+- Egykattintasos, tizlepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation- es M3 mining modell-ellenorzessel.
 - M1 verziozott raw/normalizalt blueprint index- es reszlet-cache.
 - Lapozott Blueprint Browser, API-facetekkel es lusta teljes receptbetoltessel.
 - Globalis Quality batch inventory es sorrendezheto Crafting Card User Data.
 - Slotonkenti, tervezesi modu Allocation Engine reszletes batch-dontesi trace-szel.
+- Tranzakcios raw/normalizalt Mining Game Data cache, dinamikus API-facetek es occurrence → spawn → maximum Quality rangsor.
+- Perzisztens mining loadoutok dinamikus station-, module- es gadgetkezeléssel, USER_OVERRIDE es deprecated equipment jelolessel.
 
 ## Bizonyitott
 
@@ -34,6 +36,8 @@ Datum: 2026-08-22
 - M1 index: 1591 blueprint 8 API-laprol; kikenyszeritett tranzakcios frissites es ujratoltes utani cache-visszaallitas PASS.
 - Hofstede-S1 vegyes `SCU`/`ITEM` recept, raw/normalizalt elkulonites, provenance es User Data rekordszam-megorzes PASS.
 - M2: Q517 HP_MIN_500 valasztas, Highest/Target Q, ketkartya-prioritas, IndexedDB reload es teljes User Data fingerprint-megorzes PASS.
+- M3: 72 commodity, 14 vehicle, 20 head, 28 module, 6 gadget; 17/17 regresszio, 5000 location 44–45 ms, teljes loadout/User Data fingerprint-megorzes PASS.
+- Aktualis Chrome localhost technikai proba: 10/10 PASS; M3 desktop UI es dinamikus 1/3/5 station/module elrendezes PASS; konzol warning/error 0.
 
 ## Meg nem bizonyitott
 

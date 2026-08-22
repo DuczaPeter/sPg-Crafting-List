@@ -3154,6 +3154,181 @@ code {
   padding-left: 20px;
 }
 
+/* M3 Mining Game Data, location ranking and loadout editor. */
+
+.spg-m3-panel {
+  grid-column: 1 / -1;
+}
+
+.spg-mining-toolbar,
+.spg-loadout-toolbar,
+.spg-loadout-basics {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.spg-mining-toolbar label,
+.spg-loadout-toolbar label,
+.spg-loadout-basics label,
+.spg-mining-station label,
+.spg-mining-modules label,
+.spg-gadget-row label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.spg-mining-toolbar label > span,
+.spg-loadout-toolbar label > span,
+.spg-loadout-basics label > span,
+.spg-mining-station label > span,
+.spg-mining-modules label > span,
+.spg-gadget-row label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spg-mining-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-mining-summary > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-mining-summary span,
+.spg-location-metrics {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-mining-summary strong {
+  overflow-wrap: anywhere;
+}
+
+.spg-system-ranking {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.spg-system-card,
+.spg-mining-station {
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.68);
+}
+
+.spg-system-card {
+  padding: 14px;
+}
+
+.spg-system-card h3,
+.spg-mining-station h4,
+.spg-gadget-heading h4 {
+  margin: 0;
+}
+
+.spg-location-result {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-location-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.spg-mining-loadout-heading,
+.spg-gadget-heading,
+.spg-mining-station-heading,
+.spg-loadout-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spg-mining-loadout-heading {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.spg-loadout-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(8, 15, 23, 0.62);
+}
+
+.spg-loadout-form[hidden] {
+  display: none;
+}
+
+.spg-loadout-basics {
+  grid-template-columns: minmax(180px, 1.2fr) minmax(180px, 1fr) minmax(170px, 0.8fr) auto;
+}
+
+.spg-mining-stations,
+.spg-mining-gadgets {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-mining-stations {
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+}
+
+.spg-mining-station {
+  display: grid;
+  gap: 11px;
+  padding: 13px;
+}
+
+.spg-mining-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.spg-gadget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.spg-missing-equipment,
+.spg-missing-card {
+  border-color: var(--warning) !important;
+}
+
+.spg-missing-card {
+  box-shadow: inset 3px 0 0 var(--warning);
+}
+
 /* Standalone card export. These rules are embedded from this central CSS. */
 
 .spg-export-page {
@@ -3241,6 +3416,14 @@ code {
   .spg-batch-form-actions {
     grid-column: auto;
   }
+
+  .spg-mining-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-loadout-basics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -3276,6 +3459,23 @@ code {
   .spg-allocation-values,
   .spg-strategy-row {
     grid-template-columns: 1fr;
+  }
+
+  .spg-mining-toolbar,
+  .spg-loadout-toolbar,
+  .spg-loadout-basics,
+  .spg-mining-summary,
+  .spg-system-ranking,
+  .spg-gadget-row {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-mining-loadout-heading,
+  .spg-gadget-heading,
+  .spg-mining-station-heading,
+  .spg-loadout-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .spg-m2-heading-actions,

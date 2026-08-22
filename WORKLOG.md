@@ -4,9 +4,9 @@ Idorendi munkanaplo. Uj bejegyzest mindig a friss bejegyzesek resz vegere adj ho
 
 ## Aktualis osszefoglalo
 
-- Jelenlegi allapot: az M2 globalis Quality batch inventory, sorrendezheto Crafting Card es determinisztikus slotonkenti Allocation Engine elkeszult.
-- Utolso ismert jo allapot: `develop/V001`; M2 automatizalt es helyi Chromium kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
-- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M3 mining adatok, location rangsor es loadoutok.
+- Jelenlegi allapot: az M3 dinamikus Mining Game Data cache, naprendszerenkenti location rangsor es perzisztens loadout rendszer elkeszult.
+- Utolso ismert jo allapot: `develop/V001`; M3 automatizalt es helyi Chrome kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
+- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M4 Combined Materials, backup/restore preview es kibovitett diagnosztika.
 - Archivalt regi naplo: nincs.
 
 ## Friss bejegyzesek
@@ -102,3 +102,24 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Indok: Selected test command exited with code 0.
 - Checkpoint: not-requested
 - Artifact: `test-artifacts/V001-C004/test-summary.json`
+
+### 2026-08-22T10:58:50 - V001-C005
+
+- Cel: M3 mining adatok location rangsor es loadoutok
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C005/test-summary.json`
+
+### M3 Mining Data, location rangsor es loadoutok - 2026-08-22
+
+- Mi tortent: elkeszult a verziozott, raw/normalizalt mining commodity/location/equipment cache, a rendszerenkenti determinisztikus location rangsor es a tobb perzisztens mining loadout.
+- Dinamikus adatok: API-facetekbol 72 commodity, 14 mining vehicle, 20 head, 28 module es 6 gadget; nincs beégetett vegleges lista.
+- Loadout: materialonként tobb rekord es egy default; API- vagy USER_OVERRIDE station-szam; tetszoleges station/module/gadget; eltunt equipment megorzes es jeloles.
+- Teszt: 17/17 kotelezo M3 eset PASS; 5000 location 44–45 ms; `V001-C005` PASS.
+- Bongeszo: Agricium/Aphorite, MOLE 3 station, Prospector 1/override 5 station, Helix II 3 es Arbor MH1 1 module slot, ket loadout/default, reload es kikenyszeritett sync fingerprint PASS.
+- Talalt hibak: indulasi commodity-valasztas, loadoutnev ujrarender, override esemeny, probe eredmenystruktura es pontos commodity Quality-szures javitva.
+- Technikai kapu: Chrome localhost 10/10 PASS, konzol warning/error 0, desktop layout PASS.
+- Nyitott: kozvetlen `file://`, letoltott export offline ujranyitasa es Edge regresszio; stabil kiadas nincs. UEX refinery kesobbi V1 milestone, nem M3-hiany.
+- Reszletes jelentes: `docs/M3_REPORT.md`.
