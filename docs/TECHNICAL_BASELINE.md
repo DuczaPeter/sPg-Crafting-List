@@ -27,7 +27,8 @@ Datum: 2026-08-22
 - Kulon UEX raw/normalizalt/dataset cache napi TTL-lel, kezi frissitessel es atomi rollbackkel.
 - Biztonsagos Wiki–UEX commodity mapping es `value_month` szerinti rendszerenkenti refinery rangsor.
 - Azonos normalizalt mining+refinery snapshot a Crafting Cardon es Combined Materialsben, M6 offline exporthoz elokeszitve.
-- Egyetlen `Log masolasa` muvelettel exportalhato M1-M5 allapotcsomag.
+- Teljes standalone Crafting/Farm Card export slotonkenti Quality/allocation, mining, loadout es refinery adatokkal; a kozponti CSS beagyazva, kulso eroforras nelkul.
+- Egyetlen `Log masolasa` muvelettel exportalhato M1-M6 allapotcsomag.
 
 ## Bizonyitott
 
@@ -48,20 +49,19 @@ Datum: 2026-08-22
 - Aktualis helyi bongeszos technikai proba: 11/11 PASS; atomi backup REPLACE roundtrip es megszakitott import rollback bitazonos fingerprinttel; Combined/Data Settings vizualis ellenorzes PASS; konzol warning/error 0.
 - M5: 17/17 kotelezo regresszio PASS; 500 rekordos limit/performance fixture kb. 11 ms; `V001-C008` PASS.
 - Valos UEX fetch auth fejlec nelkul: HTTP 200, 215 rekord, 24 commodity, Stanton/Pyro/Nyx, napi cache-fejlec.
-- Valos mapping: 72 Wiki commoditybol 19 MATCHED, 53 UNMAPPED, 0 AMBIGUOUS; agressziv alias/fuzzy mapping nincs.
+- M5.1 valos mapping: 74 Wiki commoditybol 24 MATCHED, 50 UNMAPPED, 0 AMBIGUOUS; ot verziozott `VERIFIED_CANONICAL_ALIAS`, fuzzy mapping nincs.
 - Aktualis helyi in-app browser technikai proba: 12/12 PASS; UEX manual refresh es User Data fingerprint-megorzes; TTL cache-hit; commit rollback; Beryl Crafting/Combined azonos snapshot; desktop/390 px PASS; warning/error 0.
+- M6 automatizalt teljes regresszio: M1-M6 PASS, 14/14 standalone export eset; a tenyleges Chrome-export statikus offline eroforrasvizsgalata PASS.
+- Tiszta Chrome localhost M6 proba: 12/12 PASS; Game Data sync elott/utan `06df191d` User Data fingerprint; Crafting/Combined refinery snapshot tartalmilag azonos; konzol warning/error 0.
 
 ## Meg nem bizonyitott
 
 - Kozvetlen `file://` Chrome/Edge proba. Az automatizalt Chrome-felulet biztonsagi szabaly miatt helyi fajl URL nem nyithato meg.
-- A bongeszo altal tenylegesen letoltott exportfajl kulon offline megnyitasa; a builder tartalma es az alkalmazas exportfolyamata PASS, a letoltesi esemenyt az automatizalt Chrome-kapcsolat nem adta vissza.
+- A bongeszo altal tenylegesen letoltott exportfajl kulon, kikapcsolt internet melletti ujranyitasa. A letoltott fajl letezik es statikusan PASS, de ez nem bizonyitja a valos offline bongeszos ujranyitast.
 - Edge kulon regresszio.
 
 ## Kezi file-kapu
 
-1. Nyisd meg a `sPg Crafting List.html` fajlt aktualis Chrome-ban vagy Edge-ben.
-2. Kattints a `Technikai proba` gombra.
-3. Elvart: minden sor `PASS`, a futtatasi mod `Kozvetlen file:// futas`.
-4. Futtasd a `Standalone tesztexport` muveletet, majd internet nelkul nyisd meg az exportalt HTML-t.
+A teljes, kattintasonkenti eljaras es az egyben visszakuldheto eredmenysablon: `V1_RELEASE_GATE_CHECKLIST.md`.
 
 Amig ez nem tortent meg, a baseline fejlesztesi allapot, nem stabil kiadas.

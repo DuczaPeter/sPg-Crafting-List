@@ -214,7 +214,7 @@ assert.equal(combined[0].usages[0].refinerySnapshotFingerprint, agricium.snapsho
 for (const marker of [
   "activeUexRefineryDataset", "uexRefinery", "UEX_REQUEST_START", "UEX_REQUEST_END", "UEX_CACHE_HIT",
   "UEX_CACHE_MISS_STALE", "UEX_LIMIT_WARNING", "UEX_MAPPING_AND_RANKING", "UEX_SYNC_ROLLBACK",
-  "mappingSummary", "recommendations", "diagnosticBundleM5", "M1-M5"
+  "mappingSummary", "recommendations", "diagnosticBundleM5", "M1-M6"
 ]) {
   assert.ok(html.includes(marker), `Az M5 diagnosztikai marker hiányzik: ${marker}`);
 }

@@ -29,6 +29,8 @@
 - [x] Kozos Crafting Card/Combined mining+refinery snapshot M6 offline export-elokeszitessel.
 - [x] Tizenhet kotelezo M5 regresszio, valos auth nelkuli UEX fetch es 12/12 helyi bongeszos technikai proba.
 - [x] M5.1: ot igazolt, verziozott `VERIFIED_CANONICAL_ALIAS`; nincs altalanos fuzzy vagy Construction-szoeldobas.
+- [x] M6 standalone export, referencia-UI es automatizalt M1-M6 release-candidate regresszio.
+- [x] Pontos, visszakuldheto kezi V1 release-gate checklist elkeszitese.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.
@@ -43,7 +45,7 @@
 - [x] M3: mining adatok, location rangsor es loadoutok.
 - [x] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
 - [x] M5: UEX Refinery Data es naprendszerenkenti legjobb finomito.
-- [ ] M6: teljes standalone Crafting/Farm Card export, referencia-UI es vegso V1 regresszio.
+- [ ] M6 vegso acceptance: kezi Chrome `file://`, tenyleges offline export es kulon Edge gate PASS.
 - [ ] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
 - [x] M1 ellenorzes futtatasa a `TEST_COMMANDS.md` alapjan.
 - [x] M1 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
@@ -54,5 +56,5 @@
 
 ## Blokkolo problema
 
-- Nincs.
+- A fejlesztest nem blokkolja hiba, de a stabil V1 kiadast blokkolja a harom meg nem futtatott kezi release-gate.
 

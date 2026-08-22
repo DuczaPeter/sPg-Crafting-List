@@ -83,6 +83,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m5.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "m6-regression",
+      "level": "full-regression",
+      "description": "Validates the complete standalone Crafting/Farm Card snapshot and reference UI, per-card exports, slot-level allocation/Quality, mining/refinery/loadout embedding, offline resource independence, escaped content, metadata, JSON roundtrip, and a 120-slot export fixture after M1-M5.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m6.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

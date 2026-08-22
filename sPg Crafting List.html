@@ -331,7 +331,7 @@
 
         <div class="spg-diagnostics-card">
           <div>
-            <h3>M1–M5 diagnosztikai csomag</h3>
+            <h3>M1–M6 diagnosztikai csomag</h3>
             <p class="spg-muted">A „Log másolása” gomb az UEX kérés-, cache-, mapping-, ranking- és rollbackállapotot is tartalmazza.</p>
           </div>
           <div id="diagnosticsSummary" class="spg-diagnostics-summary"></div>
@@ -4293,7 +4293,15 @@
           loadouts: state.miningLoadouts.filter(function (loadout) {
             return loadout.materialUuid === commodity.uuid;
           }).map(function (loadout) {
-            return { id: loadout.id, name: loadout.name, default: loadout.isDefault === true };
+            return {
+              id: loadout.id,
+              name: loadout.name,
+              default: loadout.isDefault === true,
+              vehicle: m4Clone(loadout.vehicle || { uuid: null, name: null }),
+              stations: m4Clone(loadout.stations || []),
+              gadgets: m4Clone(loadout.gadgets || []),
+              stationCountOverride: loadout.stationCountOverride || null
+            };
           }),
           refinery: m4Clone(refinery),
           refinerySnapshotFingerprint: refinery.snapshotFingerprint || null
@@ -5183,6 +5191,9 @@
         outputUuid: blueprint.outputUuid,
         outputName: blueprint.outputName,
         outputType: blueprint.outputType,
+        outputTypeLabel: blueprint.outputTypeLabel || blueprint.outputType || null,
+        craftTimeSeconds: blueprint.craftTimeSeconds,
+        isAvailableByDefault: blueprint.isAvailableByDefault === true,
         requirements: requirements,
         slotStrategies: slotStrategies,
         createdAt: createdAt,
@@ -5198,6 +5209,9 @@
       normalized.quantity = Number.isInteger(Number(card.quantity)) && Number(card.quantity) > 0 ? Number(card.quantity) : 1;
       normalized.requirements = Array.isArray(card.requirements) ? card.requirements : [];
       normalized.slotStrategies = card.slotStrategies && typeof card.slotStrategies === "object" ? card.slotStrategies : {};
+      normalized.outputTypeLabel = card.outputTypeLabel || card.outputType || null;
+      normalized.craftTimeSeconds = Number.isFinite(Number(card.craftTimeSeconds)) ? Number(card.craftTimeSeconds) : null;
+      normalized.isAvailableByDefault = card.isAvailableByDefault === true;
       return normalized;
     }
 
@@ -5738,7 +5752,18 @@
         remove.addEventListener("click", function () {
           deleteCraftingCard(card.id).catch(function (error) { setNotice("Kártyatörlési hiba: " + error.message, "error"); });
         });
-        actions.append(duplicate, collapse, remove);
+        var exportButton = document.createElement("button");
+        exportButton.type = "button";
+        exportButton.textContent = "Export HTML";
+        exportButton.className = "primary";
+        exportButton.dataset.exportCardId = card.id;
+        exportButton.addEventListener("click", function () {
+          exportButton.disabled = true;
+          downloadStandaloneExport(card.id).catch(function () { return null; }).finally(function () {
+            exportButton.disabled = false;
+          });
+        });
+        actions.append(exportButton, duplicate, collapse, remove);
         heading.append(title, actions);
         article.append(heading);
 
@@ -6808,55 +6833,376 @@
       return state.cssText;
     }
 
-    function exportRequirementMarkup(requirement) {
-      var quantity = formatRequirementQuantity(requirement);
-      var stats = requirement.affectedStats.length ? requirement.affectedStats.map(function (item) {
-        return item.label;
-      }).join(", ") : "Nincs API-adat";
+    /* M6_STANDALONE_EXPORT_MODEL_START */
+    function m6EscapeHtml(value) {
+      return String(value === null || value === undefined ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function m6FormatUnits(unit, units) {
+      if (!Number.isInteger(Number(units))) {
+        return "Ismeretlen";
+      }
+      if (unit === "SCU") {
+        var scu = Number(units) / 10000;
+        return scu.toLocaleString("hu-HU", { minimumFractionDigits: 0, maximumFractionDigits: 4 }) + " SCU";
+      }
+      return Number(units).toLocaleString("hu-HU") + (unit === "ITEM" ? " db" : " " + String(unit || ""));
+    }
+
+    function m6QualityRuleLabel(requirement) {
+      if (requirement.rule === "HP_MIN_500") {
+        return "Q500+ elég · legalacsonyabb megfelelő Q először";
+      }
+      if (requirement.rule === "TARGET_Q") {
+        return "Target Q" + requirement.targetQuality + "+ · legalacsonyabb megfelelő Q először";
+      }
+      if (requirement.rule === "HIGHEST_Q") {
+        return "Highest Q";
+      }
+      if (requirement.rule === "FIXED") {
+        return "FIXED · nincs Quality-stratégia";
+      }
+      return "UNKNOWN · nincs találgatás";
+    }
+
+    function m6FormatMetric(value, suffix) {
+      return value === null || value === undefined || !Number.isFinite(Number(value))
+        ? "nincs adat"
+        : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
+    }
+
+    function m6FormatCraftTime(seconds) {
+      if (!Number.isFinite(Number(seconds))) {
+        return "Nincs API-adat";
+      }
+      var total = Math.max(0, Math.round(Number(seconds)));
+      var minutes = Math.floor(total / 60);
+      var remainder = total % 60;
+      return minutes ? minutes + " perc " + remainder + " mp" : remainder + " mp";
+    }
+
+    function m6BuildStandaloneSnapshot(input) {
+      var source = input || {};
+      var card = source.card || {};
+      var result = source.cardResult || { requirements: [], bottleneckSlotIds: [] };
+      var blueprint = source.blueprint || {};
+      var resultBySlot = new Map((result.requirements || []).map(function (requirement) {
+        return [requirement.recipeSlotId, requirement];
+      }));
+      var traceBySlot = new Map((source.trace || []).map(function (trace) {
+        return [trace.recipeSlotId, trace];
+      }));
+      var missingData = [];
+      var locationCount = 0;
+      var loadoutCount = 0;
+      var refinerySystemCount = 0;
+      var requirements = (card.requirements || []).map(function (requirement) {
+        var allocation = resultBySlot.get(requirement.id) || {};
+        var trace = traceBySlot.get(requirement.id) || null;
+        var intelligence = allocation.materialIntelligence || null;
+        var mining = intelligence && intelligence.mining ? intelligence.mining : null;
+        var refinery = intelligence && intelligence.refinery ? intelligence.refinery : null;
+        var loadouts = intelligence && Array.isArray(intelligence.loadouts) ? intelligence.loadouts : [];
+        var selectedLoadout = loadouts.find(function (loadout) { return loadout.default; }) || loadouts[0] || null;
+        locationCount += mining ? (mining.systems || []).reduce(function (count, system) {
+          return count + (system.status === "AVAILABLE" ? (system.methods || []).length : 0);
+        }, 0) : 0;
+        loadoutCount += selectedLoadout ? 1 : 0;
+        refinerySystemCount += refinery && refinery.status === "AVAILABLE" ? (refinery.systems || []).length : 0;
+        if (!intelligence) {
+          missingData.push(requirement.materialName + ": nincs biztonságosan kapcsolható mining commodity");
+        } else if (!mining || mining.status !== "AVAILABLE") {
+          missingData.push(requirement.materialName + ": mining location részlet nincs cache-ben");
+        }
+        if (refinery && refinery.status === "MAPPING_UNRESOLVED") {
+          missingData.push(requirement.materialName + ": UEX mapping nem oldható fel");
+        }
+        var availableUnitsAtSlot = trace ? (trace.available || []).reduce(function (sum, batch) {
+          return sum + (batch.unit === requirement.unit ? Number(batch.availableUnitsAtSlot || 0) : 0);
+        }, 0) : null;
+        return {
+          recipeSlotId: requirement.id,
+          recipeSlotName: requirement.recipeSlotName,
+          materialUuid: requirement.ingredientUuid,
+          commodityUuid: allocation.commodityUuid || requirement.commodityUuid || null,
+          materialName: requirement.materialName,
+          unit: requirement.unit,
+          perCraftUnits: requirement.requiredQuantityUnits,
+          requiredUnits: Number(allocation.requiredUnits || (requirement.requiredQuantityUnits * Number(card.quantity || 1))),
+          availableUnitsAtSlot: availableUnitsAtSlot,
+          allocatedUnits: Number(allocation.allocatedUnits || 0),
+          missingAmountUnits: Number(allocation.missingAmountUnits || 0),
+          missingQualityUnits: Number(allocation.missingQualityUnits || 0),
+          status: allocation.status || "PENDING",
+          bottleneck: allocation.bottleneck === true,
+          qualityCapability: requirement.qualityCapability || "UNKNOWN",
+          rule: allocation.rule || "UNKNOWN",
+          targetQuality: allocation.targetQuality === undefined ? null : allocation.targetQuality,
+          affectedStats: (requirement.affectedStats || []).map(function (stat) { return stat.label || stat.key || "Ismeretlen stat"; }),
+          allocatedBatches: (allocation.allocatedBatches || []).map(function (batch) {
+            return { batchId: batch.batchId, quality: batch.quality, allocatedUnits: batch.allocatedUnits, reason: batch.reason || null };
+          }),
+          mining: mining,
+          refinery: refinery,
+          selectedLoadout: selectedLoadout,
+          refinerySnapshotFingerprint: intelligence ? intelligence.refinerySnapshotFingerprint : null
+        };
+      });
+      return {
+        exportSchemaVersion: 1,
+        kind: "SPG_STANDALONE_CRAFTING_FARM_CARD",
+        generatedBy: source.appName || "sPg Crafting List",
+        generatedAt: source.generatedAt,
+        scDataVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null,
+        dataSources: ["Star Citizen Wiki API", "UEX"],
+        card: {
+          id: card.id,
+          priority: Number(card.order || 0) + 1,
+          blueprintUuid: card.blueprintUuid || blueprint.uuid || null,
+          outputName: card.outputName || blueprint.outputName || "Ismeretlen output",
+          outputType: card.outputTypeLabel || blueprint.outputTypeLabel || card.outputType || blueprint.outputType || "Ismeretlen kategória",
+          blueprintAvailability: (card.isAvailableByDefault || blueprint.isAvailableByDefault) ? "Alapértelmezetten elérhető" : "Blueprint szükséges / nincs alapértelmezett elérhetőség",
+          craftTimeSeconds: card.craftTimeSeconds === null || card.craftTimeSeconds === undefined ? blueprint.craftTimeSeconds : card.craftTimeSeconds,
+          requestedQuantity: Number(card.quantity || 1),
+          maxCraftable: Number(result.maxCraftable || 0),
+          satisfied: result.satisfied === true,
+          bottleneckSlotIds: (result.bottleneckSlotIds || []).slice()
+        },
+        requirements: requirements,
+        summary: {
+          ingredientCount: requirements.length,
+          locationCount: locationCount,
+          selectedLoadoutCount: loadoutCount,
+          refinerySystemCount: refinerySystemCount,
+          missingData: missingData
+        }
+      };
+    }
+
+    function m6RenderLoadout(loadout) {
+      if (!loadout) {
+        return '<div class="spg-export-empty">Nincs ehhez az anyaghoz mentett mining loadout.</div>';
+      }
+      var stations = (loadout.stations || []).map(function (station, index) {
+        var modules = (station.modules || []).filter(function (module) { return module && (module.name || module.uuid); }).map(function (module) {
+          return m6EscapeHtml(module.name || module.uuid);
+        }).join(" · ") || "Nincs modul";
+        return '<li><strong>' + (index + 1) + '. station:</strong> ' + m6EscapeHtml(station.head && (station.head.name || station.head.uuid) || "Nincs head") +
+          '<small>' + modules + '</small></li>';
+      }).join("") || '<li>Nincs konfigurált mining station.</li>';
+      var gadgets = (loadout.gadgets || []).filter(function (gadget) { return gadget && (gadget.name || gadget.uuid); }).map(function (gadget) {
+        return m6EscapeHtml(gadget.name || gadget.uuid);
+      }).join(" · ") || "Nincs gadget";
       return [
-        '<article class="spg-export-requirement">',
-        '<div><span class="spg-recipe-slot">', escapeHtml(requirement.recipeSlotName), '</span>',
-        '<strong>', escapeHtml(requirement.materialName), '</strong></div>',
-        '<div class="spg-export-values"><span>', escapeHtml(quantity), '</span>',
-        '<span>', escapeHtml(requirement.qualityCapability), '</span>',
-        '<span>', escapeHtml(stats), '</span></div>',
+        '<article class="spg-export-loadout">',
+        '<div><span class="eyebrow">Aktív loadout</span><h4>', m6EscapeHtml(loadout.name), '</h4></div>',
+        '<p><strong>Vehicle:</strong> ', m6EscapeHtml(loadout.vehicle && (loadout.vehicle.name || loadout.vehicle.uuid) || "Nincs kiválasztva"), '</p>',
+        '<ul>', stations, '</ul>',
+        '<p><strong>Gadget:</strong> ', gadgets, '</p>',
         '</article>'
       ].join("");
     }
 
-    async function buildStandaloneExport() {
-      var css = await readApplicationCss();
-      var blueprint = state.normalizedBlueprint;
-      var requirements = blueprint ? blueprint.requirements.map(exportRequirementMarkup).join("") :
-        '<p>Nincs betöltött blueprint – technikai exportminta.</p>';
-      var title = blueprint ? blueprint.outputName : "Technikai exportminta";
-      var generatedAt = nowIso();
-      var html = [
-        "<!doctype html>",
-        '<html lang="hu"><head><meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        "<title>", escapeHtml(APP.name + " – " + title), "</title>",
-        "<style>", css.replace(/<\/style/gi, "<\\/style"), "</style>",
-        "</head><body>",
-        '<main class="spg-export-page">',
-        '<header class="spg-export-header"><p class="eyebrow">sPg Crafting List export</p>',
-        "<h1>", escapeHtml(title), "</h1>",
-        '<p class="spg-muted">Standalone Crafting/Farm Card</p></header>',
-        '<section class="spg-export-grid">', requirements, "</section>",
-        '<footer class="spg-export-meta">',
-        "<span><strong>Generated by:</strong> ", escapeHtml(APP.name), "</span>",
-        "<span><strong>SC Data Version:</strong> ", escapeHtml(state.gameVersion ? state.gameVersion.code : "Nincs API-adat"), "</span>",
-        "<span><strong>Generated:</strong> ", escapeHtml(generatedAt), "</span>",
-        "<span><strong>Data Source:</strong> Star Citizen Wiki API</span>",
-        "</footer></main></body></html>"
+    function m6RenderFarmAndRefinery(requirement) {
+      var mining = requirement.mining || {};
+      var farmCards = [];
+      (mining.systems || []).forEach(function (system) {
+        if (system.status !== "AVAILABLE") { return; }
+        (system.methods || []).forEach(function (method) {
+          farmCards.push([
+            '<article class="spg-export-location-card">',
+            '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.locationLabel), '</h4></header>',
+            '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
+            '<div class="spg-export-metrics">',
+            '<span><small>Módszer</small><strong>', m6EscapeHtml(method.method), '</strong></span>',
+            '<span><small>Occurrence</small><strong>', m6EscapeHtml(m6FormatMetric(method.occurrence, "%")), '</strong></span>',
+            '<span><small>Spawn</small><strong>', m6EscapeHtml(m6FormatMetric(method.spawn, "%")), '</strong></span>',
+            '<span><small>Max Q</small><strong>', m6EscapeHtml(m6FormatMetric(method.maximumQuality, "")), '</strong></span>',
+            '</div></article>'
+          ].join(""));
+        });
+      });
+      if (!farmCards.length) {
+        farmCards.push('<div class="spg-export-empty">Nincs cache-elt, rangsorolt mining location.</div>');
+      }
+      var refinery = requirement.refinery || {};
+      var refineryCards = [];
+      if (refinery.status === "AVAILABLE") {
+        (refinery.systems || []).forEach(function (system) {
+          refineryCards.push([
+            '<article class="spg-export-refinery-card">',
+            '<span class="spg-export-system-pill">', m6EscapeHtml(system.starSystemName), '</span>',
+            '<h4>', m6EscapeHtml((system.terminals || []).map(function (terminal) { return terminal.terminalName; }).join(" / ")), '</h4>',
+            '<strong class="spg-export-bonus">', m6EscapeHtml((Number(system.rankingValue) > 0 ? "+" : "") + Number(system.rankingValue).toLocaleString("hu-HU") + "%"), '</strong>',
+            '<small>UEX value_month · ', m6EscapeHtml(system.tieCount), ' azonos legjobb</small>',
+            '</article>'
+          ].join(""));
+        });
+      } else {
+        refineryCards.push('<div class="spg-export-empty">' + m6EscapeHtml(refinery.status === "NO_REFINERY_DATA" ? "UEX mapping van, refinery yield nincs." : "Nincs biztonságos UEX refinery mapping.") + '</div>');
+      }
+      return [
+        '<details class="spg-export-farm" open><summary>Mining / Farm helyek · ', m6EscapeHtml(requirement.materialName), '</summary>',
+        '<div class="spg-export-location-grid">', farmCards.join(""), '</div></details>',
+        '<details class="spg-export-refinery" open><summary>UEX refinery ajánló · ', m6EscapeHtml(requirement.materialName), '</summary>',
+        '<div class="spg-export-refinery-grid">', refineryCards.join(""), '</div></details>',
+        '<details class="spg-export-loadout-wrap" open><summary>Mining loadout · ', m6EscapeHtml(requirement.materialName), '</summary>',
+        m6RenderLoadout(requirement.selectedLoadout), '</details>'
       ].join("");
-      logger.event("INFO", "EXPORT_BUILT", "Standalone export elkészült.", {
-        blueprint: blueprint ? blueprint.outputName : null,
-        gameVersion: state.gameVersion ? state.gameVersion.code : null,
-        ingredientCount: blueprint ? blueprint.requirements.length : 0,
+    }
+
+    function m6RenderRequirement(requirement) {
+      var batches = requirement.allocatedBatches.length ? requirement.allocatedBatches.map(function (batch) {
+        return '<li><strong>' + m6EscapeHtml(batch.quality === null || batch.quality === undefined ? "Q?" : "Q" + batch.quality) + '</strong><span>' +
+          m6EscapeHtml(m6FormatUnits(requirement.unit, batch.allocatedUnits)) + '</span><small>' + m6EscapeHtml(batch.reason || "deterministic allocation") + '</small></li>';
+      }).join("") : '<li>Nincs lefoglalt batch.</li>';
+      var stats = requirement.affectedStats.length ? requirement.affectedStats.map(function (stat) {
+        return '<span class="spg-export-stat-chip">' + m6EscapeHtml(stat) + '</span>';
+      }).join("") : '<span class="spg-export-stat-chip">Nincs API stat-adat</span>';
+      return [
+        '<article class="spg-export-ingredient-card" data-status="', m6EscapeHtml(requirement.status), '" data-bottleneck="', requirement.bottleneck ? "true" : "false", '">',
+        '<header><div><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span><h3>', m6EscapeHtml(requirement.materialName), '</h3></div>',
+        '<span class="spg-export-status ', requirement.status === "SATISFIED" ? "is-pass" : "is-fail", '">', m6EscapeHtml(requirement.status), '</span></header>',
+        '<div class="spg-export-stats">', stats, '</div>',
+        '<div class="spg-export-quantity-grid">',
+        '<span><small>1 darabhoz</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
+        '<span><small>Teljes szükséglet</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.requiredUnits)), '</strong></span>',
+        '<span><small>Készlet a slotnál</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.availableUnitsAtSlot)), '</strong></span>',
+        '<span><small>Lefoglalt</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.allocatedUnits)), '</strong></span>',
+        '<span><small>Mennyiséghiány</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.missingAmountUnits)), '</strong></span>',
+        '<span><small>Quality-hiány</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.missingQualityUnits)), '</strong></span>',
+        '</div>',
+        '<p class="spg-export-quality"><strong>', m6EscapeHtml(requirement.qualityCapability), '</strong> · ', m6EscapeHtml(m6QualityRuleLabel(requirement)), '</p>',
+        requirement.bottleneck ? '<p class="spg-export-bottleneck">Szűk keresztmetszet: ez a Recipe Slot korlátozza a gyártható mennyiséget.</p>' : '',
+        '<details class="spg-export-batches" open><summary>Felhasznált Quality batch-ek</summary><ul>', batches, '</ul></details>',
+        m6RenderFarmAndRefinery(requirement),
+        '</article>'
+      ].join("");
+    }
+
+    function m6RenderStandaloneHtml(snapshot, cssText) {
+      var snapshotJson = JSON.stringify(snapshot).replace(/</g, "\\u003c");
+      var missingData = snapshot.summary.missingData.length
+        ? '<section class="spg-export-warning"><h2>Hiányzó / ellenőrizendő adatok</h2><ul>' + snapshot.summary.missingData.map(function (item) { return '<li>' + m6EscapeHtml(item) + '</li>'; }).join("") + '</ul></section>'
+        : '';
+      return [
+        '<!doctype html><html lang="hu"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        '<meta name="generator" content="sPg Crafting List">',
+        '<title>', m6EscapeHtml(snapshot.generatedBy + " – " + snapshot.card.outputName), '</title>',
+        '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
+        '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
+        '<main class="spg-export-page">',
+        '<header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><h1>', m6EscapeHtml(snapshot.card.outputName), '</h1>',
+        '<p>', m6EscapeHtml(snapshot.card.outputType), ' · ', m6EscapeHtml(snapshot.card.blueprintAvailability), '</p></div>',
+        '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "Terv teljesíthető" : "Hiány van", '</span></header>',
+        '<section class="spg-export-overview">',
+        '<span><small>Prioritás</small><strong>', m6EscapeHtml(snapshot.card.priority), '</strong></span>',
+        '<span><small>Gyártani kívánt</small><strong>', m6EscapeHtml(snapshot.card.requestedQuantity), ' db</strong></span>',
+        '<span><small>Maximum készletből</small><strong>', m6EscapeHtml(snapshot.card.maxCraftable), ' db</strong></span>',
+        '<span><small>Craft time</small><strong>', m6EscapeHtml(m6FormatCraftTime(snapshot.card.craftTimeSeconds)), '</strong></span>',
+        '<span><small>SC Data Version</small><strong>', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</strong></span>',
+        '<span><small>Recipe Slot</small><strong>', m6EscapeHtml(snapshot.summary.ingredientCount), '</strong></span>',
+        '</section>',
+        missingData,
+        '<section class="spg-export-section"><div class="spg-export-section-title"><p class="eyebrow">Recipe Slot szintű terv</p><h2>Ingredients</h2></div>',
+        '<div class="spg-export-ingredient-grid">', snapshot.requirements.map(m6RenderRequirement).join(""), '</div></section>',
+        '<footer class="spg-export-meta">',
+        '<span><strong>Generated by:</strong> ', m6EscapeHtml(snapshot.generatedBy), '</span>',
+        '<span><strong>SC Data Version:</strong> ', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</span>',
+        '<span><strong>Generated:</strong> ', m6EscapeHtml(snapshot.generatedAt), '</span>',
+        '<span><strong>Data Source:</strong> Star Citizen Wiki API + UEX</span>',
+        '<span><strong>Blueprint UUID:</strong> ', m6EscapeHtml(snapshot.card.blueprintUuid || "Nincs adat"), '</span>',
+        '<span><strong>Export schema:</strong> ', m6EscapeHtml(snapshot.exportSchemaVersion), '</span>',
+        '</footer>',
+        '<script type="application/json" id="spg-export-snapshot">', snapshotJson, '<\/script>',
+        '</main></body></html>'
+      ].join("");
+    }
+    /* M6_STANDALONE_EXPORT_MODEL_END */
+
+    async function resolveExportBlueprint(card) {
+      if (!card) { return null; }
+      if (state.normalizedBlueprint && state.normalizedBlueprint.uuid === card.blueprintUuid) {
+        return state.normalizedBlueprint;
+      }
+      if (state.dbReady && card.blueprintCacheKey) {
+        var cached = await database.get("blueprintNormalizedCache", card.blueprintCacheKey).catch(function () { return null; });
+        if (cached) { return cached; }
+      }
+      return null;
+    }
+
+    function attachExportMaterialIntelligence(card, cardResult) {
+      (cardResult.requirements || []).forEach(function (requirement) {
+        var sourceRequirement = (card.requirements || []).find(function (item) { return item.id === requirement.recipeSlotId; });
+        var commodityUuid = sourceRequirement && sourceRequirement.commodityUuid
+          ? sourceRequirement.commodityUuid
+          : state.requirementCommodityUuidBySlotId.get(requirement.recipeSlotId);
+        requirement.commodityUuid = commodityUuid || null;
+        requirement.materialIntelligence = state.materialIntelligenceByWikiUuid.get(commodityUuid || requirement.ingredientUuid) || null;
+      });
+      return cardResult;
+    }
+
+    async function buildStandaloneExport(cardId) {
+      var css = await readApplicationCss();
+      var card = state.craftingCards.find(function (candidate) { return candidate.id === cardId; }) ||
+        state.craftingCards.find(function (candidate) { return candidate.active !== false; }) || null;
+      var allocation = state.allocationResult;
+      if (!card && state.normalizedBlueprint) {
+        card = buildCraftingCard(state.normalizedBlueprint);
+        card.id = "technical-export-preview";
+        card.order = 0;
+        allocation = allocateCardsDeterministically([card], state.materialBatches);
+        attachExportMaterialIntelligence(card, allocation.cards[0]);
+      }
+      if (!card) {
+        throw new Error("Nincs exportálható Crafting Card vagy betöltött blueprint.");
+      }
+      var cardResult = allocation && allocation.cards.find(function (result) { return result.cardId === card.id; });
+      if (!cardResult) {
+        var singleAllocation = allocateCardsDeterministically([card], state.materialBatches);
+        cardResult = attachExportMaterialIntelligence(card, singleAllocation.cards[0]);
+        allocation = singleAllocation;
+      }
+      var blueprint = await resolveExportBlueprint(card);
+      var snapshot = m6BuildStandaloneSnapshot({
+        appName: APP.name,
+        generatedAt: nowIso(),
+        scDataVersion: state.gameVersion ? state.gameVersion.code : card.gameVersion,
+        card: card,
+        cardResult: cardResult,
+        blueprint: blueprint,
+        trace: allocation ? allocation.trace.filter(function (trace) { return trace.cardId === card.id; }) : []
+      });
+      var html = m6RenderStandaloneHtml(snapshot, css);
+      var externalResource = /<(?:link|script|img|source)[^>]+(?:href|src)=["']https?:/i.test(html);
+      if (externalResource || /@import[^;]+https?:/i.test(html)) {
+        throw new Error("Az export külső hálózati erőforrást tartalmaz.");
+      }
+      document.body.dataset.lastStandaloneExportCardId = card.id;
+      document.body.dataset.lastStandaloneExportBytes = String(byteLength(html));
+      document.body.dataset.lastStandaloneExportMissingData = String(snapshot.summary.missingData.length);
+      logger.event("INFO", "EXPORT_BUILT", "Teljes standalone Crafting/Farm Card export elkészült.", {
+        blueprint: snapshot.card.outputName,
+        blueprintUuid: snapshot.card.blueprintUuid,
+        gameVersion: snapshot.scDataVersion,
+        ingredientCount: snapshot.summary.ingredientCount,
+        locationCount: snapshot.summary.locationCount,
+        selectedLoadoutCount: snapshot.summary.selectedLoadoutCount,
+        refinerySystemCount: snapshot.summary.refinerySystemCount,
         cssRead: Boolean(css),
         exportBytes: byteLength(html),
-        externalStylesheet: /<link[^>]+stylesheet/i.test(html)
+        missingData: snapshot.summary.missingData,
+        externalStylesheet: /<link[^>]+stylesheet/i.test(html),
+        externalResource: externalResource,
+        result: "PASS"
       });
       return html;
     }
@@ -6875,13 +7221,16 @@
       }, 1000);
     }
 
-    async function downloadStandaloneExport() {
+    async function downloadStandaloneExport(cardId) {
+      var card = state.craftingCards.find(function (candidate) { return candidate.id === cardId; }) ||
+        state.craftingCards.find(function (candidate) { return candidate.active !== false; }) || null;
       logger.start("Card Export", {
-        blueprint: state.normalizedBlueprint ? state.normalizedBlueprint.outputName : null
+        blueprint: card ? card.outputName : (state.normalizedBlueprint ? state.normalizedBlueprint.outputName : null),
+        cardId: card ? card.id : null
       });
       try {
-        var html = await buildStandaloneExport();
-        var title = state.normalizedBlueprint ? state.normalizedBlueprint.outputName : "Technical Baseline";
+        var html = await buildStandaloneExport(cardId);
+        var title = card ? card.outputName : (state.normalizedBlueprint ? state.normalizedBlueprint.outputName : "Technical Baseline");
         var safeName = title.replace(/[<>:"/\\|?*\u0000-\u001F]/g, "-");
         downloadTextFile(html, "sPg Crafting List - " + safeName + ".html", "text/html;charset=utf-8");
         logger.finish("PASS", { exportBytes: byteLength(html) });
@@ -7147,7 +7496,13 @@
         assert(!/@import[^;]+https?:/i.test(html), "Az export távoli CSS-importot tartalmaz.");
         assert(/<style>[\s\S]+<\/style>/i.test(html), "Az exportból hiányzik a beágyazott CSS.");
         assert(html.indexOf("Star Citizen Wiki API") !== -1, "Az export metaadata hiányos.");
-        return Math.round(byteLength(html) / 1024) + " KiB · nincs külső CSS";
+        assert(html.indexOf('data-spg-standalone-export="true"') !== -1, "Az export standalone azonosítója hiányzik.");
+        assert(html.indexOf("Recipe Slot szintű terv") !== -1, "Az exportból hiányzik a slot-szintű terv.");
+        assert(html.indexOf("Mining / Farm helyek") !== -1, "Az exportból hiányzik a farmhelyszín szekció.");
+        assert(html.indexOf("UEX refinery ajánló") !== -1, "Az exportból hiányzik a refinery szekció.");
+        assert(html.indexOf("Mining loadout") !== -1, "Az exportból hiányzik a loadout szekció.");
+        assert(!/<(?:link|script|img|source)[^>]+(?:href|src)=["']https?:/i.test(html), "Az export külső hálózati erőforrást tartalmaz.");
+        return Math.round(byteLength(html) / 1024) + " KiB · teljes offline kártya · nincs külső erőforrás";
       });
 
       var failed = results.filter(function (result) {
@@ -7299,6 +7654,14 @@
             totals: state.backupPreview.preview.totals
           } : null
         },
+        standaloneExport: {
+          schemaVersion: 1,
+          lastCardId: document.body.dataset.lastStandaloneExportCardId || null,
+          lastExportBytes: Number(document.body.dataset.lastStandaloneExportBytes || 0),
+          lastMissingDataCount: Number(document.body.dataset.lastStandaloneExportMissingData || 0),
+          centralCssEmbedded: true,
+          externalNetworkResourcesAllowed: false
+        },
         diagnostics: {
           retainedProcesses: processes.length,
           warnings: severity.warnings,
@@ -7327,12 +7690,13 @@
       document.body.dataset.userDataFingerprint = snapshot.userData.fingerprint;
       document.body.dataset.diagnosticM4Ready = "true";
       document.body.dataset.diagnosticM5Ready = "true";
+      document.body.dataset.diagnosticM6Ready = "true";
     }
 
     async function copyLog() {
-      logger.start("Diagnostic Log Copy", { scope: "M1-M5" });
+      logger.start("Diagnostic Log Copy", { scope: "M1-M6" });
       var preCopySnapshot = await buildDiagnosticStateSnapshot();
-      logger.event("INFO", "DIAGNOSTIC_BUNDLE_BUILT", "Az M1–M5 állapot egyetlen diagnosztikai csomagba került.", {
+      logger.event("INFO", "DIAGNOSTIC_BUNDLE_BUILT", "Az M1–M6 állapot egyetlen diagnosztikai csomagba került.", {
         activeScVersion: preCopySnapshot.activeScVersion,
         userDataFingerprint: preCopySnapshot.userData.fingerprint,
         combinedMaterialsFingerprint: preCopySnapshot.combinedMaterials.fingerprint,
@@ -7340,7 +7704,7 @@
         uexDatasetId: preCopySnapshot.gameDataCache.activeUexRefineryDataset ? preCopySnapshot.gameDataCache.activeUexRefineryDataset.datasetId : null,
         uexMapping: preCopySnapshot.uexRefinery.mappingSummary
       });
-      logger.finish("PASS", { scope: "M1-M5", userDataFingerprint: preCopySnapshot.userData.fingerprint });
+      logger.finish("PASS", { scope: "M1-M6", userDataFingerprint: preCopySnapshot.userData.fingerprint });
       var text = logger.text(await buildDiagnosticStateSnapshot());
       try {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
@@ -7365,6 +7729,7 @@
       document.body.dataset.lastCopyBytes = String(byteLength(text));
       document.body.dataset.diagnosticBundleM4 = "true";
       document.body.dataset.diagnosticBundleM5 = "true";
+      document.body.dataset.diagnosticBundleM6 = "true";
       await renderDiagnosticsSummary();
     }
 
@@ -7858,6 +8223,9 @@
       allocateCardsDeterministically: allocateCardsDeterministically,
       compareLocations: compareLocations,
       buildStandaloneExport: buildStandaloneExport,
+      downloadStandaloneExport: downloadStandaloneExport,
+      buildStandaloneSnapshot: m6BuildStandaloneSnapshot,
+      renderStandaloneHtml: m6RenderStandaloneHtml,
       runTechnicalProbe: runTechnicalProbe,
       syncGameVersionAndBlueprint: syncGameVersionAndBlueprint,
       syncBlueprintIndex: syncBlueprintIndex,

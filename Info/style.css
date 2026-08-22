@@ -3555,6 +3555,326 @@ code {
   text-align: right;
 }
 
+/* M6 full standalone Crafting/Farm Card, adapted from the Info reference farm-card UI. */
+
+.spg-export-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: end;
+  margin-bottom: 14px;
+  padding: 22px;
+  border: 2px solid rgba(0, 188, 212, 0.68);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.spg-export-hero h1 {
+  margin: 3px 0 8px;
+  color: #eef7ff;
+  font-size: clamp(26px, 5vw, 44px);
+  line-height: 1.05;
+}
+
+.spg-export-hero p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+.spg-export-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  width: fit-content;
+  padding: 5px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.spg-export-status.is-pass {
+  border-color: rgba(76, 175, 80, 0.62);
+  background: rgba(76, 175, 80, 0.12);
+  color: #baf5c3;
+}
+
+.spg-export-status.is-fail {
+  border-color: rgba(255, 179, 0, 0.64);
+  background: rgba(255, 179, 0, 0.11);
+  color: #fff0c2;
+}
+
+.spg-export-overview,
+.spg-export-quantity-grid,
+.spg-export-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.spg-export-overview {
+  margin-bottom: 20px;
+}
+
+.spg-export-overview > span,
+.spg-export-quantity-grid > span,
+.spg-export-metrics > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.68);
+}
+
+.spg-export-overview small,
+.spg-export-quantity-grid small,
+.spg-export-metrics small,
+.spg-export-refinery-card small,
+.spg-export-loadout small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.spg-export-overview strong,
+.spg-export-quantity-grid strong,
+.spg-export-metrics strong {
+  overflow-wrap: anywhere;
+  color: #eef7ff;
+}
+
+.spg-export-section {
+  margin-top: 22px;
+}
+
+.spg-export-section-title {
+  margin-bottom: 12px;
+}
+
+.spg-export-section-title h2 {
+  margin: 2px 0 0;
+  color: #eef7ff;
+}
+
+.spg-export-ingredient-grid,
+.spg-export-location-grid,
+.spg-export-refinery-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.spg-export-ingredient-card {
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid rgba(24, 218, 255, 0.46);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.94), rgba(15, 23, 32, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.spg-export-ingredient-card[data-bottleneck="true"] {
+  border-color: rgba(255, 179, 0, 0.72);
+}
+
+.spg-export-ingredient-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.spg-export-ingredient-card h3,
+.spg-export-location-card h4,
+.spg-export-refinery-card h4,
+.spg-export-loadout h4 {
+  margin: 4px 0;
+  color: #eef7ff;
+}
+
+.spg-export-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.spg-export-stat-chip,
+.spg-export-system-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid rgba(24, 218, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(24, 218, 255, 0.08);
+  color: #9cecff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.spg-export-quality,
+.spg-export-bottleneck {
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: rgba(255, 179, 0, 0.07);
+  color: #d8e8fb;
+  font-size: 12px;
+}
+
+.spg-export-bottleneck {
+  border-left-color: var(--danger);
+  background: rgba(244, 67, 54, 0.08);
+}
+
+.spg-export-batches,
+.spg-export-farm,
+.spg-export-refinery,
+.spg-export-loadout-wrap {
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 11px;
+  background: rgba(5, 18, 28, 0.42);
+}
+
+.spg-export-batches > summary,
+.spg-export-farm > summary,
+.spg-export-refinery > summary,
+.spg-export-loadout-wrap > summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 800;
+}
+
+.spg-export-batches ul,
+.spg-export-loadout ul {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.spg-export-batches li,
+.spg-export-loadout li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 9px;
+}
+
+.spg-export-batches li small,
+.spg-export-loadout li small {
+  grid-column: 1 / -1;
+}
+
+.spg-export-location-grid,
+.spg-export-refinery-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 10px;
+}
+
+.spg-export-location-card,
+.spg-export-refinery-card,
+.spg-export-loadout {
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.32);
+  border-radius: 12px;
+  background: rgba(9, 16, 25, 0.56);
+}
+
+.spg-export-location-card > header {
+  min-height: 76px;
+}
+
+.spg-export-radar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 9px 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(255, 179, 0, 0.46);
+  border-radius: 9px;
+  background: rgba(255, 179, 0, 0.07);
+}
+
+.spg-export-radar span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-export-radar strong,
+.spg-export-bonus {
+  color: #ffbf2f;
+}
+
+.spg-export-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spg-export-refinery-card {
+  position: relative;
+  padding-right: 72px;
+  border-left: 3px solid rgba(255, 179, 0, 0.72);
+}
+
+.spg-export-bonus {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  font-size: 18px;
+}
+
+.spg-export-empty,
+.spg-export-warning {
+  padding: 12px;
+  border: 1px dashed var(--line-soft);
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+.spg-export-warning {
+  margin: 14px 0;
+  border-color: rgba(255, 179, 0, 0.48);
+  background: rgba(255, 179, 0, 0.06);
+}
+
+.spg-export-warning h2 {
+  margin-top: 0;
+  font-size: 17px;
+}
+
+#spg-export-snapshot {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #0f1720;
+    background-image: none;
+  }
+
+  .spg-export-page {
+    width: 100%;
+    padding: 0;
+  }
+
+  .spg-export-ingredient-card,
+  .spg-export-location-card,
+  .spg-export-refinery-card {
+    break-inside: avoid;
+  }
+}
+
 /* M5 UEX Refinery cache, mapping and shared card snapshot. */
 
 .spg-m5-panel {
@@ -3816,6 +4136,24 @@ code {
   .spg-export-requirement,
   .spg-export-meta {
     grid-template-columns: 1fr;
+  }
+
+  .spg-export-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .spg-export-overview,
+  .spg-export-quantity-grid,
+  .spg-export-metrics,
+  .spg-export-location-grid,
+  .spg-export-refinery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-export-ingredient-card > header {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .spg-export-values {

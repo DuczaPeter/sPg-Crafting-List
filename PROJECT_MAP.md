@@ -39,6 +39,7 @@
 - `Info/Star_Citizen_alapanyag_farm_kartyak_BP_API_C788_P6_P8_Killshot_bovitve.html`: vizualis es export referencia.
 - `Info/style.css`: kozponti alkalmazas-CSS.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
+- `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
 - `docs/M2_REPORT.md`: inventory/batch modell, allocation algoritmus, Quality szabalyok, teljesitmeny es M3 elotti nyitott pontok.
 - `docs/M3_REPORT.md`: mining endpointok, normalizalt modell, location rangsor, loadoutok, valos tesztadatok es M4 elotti nyitott pontok.
@@ -54,6 +55,7 @@
 - `test-artifacts/V001-C006/`: az M4 fo regresszios ciklus bizonyitekai.
 - `test-artifacts/V001-C007/`: az M4 User Settings importhatar-javitasa es a vegso helyi bongeszos ellenorzes bizonyitekai.
 - `test-artifacts/V001-C008/`: az M5 17 esetes regresszio, valos browser-ellenorzes es UEX cache/mapping bizonyitekai.
+- `test-artifacts/V001-C010/`: az M6 teljes regresszio, tenyleges exportfixture es Chrome localhost RC-bizonyitekai; a harom kezi release-gate egyertelmuen `NOT_TESTED` maradt.
 
 ## Iranyito fajlok
 

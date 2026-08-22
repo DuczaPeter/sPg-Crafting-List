@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-22T14:05:00+02:00",
+  "cycleId": "V001-C010",
+  "candidate": "V001-dev",
+  "browser": "Google Chrome",
+  "launchMode": "http://127.0.0.1:4177/",
+  "results": {
+    "appReady": true,
+    "technicalProbe": "12/12 PASS",
+    "activeScVersion": "4.9.0-LIVE.12232306",
+    "uexMapping": {
+      "MATCHED": 24,
+      "UNMAPPED": 50,
+      "AMBIGUOUS": 0
+    },
+    "userDataFingerprintBeforeGameDataSync": "06df191d",
+    "userDataFingerprintAfterGameDataSync": "06df191d",
+    "craftingCombinedRefinerySnapshots": "SAME_MULTISET",
+    "consoleWarningErrorCount": 0,
+    "actualStandaloneExport": "test-artifacts/V001-C010/sPg Crafting List - JS-300 standalone.html",
+    "actualStandaloneExportStaticVerification": "PASS"
+  },
+  "releaseGates": {
+    "chromeDirectFile": "NOT_TESTED_TOOL_URL_POLICY",
+    "standaloneOfflineReopen": "NOT_TESTED",
+    "edgeRegression": "NOT_TESTED_EDGE_CONNECTOR_UNAVAILABLE",
+    "computerUseEdgeAttempt": "STOPPED_URL_CONFIDENCE_POLICY"
+  },
+  "stableReleaseApproved": false
+}

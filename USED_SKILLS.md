@@ -105,3 +105,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a bongeszofelulet a helyi URL-hez az in-app browsert valasztotta; 215 rekordos valos UEX sync, TTL cache-hit, 12/12 technikai kapu, Beryl UUID-kapcsolat, desktop es 390 px mobil nezet, valamint warning/error 0 ellenorzese.
 - Mely fajlokat vagy donteseket erintett: `docs/M5_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C008/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V1 kezi release-gate atadas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-22`, az M6 release candidate kezi acceptance atadasakor.
+- Mire segitett: a stabil kiadas megjelolesenek visszatartasara, a harom valos kornyezeti kapu kulon kezelesere es egy pontosan visszakuldheto tesztsablon letrehozasara.
+- Mely fajlokat vagy donteseket erintett: `V1_RELEASE_GATE_CHECKLIST.md`, `STATUS.md`, `TASKS.md`, `TEST_COMMANDS.md`, `VERSION.json` es `docs/TECHNICAL_BASELINE.md`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

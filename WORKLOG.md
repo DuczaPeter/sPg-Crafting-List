@@ -178,5 +178,22 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Tesztszint: related-regression
 - Eredmeny: PASS
 - Indok: Selected test command exited with code 0.
-- Checkpoint: not-requested 
+- Checkpoint: not-requested
 - Artifact: `test-artifacts/V001-C009/test-summary.json`
+
+### 2026-08-22T13:59:19 - V001-C010
+
+- Cel: M6 standalone export referencia UI es V1 acceptance
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C010/test-summary.json`
+
+### M6 release candidate es kezi V1 acceptance atadas - 2026-08-22
+
+- Az M5.1 es az M6 implementacio felhasznaloi elfogadast kapott release candidate allapotban; uj feature milestone nem indul.
+- Az automatizalt M1-M6 regresszio, Chrome localhost 12/12 technikai proba, User Data fingerprint, Crafting/Combined snapshot, konzol es statikus standalone ellenorzes PASS maradt.
+- Nem lett PASS-nak jelolve a kozvetlen Chrome `file://`, a tenyleges kikapcsolt internet melletti export-ujranyitas es a kulon Edge regresszio.
+- Elkeszult a kattintasonkenti `V1_RELEASE_GATE_CHECKLIST.md`, Chrome/Edge tesztadatokkal, PASS-feltetelekkel, hibabizonyitek-listaval es egyben visszakuldheto eredmenysablonnal.
+- Stabil commit, tag vagy release nem keszult; a release gate `manual-acceptance-pending`.
