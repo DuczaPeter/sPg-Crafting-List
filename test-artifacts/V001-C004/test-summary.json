@@ -1,0 +1,57 @@
+﻿{
+    "projectVersion":  "V001-dev",
+    "cycle":  "C004",
+    "cycleId":  "V001-C004",
+    "status":  "PASS",
+    "statusReason":  "Selected test command exited with code 0.",
+    "purpose":  "M2 My Materials es determinisztikus allocation",
+    "testLevel":  "related-regression",
+    "testId":  "m2-regression",
+    "testSource":  "test-plan",
+    "testExecutable":  "powershell.exe",
+    "testArguments":  [
+                          "-NoProfile",
+                          "-ExecutionPolicy",
+                          "Bypass",
+                          "-File",
+                          ".\\tools\\validate-m2.ps1"
+                      ],
+    "testExitCode":  0,
+    "checkpoint":  "not-requested",
+    "checkpointCommit":  null,
+    "checkpointStagedFiles":  [
+
+                              ],
+    "branch":  "develop/V001",
+    "startedAt":  "2026-08-22T09:50:10",
+    "artifactDir":  "C:\\Users\\ganos\\OneDrive\\Munka\\Codex\\sPg Crafring List\\test-artifacts\\V001-C004",
+    "appLog":  "app-log.json",
+    "appLogCaptured":  false,
+    "browserConsole":  "browser-console.log",
+    "browserConsoleCaptured":  false,
+    "captureRequired":  false,
+    "appLogRequired":  false,
+    "browserConsoleRequired":  false,
+    "missingCaptures":  [
+
+                        ],
+    "testOutput":  "test-output.log",
+    "browserDiagnostics":  {
+                               "enabled":  false,
+                               "testId":  null,
+                               "configPath":  null,
+                               "status":  null,
+                               "browser":  null,
+                               "durationMs":  null,
+                               "consoleErrorCount":  null,
+                               "pageErrorCount":  null,
+                               "networkErrorCount":  null,
+                               "appErrorCount":  null,
+                               "screenshotPath":  null,
+                               "diagnosticExcerpt":  null,
+                               "primaryError":  null,
+                               "errorCode":  null,
+                               "failedStep":  null,
+                               "summary":  null
+                           }
+}

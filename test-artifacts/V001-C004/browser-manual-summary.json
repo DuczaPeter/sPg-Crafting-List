@@ -1,0 +1,29 @@
+{
+  "cycleId": "V001-C004",
+  "testedAt": "2026-08-22T09:50:17+02:00",
+  "browser": "Codex In-app Browser (Chromium)",
+  "url": "http://127.0.0.1:4177/",
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "results": {
+    "technicalProbe": "PASS 9/9",
+    "js300HpMin500": "Q480 skipped, Q517 allocated first",
+    "fixedStrategyHidden": true,
+    "craftingCardsPersistedAfterReload": 2,
+    "materialBatchesPersistedAfterReload": 6,
+    "cardOrderChangedAllocationOwner": true,
+    "targetQ850PersistedOnS00Hofstede": true,
+    "gameDataSyncRecordCount": 1591,
+    "userDataCountsPreserved": true,
+    "userDataFingerprintPreserved": true,
+    "visibleUserStatePreserved": true,
+    "desktopVisual": "PASS",
+    "mobile390Visual": "PASS",
+    "horizontalOverflowAt390": false,
+    "consoleWarningErrorCount": 0
+  },
+  "openReleaseGates": [
+    "direct file:// test",
+    "downloaded standalone export offline reopen",
+    "separate Edge regression"
+  ]
+}

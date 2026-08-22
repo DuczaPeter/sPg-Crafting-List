@@ -4,9 +4,9 @@ Idorendi munkanaplo. Uj bejegyzest mindig a friss bejegyzesek resz vegere adj ho
 
 ## Aktualis osszefoglalo
 
-- Jelenlegi allapot: az M1 verziozott Blueprint cache, Browser es teljes slotonkenti normalizalt modell elkeszult.
-- Utolso ismert jo allapot: `develop/V001`, `V001-C003` PASS; Chrome localhost M1 kapu PASS, a kozvetlen `file://` kapu meg nincs kezzel igazolva.
-- Kovetkezo ajanlott lepes: kozvetlen `file://` proba, majd felhasznaloi jovahagyassal M2 My Materials es Allocation Engine.
+- Jelenlegi allapot: az M2 globalis Quality batch inventory, sorrendezheto Crafting Card es determinisztikus slotonkenti Allocation Engine elkeszult.
+- Utolso ismert jo allapot: `develop/V001`; M2 automatizalt es helyi Chromium kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
+- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M3 mining adatok, location rangsor es loadoutok.
 - Archivalt regi naplo: nincs.
 
 ## Friss bejegyzesek
@@ -82,3 +82,23 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Indok: Selected test command exited with code 0.
 - Checkpoint: not-requested
 - Artifact: `test-artifacts/V001-C003/test-summary.json`
+
+### M2 My Materials es Allocation Engine - 2026-08-22
+
+- Mi tortent: elkeszult a globalis, tobb Quality batch-et kezelo inventory, a sorrendezheto es perzisztens Crafting List, valamint a tiszta determinisztikus Allocation Engine.
+- Quality: HP-only slotnal Q500 feletti legalacsonyabb batch, funkcionális slotnal Highest Q vagy Target Q, FIXED-nel nincs strategia, UNKNOWN-nal nincs talalgatas.
+- Teszt: 8/8 kotelezo M2 eset PASS; JS-300 es S00 Hofstede valos API-adat; 1000 batch/100 kartya/300 slot 0,66–0,72 masodperc.
+- Bongeszo: 9/9 technikai proba, ketkartya-sorrend, Target Q ujratoltes, User Data teljes fingerprint megorzes, desktop es 390 px mobil PASS; warning/error 0.
+- Adatbiztonsag: az allocation csak terv, a mentett batch-mennyiseget nem csokkenti; az 1591 rekordos Game Data sync a User Data-t valtozatlanul hagyta.
+- Nyitott: kozvetlen `file://`, letoltott export offline ujranyitasa es Edge regresszio; stabil kiadas tovabbra sincs.
+- UEX refinery: uj kesobbi V1 milestone-kovetelmeny, nem M1/M2 hianyossag.
+- Reszletes jelentes: `docs/M2_REPORT.md`.
+
+### 2026-08-22T09:50:12 - V001-C004
+
+- Cel: M2 My Materials es determinisztikus allocation
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C004/test-summary.json`

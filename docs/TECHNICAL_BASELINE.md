@@ -15,14 +15,16 @@ Datum: 2026-08-22
 - RAM-alapu process log, lezart blokkonkenti sessionStorage iras.
 - Globalis `window.onerror` es `unhandledrejection` kezeles.
 - Standalone export builder beagyazott CSS-sel es tavoli fontimport nelkul.
-- Egykattintasos, nyolclepeses `Technikai proba`, benne tranzakcios rollback-ellenorzessel.
+- Egykattintasos, kilenclepeses `Technikai proba`, benne tranzakcios rollback- es determinisztikus M2 allocation-ellenorzessel.
 - M1 verziozott raw/normalizalt blueprint index- es reszlet-cache.
 - Lapozott Blueprint Browser, API-facetekkel es lusta teljes receptbetoltessel.
+- Globalis Quality batch inventory es sorrendezheto Crafting Card User Data.
+- Slotonkenti, tervezesi modu Allocation Engine reszletes batch-dontesi trace-szel.
 
 ## Bizonyitott
 
 - `V001-C001` `baseline-static`: PASS.
-- Chrome localhost proba: 8/8 PASS.
+- Korabbi Chrome localhost M1 proba: 8/8 PASS; M2 helyi Chromium proba: 9/9 PASS.
 - Aktualis Wiki API default game version: `4.9.0-LIVE.12232306`.
 - JS-300: 3 recipe slot, 1 `DYNAMIC`, 2 `FIXED`.
 - IndexedDB iras/visszaolvasas es ujratoltes utani perzisztencia: PASS.
@@ -31,6 +33,7 @@ Datum: 2026-08-22
 - Desktop es 390 px mobil vizualis ellenorzes: PASS.
 - M1 index: 1591 blueprint 8 API-laprol; kikenyszeritett tranzakcios frissites es ujratoltes utani cache-visszaallitas PASS.
 - Hofstede-S1 vegyes `SCU`/`ITEM` recept, raw/normalizalt elkulonites, provenance es User Data rekordszam-megorzes PASS.
+- M2: Q517 HP_MIN_500 valasztas, Highest/Target Q, ketkartya-prioritas, IndexedDB reload es teljes User Data fingerprint-megorzes PASS.
 
 ## Meg nem bizonyitott
 

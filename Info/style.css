@@ -2906,6 +2906,254 @@ code {
   color: #9cecff;
 }
 
+/* M2 inventory, Crafting Cards and deterministic allocation UI. */
+
+.spg-m2-panel {
+  grid-column: 1 / -1;
+  scroll-margin-top: 18px;
+}
+
+.spg-m2-heading-actions,
+.spg-material-group-heading,
+.spg-crafting-card-heading,
+.spg-card-requirement-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.spg-m2-heading-actions {
+  margin: 12px 0 16px;
+}
+
+.spg-m2-heading-actions p {
+  margin: 0;
+}
+
+.spg-batch-form {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 0.6fr 0.75fr 0.65fr;
+  gap: 12px;
+  align-items: end;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.48);
+}
+
+.spg-batch-note-field,
+.spg-batch-form-actions {
+  grid-column: span 2;
+}
+
+.spg-batch-form-actions,
+.spg-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.spg-batch-form-actions button,
+.spg-inline-actions button {
+  min-height: 34px;
+  padding: 0 11px;
+  font-size: 12px;
+}
+
+.spg-material-summary,
+.spg-allocation-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-material-summary > div,
+.spg-allocation-summary > div {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-material-summary span,
+.spg-allocation-summary span,
+.spg-card-maximum span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.spg-material-list,
+.spg-crafting-card-list,
+.spg-card-requirements {
+  display: grid;
+  gap: 12px;
+}
+
+.spg-material-group,
+.spg-crafting-card,
+.spg-card-requirement {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-material-group,
+.spg-crafting-card {
+  padding: 14px;
+}
+
+.spg-material-group-heading {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.16);
+}
+
+.spg-material-group-heading > div,
+.spg-crafting-card-heading > div,
+.spg-card-requirement-heading > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.spg-material-group-heading small,
+.spg-crafting-card-heading small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.spg-material-group-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.spg-batch-row {
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 1.3fr) minmax(130px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.1);
+}
+
+.spg-batch-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.spg-batch-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-crafting-card[data-satisfied="true"] {
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.spg-crafting-card[data-satisfied="false"] {
+  border-color: rgba(244, 67, 54, 0.48);
+}
+
+.spg-crafting-card-heading h3 {
+  margin: 0;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 18px;
+}
+
+.spg-card-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(180px, 0.7fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin: 14px 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.72);
+}
+
+.spg-card-controls input {
+  max-width: 160px;
+}
+
+.spg-card-maximum {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-card-maximum strong {
+  font-size: 18px;
+}
+
+.spg-card-requirement {
+  padding: 12px;
+}
+
+.spg-card-requirement[data-status="SATISFIED"] {
+  border-left: 4px solid var(--good);
+}
+
+.spg-card-requirement:not([data-status="SATISFIED"]) {
+  border-left: 4px solid var(--danger);
+}
+
+.spg-strategy-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(120px, 180px);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.spg-quality-notice,
+.spg-allocated-batches,
+.spg-bottleneck {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-bottleneck {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.spg-allocation-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.spg-allocation-values span {
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: rgba(15, 23, 32, 0.72);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-allocation-log {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-allocation-log summary {
+  cursor: pointer;
+  color: #9cecff;
+}
+
+.spg-allocation-log ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 /* Standalone card export. These rules are embedded from this central CSS. */
 
 .spg-export-page {
@@ -2984,6 +3232,15 @@ code {
   .spg-browser-panel {
     grid-column: auto;
   }
+
+  .spg-batch-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-batch-note-field,
+  .spg-batch-form-actions {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 720px) {
@@ -3011,8 +3268,35 @@ code {
 
   .spg-browser-toolbar,
   .spg-browser-layout,
-  .spg-browser-detail-grid {
+  .spg-browser-detail-grid,
+  .spg-batch-form,
+  .spg-material-summary,
+  .spg-allocation-summary,
+  .spg-card-controls,
+  .spg-allocation-values,
+  .spg-strategy-row {
     grid-template-columns: 1fr;
+  }
+
+  .spg-m2-heading-actions,
+  .spg-material-group-heading,
+  .spg-crafting-card-heading,
+  .spg-card-requirement-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-material-group-heading > span {
+    text-align: left;
+  }
+
+  .spg-batch-row {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .spg-batch-note,
+  .spg-batch-row .spg-inline-actions {
+    grid-column: 1 / -1;
   }
 
   .spg-requirement-details {

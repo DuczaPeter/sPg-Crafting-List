@@ -1,0 +1,31 @@
+{
+  "materialUuid": "11111111-1111-4111-8111-111111111111",
+  "unit": "SCU",
+  "baseRequirement": {
+    "id": "fixture-blueprint:aspect:0",
+    "aspectIndex": 0,
+    "recipeSlotName": "Functional Core",
+    "ingredientUuid": "11111111-1111-4111-8111-111111111111",
+    "materialName": "Fixture Material",
+    "requiredQuantityUnits": 1000,
+    "unit": "SCU",
+    "qualityCapability": "DYNAMIC",
+    "affectedStats": [{ "key": "weapon_damage", "label": "Power" }]
+  },
+  "hpRequirement": {
+    "id": "fixture-blueprint:aspect:hp",
+    "aspectIndex": 0,
+    "recipeSlotName": "Integrity Shell",
+    "ingredientUuid": "11111111-1111-4111-8111-111111111111",
+    "materialName": "Fixture Material",
+    "requiredQuantityUnits": 1000,
+    "unit": "SCU",
+    "qualityCapability": "DYNAMIC",
+    "affectedStats": [{ "key": "health_maxhealth", "label": "Integrity" }]
+  },
+  "qualitySets": {
+    "hp": [480, 517, 700, 950],
+    "target": [820, 860, 910, 990],
+    "highest": [700, 850, 930]
+  }
+}

@@ -55,9 +55,9 @@
     </section>
 
     <nav class="spg-module-nav" aria-label="V1.0 alkalmazásrészek">
-      <button type="button" class="active" aria-current="page">Crafting List</button>
+      <button id="craftingListNav" type="button" class="active" aria-current="page">Crafting List</button>
       <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
-      <button type="button" disabled>My Materials</button>
+      <button id="myMaterialsNav" type="button">My Materials</button>
       <button type="button" disabled>Material Database</button>
       <button type="button" disabled>Mining Loadouts</button>
       <button type="button" disabled>Combined Materials</button>
@@ -105,6 +105,74 @@
         </div>
       </section>
 
+      <section id="craftingCardsPanel" class="panel spg-m2-panel" aria-labelledby="craftingCardsTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M2 · prioritásos készlettervezés</p>
+            <h2 id="craftingCardsTitle">Crafting List</h2>
+          </div>
+          <span id="craftingCardCount" class="spg-badge spg-badge-neutral">0 kártya</span>
+        </div>
+        <div class="spg-m2-heading-actions">
+          <p class="spg-muted">A legfelső kártya foglal először. Az allocation csak terv, a készletet nem csökkenti véglegesen.</p>
+          <button id="addCurrentBlueprintButton" type="button" disabled>Megnyitott blueprint hozzáadása</button>
+        </div>
+        <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
+        <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
+          <p class="spg-muted">Nyiss meg egy blueprintet, majd add hozzá a Crafting Listhez.</p>
+        </div>
+      </section>
+
+      <section id="myMaterialsPanel" class="panel spg-m2-panel" aria-labelledby="myMaterialsTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M2 · globális User Data</p>
+            <h2 id="myMaterialsTitle">My Materials</h2>
+          </div>
+          <span id="materialBatchCount" class="spg-badge spg-badge-neutral">0 batch</span>
+        </div>
+        <p class="spg-muted">Minden Quality batch külön rekord. SCU tárolás: 1 SCU = 10 000 egész egység.</p>
+        <form id="materialBatchForm" class="spg-batch-form">
+          <label>
+            <span>Material neve</span>
+            <input id="batchMaterialName" list="knownMaterials" autocomplete="off" required placeholder="pl. Stileron">
+          </label>
+          <label>
+            <span>Material UUID</span>
+            <input id="batchMaterialUuid" autocomplete="off" required placeholder="API UUID">
+          </label>
+          <label>
+            <span>Quality</span>
+            <input id="batchQuality" type="number" min="0" max="1000" step="1" placeholder="0–1000">
+          </label>
+          <label>
+            <span>Mennyiség</span>
+            <input id="batchQuantity" type="number" min="0.0001" step="0.0001" required placeholder="0,0000">
+          </label>
+          <label>
+            <span>Unit</span>
+            <select id="batchUnit">
+              <option value="SCU">SCU</option>
+              <option value="ITEM">darab</option>
+            </select>
+          </label>
+          <label class="spg-batch-note-field">
+            <span>Megjegyzés</span>
+            <input id="batchNote" maxlength="160" placeholder="opcionális">
+          </label>
+          <div class="spg-batch-form-actions">
+            <button id="saveMaterialBatchButton" type="submit" class="primary">Batch hozzáadása</button>
+            <button id="cancelBatchEditButton" type="button" hidden>Szerkesztés megszakítása</button>
+          </div>
+        </form>
+        <datalist id="knownMaterials"></datalist>
+        <p id="inventoryNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+        <div id="materialInventorySummary" class="spg-material-summary"></div>
+        <div id="materialBatchList" class="spg-material-list" aria-live="polite">
+          <p class="spg-muted">Még nincs rögzített Quality batch.</p>
+        </div>
+      </section>
+
       <section class="panel spg-baseline-panel" aria-labelledby="baselineTitle">
         <div class="spg-section-heading">
           <div>
@@ -122,7 +190,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu nyolc célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu kilenc célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -157,9 +225,9 @@
         </div>
         <ol class="spg-roadmap-list">
           <li><strong>M1:</strong> API cache, Blueprint Browser és normalizált receptmodell.</li>
-          <li><strong>M2:</strong> My Materials, Quality batch-ek és determinisztikus Allocation Engine.</li>
+          <li><strong>M2:</strong> My Materials, Quality batch-ek, több Crafting Card és determinisztikus Allocation Engine.</li>
           <li><strong>M3:</strong> mining adatok, location rangsor és loadoutok.</li>
-          <li><strong>M4:</strong> több Crafting Card, Combined Materials, backup és diagnosztika.</li>
+          <li><strong>M4:</strong> Combined Materials, backup és kibővített diagnosztika.</li>
           <li><strong>M5:</strong> standalone export, teljes referencia-UI és elfogadási regresszió.</li>
         </ol>
       </section>
@@ -178,7 +246,7 @@
     var APP = Object.freeze({
       name: "sPg Crafting List",
       version: "V001-dev",
-      schemaVersion: 2,
+      schemaVersion: 3,
       cacheSchemaVersion: 2,
       dbName: "spg-crafting-list",
       dbVersion: 2,
@@ -225,6 +293,11 @@
       blueprintFilters: [],
       activeBlueprintDataset: null,
       blueprintIndexSyncing: false,
+      materialBatches: [],
+      craftingCards: [],
+      allocationResult: null,
+      editingBatchId: null,
+      userDataReady: false,
       cssText: null,
       lastProbe: null
     };
@@ -531,6 +604,77 @@
       count(storeName) {
         return this.request(storeName, "readonly", function (store) {
           return store.count();
+        });
+      }
+
+      commitInventorySnapshot(batches) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["materialBatches", "userInventory"], "readwrite");
+          var batchStore = transaction.objectStore("materialBatches");
+          var inventoryStore = transaction.objectStore("userInventory");
+          batchStore.clear();
+          inventoryStore.clear();
+          var aggregates = new Map();
+          batches.forEach(function (batch) {
+            batchStore.put(batch);
+            var aggregateId = batch.materialUuid + "::" + batch.unit;
+            if (!aggregates.has(aggregateId)) {
+              aggregates.set(aggregateId, {
+                id: aggregateId,
+                materialUuid: batch.materialUuid,
+                materialName: batch.materialName,
+                unit: batch.unit,
+                batchCount: 0,
+                totalQuantityUnits: 0,
+                updatedAt: nowIso()
+              });
+            }
+            var aggregate = aggregates.get(aggregateId);
+            aggregate.batchCount += 1;
+            aggregate.totalQuantityUnits += batch.quantityUnits;
+          });
+          aggregates.forEach(function (aggregate) {
+            inventoryStore.put(aggregate);
+          });
+          transaction.oncomplete = function () {
+            resolve(batches);
+          };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("Az inventory snapshot mentése sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("Az inventory snapshot mentése megszakadt."));
+          };
+        });
+      }
+
+      commitCraftingCardsSnapshot(cards) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction("craftingCards", "readwrite");
+          var store = transaction.objectStore("craftingCards");
+          store.clear();
+          cards.forEach(function (card) {
+            store.put(card);
+          });
+          transaction.oncomplete = function () {
+            resolve(cards);
+          };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A Crafting Card snapshot mentése sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A Crafting Card snapshot mentése megszakadt."));
+          };
         });
       }
 
@@ -897,6 +1041,75 @@
       }
     }
 
+    function canonicalizeJson(value) {
+      if (Array.isArray(value)) {
+        return value.map(canonicalizeJson);
+      }
+      if (value && typeof value === "object") {
+        var result = {};
+        Object.keys(value).sort().forEach(function (key) {
+          result[key] = canonicalizeJson(value[key]);
+        });
+        return result;
+      }
+      return value;
+    }
+
+    function fingerprintText(value) {
+      var hash = 2166136261;
+      var text = String(value);
+      for (var index = 0; index < text.length; index += 1) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return (hash >>> 0).toString(16).padStart(8, "0");
+    }
+
+    class UserDataRepository {
+      constructor(database) {
+        this.database = database;
+      }
+
+      async loadMaterialBatches() {
+        var batches = await this.database.getAll("materialBatches");
+        return batches.sort(compareStableIdentity);
+      }
+
+      async saveMaterialBatches(batches) {
+        return this.database.commitInventorySnapshot(batches.slice().sort(compareStableIdentity));
+      }
+
+      async loadCraftingCards() {
+        var cards = await this.database.getAll("craftingCards");
+        return cards.map(function (card, index) {
+          return normalizeStoredCraftingCard(card, index);
+        }).sort(function (a, b) {
+          var orderDifference = Number(a.order || 0) - Number(b.order || 0);
+          return orderDifference || String(a.id).localeCompare(String(b.id));
+        });
+      }
+
+      async saveCraftingCards(cards) {
+        var normalized = cards.map(function (card, index) {
+          return Object.assign({}, card, { order: index, updatedAt: nowIso() });
+        });
+        await this.database.commitCraftingCardsSnapshot(normalized);
+        return normalized;
+      }
+
+      async fingerprint() {
+        var storeNames = ["userInventory", "materialBatches", "userLoadouts", "craftingCards"];
+        var payload = {};
+        for (var index = 0; index < storeNames.length; index += 1) {
+          var records = await this.database.getAll(storeNames[index]);
+          payload[storeNames[index]] = records.slice().sort(function (a, b) {
+            return String(a.id || a.key || "").localeCompare(String(b.id || b.key || ""));
+          });
+        }
+        return fingerprintText(JSON.stringify(canonicalizeJson(payload)));
+      }
+    }
+
     /* M1_PURE_MODEL_START */
     function hasNumericValue(value) {
       return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
@@ -1130,6 +1343,404 @@
     }
     /* M1_PURE_MODEL_END */
 
+    /* M2_ALLOCATION_ENGINE_START */
+    var M2_QUALITY_RULES = Object.freeze({
+      HP_MIN_500: "HP_MIN_500",
+      HIGHEST_Q: "HIGHEST_Q",
+      TARGET_Q: "TARGET_Q",
+      FIXED: "FIXED",
+      UNKNOWN: "UNKNOWN"
+    });
+
+    function materialIdentity(record) {
+      return (record && (record.ingredientUuid || (record.ingredient && record.ingredient.uuid) || record.materialUuid)) || null;
+    }
+
+    function hasValidQuality(value) {
+      return value !== null && value !== undefined && value !== "" &&
+        Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 1000;
+    }
+
+    function isIntegrityStat(stat) {
+      var text = String([
+        stat && stat.key,
+        stat && stat.propertyKey,
+        stat && stat.label
+      ].filter(Boolean).join(" ")).toLowerCase();
+      return /integrity|health_maxhealth|maxhealth|\bhealth\b|\bhp\b/.test(text);
+    }
+
+    function classifyRequirementQuality(requirement) {
+      var capability = requirement && (requirement.qualityCapability || (requirement.quality && requirement.quality.capability));
+      if (capability === "FIXED") {
+        return { mode: M2_QUALITY_RULES.FIXED, targetQuality: null, configurable: false, reason: "API_FIXED" };
+      }
+      if (capability !== "DYNAMIC") {
+        return { mode: M2_QUALITY_RULES.UNKNOWN, targetQuality: null, configurable: false, reason: "API_QUALITY_UNKNOWN" };
+      }
+      var stats = Array.isArray(requirement.affectedStats) ? requirement.affectedStats :
+        (requirement.quality && Array.isArray(requirement.quality.modifiers) ? requirement.quality.modifiers : []);
+      if (!stats.length) {
+        return { mode: M2_QUALITY_RULES.UNKNOWN, targetQuality: null, configurable: false, reason: "QUALITY_EFFECT_UNKNOWN" };
+      }
+      if (stats.every(isIntegrityStat)) {
+        return { mode: M2_QUALITY_RULES.HP_MIN_500, targetQuality: 500, configurable: false, reason: "INTEGRITY_ONLY" };
+      }
+      return { mode: M2_QUALITY_RULES.HIGHEST_Q, targetQuality: null, configurable: true, reason: "FUNCTIONAL_DYNAMIC" };
+    }
+
+    function resolveRequirementQualityRule(requirement, configuration) {
+      var classified = classifyRequirementQuality(requirement);
+      if (!classified.configurable) {
+        return classified;
+      }
+      var requested = configuration && configuration.mode;
+      if (requested === M2_QUALITY_RULES.TARGET_Q) {
+        if (!hasValidQuality(configuration.targetQuality)) {
+          return { mode: M2_QUALITY_RULES.UNKNOWN, targetQuality: null, configurable: true, reason: "INVALID_TARGET_QUALITY" };
+        }
+        return {
+          mode: M2_QUALITY_RULES.TARGET_Q,
+          targetQuality: Number(configuration.targetQuality),
+          configurable: true,
+          reason: "USER_TARGET_QUALITY"
+        };
+      }
+      return { mode: M2_QUALITY_RULES.HIGHEST_Q, targetQuality: null, configurable: true, reason: "USER_HIGHEST_QUALITY" };
+    }
+
+    function compareStableIdentity(a, b) {
+      var created = String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+      return created || String(a.id).localeCompare(String(b.id));
+    }
+
+    function compareEligibleBatches(rule, a, b) {
+      if (rule.mode === M2_QUALITY_RULES.HIGHEST_Q) {
+        var highDifference = Number(b.quality) - Number(a.quality);
+        return highDifference || compareStableIdentity(a, b);
+      }
+      if (rule.mode === M2_QUALITY_RULES.HP_MIN_500 || rule.mode === M2_QUALITY_RULES.TARGET_Q) {
+        var lowDifference = Number(a.quality) - Number(b.quality);
+        return lowDifference || compareStableIdentity(a, b);
+      }
+      return compareStableIdentity(a, b);
+    }
+
+    function batchEligibility(batch, rule) {
+      if (rule.mode === M2_QUALITY_RULES.FIXED) {
+        return { eligible: true, reason: "FIXED_QUALITY_NOT_APPLICABLE" };
+      }
+      if (rule.mode === M2_QUALITY_RULES.UNKNOWN) {
+        return { eligible: false, reason: "QUALITY_RULE_UNKNOWN" };
+      }
+      if (!hasValidQuality(batch.quality)) {
+        return { eligible: false, reason: "BATCH_QUALITY_UNKNOWN" };
+      }
+      if (rule.mode === M2_QUALITY_RULES.HP_MIN_500 && Number(batch.quality) < 500) {
+        return { eligible: false, reason: "QUALITY_BELOW_500" };
+      }
+      if (rule.mode === M2_QUALITY_RULES.TARGET_Q && Number(batch.quality) < rule.targetQuality) {
+        return { eligible: false, reason: "QUALITY_BELOW_TARGET" };
+      }
+      if (rule.mode === M2_QUALITY_RULES.HP_MIN_500) {
+        return { eligible: true, reason: "LOWEST_QUALITY_AT_OR_ABOVE_500" };
+      }
+      if (rule.mode === M2_QUALITY_RULES.TARGET_Q) {
+        return { eligible: true, reason: "LOWEST_QUALITY_AT_OR_ABOVE_TARGET" };
+      }
+      return { eligible: true, reason: "HIGHEST_QUALITY_FIRST" };
+    }
+
+    function sortedCardRequirements(card) {
+      var requirements = Array.isArray(card.requirements) ? card.requirements :
+        (card.blueprint && Array.isArray(card.blueprint.recipeSlots) ? card.blueprint.recipeSlots : []);
+      return requirements.slice().sort(function (a, b) {
+        var aspectDifference = Number(a.aspectIndex || 0) - Number(b.aspectIndex || 0);
+        return aspectDifference || String(a.id).localeCompare(String(b.id));
+      });
+    }
+
+    function allocateCardsDeterministically(cards, batches) {
+      if (!Array.isArray(cards) || !Array.isArray(batches)) {
+        throw new TypeError("Az allocation bemenete csak card- és batch-tömb lehet.");
+      }
+      var normalizedBatches = batches.map(function (batch) {
+        if (!batch || !batch.id || !materialIdentity(batch) || !Number.isInteger(batch.quantityUnits) || batch.quantityUnits < 0) {
+          throw new TypeError("Érvénytelen material batch az allocation bemenetben.");
+        }
+        return Object.assign({}, batch, {
+          materialUuid: materialIdentity(batch),
+          unit: batch.unit || "UNKNOWN",
+          quality: hasValidQuality(batch.quality) ? Number(batch.quality) : null
+        });
+      }).sort(compareStableIdentity);
+      var byMaterial = new Map();
+      var byMaterialUnit = new Map();
+      var remaining = new Map();
+      normalizedBatches.forEach(function (batch) {
+        var materialKey = batch.materialUuid;
+        var exactKey = materialKey + "::" + batch.unit;
+        if (!byMaterial.has(materialKey)) {
+          byMaterial.set(materialKey, []);
+        }
+        if (!byMaterialUnit.has(exactKey)) {
+          byMaterialUnit.set(exactKey, []);
+        }
+        byMaterial.get(materialKey).push(batch);
+        byMaterialUnit.get(exactKey).push(batch);
+        remaining.set(batch.id, batch.quantityUnits);
+      });
+
+      function evaluateRequirement(requirement, requiredUnits, available, collectTrace, card, rule) {
+        var materialUuid = materialIdentity(requirement);
+        var unit = requirement.unit || (requirement.quantity && requirement.quantity.unit) || "UNKNOWN";
+        var exactKey = materialUuid + "::" + unit;
+        var exactBatches = (byMaterialUnit.get(exactKey) || []).slice();
+        var materialBatches = byMaterial.get(materialUuid) || [];
+        var totalMatchingUnits = exactBatches.reduce(function (sum, batch) {
+          return sum + (available.get(batch.id) || 0);
+        }, 0);
+        var eligibleBatches = exactBatches.filter(function (batch) {
+          return batchEligibility(batch, rule).eligible && (available.get(batch.id) || 0) > 0;
+        }).sort(function (a, b) {
+          return compareEligibleBatches(rule, a, b);
+        });
+        var initialByBatch = new Map();
+        exactBatches.forEach(function (batch) {
+          initialByBatch.set(batch.id, available.get(batch.id) || 0);
+        });
+        var needed = requiredUnits;
+        var allocations = [];
+        eligibleBatches.forEach(function (batch) {
+          if (needed <= 0) {
+            return;
+          }
+          var batchRemaining = available.get(batch.id) || 0;
+          var allocatedUnits = Math.min(needed, batchRemaining);
+          if (allocatedUnits > 0) {
+            available.set(batch.id, batchRemaining - allocatedUnits);
+            needed -= allocatedUnits;
+            allocations.push({
+              batchId: batch.id,
+              quality: batch.quality,
+              allocatedUnits: allocatedUnits,
+              reason: batchEligibility(batch, rule).reason
+            });
+          }
+        });
+        var allocatedUnits = requiredUnits - needed;
+        var missingAmountUnits = Math.max(0, requiredUnits - totalMatchingUnits);
+        var missingQualityUnits = Math.max(0, needed - missingAmountUnits);
+        var shortageKinds = [];
+        if (missingAmountUnits > 0) {
+          shortageKinds.push("QUANTITY");
+        }
+        if (missingQualityUnits > 0 || rule.mode === M2_QUALITY_RULES.UNKNOWN) {
+          shortageKinds.push(rule.mode === M2_QUALITY_RULES.UNKNOWN ? "QUALITY_UNKNOWN" : "QUALITY");
+        }
+        var status = "SATISFIED";
+        if (shortageKinds.indexOf("QUALITY_UNKNOWN") !== -1) {
+          status = "QUALITY_UNKNOWN";
+        } else if (missingAmountUnits > 0 && missingQualityUnits > 0) {
+          status = "INSUFFICIENT_QUALITY_AND_QUANTITY";
+        } else if (missingQualityUnits > 0) {
+          status = "INSUFFICIENT_QUALITY";
+        } else if (missingAmountUnits > 0) {
+          status = "INSUFFICIENT_QUANTITY";
+        }
+        var trace = null;
+        if (collectTrace) {
+          var allocationByBatch = new Map(allocations.map(function (item) {
+            return [item.batchId, item];
+          }));
+          trace = {
+            cardId: card.id,
+            cardOrder: card.order,
+            blueprintUuid: card.blueprintUuid || null,
+            outputName: card.outputName || null,
+            recipeSlotId: requirement.id,
+            recipeSlotName: requirement.recipeSlotName,
+            materialUuid: materialUuid,
+            materialName: requirement.materialName,
+            unit: unit,
+            rule: rule.mode,
+            ruleReason: rule.reason,
+            targetQuality: rule.targetQuality,
+            requiredUnits: requiredUnits,
+            available: materialBatches.map(function (batch) {
+              var allocation = allocationByBatch.get(batch.id);
+              var exactUnit = batch.unit === unit;
+              var eligibility = exactUnit ? batchEligibility(batch, rule) : { eligible: false, reason: "UNIT_MISMATCH" };
+              var initialUnits = exactUnit ? (initialByBatch.get(batch.id) || 0) : (available.get(batch.id) || 0);
+              var decision = eligibility.reason;
+              if (initialUnits <= 0) {
+                decision = "BATCH_DEPLETED_BY_HIGHER_PRIORITY";
+              } else if (allocation) {
+                decision = "USED_" + allocation.reason;
+              } else if (eligibility.eligible) {
+                decision = "SKIPPED_REQUIREMENT_ALREADY_FILLED";
+              }
+              return {
+                batchId: batch.id,
+                quality: batch.quality,
+                unit: batch.unit,
+                availableUnitsAtSlot: initialUnits,
+                eligible: eligibility.eligible,
+                allocatedUnits: allocation ? allocation.allocatedUnits : 0,
+                decision: decision
+              };
+            }),
+            allocations: allocations,
+            allocatedUnits: allocatedUnits,
+            missingAmountUnits: missingAmountUnits,
+            missingQualityUnits: missingQualityUnits,
+            shortageKinds: shortageKinds,
+            status: status,
+            satisfied: needed === 0
+          };
+        }
+        return {
+          recipeSlotId: requirement.id,
+          recipeSlotName: requirement.recipeSlotName,
+          ingredientUuid: materialUuid,
+          materialName: requirement.materialName,
+          unit: unit,
+          rule: rule.mode,
+          ruleReason: rule.reason,
+          targetQuality: rule.targetQuality,
+          requiredUnits: requiredUnits,
+          allocatedUnits: allocatedUnits,
+          allocatedBatches: allocations,
+          missingAmountUnits: missingAmountUnits,
+          missingQualityUnits: missingQualityUnits,
+          shortageKinds: shortageKinds,
+          status: status,
+          satisfied: needed === 0,
+          trace: trace
+        };
+      }
+
+      function simulateCard(card, craftQuantity, startingAvailability, collectTrace) {
+        var simulated = new Map(startingAvailability);
+        var requirements = sortedCardRequirements(card);
+        var results = requirements.map(function (requirement) {
+          var perCraftUnits = requirement.requiredQuantityUnits;
+          if (!Number.isInteger(perCraftUnits) || perCraftUnits < 0 || !Number.isSafeInteger(perCraftUnits * craftQuantity)) {
+            throw new TypeError("Érvénytelen requirement mennyiség: " + requirement.id);
+          }
+          var configuration = card.slotStrategies && card.slotStrategies[requirement.id];
+          var rule = resolveRequirementQualityRule(requirement, configuration);
+          return evaluateRequirement(requirement, perCraftUnits * craftQuantity, simulated, collectTrace, card, rule);
+        });
+        return {
+          availability: simulated,
+          requirements: results,
+          satisfied: results.every(function (result) { return result.satisfied; })
+        };
+      }
+
+      var sortedCards = cards.filter(function (card) {
+        return card && card.active !== false;
+      }).slice().sort(function (a, b) {
+        var orderDifference = Number(a.order || 0) - Number(b.order || 0);
+        return orderDifference || String(a.id).localeCompare(String(b.id));
+      });
+      var cardResults = [];
+      var allocationTrace = [];
+      sortedCards.forEach(function (card) {
+        var requestedQuantity = Number(card.quantity);
+        if (!Number.isInteger(requestedQuantity) || requestedQuantity < 1) {
+          throw new TypeError("A Crafting Card mennyisége pozitív egész szám legyen: " + card.id);
+        }
+        var requirements = sortedCardRequirements(card);
+        var optimisticUpper = requirements.length ? Number.MAX_SAFE_INTEGER : 0;
+        requirements.forEach(function (requirement) {
+          var perCraftUnits = requirement.requiredQuantityUnits;
+          var rule = resolveRequirementQualityRule(requirement, card.slotStrategies && card.slotStrategies[requirement.id]);
+          if (!Number.isInteger(perCraftUnits) || perCraftUnits <= 0 || rule.mode === M2_QUALITY_RULES.UNKNOWN) {
+            optimisticUpper = 0;
+            return;
+          }
+          var materialUuid = materialIdentity(requirement);
+          var unit = requirement.unit || (requirement.quantity && requirement.quantity.unit) || "UNKNOWN";
+          var eligibleTotal = (byMaterialUnit.get(materialUuid + "::" + unit) || []).reduce(function (sum, batch) {
+            return sum + (batchEligibility(batch, rule).eligible ? (remaining.get(batch.id) || 0) : 0);
+          }, 0);
+          optimisticUpper = Math.min(optimisticUpper, Math.floor(eligibleTotal / perCraftUnits));
+        });
+        if (!Number.isFinite(optimisticUpper) || optimisticUpper === Number.MAX_SAFE_INTEGER) {
+          optimisticUpper = 0;
+        }
+        var low = 0;
+        var high = optimisticUpper;
+        while (low < high) {
+          var middle = Math.ceil((low + high) / 2);
+          if (simulateCard(card, middle, remaining, false).satisfied) {
+            low = middle;
+          } else {
+            high = middle - 1;
+          }
+        }
+        var maxCraftable = low;
+        var bottleneckProbe = simulateCard(card, maxCraftable + 1, remaining, false);
+        var bottleneckSlotIds = bottleneckProbe.requirements.filter(function (result) {
+          return !result.satisfied;
+        }).map(function (result) {
+          return result.recipeSlotId;
+        });
+        var actual = simulateCard(card, requestedQuantity, remaining, true);
+        remaining = actual.availability;
+        actual.requirements.forEach(function (result) {
+          if (result.trace) {
+            result.trace.bottleneck = bottleneckSlotIds.indexOf(result.recipeSlotId) !== -1;
+            allocationTrace.push(result.trace);
+          }
+        });
+        cardResults.push({
+          cardId: card.id,
+          order: card.order,
+          outputName: card.outputName,
+          requestedQuantity: requestedQuantity,
+          maxCraftable: maxCraftable,
+          bottleneckSlotIds: bottleneckSlotIds,
+          satisfied: actual.satisfied,
+          requirements: actual.requirements.map(function (result) {
+            var copy = Object.assign({}, result);
+            delete copy.trace;
+            copy.bottleneck = bottleneckSlotIds.indexOf(result.recipeSlotId) !== -1;
+            return copy;
+          })
+        });
+      });
+      var batchUsage = normalizedBatches.map(function (batch) {
+        var remainingUnits = remaining.get(batch.id) || 0;
+        return {
+          batchId: batch.id,
+          materialUuid: batch.materialUuid,
+          materialName: batch.materialName,
+          quality: batch.quality,
+          unit: batch.unit,
+          quantityUnits: batch.quantityUnits,
+          reservedUnits: batch.quantityUnits - remainingUnits,
+          remainingUnits: remainingUnits
+        };
+      });
+      return {
+        cards: cardResults,
+        batchUsage: batchUsage,
+        trace: allocationTrace,
+        summary: {
+          cardCount: cardResults.length,
+          requirementCount: cardResults.reduce(function (sum, card) { return sum + card.requirements.length; }, 0),
+          unsatisfiedRequirementCount: cardResults.reduce(function (sum, card) {
+            return sum + card.requirements.filter(function (requirement) { return !requirement.satisfied; }).length;
+          }, 0),
+          totalReservedUnits: batchUsage.reduce(function (sum, batch) { return sum + batch.reservedUnits; }, 0)
+        }
+      };
+    }
+    /* M2_ALLOCATION_ENGINE_END */
+
     function compareLocations(a, b) {
       function sortable(value) {
         var number = Number(value);
@@ -1148,6 +1759,7 @@
 
     var logger = new DiagnosticLogger();
     var database = new AppDatabase();
+    var userDataRepository = new UserDataRepository(database);
     var api = new SCWikiAdapter(logger);
 
     function setText(id, value) {
@@ -1418,7 +2030,9 @@
         }
         state.normalizedBlueprint = normalized;
         renderBlueprint(normalized);
-          renderBlueprintBrowserDetail(normalized, cacheOrigin);
+        renderBlueprintBrowserDetail(normalized, cacheOrigin);
+        document.getElementById("addCurrentBlueprintButton").disabled = false;
+        updateKnownMaterials();
         await updateCacheDiagnostics();
         updateEnvironmentUi();
         if (ownsProcess) {
@@ -1456,8 +2070,10 @@
       renderBlueprintDatasetState();
       var candidateVersion = null;
       var userCountsBefore = null;
+      var userFingerprintBefore = null;
       try {
         userCountsBefore = await readUserDataCounts();
+        userFingerprintBefore = await userDataRepository.fingerprint();
         var versionRecord = await api.getDefaultGameVersion();
         candidateVersion = versionRecord.code;
         var existingDataset = await database.get("blueprintDatasets", candidateVersion);
@@ -1545,8 +2161,11 @@
           previousNormalizedKeys: previousNormalizedKeys
         });
         var userCountsAfter = await readUserDataCounts();
+        var userFingerprintAfter = await userDataRepository.fingerprint();
         assert(JSON.stringify(userCountsAfter) === JSON.stringify(userCountsBefore), "A Game Data szinkron módosította a User Data rekordszámát.");
+        assert(userFingerprintAfter === userFingerprintBefore, "A Game Data szinkron módosította a User Data tartalmát.");
         document.body.dataset.userDataCountsPreserved = "true";
+        document.body.dataset.userDataFingerprintPreserved = "true";
 
         state.gameVersion = versionRecord;
         state.activeBlueprintDataset = dataset;
@@ -1561,7 +2180,8 @@
           gameVersion: dataset.version,
           recordCount: dataset.recordCount,
           pageCount: dataset.pageCount,
-          userDataCountsPreserved: userCountsAfter
+          userDataCountsPreserved: userCountsAfter,
+          userDataFingerprintPreserved: true
         });
         if (ownsProcess) {
           logger.finish("PASS", { cacheOrigin: "API", gameVersion: dataset.version, recordCount: dataset.recordCount });
@@ -1643,6 +2263,739 @@
         article.append(heading, details);
         container.append(article);
       });
+    }
+
+    function formatInventoryUnits(unit, units) {
+      if (!Number.isInteger(units)) {
+        return "Ismeretlen";
+      }
+      return unit === "SCU" ? formatScuUnits(units) : units.toLocaleString("hu-HU") + " db";
+    }
+
+    function setInventoryNotice(message, tone) {
+      var element = document.getElementById("inventoryNotice");
+      element.textContent = message || "";
+      element.dataset.tone = tone || "neutral";
+    }
+
+    function sanitizedCardRequirement(requirement) {
+      return {
+        id: requirement.id,
+        aspectIndex: requirement.aspectIndex,
+        blueprintUuid: requirement.blueprintUuid,
+        outputUuid: requirement.outputUuid,
+        recipeSlotKey: requirement.recipeSlotKey,
+        recipeSlotName: requirement.recipeSlotName,
+        ingredientUuid: requirement.ingredientUuid,
+        materialName: requirement.materialName,
+        requiredQuantityUnits: requirement.requiredQuantityUnits,
+        unit: requirement.unit,
+        qualityCapability: requirement.qualityCapability,
+        affectedStats: (requirement.affectedStats || []).map(function (stat) {
+          return {
+            key: stat.key || null,
+            propertyUuid: stat.propertyUuid || null,
+            label: stat.label || null,
+            betterWhen: stat.betterWhen || null
+          };
+        })
+      };
+    }
+
+    function buildCraftingCard(blueprint) {
+      var createdAt = nowIso();
+      var requirements = blueprint.recipeSlots.map(sanitizedCardRequirement);
+      var slotStrategies = {};
+      requirements.forEach(function (requirement) {
+        var rule = classifyRequirementQuality(requirement);
+        if (rule.configurable) {
+          slotStrategies[requirement.id] = {
+            mode: M2_QUALITY_RULES.HIGHEST_Q,
+            targetQuality: 850
+          };
+        }
+      });
+      return {
+        id: makeId("card"),
+        order: state.craftingCards.length,
+        active: true,
+        collapsed: false,
+        quantity: 1,
+        blueprintUuid: blueprint.uuid,
+        blueprintCacheKey: blueprint.cacheKey,
+        gameVersion: blueprint.gameVersion,
+        outputUuid: blueprint.outputUuid,
+        outputName: blueprint.outputName,
+        outputType: blueprint.outputType,
+        requirements: requirements,
+        slotStrategies: slotStrategies,
+        createdAt: createdAt,
+        updatedAt: createdAt
+      };
+    }
+
+    function normalizeStoredCraftingCard(card, fallbackOrder) {
+      var normalized = Object.assign({}, card);
+      normalized.order = Number.isInteger(Number(card.order)) ? Number(card.order) : fallbackOrder;
+      normalized.active = card.active !== false;
+      normalized.collapsed = card.collapsed === true;
+      normalized.quantity = Number.isInteger(Number(card.quantity)) && Number(card.quantity) > 0 ? Number(card.quantity) : 1;
+      normalized.requirements = Array.isArray(card.requirements) ? card.requirements : [];
+      normalized.slotStrategies = card.slotStrategies && typeof card.slotStrategies === "object" ? card.slotStrategies : {};
+      return normalized;
+    }
+
+    function updateKnownMaterials() {
+      var datalist = document.getElementById("knownMaterials");
+      var records = new Map();
+      state.materialBatches.forEach(function (batch) {
+        records.set(batch.materialUuid, { uuid: batch.materialUuid, name: batch.materialName });
+      });
+      state.craftingCards.forEach(function (card) {
+        (card.requirements || []).forEach(function (requirement) {
+          if (requirement.ingredientUuid) {
+            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: requirement.materialName });
+          }
+        });
+      });
+      if (state.normalizedBlueprint) {
+        state.normalizedBlueprint.recipeSlots.forEach(function (requirement) {
+          if (requirement.ingredientUuid) {
+            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: requirement.materialName });
+          }
+        });
+      }
+      datalist.replaceChildren();
+      Array.from(records.values()).sort(function (a, b) {
+        return a.name.localeCompare(b.name, "hu");
+      }).forEach(function (record) {
+        var option = document.createElement("option");
+        option.value = record.name;
+        option.dataset.uuid = record.uuid;
+        option.label = record.uuid;
+        datalist.append(option);
+      });
+    }
+
+    function renderAllocationSummary() {
+      var container = document.getElementById("allocationSummary");
+      container.replaceChildren();
+      var result = state.allocationResult;
+      if (!result || !result.cards.length) {
+        return;
+      }
+      var values = [
+        ["Aktív kártya", result.summary.cardCount],
+        ["Recipe slot", result.summary.requirementCount],
+        ["Nem teljesített", result.summary.unsatisfiedRequirementCount],
+        ["Tervezett batch-foglalás", result.batchUsage.filter(function (batch) { return batch.reservedUnits > 0; }).length]
+      ];
+      values.forEach(function (value) {
+        var item = document.createElement("div");
+        var label = document.createElement("span");
+        label.textContent = value[0];
+        var content = document.createElement("strong");
+        content.textContent = String(value[1]);
+        item.append(label, content);
+        container.append(item);
+      });
+    }
+
+    function renderMaterialInventory() {
+      setBadge(
+        document.getElementById("materialBatchCount"),
+        state.materialBatches.length ? "PASS" : "NEUTRAL",
+        state.materialBatches.length + " batch"
+      );
+      var usageByBatch = new Map();
+      if (state.allocationResult) {
+        state.allocationResult.batchUsage.forEach(function (usage) {
+          usageByBatch.set(usage.batchId, usage);
+        });
+      }
+      var groups = new Map();
+      state.materialBatches.forEach(function (batch) {
+        var key = batch.materialUuid + "::" + batch.unit;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            materialUuid: batch.materialUuid,
+            materialName: batch.materialName,
+            unit: batch.unit,
+            batches: []
+          });
+        }
+        groups.get(key).batches.push(batch);
+      });
+      var summary = document.getElementById("materialInventorySummary");
+      summary.replaceChildren();
+      var summaryValues = [
+        ["Material / unit", groups.size],
+        ["Quality batch", state.materialBatches.length],
+        ["Tervezetten használt", state.allocationResult ? state.allocationResult.batchUsage.filter(function (batch) { return batch.reservedUnits > 0; }).length : 0]
+      ];
+      summaryValues.forEach(function (value) {
+        var item = document.createElement("div");
+        var label = document.createElement("span");
+        label.textContent = value[0];
+        var content = document.createElement("strong");
+        content.textContent = String(value[1]);
+        item.append(label, content);
+        summary.append(item);
+      });
+
+      var container = document.getElementById("materialBatchList");
+      container.replaceChildren();
+      if (!groups.size) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Még nincs rögzített Quality batch.";
+        container.append(empty);
+        return;
+      }
+      Array.from(groups.values()).sort(function (a, b) {
+        return a.materialName.localeCompare(b.materialName, "hu") || a.unit.localeCompare(b.unit);
+      }).forEach(function (group) {
+        var article = document.createElement("article");
+        article.className = "spg-material-group";
+        var heading = document.createElement("div");
+        heading.className = "spg-material-group-heading";
+        var title = document.createElement("div");
+        var name = document.createElement("strong");
+        name.textContent = group.materialName;
+        var uuid = document.createElement("small");
+        uuid.textContent = group.materialUuid;
+        title.append(name, uuid);
+        var totalUnits = group.batches.reduce(function (sum, batch) { return sum + batch.quantityUnits; }, 0);
+        var reservedUnits = group.batches.reduce(function (sum, batch) {
+          var usage = usageByBatch.get(batch.id);
+          return sum + (usage ? usage.reservedUnits : 0);
+        }, 0);
+        var totals = document.createElement("span");
+        totals.textContent = "Készlet " + formatInventoryUnits(group.unit, totalUnits) +
+          " · terv " + formatInventoryUnits(group.unit, reservedUnits) +
+          " · szabad " + formatInventoryUnits(group.unit, totalUnits - reservedUnits);
+        heading.append(title, totals);
+        article.append(heading);
+
+        group.batches.slice().sort(function (a, b) {
+          var qualityDifference = (a.quality == null ? 1001 : a.quality) - (b.quality == null ? 1001 : b.quality);
+          return qualityDifference || compareStableIdentity(a, b);
+        }).forEach(function (batch) {
+          var usage = usageByBatch.get(batch.id);
+          var row = document.createElement("div");
+          row.className = "spg-batch-row";
+          row.dataset.batchId = batch.id;
+          row.dataset.batchQuality = batch.quality == null ? "unknown" : String(batch.quality);
+          var quality = document.createElement("strong");
+          quality.textContent = batch.quality == null ? "Q?" : "Q" + batch.quality;
+          var quantities = document.createElement("span");
+          var reserved = usage ? usage.reservedUnits : 0;
+          quantities.textContent = formatInventoryUnits(batch.unit, batch.quantityUnits) +
+            " · foglalt " + formatInventoryUnits(batch.unit, reserved) +
+            " · szabad " + formatInventoryUnits(batch.unit, batch.quantityUnits - reserved);
+          var note = document.createElement("span");
+          note.className = "spg-batch-note";
+          note.textContent = batch.note || "Nincs megjegyzés";
+          var actions = document.createElement("div");
+          actions.className = "spg-inline-actions";
+          var edit = document.createElement("button");
+          edit.type = "button";
+          edit.textContent = "Szerkesztés";
+          edit.addEventListener("click", function () {
+            beginBatchEdit(batch.id);
+          });
+          var remove = document.createElement("button");
+          remove.type = "button";
+          remove.textContent = "Törlés";
+          remove.addEventListener("click", function () {
+            deleteMaterialBatch(batch.id).catch(function (error) {
+              setInventoryNotice("Batch törlési hiba: " + error.message, "error");
+            });
+          });
+          actions.append(edit, remove);
+          row.append(quality, quantities, note, actions);
+          article.append(row);
+        });
+        container.append(article);
+      });
+    }
+
+    function translateAllocationDecision(decision) {
+      var labels = {
+        QUALITY_BELOW_500: "kihagyva: Q500 alatt",
+        QUALITY_BELOW_TARGET: "kihagyva: cél-Q alatt",
+        BATCH_QUALITY_UNKNOWN: "kihagyva: Quality ismeretlen",
+        QUALITY_RULE_UNKNOWN: "kihagyva: Quality szabály ismeretlen",
+        UNIT_MISMATCH: "kihagyva: eltérő unit",
+        BATCH_DEPLETED_BY_HIGHER_PRIORITY: "kihagyva: magasabb prioritás lefoglalta",
+        SKIPPED_REQUIREMENT_ALREADY_FILLED: "kihagyva: a slot már teljesült"
+      };
+      if (String(decision).indexOf("USED_") === 0) {
+        return "felhasználva: " + String(decision).slice(5).toLowerCase().replace(/_/g, " ");
+      }
+      return labels[decision] || String(decision).toLowerCase().replace(/_/g, " ");
+    }
+
+    function renderRequirementAllocation(card, requirement, allocation, trace) {
+      var article = document.createElement("article");
+      article.className = "spg-card-requirement";
+      article.dataset.status = allocation ? allocation.status : "PENDING";
+      var heading = document.createElement("div");
+      heading.className = "spg-card-requirement-heading";
+      var title = document.createElement("div");
+      var slot = document.createElement("span");
+      slot.className = "spg-recipe-slot";
+      slot.textContent = requirement.recipeSlotName;
+      var material = document.createElement("strong");
+      material.textContent = requirement.materialName;
+      title.append(slot, material);
+      var slotStrategies = card.slotStrategies || {};
+      var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
+      var ruleBadge = document.createElement("span");
+      ruleBadge.className = "spg-badge spg-badge-" + (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
+      ruleBadge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500 ? "Q500+ elég" : qualityRule.mode;
+      heading.append(title, ruleBadge);
+      article.append(heading);
+
+      if (qualityRule.configurable) {
+        var strategyRow = document.createElement("div");
+        strategyRow.className = "spg-strategy-row";
+        var select = document.createElement("select");
+        select.setAttribute("aria-label", requirement.recipeSlotName + " Quality stratégia");
+        [[M2_QUALITY_RULES.HIGHEST_Q, "Highest Q"], [M2_QUALITY_RULES.TARGET_Q, "Target Q"]].forEach(function (optionData) {
+          var option = document.createElement("option");
+          option.value = optionData[0];
+          option.textContent = optionData[1];
+          select.append(option);
+        });
+        select.value = qualityRule.mode;
+        var target = document.createElement("input");
+        target.type = "number";
+        target.min = "0";
+        target.max = "1000";
+        target.step = "1";
+        target.setAttribute("aria-label", requirement.recipeSlotName + " Target Q");
+        target.value = String((slotStrategies[requirement.id] && slotStrategies[requirement.id].targetQuality) || 850);
+        target.hidden = qualityRule.mode !== M2_QUALITY_RULES.TARGET_Q;
+        select.addEventListener("change", function () {
+          updateCardStrategy(card.id, requirement.id, select.value, Number(target.value)).catch(function (error) {
+            setNotice("Quality stratégia mentési hiba: " + error.message, "error");
+          });
+        });
+        target.addEventListener("change", function () {
+          updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, Number(target.value)).catch(function (error) {
+            setNotice("Target Q mentési hiba: " + error.message, "error");
+          });
+        });
+        strategyRow.append(select, target);
+        article.append(strategyRow);
+      } else {
+        var qualityNotice = document.createElement("p");
+        qualityNotice.className = "spg-quality-notice";
+        qualityNotice.textContent = qualityRule.mode === M2_QUALITY_RULES.FIXED
+          ? "Fixed input – Quality-stratégia nem alkalmazható."
+          : (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN
+            ? "Quality hatás ellenőrizendő – a rendszer nem találgat és nem foglal batch-et."
+            : "Integrity-only input – Q500 feletti legalacsonyabb megfelelő Quality fogy először.");
+        article.append(qualityNotice);
+      }
+
+      var values = document.createElement("div");
+      values.className = "spg-allocation-values";
+      var required = allocation ? allocation.requiredUnits : requirement.requiredQuantityUnits * card.quantity;
+      var valueRows = [
+        ["Szükséges", formatInventoryUnits(requirement.unit, required)],
+        ["Lefoglalt", formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0)],
+        ["Mennyiséghiány", formatInventoryUnits(requirement.unit, allocation ? allocation.missingAmountUnits : required)],
+        ["Quality-hiány", formatInventoryUnits(requirement.unit, allocation ? allocation.missingQualityUnits : 0)]
+      ];
+      valueRows.forEach(function (row) {
+        var item = document.createElement("span");
+        item.textContent = row[0] + ": " + row[1];
+        values.append(item);
+      });
+      article.append(values);
+
+      if (allocation && allocation.allocatedBatches.length) {
+        var allocated = document.createElement("p");
+        allocated.className = "spg-allocated-batches";
+        allocated.textContent = "Batch-ek: " + allocation.allocatedBatches.map(function (item) {
+          return (item.quality == null ? "Q?" : "Q" + item.quality) + " · " + formatInventoryUnits(requirement.unit, item.allocatedUnits);
+        }).join("; ");
+        article.append(allocated);
+      }
+      if (allocation && allocation.bottleneck) {
+        var bottleneck = document.createElement("p");
+        bottleneck.className = "spg-bottleneck";
+        bottleneck.textContent = "Szűk keresztmetszet: " + requirement.materialName + " / " + requirement.recipeSlotName;
+        article.append(bottleneck);
+      }
+      if (trace) {
+        var details = document.createElement("details");
+        details.className = "spg-allocation-log";
+        var summary = document.createElement("summary");
+        summary.textContent = "Allocation log · " + trace.rule + " · " + trace.status;
+        var list = document.createElement("ul");
+        trace.available.forEach(function (item) {
+          var entry = document.createElement("li");
+          entry.textContent = (item.quality == null ? "Q?" : "Q" + item.quality) + " · " +
+            formatInventoryUnits(item.unit, item.availableUnitsAtSlot) + " · " + translateAllocationDecision(item.decision);
+          list.append(entry);
+        });
+        details.append(summary, list);
+        article.append(details);
+      }
+      return article;
+    }
+
+    function renderCraftingCards() {
+      setBadge(
+        document.getElementById("craftingCardCount"),
+        state.craftingCards.length ? "PASS" : "NEUTRAL",
+        state.craftingCards.length + " kártya"
+      );
+      var resultByCard = new Map();
+      var traceBySlot = new Map();
+      if (state.allocationResult) {
+        state.allocationResult.cards.forEach(function (cardResult) {
+          resultByCard.set(cardResult.cardId, cardResult);
+        });
+        state.allocationResult.trace.forEach(function (trace) {
+          traceBySlot.set(trace.cardId + "::" + trace.recipeSlotId, trace);
+        });
+      }
+      var container = document.getElementById("craftingCardList");
+      container.replaceChildren();
+      if (!state.craftingCards.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Nyiss meg egy blueprintet, majd add hozzá a Crafting Listhez.";
+        container.append(empty);
+        renderAllocationSummary();
+        return;
+      }
+      state.craftingCards.forEach(function (card, index) {
+        var cardResult = resultByCard.get(card.id);
+        var article = document.createElement("article");
+        article.className = "spg-crafting-card";
+        article.dataset.cardId = card.id;
+        article.dataset.cardOrder = String(index);
+        article.dataset.satisfied = cardResult && cardResult.satisfied ? "true" : "false";
+        var heading = document.createElement("div");
+        heading.className = "spg-crafting-card-heading";
+        var title = document.createElement("div");
+        var priority = document.createElement("span");
+        priority.className = "eyebrow";
+        priority.textContent = "Prioritás " + (index + 1);
+        var name = document.createElement("h3");
+        name.textContent = card.outputName;
+        var version = document.createElement("small");
+        version.textContent = card.gameVersion || "Ismeretlen SC-verzió";
+        title.append(priority, name, version);
+        var actions = document.createElement("div");
+        actions.className = "spg-inline-actions";
+        [["↑", "Feljebb", index > 0, -1], ["↓", "Lejjebb", index < state.craftingCards.length - 1, 1]].forEach(function (action) {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.textContent = action[0];
+          button.title = action[1];
+          button.setAttribute("aria-label", card.outputName + " " + action[1]);
+          button.disabled = !action[2];
+          button.addEventListener("click", function () {
+            moveCraftingCard(card.id, action[3]).catch(function (error) {
+              setNotice("Kártyasorrend mentési hiba: " + error.message, "error");
+            });
+          });
+          actions.append(button);
+        });
+        var duplicate = document.createElement("button");
+        duplicate.type = "button";
+        duplicate.textContent = "Duplikálás";
+        duplicate.addEventListener("click", function () {
+          duplicateCraftingCard(card.id).catch(function (error) { setNotice("Duplikálási hiba: " + error.message, "error"); });
+        });
+        var collapse = document.createElement("button");
+        collapse.type = "button";
+        collapse.textContent = card.collapsed ? "Kinyitás" : "Összecsukás";
+        collapse.addEventListener("click", function () {
+          updateCraftingCard(card.id, function (updated) { updated.collapsed = !updated.collapsed; }, "CARD_COLLAPSE").catch(function (error) {
+            setNotice("Kártyaállapot mentési hiba: " + error.message, "error");
+          });
+        });
+        var remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Törlés";
+        remove.addEventListener("click", function () {
+          deleteCraftingCard(card.id).catch(function (error) { setNotice("Kártyatörlési hiba: " + error.message, "error"); });
+        });
+        actions.append(duplicate, collapse, remove);
+        heading.append(title, actions);
+        article.append(heading);
+
+        var controls = document.createElement("div");
+        controls.className = "spg-card-controls";
+        var quantityLabel = document.createElement("label");
+        var quantityText = document.createElement("span");
+        quantityText.textContent = "Gyártani kívánt mennyiség";
+        var quantity = document.createElement("input");
+        quantity.type = "number";
+        quantity.min = "1";
+        quantity.step = "1";
+        quantity.value = String(card.quantity);
+        quantity.setAttribute("aria-label", card.outputName + " gyártási mennyiség");
+        quantity.addEventListener("change", function () {
+          updateCraftingCard(card.id, function (updated) {
+            updated.quantity = Math.max(1, Math.round(Number(quantity.value) || 1));
+          }, "CARD_QUANTITY").catch(function (error) { setNotice("Mennyiség mentési hiba: " + error.message, "error"); });
+        });
+        quantityLabel.append(quantityText, quantity);
+        var maximum = document.createElement("div");
+        maximum.className = "spg-card-maximum";
+        var maximumLabel = document.createElement("span");
+        maximumLabel.textContent = "Készletből maximálisan gyártható";
+        var maximumValue = document.createElement("strong");
+        maximumValue.textContent = String(cardResult ? cardResult.maxCraftable : 0) + " db";
+        maximum.append(maximumLabel, maximumValue);
+        var status = document.createElement("span");
+        status.className = "spg-badge spg-badge-" + (cardResult && cardResult.satisfied ? "pass" : "fail");
+        status.textContent = cardResult && cardResult.satisfied ? "Terv teljesíthető" : "Hiány van";
+        controls.append(quantityLabel, maximum, status);
+        article.append(controls);
+
+        if (!card.collapsed) {
+          var requirements = document.createElement("div");
+          requirements.className = "spg-card-requirements";
+          card.requirements.forEach(function (requirement) {
+            var allocation = cardResult && cardResult.requirements.find(function (item) {
+              return item.recipeSlotId === requirement.id;
+            });
+            var trace = traceBySlot.get(card.id + "::" + requirement.id);
+            requirements.append(renderRequirementAllocation(card, requirement, allocation, trace));
+          });
+          article.append(requirements);
+        }
+        container.append(article);
+      });
+      renderAllocationSummary();
+    }
+
+    function recalculateAllocation(logReason) {
+      state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches);
+      document.body.dataset.allocationCardCount = String(state.allocationResult.summary.cardCount);
+      document.body.dataset.allocationUnsatisfiedCount = String(state.allocationResult.summary.unsatisfiedRequirementCount);
+      document.body.dataset.inventoryQuantityPreserved = "true";
+      if (logger.current) {
+        state.allocationResult.trace.forEach(function (trace) {
+          logger.event(trace.satisfied ? "INFO" : "WARN", "ALLOCATION_REQUIREMENT", "Recipe Slot allocation kiszámítva.", Object.assign({
+            trigger: logReason || "RECALCULATE"
+          }, trace));
+        });
+      }
+      renderCraftingCards();
+      renderMaterialInventory();
+      return state.allocationResult;
+    }
+
+    async function persistMaterialBatches(nextBatches, processType) {
+      logger.start(processType || "Inventory Update", { batchCount: nextBatches.length });
+      try {
+        await userDataRepository.saveMaterialBatches(nextBatches);
+        state.materialBatches = await userDataRepository.loadMaterialBatches();
+        recalculateAllocation(processType);
+        updateKnownMaterials();
+        logger.finish("PASS", {
+          batchCount: state.materialBatches.length,
+          inventoryFingerprint: await userDataRepository.fingerprint()
+        });
+      } catch (error) {
+        logger.event("ERROR", "INVENTORY_SAVE_FAILED", "A globális inventory mentése sikertelen.", { error: serializeError(error) });
+        logger.finish("FAIL", { error: serializeError(error) });
+        throw error;
+      }
+    }
+
+    async function persistCraftingCards(nextCards, processType) {
+      logger.start(processType || "Crafting Card Update", { cardCount: nextCards.length });
+      try {
+        state.craftingCards = await userDataRepository.saveCraftingCards(nextCards);
+        recalculateAllocation(processType);
+        updateKnownMaterials();
+        logger.finish("PASS", {
+          cardCount: state.craftingCards.length,
+          unsatisfiedRequirements: state.allocationResult.summary.unsatisfiedRequirementCount
+        });
+      } catch (error) {
+        logger.event("ERROR", "CRAFTING_CARD_SAVE_FAILED", "A Crafting Cardok mentése sikertelen.", { error: serializeError(error) });
+        logger.finish("FAIL", { error: serializeError(error) });
+        throw error;
+      }
+    }
+
+    async function addCurrentBlueprintCard() {
+      if (!state.normalizedBlueprint) {
+        throw new Error("Nincs megnyitott blueprint.");
+      }
+      var next = state.craftingCards.concat(buildCraftingCard(state.normalizedBlueprint));
+      await persistCraftingCards(next, "CARD_ADD");
+      setNotice(state.normalizedBlueprint.outputName + " hozzáadva a Crafting Listhez.", "success");
+    }
+
+    async function updateCraftingCard(cardId, updater, processType) {
+      var found = false;
+      var next = state.craftingCards.map(function (card) {
+        if (card.id !== cardId) {
+          return card;
+        }
+        found = true;
+        var updated = Object.assign({}, card, {
+          slotStrategies: Object.assign({}, card.slotStrategies)
+        });
+        updater(updated);
+        updated.updatedAt = nowIso();
+        return updated;
+      });
+      if (!found) {
+        throw new Error("A Crafting Card nem található.");
+      }
+      await persistCraftingCards(next, processType);
+    }
+
+    async function updateCardStrategy(cardId, requirementId, mode, targetQuality) {
+      await updateCraftingCard(cardId, function (card) {
+        card.slotStrategies[requirementId] = {
+          mode: mode === M2_QUALITY_RULES.TARGET_Q ? M2_QUALITY_RULES.TARGET_Q : M2_QUALITY_RULES.HIGHEST_Q,
+          targetQuality: hasValidQuality(targetQuality) ? Number(targetQuality) : 850
+        };
+      }, "CARD_QUALITY_STRATEGY");
+    }
+
+    async function moveCraftingCard(cardId, direction) {
+      var next = state.craftingCards.slice();
+      var index = next.findIndex(function (card) { return card.id === cardId; });
+      var destination = index + direction;
+      if (index < 0 || destination < 0 || destination >= next.length) {
+        return;
+      }
+      var temporary = next[index];
+      next[index] = next[destination];
+      next[destination] = temporary;
+      await persistCraftingCards(next, "CARD_REORDER");
+    }
+
+    async function duplicateCraftingCard(cardId) {
+      var index = state.craftingCards.findIndex(function (card) { return card.id === cardId; });
+      if (index < 0) {
+        throw new Error("A duplikálandó kártya nem található.");
+      }
+      var source = state.craftingCards[index];
+      var copy = JSON.parse(JSON.stringify(source));
+      copy.id = makeId("card");
+      copy.createdAt = nowIso();
+      copy.updatedAt = copy.createdAt;
+      var next = state.craftingCards.slice();
+      next.splice(index + 1, 0, copy);
+      await persistCraftingCards(next, "CARD_DUPLICATE");
+    }
+
+    async function deleteCraftingCard(cardId) {
+      await persistCraftingCards(state.craftingCards.filter(function (card) {
+        return card.id !== cardId;
+      }), "CARD_DELETE");
+    }
+
+    function resetBatchForm() {
+      state.editingBatchId = null;
+      document.getElementById("materialBatchForm").reset();
+      document.getElementById("batchUnit").value = "SCU";
+      document.getElementById("batchQuantity").step = "0.0001";
+      document.getElementById("batchQuantity").min = "0.0001";
+      document.getElementById("saveMaterialBatchButton").textContent = "Batch hozzáadása";
+      document.getElementById("cancelBatchEditButton").hidden = true;
+    }
+
+    function beginBatchEdit(batchId) {
+      var batch = state.materialBatches.find(function (item) { return item.id === batchId; });
+      if (!batch) {
+        return;
+      }
+      state.editingBatchId = batchId;
+      document.getElementById("batchMaterialName").value = batch.materialName;
+      document.getElementById("batchMaterialUuid").value = batch.materialUuid;
+      document.getElementById("batchQuality").value = batch.quality == null ? "" : String(batch.quality);
+      document.getElementById("batchQuantity").value = batch.unit === "SCU" ? String(fromScuUnits(batch.quantityUnits)) : String(batch.quantityUnits);
+      document.getElementById("batchUnit").value = batch.unit;
+      document.getElementById("batchNote").value = batch.note || "";
+      document.getElementById("saveMaterialBatchButton").textContent = "Batch mentése";
+      document.getElementById("cancelBatchEditButton").hidden = false;
+      document.getElementById("batchMaterialName").focus();
+    }
+
+    async function saveMaterialBatchFromForm() {
+      var materialName = document.getElementById("batchMaterialName").value.trim();
+      var materialUuid = document.getElementById("batchMaterialUuid").value.trim();
+      var qualityText = document.getElementById("batchQuality").value;
+      var quantityValue = Number(document.getElementById("batchQuantity").value);
+      var unit = document.getElementById("batchUnit").value;
+      var note = document.getElementById("batchNote").value.trim();
+      if (!materialName || !materialUuid) {
+        throw new Error("A material neve és UUID-je kötelező.");
+      }
+      var quality = qualityText === "" ? null : Number(qualityText);
+      if (quality !== null && !hasValidQuality(quality)) {
+        throw new Error("A Quality 0 és 1000 közötti egész szám legyen.");
+      }
+      if (!Number.isFinite(quantityValue) || quantityValue <= 0) {
+        throw new Error("A mennyiség legyen pozitív szám.");
+      }
+      if (unit === "ITEM" && !Number.isInteger(quantityValue)) {
+        throw new Error("Darab unitnál a mennyiség egész szám legyen.");
+      }
+      var quantityUnits = unit === "SCU" ? toScuUnits(quantityValue) : quantityValue;
+      if (!Number.isSafeInteger(quantityUnits) || quantityUnits <= 0) {
+        throw new Error("A belső mennyiség nem érvényes egész egység.");
+      }
+      var existing = state.editingBatchId ? state.materialBatches.find(function (batch) {
+        return batch.id === state.editingBatchId;
+      }) : null;
+      var timestamp = nowIso();
+      var record = {
+        id: existing ? existing.id : makeId("batch"),
+        materialUuid: materialUuid,
+        materialName: materialName,
+        quality: quality,
+        quantityUnits: quantityUnits,
+        unit: unit,
+        note: note || null,
+        createdAt: existing ? existing.createdAt : timestamp,
+        updatedAt: timestamp
+      };
+      var next = existing ? state.materialBatches.map(function (batch) {
+        return batch.id === existing.id ? record : batch;
+      }) : state.materialBatches.concat(record);
+      await persistMaterialBatches(next, existing ? "BATCH_UPDATE" : "BATCH_ADD");
+      resetBatchForm();
+      setInventoryNotice(existing ? "A Quality batch frissült." : "A Quality batch hozzáadva.", "success");
+    }
+
+    async function deleteMaterialBatch(batchId) {
+      await persistMaterialBatches(state.materialBatches.filter(function (batch) {
+        return batch.id !== batchId;
+      }), "BATCH_DELETE");
+      if (state.editingBatchId === batchId) {
+        resetBatchForm();
+      }
+      setInventoryNotice("A Quality batch törölve.", "success");
+    }
+
+    async function restoreUserDataState() {
+      state.materialBatches = await userDataRepository.loadMaterialBatches();
+      state.craftingCards = await userDataRepository.loadCraftingCards();
+      state.userDataReady = true;
+      recalculateAllocation("STARTUP_RESTORE");
+      updateKnownMaterials();
+      document.body.dataset.userDataReady = "true";
+      document.body.dataset.materialBatchCount = String(state.materialBatches.length);
+      document.body.dataset.craftingCardCount = String(state.craftingCards.length);
     }
 
     async function waitForApplicationStylesheet() {
@@ -1958,6 +3311,47 @@
         return "1 SCU = 10 000 belső egység";
       });
 
+      await check("M2 determinisztikus allocation", async function () {
+        var probeRequirement = {
+          id: "probe-slot-health",
+          aspectIndex: 0,
+          ingredientUuid: "probe-material",
+          materialName: "Probe Material",
+          recipeSlotName: "Frame",
+          requiredQuantityUnits: 10000,
+          unit: "SCU",
+          qualityCapability: "DYNAMIC",
+          affectedStats: [{ key: "health", label: "Health" }]
+        };
+        var probeCards = [{
+          id: "probe-card",
+          order: 0,
+          active: true,
+          quantity: 1,
+          outputName: "Probe",
+          requirements: [probeRequirement],
+          slotStrategies: {}
+        }];
+        var probeBatches = [480, 517, 700, 950].map(function (quality) {
+          return {
+            id: "probe-q" + quality,
+            materialUuid: "probe-material",
+            materialName: "Probe Material",
+            quality: quality,
+            quantityUnits: 10000,
+            unit: "SCU",
+            createdAt: "2026-01-01T00:00:00.000Z"
+          };
+        });
+        var originalInput = JSON.stringify({ cards: probeCards, batches: probeBatches });
+        var first = allocateCardsDeterministically(probeCards, probeBatches);
+        var second = allocateCardsDeterministically(probeCards, probeBatches);
+        assert(first.cards[0].requirements[0].allocatedBatches[0].quality === 517, "A HP_MIN_500 nem a Q517 batch-et választotta.");
+        assert(JSON.stringify(first) === JSON.stringify(second), "Az allocation eredménye nem determinisztikus.");
+        assert(JSON.stringify({ cards: probeCards, batches: probeBatches }) === originalInput, "Az allocation módosította a bemenetet.");
+        return "HP_MIN_500 → Q517 · ismételhető · tervezési mód";
+      });
+
       await check("Location rendezési szabály", async function () {
         var sample = [
           { name: "B", occurrence: 20, spawn: 40, maxQuality: 900 },
@@ -2065,6 +3459,7 @@
         state.normalizedBlueprint = blueprintRecord;
         renderBlueprint(blueprintRecord);
         renderBlueprintBrowserDetail(blueprintRecord, "CACHE");
+        document.getElementById("addCurrentBlueprintButton").disabled = false;
       }
       if (lastProbeRecord && lastProbeRecord.value && Array.isArray(lastProbeRecord.value.results)) {
         state.lastProbe = lastProbeRecord.value;
@@ -2091,6 +3486,7 @@
         await database.open();
         state.dbReady = true;
         await restoreCachedState();
+        await restoreUserDataState();
         updateEnvironmentUi();
 
         try {
@@ -2199,9 +3595,73 @@
 
     document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
     document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
+    function navigateToPanel(navId, panelId, focusId) {
+      ["craftingListNav", "blueprintBrowserNav", "myMaterialsNav"].forEach(function (id) {
+        var navigationButton = document.getElementById(id);
+        var active = id === navId;
+        navigationButton.classList.toggle("active", active);
+        if (active) {
+          navigationButton.setAttribute("aria-current", "page");
+        } else {
+          navigationButton.removeAttribute("aria-current");
+        }
+      });
+      document.getElementById(panelId).scrollIntoView({ behavior: "smooth", block: "start" });
+      if (focusId) {
+        document.getElementById(focusId).focus({ preventScroll: true });
+      }
+    }
+    document.getElementById("craftingListNav").addEventListener("click", function () {
+      navigateToPanel("craftingListNav", "craftingCardsPanel", "addCurrentBlueprintButton");
+    });
     document.getElementById("blueprintBrowserNav").addEventListener("click", function () {
-      document.getElementById("blueprintBrowserPanel").scrollIntoView({ behavior: "smooth", block: "start" });
-      document.getElementById("blueprintSearchInput").focus({ preventScroll: true });
+      navigateToPanel("blueprintBrowserNav", "blueprintBrowserPanel", "blueprintSearchInput");
+    });
+    document.getElementById("myMaterialsNav").addEventListener("click", function () {
+      navigateToPanel("myMaterialsNav", "myMaterialsPanel", "batchMaterialName");
+    });
+
+    document.getElementById("addCurrentBlueprintButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      addCurrentBlueprintCard().catch(function (error) {
+        setNotice("Crafting Card hozzáadási hiba: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = !state.normalizedBlueprint;
+      });
+    });
+
+    document.getElementById("materialBatchForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var button = document.getElementById("saveMaterialBatchButton");
+      button.disabled = true;
+      saveMaterialBatchFromForm().catch(function (error) {
+        setInventoryNotice("Batch mentési hiba: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("cancelBatchEditButton").addEventListener("click", function () {
+      resetBatchForm();
+      setInventoryNotice("A szerkesztés megszakítva.", "neutral");
+    });
+
+    document.getElementById("batchMaterialName").addEventListener("change", function () {
+      var selectedName = foldSearchText(this.value);
+      var option = Array.from(document.getElementById("knownMaterials").options).find(function (candidate) {
+        return foldSearchText(candidate.value) === selectedName;
+      });
+      if (option && option.dataset.uuid) {
+        document.getElementById("batchMaterialUuid").value = option.dataset.uuid;
+      }
+    });
+
+    document.getElementById("batchUnit").addEventListener("change", function () {
+      var quantity = document.getElementById("batchQuantity");
+      var isItem = this.value === "ITEM";
+      quantity.step = isItem ? "1" : "0.0001";
+      quantity.min = isItem ? "1" : "0.0001";
     });
 
     document.getElementById("copyLogButton").addEventListener("click", function () {
@@ -2219,6 +3679,7 @@
       app: APP,
       state: state,
       database: database,
+      userDataRepository: userDataRepository,
       adapter: api,
       logger: logger,
       toScuUnits: toScuUnits,
@@ -2226,13 +3687,18 @@
       normalizeBlueprint: normalizeBlueprint,
       normalizeBlueprintIndex: normalizeBlueprintIndex,
       normalizeOutputTypeFilters: normalizeOutputTypeFilters,
+      qualityRules: M2_QUALITY_RULES,
+      classifyRequirementQuality: classifyRequirementQuality,
+      allocateCardsDeterministically: allocateCardsDeterministically,
       compareLocations: compareLocations,
       buildStandaloneExport: buildStandaloneExport,
       runTechnicalProbe: runTechnicalProbe,
       syncGameVersionAndBlueprint: syncGameVersionAndBlueprint,
       syncBlueprintIndex: syncBlueprintIndex,
       loadBlueprintDetail: loadBlueprintDetail,
-      visibleBlueprintIndex: visibleBlueprintIndex
+      visibleBlueprintIndex: visibleBlueprintIndex,
+      recalculateAllocation: recalculateAllocation,
+      addCurrentBlueprintCard: addCurrentBlueprintCard
     });
 
     bootstrap();
