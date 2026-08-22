@@ -20,6 +20,9 @@
 - [x] Dinamikus mining commodity/location/equipment Game Data cache es naprendszerenkenti determinisztikus rangsor.
 - [x] Tobb mining loadout materialonkénti defaulttal, dinamikus station/module sorokkal, tetszoleges gadgettel es USER_OVERRIDE forrassal.
 - [x] Tizenhet kotelezo M3 fixture, 5000 locationos teljesitmenyproba es helyi Chrome loadout-fingerprint regresszio.
+- [x] Combined Materials az Allocation Engine kozvetlen projekciojakent, slot- es Quality-reszletek megorzesevel.
+- [x] Teljes User Data backup schema 2, read-only import preview, schema 1 migracio, automatikus snapshot es atomi rollback.
+- [x] Egyetlen muvelettel masolhato M1-M4 diagnosztikai csomag es 12 kotelezo M4 regresszios eset.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.
@@ -32,12 +35,13 @@
 - [x] M1: verziozott, igeny szerinti API cache es Blueprint Browser.
 - [x] M2: My Materials, Quality batch-ek es determinisztikus Allocation Engine.
 - [x] M3: mining adatok, location rangsor es loadoutok.
-- [ ] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
+- [x] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
 - [ ] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
 - [x] M1 ellenorzes futtatasa a `TEST_COMMANDS.md` alapjan.
 - [x] M1 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
 - [x] M2 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
 - [x] M3 `STATUS.md`, `WORKLOG.md` es jelentes frissitese.
+- [x] M4 `STATUS.md`, `WORKLOG.md`, `BACKUP_RESTORE.md` es jelentes frissitese.
 
 ## Blokkolo problema
 

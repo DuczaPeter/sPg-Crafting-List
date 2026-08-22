@@ -26,6 +26,7 @@
 - M1 modell- es cache-regresszio: `tools/validate-m1.ps1`, amely a `tools/run-m1-tests.mjs` fixture-tesztet is futtatja.
 - M2 inventory- es allocation-regresszio: `tools/validate-m2.ps1`, amely az M1 kaput es a `tools/run-m2-tests.mjs` fixture/performance tesztet is futtatja.
 - M3 mining-regresszio: `tools/validate-m3.ps1`, amely az M1/M2 kapukat es a `tools/run-m3-tests.mjs` 17 fixture/performance esetet is futtatja.
+- M4 Combined Materials-, backup- es diagnosztikai regresszio: `tools/validate-m4.ps1`, amely az M1-M3 kapukat es a `tools/run-m4-tests.mjs` 12 kotelezo esetet is futtatja.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
 
@@ -39,12 +40,16 @@
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
 - `docs/M2_REPORT.md`: inventory/batch modell, allocation algoritmus, Quality szabalyok, teljesitmeny es M3 elotti nyitott pontok.
 - `docs/M3_REPORT.md`: mining endpointok, normalizalt modell, location rangsor, loadoutok, valos tesztadatok es M4 elotti nyitott pontok.
+- `docs/M4_REPORT.md`: Combined Materials projekcio, backup schema/importtranzakcio, diagnosztika, teljesitmeny es M5 elotti nyitott pontok.
+- `BACKUP_RESTORE.md`: backup export/import, preview, migracio, snapshot es rollback rovid uzemeltetesi leirasa.
 - `tests/fixtures/`: JS-300, Hofstede-S1 es azonos materialt ket slotban tarto regresszios fixture.
 - `test-artifacts/V001-C001/`: az elso statikus es Chrome localhost baseline bizonyitekai.
 - `test-artifacts/V001-C002/`: az M1 normalizalt modell related-regression ciklus rovid bizonyitekai.
 - `test-artifacts/V001-C003/`: az M1 azonos verzioju indexcsere vegso regresszios es Chrome-bizonyitekai.
 - `test-artifacts/V001-C004/`: az M2 regresszios ciklus es helyi bongeszos ellenorzes bizonyitekai.
 - `test-artifacts/V001-C005/`: az M3 regresszios ciklus es helyi Chrome-ellenorzes bizonyitekai.
+- `test-artifacts/V001-C006/`: az M4 fo regresszios ciklus bizonyitekai.
+- `test-artifacts/V001-C007/`: az M4 User Settings importhatar-javitasa es a vegso helyi bongeszos ellenorzes bizonyitekai.
 
 ## Iranyito fajlok
 

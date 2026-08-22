@@ -67,6 +67,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m3.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "m4-regression",
+      "level": "related-regression",
+      "description": "Validates Combined Materials as an Allocation Engine projection, slot-level Quality detail, deterministic card priority, backup schema/migration/preview/roundtrip/rollback, diagnostic markers, and a 1000-card performance fixture.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m4.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

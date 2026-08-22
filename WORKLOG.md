@@ -4,9 +4,9 @@ Idorendi munkanaplo. Uj bejegyzest mindig a friss bejegyzesek resz vegere adj ho
 
 ## Aktualis osszefoglalo
 
-- Jelenlegi allapot: az M3 dinamikus Mining Game Data cache, naprendszerenkenti location rangsor es perzisztens loadout rendszer elkeszult.
-- Utolso ismert jo allapot: `develop/V001`; M3 automatizalt es helyi Chrome kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
-- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M4 Combined Materials, backup/restore preview es kibovitett diagnosztika.
+- Jelenlegi allapot: az M4 Combined Materials, teljes User Data backup/import preview, schema migracio, snapshot/rollback es M1-M4 diagnosztika elkeszult.
+- Utolso ismert jo allapot: `develop/V001`; `V001-C007` es helyi bongeszos 11/11 kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
+- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M5; a UEX refinery kulon kesobbi V1 milestone.
 - Archivalt regi naplo: nincs.
 
 ## Friss bejegyzesek
@@ -123,3 +123,31 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Technikai kapu: Chrome localhost 10/10 PASS, konzol warning/error 0, desktop layout PASS.
 - Nyitott: kozvetlen `file://`, letoltott export offline ujranyitasa es Edge regresszio; stabil kiadas nincs. UEX refinery kesobbi V1 milestone, nem M3-hiany.
 - Reszletes jelentes: `docs/M3_REPORT.md`.
+
+### 2026-08-22T12:17:10 - V001-C006
+
+- Cel: M4 Combined Materials backup es diagnosztika
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C006/test-summary.json`
+
+### 2026-08-22T12:18:29 - V001-C007
+
+- Cel: M4 user settings import hatar
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C007/test-summary.json`
+
+### M4 Combined Materials, backup es diagnosztika - 2026-08-22
+
+- Mi tortent: elkeszult az Allocation Engine kozvetlen Combined Materials projekcioja, a teljes User Data schema 2 backupja, read-only import preview, schema 1 migracio, automatikus snapshot, atomi import/rollback es a masolhato M1-M4 diagnosztikai csomag.
+- Adatbiztonsag: az ot User Data-terulet egy tranzakcioban valtozik; belso alkalmazasbeallitast backup nem irhat felul; preview, atomi REPLACE roundtrip es szimulalt abort fingerprintje valtozatlan.
+- Teszt: 12/12 M4 eset es teljes M1-M3 regresszio PASS; 1000 kartya/3000 slot/5000 batch Combined fixture a `V001-C007` ciklusban 144 ms; az M4 fo `V001-C006` es a User Settings hatart javito `V001-C007` PASS.
+- Bongeszo: 11/11 technikai proba, schema 1 preview migracio, `30efd6b4` fingerprint megorzes, kb. 190 KiB diagnosztikai csomag, Combined/Data Settings vizualis ellenorzes PASS; warning/error 0.
+- Talalt/javitott pontok: User Settings bekerult a teljes fingerprintbe; belso settings importja tiltva; a logmasolas teljes allapotsnapshotot kapott; M4 navigacio aktivalva; a preview-fixture vart rekordszama javitva.
+- Nyitott: kozvetlen `file://`, letoltott standalone export offline ujranyitasa es Edge-regresszio; stabil kiadas nincs. UEX refinery kesobbi V1 milestone, nem M4-hiany.
+- Reszletes jelentes: `docs/M4_REPORT.md`; hasznalati leiras: `BACKUP_RESTORE.md`.

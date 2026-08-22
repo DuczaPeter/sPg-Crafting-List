@@ -65,3 +65,27 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: 72/14/20/28/6 API-index, Agricium/Aphorite location es signature, MOLE/Prospector, Helix II/Arbor MH1, default loadout, USER_OVERRIDE, fingerprint, 10/10 probe, konzol es desktop layout ellenorzese.
 - Mely fajlokat vagy donteseket erintett: `docs/M3_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C005/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M4 projektfolytatas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-22`, az M4 Combined Materials, backup/import es diagnosztika megvalositasakor.
+- Mire segitett: haromsoros modositas elotti terv, feladatfokuszu fajlolvasas, M4 related-regression es `V001-C006`/`V001-C007` javitasi ciklus.
+- Mely fajlokat vagy donteseket erintett: `TEST_COMMANDS.md`, `tests/test-plan.json`, `BACKUP_RESTORE.md`, `STATUS.md`, `WORKLOG.md`, `VERSION.json`, `docs/M4_REPORT.md` es az M4 artifactok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M4 bongeszos regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-22`, a Combined Materials, backup preview, atomi roundtrip, diagnosztikai csomag es helyi UI ellenorzesekor.
+- Mire segitett: 11/11 technikai kapu, schema 1 preview migracio, User Data fingerprint, 189 KiB koruli diagnosztikai csomag, Combined/Data Settings vizualis ellenorzes es konzolhiba-ellenorzes.
+- Mely fajlokat vagy donteseket erintett: `docs/M4_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C007/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M4 blokkolt helyi dialog helyreallitas
+
+- Skill neve: `computer-use:computer-use`
+- Mikor hasznaltuk: `2026-08-22`, egy helyi in-app browser dialog helyreallitasi lehetosegenek vizsgalatakor.
+- Mire segitett: igazolta, hogy a ChatGPT/Codex ablakot Windows automatizalassal nem szabad vezerelni; nem tortent Computer Use input, a teszt friss bongeszolapon folytatodott.
+- Mely fajlokat vagy donteseket erintett: csak a bongeszos teszt helyreallitasi donteset.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

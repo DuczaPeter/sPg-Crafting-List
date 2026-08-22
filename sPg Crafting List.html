@@ -61,8 +61,8 @@
       <button id="miningNav" type="button">Mining &amp; Loadouts</button>
       <button type="button" disabled>Material Database</button>
       <button type="button" disabled>Mining Loadouts</button>
-      <button type="button" disabled>Combined Materials</button>
-      <button type="button" disabled>Data / Settings</button>
+      <button id="combinedMaterialsNav" type="button">Combined Materials</button>
+      <button id="dataSettingsNav" type="button">Data / Settings</button>
     </nav>
 
     <main class="spg-main-layout">
@@ -121,6 +121,23 @@
         <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
         <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
           <p class="spg-muted">Nyiss meg egy blueprintet, majd add hozzá a Crafting Listhez.</p>
+        </div>
+      </section>
+
+      <section id="combinedMaterialsPanel" class="panel spg-m4-panel" aria-labelledby="combinedMaterialsTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M4 · közös Allocation Engine nézet</p>
+            <h2 id="combinedMaterialsTitle">Combined Materials</h2>
+          </div>
+          <span id="combinedMaterialCount" class="spg-badge spg-badge-neutral">0 material</span>
+        </div>
+        <p class="spg-muted">
+          Az aktív Crafting Cardok összevont megjelenítése. A Recipe Slot és Quality szabályok külön részletként megmaradnak.
+        </p>
+        <div id="combinedMaterialsSummary" class="spg-combined-summary" aria-live="polite"></div>
+        <div id="combinedMaterialsList" class="spg-combined-list" aria-live="polite">
+          <p class="spg-muted">Még nincs összesíthető aktív Crafting Card.</p>
         </div>
       </section>
 
@@ -246,6 +263,55 @@
         <p id="miningNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
       </section>
 
+      <section id="dataSettingsPanel" class="panel spg-m4-panel" aria-labelledby="dataSettingsTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M4 · User Data biztonság és diagnosztika</p>
+            <h2 id="dataSettingsTitle">Data / Settings</h2>
+          </div>
+          <span id="backupStatus" class="spg-badge spg-badge-neutral">Nincs import-előnézet</span>
+        </div>
+
+        <div class="spg-backup-actions">
+          <div class="spg-backup-export-card">
+            <h3>Backup export</h3>
+            <p class="spg-muted">Minden User Data egy verziózott JSON-fájlba kerül; Game Data cache nem része.</p>
+            <button id="backupExportButton" type="button" class="primary">Backup JSON letöltése</button>
+          </div>
+          <div class="spg-backup-import-card">
+            <h3>Backup import</h3>
+            <label>
+              <span>Import mód</span>
+              <select id="backupImportMode">
+                <option value="MERGE">Hozzáadás és felülírás</option>
+                <option value="REPLACE">Teljes User Data csere</option>
+              </select>
+            </label>
+            <label>
+              <span>Backup JSON</span>
+              <input id="backupImportFile" type="file" accept="application/json,.json">
+            </label>
+            <div class="spg-inline-actions">
+              <button id="backupPreviewButton" type="button">Import előnézet</button>
+              <button id="backupApplyButton" type="button" class="primary" disabled>Validált import alkalmazása</button>
+            </div>
+          </div>
+        </div>
+
+        <p id="backupNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+        <div id="backupPreview" class="spg-backup-preview" aria-live="polite">
+          <p class="spg-muted">Az előnézet nem módosít User Data-t.</p>
+        </div>
+
+        <div class="spg-diagnostics-card">
+          <div>
+            <h3>M1–M4 diagnosztikai csomag</h3>
+            <p class="spg-muted">A meglévő „Log másolása” gomb az aktív cache-, fingerprint-, allocation-, Combined Materials- és backupállapotot is tartalmazza.</p>
+          </div>
+          <div id="diagnosticsSummary" class="spg-diagnostics-summary"></div>
+        </div>
+      </section>
+
       <section class="panel spg-baseline-panel" aria-labelledby="baselineTitle">
         <div class="spg-section-heading">
           <div>
@@ -263,7 +329,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tíz célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tizenegy célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -319,7 +385,7 @@
     var APP = Object.freeze({
       name: "sPg Crafting List",
       version: "V001-dev",
-      schemaVersion: 4,
+      schemaVersion: 5,
       cacheSchemaVersion: 3,
       dbName: "spg-crafting-list",
       dbVersion: 3,
@@ -331,7 +397,9 @@
       blueprintPageSize: 200,
       maxBlueprintPages: 100,
       miningPageSize: 200,
-      maxMiningPages: 20
+      maxMiningPages: 20,
+      backupFormat: "spg-crafting-list-backup",
+      backupSchemaVersion: 2
     });
 
     var STORE_DEFINITIONS = Object.freeze({
@@ -374,6 +442,7 @@
       materialBatches: [],
       craftingCards: [],
       allocationResult: null,
+      combinedMaterials: [],
       editingBatchId: null,
       miningCommodityIndex: [],
       miningEquipment: { heads: [], modules: [], gadgets: [] },
@@ -385,6 +454,15 @@
       miningLoadouts: [],
       selectedMiningLoadoutId: null,
       editingMiningLoadout: null,
+      userSettings: [],
+      backupPreview: null,
+      backupState: {
+        lastExportAt: null,
+        lastImportAt: null,
+        lastSnapshotId: null,
+        lastStatus: "IDLE",
+        migrations: []
+      },
       userDataReady: false,
       cssText: null,
       lastProbe: null
@@ -590,10 +668,20 @@
         return true;
       }
 
-      text() {
+      text(stateSnapshot) {
         return JSON.stringify({
-          application: APP.name,
+          application: {
+            name: APP.name,
+            version: APP.version,
+            schemaVersion: APP.schemaVersion,
+            cacheSchemaVersion: APP.cacheSchemaVersion,
+            databaseVersion: APP.dbVersion,
+            backupFormat: M4_BACKUP_FORMAT,
+            backupSchemaVersion: M4_BACKUP_SCHEMA_VERSION
+          },
           generatedAt: nowIso(),
+          stateSnapshot: stateSnapshot || null,
+          currentProcess: this.current ? m4Clone(this.current) : null,
           processes: this.readBlocks()
         }, null, 2);
       }
@@ -786,6 +874,54 @@
           transaction.onabort = function () {
             reject(transaction.error || new Error("A mining loadout snapshot mentése megszakadt."));
           };
+        });
+      }
+
+      createUserDataSnapshot(snapshot) {
+        return this.put("snapshots", snapshot);
+      }
+
+      commitUserDataImport(userData, mode, options) {
+        var self = this;
+        var settings = options || {};
+        var importMode = mode === "REPLACE" ? "REPLACE" : "MERGE";
+        var normalized = validateM4UserData(userData);
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var storeNames = M4_BACKUP_STORE_SPECS.map(function (spec) { return spec.storeName; });
+          var transaction = self.db.transaction(storeNames, "readwrite");
+          var abortReason = null;
+          if (importMode === "REPLACE") {
+            transaction.objectStore("userInventory").clear();
+            transaction.objectStore("materialBatches").clear();
+            transaction.objectStore("craftingCards").clear();
+            transaction.objectStore("userLoadouts").clear();
+            (settings.currentUserSettingKeys || []).forEach(function (key) {
+              transaction.objectStore("settings").delete(key);
+            });
+          }
+          M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+            var store = transaction.objectStore(spec.storeName);
+            normalized[spec.dataKey].forEach(function (record) {
+              store.put(record);
+            });
+          });
+          transaction.oncomplete = function () {
+            resolve(normalized);
+          };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A User Data import tranzakció visszagörgetve."));
+          };
+          if (settings.simulateFailure) {
+            abortReason = m4BackupError("SIMULATED_IMPORT_ABORT", "Szimulált félbeszakított import.");
+            transaction.abort();
+          }
         });
       }
 
@@ -1351,6 +1487,10 @@
       return (hash >>> 0).toString(16).padStart(8, "0");
     }
 
+    function isUserSettingRecord(record) {
+      return Boolean(record && (record.scope === "USER" || String(record.key || "").indexOf("user:") === 0));
+    }
+
     class UserDataRepository {
       constructor(database) {
         this.database = database;
@@ -1411,16 +1551,32 @@
         return normalized;
       }
 
+      async loadUserSettings() {
+        var settings = await this.database.getAll("settings");
+        return settings.filter(isUserSettingRecord).sort(function (a, b) {
+          return String(a.key).localeCompare(String(b.key));
+        });
+      }
+
+      async readAllUserData() {
+        var records = await Promise.all([
+          this.database.getAll("userInventory"),
+          this.database.getAll("materialBatches"),
+          this.database.getAll("craftingCards"),
+          this.database.getAll("userLoadouts"),
+          this.loadUserSettings()
+        ]);
+        return normalizeM4UserData({
+          userInventory: records[0],
+          materialBatches: records[1],
+          craftingCards: records[2],
+          miningLoadouts: records[3],
+          userSettings: records[4]
+        });
+      }
+
       async fingerprint() {
-        var storeNames = ["userInventory", "materialBatches", "userLoadouts", "craftingCards"];
-        var payload = {};
-        for (var index = 0; index < storeNames.length; index += 1) {
-          var records = await this.database.getAll(storeNames[index]);
-          payload[storeNames[index]] = records.slice().sort(function (a, b) {
-            return String(a.id || a.key || "").localeCompare(String(b.id || b.key || ""));
-          });
-        }
-        return fingerprintText(JSON.stringify(canonicalizeJson(payload)));
+        return fingerprintUserDataPayload(await this.readAllUserData());
       }
 
       async miningLoadoutFingerprint() {
@@ -2481,6 +2637,355 @@
       });
     }
     /* M3_MINING_MODEL_END */
+
+    /* M4_COMBINED_BACKUP_MODEL_START */
+    var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
+    var M4_BACKUP_SCHEMA_VERSION = 2;
+    var M4_BACKUP_STORE_SPECS = Object.freeze([
+      { dataKey: "userInventory", storeName: "userInventory", keyField: "id" },
+      { dataKey: "materialBatches", storeName: "materialBatches", keyField: "id" },
+      { dataKey: "craftingCards", storeName: "craftingCards", keyField: "id" },
+      { dataKey: "miningLoadouts", storeName: "userLoadouts", keyField: "id" },
+      { dataKey: "userSettings", storeName: "settings", keyField: "key" }
+    ]);
+
+    function m4Canonicalize(value) {
+      if (Array.isArray(value)) {
+        return value.map(m4Canonicalize);
+      }
+      if (value && typeof value === "object") {
+        return Object.keys(value).sort().reduce(function (result, key) {
+          result[key] = m4Canonicalize(value[key]);
+          return result;
+        }, {});
+      }
+      return value;
+    }
+
+    function m4FingerprintText(value) {
+      var hash = 2166136261;
+      var text = String(value);
+      for (var index = 0; index < text.length; index += 1) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return (hash >>> 0).toString(16).padStart(8, "0");
+    }
+
+    function m4Clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function m4SortedRecords(records, keyField) {
+      return (Array.isArray(records) ? records : []).map(m4Clone).sort(function (a, b) {
+        return String(a && a[keyField] || "").localeCompare(String(b && b[keyField] || ""));
+      });
+    }
+
+    function normalizeM4UserData(data) {
+      var source = data || {};
+      var normalized = {};
+      M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+        normalized[spec.dataKey] = m4SortedRecords(source[spec.dataKey], spec.keyField);
+      });
+      return normalized;
+    }
+
+    function fingerprintUserDataPayload(data) {
+      return m4FingerprintText(JSON.stringify(m4Canonicalize(normalizeM4UserData(data))));
+    }
+
+    function m4BackupError(code, message) {
+      var error = new Error(message);
+      error.code = code;
+      return error;
+    }
+
+    function validateM4UserData(data) {
+      var normalized = normalizeM4UserData(data);
+      M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+        var seen = new Set();
+        normalized[spec.dataKey].forEach(function (record, index) {
+          if (!record || typeof record !== "object" || !record[spec.keyField]) {
+            throw m4BackupError("INVALID_RECORD", spec.dataKey + " rekordkulcs hiányzik a(z) " + index + ". elemnél.");
+          }
+          var key = String(record[spec.keyField]);
+          if (seen.has(key)) {
+            throw m4BackupError("DUPLICATE_RECORD", spec.dataKey + " duplikált rekordkulcs: " + key);
+          }
+          seen.add(key);
+        });
+      });
+      normalized.materialBatches.forEach(function (batch) {
+        if (!batch.materialUuid || !batch.materialName || !Number.isSafeInteger(batch.quantityUnits) || batch.quantityUnits < 0 || !batch.unit) {
+          throw m4BackupError("INVALID_MATERIAL_BATCH", "Érvénytelen Quality batch: " + batch.id);
+        }
+      });
+      normalized.craftingCards.forEach(function (card) {
+        if (!Array.isArray(card.requirements) || !card.slotStrategies || typeof card.slotStrategies !== "object") {
+          throw m4BackupError("INVALID_CRAFTING_CARD", "A Crafting Card receptje vagy Quality stratégiája hiányzik: " + card.id);
+        }
+      });
+      normalized.miningLoadouts.forEach(function (loadout) {
+        if (!loadout.materialUuid || !Array.isArray(loadout.stations) || !Array.isArray(loadout.gadgets)) {
+          throw m4BackupError("INVALID_MINING_LOADOUT", "Érvénytelen mining loadout: " + loadout.id);
+        }
+      });
+      normalized.userSettings.forEach(function (setting) {
+        if (setting.scope !== "USER" && String(setting.key).indexOf("user:") !== 0) {
+          throw m4BackupError("INVALID_USER_SETTING", "A backup nem írhat belső alkalmazásbeállítást: " + setting.key);
+        }
+      });
+      return normalized;
+    }
+
+    function buildM4BackupEnvelope(data, metadata) {
+      var normalized = validateM4UserData(data);
+      var meta = metadata || {};
+      return {
+        format: M4_BACKUP_FORMAT,
+        schemaVersion: M4_BACKUP_SCHEMA_VERSION,
+        application: meta.application || "sPg Crafting List",
+        applicationVersion: meta.applicationVersion || "unknown",
+        exportedAt: meta.exportedAt || new Date().toISOString(),
+        scDataVersion: meta.scDataVersion || null,
+        data: normalized,
+        fingerprint: fingerprintUserDataPayload(normalized)
+      };
+    }
+
+    function validateAndMigrateM4Backup(input) {
+      var parsed = input;
+      if (typeof input === "string") {
+        try {
+          parsed = JSON.parse(input);
+        } catch (error) {
+          throw m4BackupError("INVALID_JSON", "A backup nem érvényes JSON.");
+        }
+      }
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw m4BackupError("INVALID_BACKUP", "A backup gyökéreleme nem objektum.");
+      }
+      if (parsed.format !== M4_BACKUP_FORMAT) {
+        throw m4BackupError("UNKNOWN_FORMAT", "Ismeretlen backup formátum.");
+      }
+      var schemaVersion = Number(parsed.schemaVersion);
+      if (!Number.isInteger(schemaVersion) || schemaVersion < 1 || schemaVersion > M4_BACKUP_SCHEMA_VERSION) {
+        throw m4BackupError("UNKNOWN_SCHEMA_VERSION", "Nem támogatott backup schema: " + parsed.schemaVersion);
+      }
+      var migration = null;
+      var warnings = [];
+      var sourceData = parsed.data || parsed.userData;
+      if (!sourceData || typeof sourceData !== "object") {
+        throw m4BackupError("MISSING_USER_DATA", "A backupból hiányzik a User Data blokk.");
+      }
+      if (schemaVersion === 1) {
+        sourceData = {
+          userInventory: sourceData.userInventory || [],
+          materialBatches: sourceData.materialBatches || [],
+          craftingCards: sourceData.craftingCards || [],
+          miningLoadouts: sourceData.miningLoadouts || sourceData.userLoadouts || sourceData.loadouts || [],
+          userSettings: sourceData.userSettings || []
+        };
+        migration = {
+          fromSchema: 1,
+          toSchema: M4_BACKUP_SCHEMA_VERSION,
+          steps: ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT"]
+        };
+        warnings.push("A schema 1 backup schema 2 formára migrálva.");
+      }
+      var normalized = validateM4UserData(sourceData);
+      var fingerprint = fingerprintUserDataPayload(normalized);
+      if (schemaVersion === M4_BACKUP_SCHEMA_VERSION && parsed.fingerprint && parsed.fingerprint !== fingerprint) {
+        throw m4BackupError("FINGERPRINT_MISMATCH", "A backup fingerprintje nem egyezik a tartalommal.");
+      }
+      return {
+        backup: {
+          format: M4_BACKUP_FORMAT,
+          schemaVersion: M4_BACKUP_SCHEMA_VERSION,
+          application: parsed.application || "sPg Crafting List",
+          applicationVersion: parsed.applicationVersion || "unknown",
+          exportedAt: parsed.exportedAt || null,
+          scDataVersion: parsed.scDataVersion || null,
+          data: normalized,
+          fingerprint: fingerprint
+        },
+        migration: migration,
+        warnings: warnings
+      };
+    }
+
+    function buildM4ImportPreview(currentData, incomingData, mode) {
+      var importMode = mode === "REPLACE" ? "REPLACE" : "MERGE";
+      var current = normalizeM4UserData(currentData);
+      var incoming = validateM4UserData(incomingData);
+      var stores = [];
+      M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+        var currentMap = new Map(current[spec.dataKey].map(function (record) { return [String(record[spec.keyField]), record]; }));
+        var incomingMap = new Map(incoming[spec.dataKey].map(function (record) { return [String(record[spec.keyField]), record]; }));
+        var summary = {
+          dataKey: spec.dataKey,
+          current: currentMap.size,
+          incoming: incomingMap.size,
+          additions: 0,
+          overwrites: 0,
+          conflicts: 0,
+          unchanged: 0,
+          deletions: 0
+        };
+        incomingMap.forEach(function (record, key) {
+          if (!currentMap.has(key)) {
+            summary.additions += 1;
+            return;
+          }
+          summary.overwrites += 1;
+          if (JSON.stringify(m4Canonicalize(currentMap.get(key))) === JSON.stringify(m4Canonicalize(record))) {
+            summary.unchanged += 1;
+          } else {
+            summary.conflicts += 1;
+          }
+        });
+        if (importMode === "REPLACE") {
+          currentMap.forEach(function (_, key) {
+            if (!incomingMap.has(key)) {
+              summary.deletions += 1;
+            }
+          });
+        }
+        stores.push(summary);
+      });
+      var totals = stores.reduce(function (sum, store) {
+        ["current", "incoming", "additions", "overwrites", "conflicts", "unchanged", "deletions"].forEach(function (key) {
+          sum[key] += store[key];
+        });
+        return sum;
+      }, { current: 0, incoming: 0, additions: 0, overwrites: 0, conflicts: 0, unchanged: 0, deletions: 0 });
+      return {
+        mode: importMode,
+        stores: stores,
+        totals: totals,
+        currentFingerprint: fingerprintUserDataPayload(current),
+        incomingFingerprint: fingerprintUserDataPayload(incoming)
+      };
+    }
+
+    function simulateM4UserDataImport(currentData, incomingData, mode, simulateFailure) {
+      var current = normalizeM4UserData(currentData);
+      var incoming = validateM4UserData(incomingData);
+      var result = {};
+      M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+        if (mode === "REPLACE") {
+          result[spec.dataKey] = m4SortedRecords(incoming[spec.dataKey], spec.keyField);
+          return;
+        }
+        var merged = new Map(current[spec.dataKey].map(function (record) { return [String(record[spec.keyField]), m4Clone(record)]; }));
+        incoming[spec.dataKey].forEach(function (record) {
+          merged.set(String(record[spec.keyField]), m4Clone(record));
+        });
+        result[spec.dataKey] = m4SortedRecords(Array.from(merged.values()), spec.keyField);
+      });
+      if (simulateFailure) {
+        throw m4BackupError("SIMULATED_IMPORT_ABORT", "Szimulált félbeszakított import.");
+      }
+      return result;
+    }
+
+    function buildCombinedMaterials(allocationResult, cards, batches) {
+      if (!allocationResult || !Array.isArray(allocationResult.cards) || !Array.isArray(cards) || !Array.isArray(batches)) {
+        return [];
+      }
+      var sourceCards = new Map(cards.map(function (card) { return [card.id, card]; }));
+      var availableByMaterialUnit = new Map();
+      batches.forEach(function (batch) {
+        var key = (batch.materialUuid || batch.ingredientUuid) + "::" + batch.unit;
+        availableByMaterialUnit.set(key, (availableByMaterialUnit.get(key) || 0) + Number(batch.quantityUnits || 0));
+      });
+      var reservedByMaterialUnit = new Map();
+      (allocationResult.batchUsage || []).forEach(function (usage) {
+        var key = usage.materialUuid + "::" + usage.unit;
+        reservedByMaterialUnit.set(key, (reservedByMaterialUnit.get(key) || 0) + Number(usage.reservedUnits || 0));
+      });
+      var groups = new Map();
+      allocationResult.cards.slice().sort(function (a, b) {
+        return Number(a.order || 0) - Number(b.order || 0) || String(a.cardId).localeCompare(String(b.cardId));
+      }).forEach(function (cardResult) {
+        var card = sourceCards.get(cardResult.cardId) || {};
+        cardResult.requirements.forEach(function (requirement) {
+          var key = requirement.ingredientUuid + "::" + requirement.unit;
+          if (!groups.has(key)) {
+            groups.set(key, {
+              key: key,
+              materialUuid: requirement.ingredientUuid,
+              materialName: requirement.materialName,
+              unit: requirement.unit,
+              requiredUnits: 0,
+              availableUnits: availableByMaterialUnit.get(key) || 0,
+              reservedUnits: 0,
+              missingUnits: 0,
+              missingAmountUnits: 0,
+              missingQualityUnits: 0,
+              blueprints: [],
+              recipeSlots: [],
+              qualityRules: [],
+              usages: []
+            });
+          }
+          var group = groups.get(key);
+          var missingUnits = Math.max(0, Number(requirement.requiredUnits || 0) - Number(requirement.allocatedUnits || 0));
+          var usage = {
+            cardId: cardResult.cardId,
+            cardOrder: Number(cardResult.order || 0),
+            blueprintUuid: card.blueprintUuid || null,
+            blueprintName: cardResult.outputName || card.outputName || "Ismeretlen blueprint",
+            requestedQuantity: cardResult.requestedQuantity,
+            recipeSlotId: requirement.recipeSlotId,
+            recipeSlotName: requirement.recipeSlotName,
+            qualityRule: requirement.rule,
+            targetQuality: requirement.targetQuality,
+            requiredUnits: requirement.requiredUnits,
+            reservedUnits: requirement.allocatedUnits,
+            missingUnits: missingUnits,
+            missingAmountUnits: requirement.missingAmountUnits,
+            missingQualityUnits: requirement.missingQualityUnits,
+            status: requirement.status,
+            allocatedBatches: m4Clone(requirement.allocatedBatches || [])
+          };
+          group.requiredUnits += Number(usage.requiredUnits || 0);
+          group.reservedUnits += Number(usage.reservedUnits || 0);
+          group.missingUnits += missingUnits;
+          group.missingAmountUnits += Number(usage.missingAmountUnits || 0);
+          group.missingQualityUnits += Number(usage.missingQualityUnits || 0);
+          group.usages.push(usage);
+          if (group.blueprints.indexOf(usage.blueprintName) === -1) {
+            group.blueprints.push(usage.blueprintName);
+          }
+          if (group.recipeSlots.indexOf(usage.recipeSlotName) === -1) {
+            group.recipeSlots.push(usage.recipeSlotName);
+          }
+          var ruleLabel = usage.qualityRule + (usage.targetQuality === null || usage.targetQuality === undefined ? "" : ":" + usage.targetQuality);
+          if (group.qualityRules.indexOf(ruleLabel) === -1) {
+            group.qualityRules.push(ruleLabel);
+          }
+        });
+      });
+      return Array.from(groups.values()).map(function (group) {
+        var engineReserved = reservedByMaterialUnit.get(group.key) || 0;
+        if (engineReserved !== group.reservedUnits) {
+          throw new Error("A Combined Materials foglalása eltér az Allocation Engine eredményétől: " + group.key);
+        }
+        group.blueprints.sort(function (a, b) { return a.localeCompare(b, "hu"); });
+        group.recipeSlots.sort(function (a, b) { return a.localeCompare(b, "hu"); });
+        group.qualityRules.sort();
+        group.usages.sort(function (a, b) {
+          return a.cardOrder - b.cardOrder || String(a.recipeSlotId).localeCompare(String(b.recipeSlotId));
+        });
+        group.fingerprint = m4FingerprintText(JSON.stringify(m4Canonicalize(group.usages)));
+        return group;
+      }).sort(function (a, b) {
+        return a.materialName.localeCompare(b.materialName, "hu") || a.unit.localeCompare(b.unit) || a.materialUuid.localeCompare(b.materialUuid);
+      });
+    }
+    /* M4_COMBINED_BACKUP_MODEL_END */
 
     function compareLocations(a, b) {
       function sortable(value) {
@@ -3595,6 +4100,108 @@
       });
     }
 
+    function combinedQualityLabel(usage) {
+      if (usage.qualityRule === M2_QUALITY_RULES.HP_MIN_500) {
+        return "HP_MIN_500 · Q500+ elég";
+      }
+      if (usage.qualityRule === M2_QUALITY_RULES.TARGET_Q) {
+        return "TARGET_Q · Q" + usage.targetQuality + "+";
+      }
+      return usage.qualityRule;
+    }
+
+    function renderCombinedMaterials() {
+      var groups = state.combinedMaterials || [];
+      var missingGroups = groups.filter(function (group) { return group.missingUnits > 0; });
+      var blueprintNames = new Set();
+      groups.forEach(function (group) {
+        group.blueprints.forEach(function (blueprint) { blueprintNames.add(blueprint); });
+      });
+      setBadge(document.getElementById("combinedMaterialCount"), groups.length ? (missingGroups.length ? "FAIL" : "PASS") : "NEUTRAL", groups.length + " material");
+      document.body.dataset.combinedMaterialCount = String(groups.length);
+      document.body.dataset.combinedMissingCount = String(missingGroups.length);
+      document.body.dataset.combinedMaterialsFingerprint = m4FingerprintText(JSON.stringify(m4Canonicalize(groups)));
+
+      var summary = document.getElementById("combinedMaterialsSummary");
+      summary.replaceChildren();
+      [["Material / unit", groups.length], ["Blueprint", blueprintNames.size], ["Recipe Slot", groups.reduce(function (sum, group) { return sum + group.usages.length; }, 0)], ["Hiányos material", missingGroups.length]].forEach(function (value) {
+        var item = document.createElement("div");
+        var label = document.createElement("span");
+        var content = document.createElement("strong");
+        label.textContent = value[0];
+        content.textContent = String(value[1]);
+        item.append(label, content);
+        summary.append(item);
+      });
+
+      var container = document.getElementById("combinedMaterialsList");
+      container.replaceChildren();
+      if (!groups.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Még nincs összesíthető aktív Crafting Card.";
+        container.append(empty);
+        return;
+      }
+      groups.forEach(function (group) {
+        var article = document.createElement("article");
+        article.className = "spg-combined-material";
+        article.dataset.materialUuid = group.materialUuid;
+        article.dataset.unit = group.unit;
+        article.dataset.missing = group.missingUnits > 0 ? "true" : "false";
+        var heading = document.createElement("div");
+        heading.className = "spg-combined-heading";
+        var title = document.createElement("div");
+        var name = document.createElement("h3");
+        var uuid = document.createElement("small");
+        name.textContent = group.materialName;
+        uuid.textContent = group.materialUuid;
+        title.append(name, uuid);
+        var status = document.createElement("span");
+        status.className = "spg-badge spg-badge-" + (group.missingUnits > 0 ? "fail" : "pass");
+        status.textContent = group.missingUnits > 0 ? "Hiány" : "Fedezve";
+        heading.append(title, status);
+
+        var totals = document.createElement("div");
+        totals.className = "spg-combined-totals";
+        [["Teljes szükséglet", group.requiredUnits], ["Rendelkezésre áll", group.availableUnits], ["Lefoglalt", group.reservedUnits], ["Hiány", group.missingUnits]].forEach(function (value) {
+          var item = document.createElement("span");
+          item.innerHTML = "<small>" + escapeHtml(value[0]) + "</small><strong>" + escapeHtml(formatInventoryUnits(group.unit, value[1])) + "</strong>";
+          totals.append(item);
+        });
+
+        var meta = document.createElement("p");
+        meta.className = "spg-combined-meta";
+        meta.textContent = "Blueprint: " + group.blueprints.join(", ") + " · Quality: " + group.qualityRules.join(", ");
+        var details = document.createElement("details");
+        details.className = "spg-combined-details";
+        var detailsSummary = document.createElement("summary");
+        detailsSummary.textContent = group.usages.length + " Recipe Slot részletei";
+        var list = document.createElement("div");
+        list.className = "spg-combined-usage-list";
+        group.usages.forEach(function (usage) {
+          var row = document.createElement("div");
+          row.className = "spg-combined-usage";
+          row.dataset.cardId = usage.cardId;
+          row.dataset.recipeSlotId = usage.recipeSlotId;
+          var rowTitle = document.createElement("strong");
+          rowTitle.textContent = (usage.cardOrder + 1) + ". " + usage.blueprintName + " · " + usage.recipeSlotName;
+          var rule = document.createElement("span");
+          rule.textContent = combinedQualityLabel(usage);
+          var values = document.createElement("small");
+          values.textContent = "Szükséges " + formatInventoryUnits(group.unit, usage.requiredUnits) +
+            " · lefoglalt " + formatInventoryUnits(group.unit, usage.reservedUnits) +
+            " · hiány " + formatInventoryUnits(group.unit, usage.missingUnits) +
+            (usage.missingQualityUnits ? " (Quality-hiány: " + formatInventoryUnits(group.unit, usage.missingQualityUnits) + ")" : "");
+          row.append(rowTitle, rule, values);
+          list.append(row);
+        });
+        details.append(detailsSummary, list);
+        article.append(heading, totals, meta, details);
+        container.append(article);
+      });
+    }
+
     function renderMaterialInventory() {
       setBadge(
         document.getElementById("materialBatchCount"),
@@ -3975,6 +4582,7 @@
 
     function recalculateAllocation(logReason) {
       state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches);
+      state.combinedMaterials = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
       document.body.dataset.allocationCardCount = String(state.allocationResult.summary.cardCount);
       document.body.dataset.allocationUnsatisfiedCount = String(state.allocationResult.summary.unsatisfiedRequirementCount);
       document.body.dataset.inventoryQuantityPreserved = "true";
@@ -3984,9 +4592,18 @@
             trigger: logReason || "RECALCULATE"
           }, trace));
         });
+        logger.event(state.combinedMaterials.some(function (group) { return group.missingUnits > 0; }) ? "WARN" : "INFO", "COMBINED_MATERIALS_CALCULATED", "A Combined Materials nézet az Allocation Engine eredményéből elkészült.", {
+          trigger: logReason || "RECALCULATE",
+          materialCount: state.combinedMaterials.length,
+          missingMaterialCount: state.combinedMaterials.filter(function (group) { return group.missingUnits > 0; }).length,
+          requiredUnitsByMaterial: state.combinedMaterials.map(function (group) {
+            return { key: group.key, requiredUnits: group.requiredUnits, reservedUnits: group.reservedUnits, missingUnits: group.missingUnits };
+          })
+        });
       }
       renderCraftingCards();
       renderMaterialInventory();
+      renderCombinedMaterials();
       return state.allocationResult;
     }
 
@@ -4185,6 +4802,7 @@
       state.materialBatches = await userDataRepository.loadMaterialBatches();
       state.craftingCards = await userDataRepository.loadCraftingCards();
       state.miningLoadouts = await userDataRepository.loadMiningLoadouts();
+      state.userSettings = await userDataRepository.loadUserSettings();
       state.userDataReady = true;
       recalculateAllocation("STARTUP_RESTORE");
       updateKnownMaterials();
@@ -4193,6 +4811,241 @@
       document.body.dataset.materialBatchCount = String(state.materialBatches.length);
       document.body.dataset.craftingCardCount = String(state.craftingCards.length);
       document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
+    }
+
+    function setBackupNotice(message, tone) {
+      var element = document.getElementById("backupNotice");
+      element.textContent = message || "";
+      element.dataset.tone = tone || "neutral";
+    }
+
+    function renderBackupPreview() {
+      var container = document.getElementById("backupPreview");
+      var applyButton = document.getElementById("backupApplyButton");
+      container.replaceChildren();
+      if (!state.backupPreview) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Az előnézet nem módosít User Data-t.";
+        container.append(empty);
+        applyButton.disabled = true;
+        setBadge(document.getElementById("backupStatus"), "NEUTRAL", "Nincs import-előnézet");
+        document.body.dataset.backupPreviewReady = "false";
+        return;
+      }
+      var preview = state.backupPreview.preview;
+      var header = document.createElement("div");
+      header.className = "spg-backup-preview-heading";
+      var title = document.createElement("strong");
+      title.textContent = state.backupPreview.fileName + " · " + preview.mode;
+      var fingerprint = document.createElement("small");
+      fingerprint.textContent = "Bejövő fingerprint: " + preview.incomingFingerprint;
+      header.append(title, fingerprint);
+      container.append(header);
+      if (state.backupPreview.validated.migration) {
+        var migration = document.createElement("p");
+        migration.className = "spg-quality-notice";
+        migration.textContent = "Migráció: schema " + state.backupPreview.validated.migration.fromSchema + " → " + state.backupPreview.validated.migration.toSchema + " · " + state.backupPreview.validated.migration.steps.join(", ");
+        container.append(migration);
+      }
+      var grid = document.createElement("div");
+      grid.className = "spg-backup-preview-grid";
+      preview.stores.forEach(function (store) {
+        var card = document.createElement("article");
+        var name = document.createElement("strong");
+        var details = document.createElement("small");
+        name.textContent = store.dataKey;
+        details.textContent = "új " + store.additions + " · felülírás " + store.overwrites + " · konfliktus " + store.conflicts + " · törlés " + store.deletions;
+        card.append(name, details);
+        grid.append(card);
+      });
+      container.append(grid);
+      applyButton.disabled = false;
+      setBadge(document.getElementById("backupStatus"), preview.totals.conflicts ? "UNKNOWN" : "PASS", preview.totals.incoming + " bejövő rekord");
+      document.body.dataset.backupPreviewReady = "true";
+      document.body.dataset.backupPreviewFingerprint = preview.incomingFingerprint;
+    }
+
+    function invalidateBackupPreview() {
+      state.backupPreview = null;
+      renderBackupPreview();
+    }
+
+    async function exportUserDataBackup() {
+      logger.start("Backup Export", { schemaVersion: M4_BACKUP_SCHEMA_VERSION });
+      try {
+        var userData = await userDataRepository.readAllUserData();
+        var exportedAt = nowIso();
+        var envelope = buildM4BackupEnvelope(userData, {
+          application: APP.name,
+          applicationVersion: APP.version,
+          exportedAt: exportedAt,
+          scDataVersion: state.gameVersion ? state.gameVersion.code : null
+        });
+        var text = JSON.stringify(envelope, null, 2);
+        var datePart = exportedAt.slice(0, 19).replace(/[:T]/g, "-");
+        downloadTextFile(text, "sPg Crafting List Backup " + datePart + ".json", "application/json;charset=utf-8");
+        state.backupState.lastExportAt = exportedAt;
+        state.backupState.lastStatus = "EXPORT_PASS";
+        logger.event("INFO", "BACKUP_EXPORT_CREATED", "A teljes User Data backup elkészült.", {
+          schemaVersion: envelope.schemaVersion,
+          fingerprint: envelope.fingerprint,
+          byteLength: byteLength(text),
+          recordCounts: Object.keys(envelope.data).reduce(function (counts, key) {
+            counts[key] = envelope.data[key].length;
+            return counts;
+          }, {})
+        });
+        logger.finish("PASS", { fingerprint: envelope.fingerprint, exportBytes: byteLength(text) });
+        setBackupNotice("A teljes User Data backup letöltése elindult.", "success");
+        renderDiagnosticsSummary().catch(function () {});
+        return envelope;
+      } catch (error) {
+        state.backupState.lastStatus = "EXPORT_FAIL";
+        logger.event("ERROR", "BACKUP_EXPORT_FAILED", "A backup export sikertelen.", { error: serializeError(error) });
+        logger.finish("FAIL", { error: serializeError(error) });
+        setBackupNotice("Backup export hiba: " + error.message, "error");
+        throw error;
+      }
+    }
+
+    async function previewUserDataBackup() {
+      var input = document.getElementById("backupImportFile");
+      var file = input.files && input.files[0];
+      if (!file) {
+        throw new Error("Válassz backup JSON-fájlt.");
+      }
+      var mode = document.getElementById("backupImportMode").value === "REPLACE" ? "REPLACE" : "MERGE";
+      logger.start("Backup Import Preview", { fileName: file.name, mode: mode });
+      try {
+        var beforeFingerprint = await userDataRepository.fingerprint();
+        var validated = validateAndMigrateM4Backup(await file.text());
+        var current = await userDataRepository.readAllUserData();
+        var preview = buildM4ImportPreview(current, validated.backup.data, mode);
+        var afterFingerprint = await userDataRepository.fingerprint();
+        assert(beforeFingerprint === afterFingerprint, "Az import preview módosította a User Data-t.");
+        state.backupPreview = {
+          fileName: file.name,
+          mode: mode,
+          validated: validated,
+          preview: preview,
+          previewedAt: nowIso()
+        };
+        state.backupState.lastStatus = "PREVIEW_PASS";
+        if (validated.migration) {
+          state.backupState.migrations.push(Object.assign({ migratedAt: nowIso(), sourceFile: file.name }, validated.migration));
+          logger.event("WARN", "BACKUP_SCHEMA_MIGRATED", "A támogatott régebbi backup schema migrálva.", validated.migration);
+        }
+        logger.event(preview.totals.conflicts ? "WARN" : "INFO", "BACKUP_IMPORT_PREVIEW", "Az import előnézet elkészült User Data módosítása nélkül.", {
+          schemaVersion: validated.backup.schemaVersion,
+          mode: mode,
+          totals: preview.totals,
+          stores: preview.stores,
+          fingerprintPreserved: beforeFingerprint === afterFingerprint
+        });
+        logger.finish("PASS", { preview: preview, fingerprintPreserved: true });
+        renderBackupPreview();
+        setBackupNotice("Az előnézet elkészült; még semmilyen adat nem változott.", "success");
+        renderDiagnosticsSummary().catch(function () {});
+        return state.backupPreview;
+      } catch (error) {
+        state.backupPreview = null;
+        state.backupState.lastStatus = "PREVIEW_FAIL";
+        logger.event("ERROR", "BACKUP_PREVIEW_REJECTED", "A backup import előnézete elutasítva; User Data nem változott.", {
+          code: error.code || null,
+          error: serializeError(error)
+        });
+        logger.finish("FAIL", { code: error.code || null, error: serializeError(error) });
+        renderBackupPreview();
+        setBackupNotice("Import előnézeti hiba: " + error.message, "error");
+        throw error;
+      }
+    }
+
+    async function applyUserDataBackup() {
+      if (!state.backupPreview) {
+        throw new Error("Előbb készíts validált import-előnézetet.");
+      }
+      var previewState = state.backupPreview;
+      if (!window.confirm("Alkalmazod a validált " + previewState.mode + " importot? Előtte automatikus snapshot készül.")) {
+        setBackupNotice("Az importot megszakítottad; User Data nem változott.", "neutral");
+        return null;
+      }
+      logger.start("Backup Import", {
+        schemaVersion: previewState.validated.backup.schemaVersion,
+        mode: previewState.mode,
+        incomingFingerprint: previewState.preview.incomingFingerprint
+      });
+      var beforeData = await userDataRepository.readAllUserData();
+      var beforeFingerprint = fingerprintUserDataPayload(beforeData);
+      var snapshotId = makeId("snapshot");
+      try {
+        var snapshot = {
+          id: snapshotId,
+          createdAt: nowIso(),
+          reason: "BEFORE_BACKUP_IMPORT",
+          schemaVersion: M4_BACKUP_SCHEMA_VERSION,
+          fingerprint: beforeFingerprint,
+          userData: beforeData
+        };
+        await database.createUserDataSnapshot(snapshot);
+        state.backupState.lastSnapshotId = snapshotId;
+        logger.event("INFO", "BACKUP_SNAPSHOT_CREATED", "Import előtti automatikus User Data snapshot elkészült.", {
+          snapshotId: snapshotId,
+          fingerprint: beforeFingerprint
+        });
+        var expected = simulateM4UserDataImport(beforeData, previewState.validated.backup.data, previewState.mode, false);
+        await database.commitUserDataImport(previewState.validated.backup.data, previewState.mode, {
+          currentUserSettingKeys: beforeData.userSettings.map(function (record) { return record.key; })
+        });
+        await restoreUserDataState();
+        var actualFingerprint = await userDataRepository.fingerprint();
+        var expectedFingerprint = fingerprintUserDataPayload(expected);
+        assert(actualFingerprint === expectedFingerprint, "Az import utáni User Data fingerprint eltér a várt eredménytől.");
+        state.backupState.lastImportAt = nowIso();
+        state.backupState.lastStatus = "IMPORT_PASS";
+        logger.event("INFO", "BACKUP_IMPORT_COMMITTED", "A User Data import tranzakció sikeresen commitolt.", {
+          mode: previewState.mode,
+          snapshotId: snapshotId,
+          beforeFingerprint: beforeFingerprint,
+          afterFingerprint: actualFingerprint,
+          totals: previewState.preview.totals
+        });
+        logger.finish("PASS", { snapshotId: snapshotId, fingerprint: actualFingerprint });
+        state.backupPreview = null;
+        renderBackupPreview();
+        setBackupNotice("Az import sikeres. A megelőző állapot automatikus snapshotban megmaradt.", "success");
+        renderDiagnosticsSummary().catch(function () {});
+        return actualFingerprint;
+      } catch (error) {
+        var afterFailureFingerprint = await userDataRepository.fingerprint().catch(function () { return null; });
+        var rollbackPreserved = afterFailureFingerprint === beforeFingerprint;
+        state.backupState.lastStatus = rollbackPreserved ? "IMPORT_ROLLBACK" : "IMPORT_FAIL";
+        logger.event(rollbackPreserved ? "WARN" : "ERROR", "BACKUP_IMPORT_ROLLBACK", "A sikertelen import tranzakció visszagörgetése ellenőrizve.", {
+          snapshotId: snapshotId,
+          beforeFingerprint: beforeFingerprint,
+          afterFailureFingerprint: afterFailureFingerprint,
+          preserved: rollbackPreserved,
+          error: serializeError(error)
+        });
+        logger.finish("FAIL", { rollbackPreserved: rollbackPreserved, error: serializeError(error) });
+        setBackupNotice("Import hiba: " + error.message + (rollbackPreserved ? " Az eredeti User Data sértetlen." : ""), "error");
+        throw error;
+      }
+    }
+
+    async function verifyM4ImportRollbackPreservesUserData() {
+      var beforeData = await userDataRepository.readAllUserData();
+      var beforeFingerprint = fingerprintUserDataPayload(beforeData);
+      try {
+        await database.commitUserDataImport(beforeData, "MERGE", { simulateFailure: true });
+        throw new Error("A szimulált import nem szakadt meg.");
+      } catch (error) {
+        assert(error.code === "SIMULATED_IMPORT_ABORT", "Nem a várt szimulált importmegszakítás történt.");
+      }
+      var afterFingerprint = await userDataRepository.fingerprint();
+      assert(afterFingerprint === beforeFingerprint, "A félbeszakított import módosította a User Data-t.");
+      return { preserved: true, fingerprint: afterFingerprint };
     }
 
     function normalizeStoredMiningLoadout(loadout) {
@@ -5023,6 +5876,30 @@
         return "SHIP_MINING · 3 module slot · 5 dinamikus station";
       });
 
+      await check("M4 Combined + backup rollback", async function () {
+        var combined = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
+        var engineReserved = state.allocationResult.batchUsage.reduce(function (sum, usage) { return sum + usage.reservedUnits; }, 0);
+        var combinedReserved = combined.reduce(function (sum, group) { return sum + group.reservedUnits; }, 0);
+        assert(engineReserved === combinedReserved, "A Combined Materials eltér az Allocation Engine foglalásától.");
+        var current = await userDataRepository.readAllUserData();
+        var envelope = buildM4BackupEnvelope(current, { application: APP.name, applicationVersion: APP.version });
+        var validated = validateAndMigrateM4Backup(envelope);
+        var beforePreview = await userDataRepository.fingerprint();
+        buildM4ImportPreview(current, validated.backup.data, "MERGE");
+        assert(await userDataRepository.fingerprint() === beforePreview, "Az import preview módosította a User Data-t.");
+        await database.commitUserDataImport(validated.backup.data, "REPLACE", {
+          currentUserSettingKeys: current.userSettings.map(function (record) { return record.key; })
+        });
+        assert(await userDataRepository.fingerprint() === envelope.fingerprint, "Az atomi backup roundtrip fingerprintje eltér.");
+        logger.event("INFO", "BACKUP_ROUNDTRIP_PASS", "Az exportált User Data atomi REPLACE roundtrip után bitazonos maradt.", {
+          fingerprint: envelope.fingerprint,
+          recordCount: Object.keys(current).reduce(function (sum, key) { return sum + current[key].length; }, 0)
+        });
+        var rollback = await verifyM4ImportRollbackPreservesUserData();
+        logger.event("INFO", "BACKUP_IMPORT_ROLLBACK_PROBE_PASS", "A félbeszakított import az eredeti User Data-t megőrizte.", rollback);
+        return combined.length + " material · bitazonos roundtrip · rollback PASS";
+      });
+
       await check("Standalone HTML export", async function () {
         var html = await buildStandaloneExport();
         assert(!/<link[^>]+stylesheet/i.test(html), "Az export külső stylesheetet tartalmaz.");
@@ -5062,8 +5939,140 @@
       return state.lastProbe;
     }
 
+    async function buildDiagnosticStateSnapshot() {
+      var cacheStores = [
+        "blueprintIndexRawCache", "blueprintIndexCache", "blueprintRawCache", "blueprintNormalizedCache",
+        "miningRawCache", "miningNormalizedCache", "blueprintDatasets", "miningDatasets"
+      ];
+      var cacheCounts = {};
+      await Promise.all(cacheStores.map(async function (storeName) {
+        cacheCounts[storeName] = await database.count(storeName).catch(function () { return null; });
+      }));
+      var userData = await userDataRepository.readAllUserData();
+      var processes = logger.readBlocks();
+      var eventBlocks = processes.map(function (block) { return block.process; });
+      if (logger.current) {
+        eventBlocks.push(logger.current);
+      }
+      var severity = eventBlocks.reduce(function (counts, process) {
+        (process && process.events || []).forEach(function (event) {
+          if (event.level === "WARN") { counts.warnings += 1; }
+          if (event.level === "ERROR") { counts.errors += 1; }
+        });
+        return counts;
+      }, { warnings: 0, errors: 0 });
+      return {
+        activeScVersion: state.gameVersion ? state.gameVersion.code : null,
+        gameDataCache: {
+          activeBlueprintDataset: state.activeBlueprintDataset ? {
+            version: state.activeBlueprintDataset.version,
+            status: state.activeBlueprintDataset.status,
+            recordCount: state.activeBlueprintDataset.recordCount,
+            activatedAt: state.activeBlueprintDataset.activatedAt
+          } : null,
+          activeMiningDataset: state.activeMiningDataset ? {
+            version: state.activeMiningDataset.version,
+            status: state.activeMiningDataset.status,
+            commodityCount: state.activeMiningDataset.commodityCount,
+            activatedAt: state.activeMiningDataset.activatedAt
+          } : null,
+          cacheCounts: cacheCounts
+        },
+        userData: {
+          schemaVersion: APP.schemaVersion,
+          fingerprint: fingerprintUserDataPayload(userData),
+          recordCounts: Object.keys(userData).reduce(function (counts, key) {
+            counts[key] = userData[key].length;
+            return counts;
+          }, {})
+        },
+        craftingCardOrder: state.craftingCards.map(function (card, index) {
+          return { priority: index + 1, id: card.id, blueprintUuid: card.blueprintUuid, outputName: card.outputName, quantity: card.quantity };
+        }),
+        allocation: state.allocationResult ? {
+          summary: m4Clone(state.allocationResult.summary),
+          batchUsage: m4Clone(state.allocationResult.batchUsage),
+          cards: state.allocationResult.cards.map(function (card) {
+            return {
+              cardId: card.cardId,
+              order: card.order,
+              outputName: card.outputName,
+              satisfied: card.satisfied,
+              requirements: card.requirements.map(function (requirement) {
+                return {
+                  recipeSlotId: requirement.recipeSlotId,
+                  ingredientUuid: requirement.ingredientUuid,
+                  rule: requirement.rule,
+                  targetQuality: requirement.targetQuality,
+                  requiredUnits: requirement.requiredUnits,
+                  allocatedUnits: requirement.allocatedUnits,
+                  missingAmountUnits: requirement.missingAmountUnits,
+                  missingQualityUnits: requirement.missingQualityUnits,
+                  status: requirement.status
+                };
+              })
+            };
+          })
+        } : null,
+        combinedMaterials: {
+          fingerprint: m4FingerprintText(JSON.stringify(m4Canonicalize(state.combinedMaterials || []))),
+          materialCount: (state.combinedMaterials || []).length,
+          missingMaterialCount: (state.combinedMaterials || []).filter(function (group) { return group.missingUnits > 0; }).length,
+          results: m4Clone(state.combinedMaterials || [])
+        },
+        backup: {
+          format: M4_BACKUP_FORMAT,
+          schemaVersion: M4_BACKUP_SCHEMA_VERSION,
+          state: m4Clone(state.backupState),
+          preview: state.backupPreview ? {
+            fileName: state.backupPreview.fileName,
+            mode: state.backupPreview.mode,
+            previewedAt: state.backupPreview.previewedAt,
+            schemaVersion: state.backupPreview.validated.backup.schemaVersion,
+            migration: state.backupPreview.validated.migration,
+            totals: state.backupPreview.preview.totals
+          } : null
+        },
+        diagnostics: {
+          retainedProcesses: processes.length,
+          warnings: severity.warnings,
+          errors: severity.errors,
+          sessionWritePolicy: "RAM_DURING_PROCESS_SINGLE_SESSIONSTORAGE_WRITE_ON_FINISH"
+        }
+      };
+    }
+
+    async function renderDiagnosticsSummary() {
+      var container = document.getElementById("diagnosticsSummary");
+      if (!container || !state.dbReady) {
+        return;
+      }
+      var snapshot = await buildDiagnosticStateSnapshot();
+      container.replaceChildren();
+      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
+        var item = document.createElement("span");
+        var label = document.createElement("small");
+        var content = document.createElement("strong");
+        label.textContent = value[0];
+        content.textContent = value[1];
+        item.append(label, content);
+        container.append(item);
+      });
+      document.body.dataset.userDataFingerprint = snapshot.userData.fingerprint;
+      document.body.dataset.diagnosticM4Ready = "true";
+    }
+
     async function copyLog() {
-      var text = logger.text();
+      logger.start("Diagnostic Log Copy", { scope: "M1-M4" });
+      var preCopySnapshot = await buildDiagnosticStateSnapshot();
+      logger.event("INFO", "DIAGNOSTIC_BUNDLE_BUILT", "Az M1–M4 állapot egyetlen diagnosztikai csomagba került.", {
+        activeScVersion: preCopySnapshot.activeScVersion,
+        userDataFingerprint: preCopySnapshot.userData.fingerprint,
+        combinedMaterialsFingerprint: preCopySnapshot.combinedMaterials.fingerprint,
+        backupStatus: preCopySnapshot.backup.state.lastStatus
+      });
+      logger.finish("PASS", { scope: "M1-M4", userDataFingerprint: preCopySnapshot.userData.fingerprint });
+      var text = logger.text(await buildDiagnosticStateSnapshot());
       try {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
           await navigator.clipboard.writeText(text);
@@ -5085,6 +6094,8 @@
       }
       setNotice("A diagnosztikai log a vágólapra került.", "success");
       document.body.dataset.lastCopyBytes = String(byteLength(text));
+      document.body.dataset.diagnosticBundleM4 = "true";
+      await renderDiagnosticsSummary();
     }
 
     async function restoreCachedState() {
@@ -5200,6 +6211,8 @@
           cacheAvailable: Boolean(state.gameVersion),
           cssReady: state.cssReady
         });
+        renderBackupPreview();
+        await renderDiagnosticsSummary();
       } catch (error) {
         logger.event("ERROR", "STARTUP_FAILED", "Az alkalmazás indulása sikertelen.", {
           error: serializeError(error)
@@ -5280,7 +6293,7 @@
     document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
     document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
     function navigateToPanel(navId, panelId, focusId) {
-      ["craftingListNav", "blueprintBrowserNav", "myMaterialsNav", "miningNav"].forEach(function (id) {
+      ["craftingListNav", "blueprintBrowserNav", "combinedMaterialsNav", "myMaterialsNav", "miningNav", "dataSettingsNav"].forEach(function (id) {
         var navigationButton = document.getElementById(id);
         var active = id === navId;
         navigationButton.classList.toggle("active", active);
@@ -5301,11 +6314,17 @@
     document.getElementById("blueprintBrowserNav").addEventListener("click", function () {
       navigateToPanel("blueprintBrowserNav", "blueprintBrowserPanel", "blueprintSearchInput");
     });
+    document.getElementById("combinedMaterialsNav").addEventListener("click", function () {
+      navigateToPanel("combinedMaterialsNav", "combinedMaterialsPanel");
+    });
     document.getElementById("myMaterialsNav").addEventListener("click", function () {
       navigateToPanel("myMaterialsNav", "myMaterialsPanel", "batchMaterialName");
     });
     document.getElementById("miningNav").addEventListener("click", function () {
       navigateToPanel("miningNav", "miningPanel", "miningCommoditySelect");
+    });
+    document.getElementById("dataSettingsNav").addEventListener("click", function () {
+      navigateToPanel("dataSettingsNav", "dataSettingsPanel", "backupExportButton");
     });
 
     document.getElementById("syncMiningDataButton").addEventListener("click", function () {
@@ -5469,6 +6488,33 @@
       quantity.min = isItem ? "1" : "0.0001";
     });
 
+    document.getElementById("backupExportButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      exportUserDataBackup().catch(function () { return null; }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("backupPreviewButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      previewUserDataBackup().catch(function () { return null; }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("backupApplyButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      applyUserDataBackup().catch(function () { return null; }).finally(function () {
+        button.disabled = !state.backupPreview;
+      });
+    });
+
+    document.getElementById("backupImportFile").addEventListener("change", invalidateBackupPreview);
+    document.getElementById("backupImportMode").addEventListener("change", invalidateBackupPreview);
+
     document.getElementById("copyLogButton").addEventListener("click", function () {
       copyLog().catch(function (error) {
         setNotice("A log másolása sikertelen: " + error.message, "error");
@@ -5515,7 +6561,18 @@
       reconcileMiningLoadout: reconcileMiningLoadout,
       syncMiningDataset: syncMiningDataset,
       loadMiningCommodityDetail: loadMiningCommodityDetail,
-      selectDefaultMiningCommodity: selectDefaultMiningCommodity
+      selectDefaultMiningCommodity: selectDefaultMiningCommodity,
+      buildCombinedMaterials: buildCombinedMaterials,
+      buildM4BackupEnvelope: buildM4BackupEnvelope,
+      validateAndMigrateM4Backup: validateAndMigrateM4Backup,
+      buildM4ImportPreview: buildM4ImportPreview,
+      simulateM4UserDataImport: simulateM4UserDataImport,
+      fingerprintUserDataPayload: fingerprintUserDataPayload,
+      exportUserDataBackup: exportUserDataBackup,
+      previewUserDataBackup: previewUserDataBackup,
+      applyUserDataBackup: applyUserDataBackup,
+      buildDiagnosticStateSnapshot: buildDiagnosticStateSnapshot,
+      verifyM4ImportRollbackPreservesUserData: verifyM4ImportRollbackPreservesUserData
     });
 
     bootstrap();

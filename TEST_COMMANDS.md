@@ -94,6 +94,18 @@ M3 repair-cycle futtatas:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "M3 mining adatok location rangsor es loadoutok" -TestId m3-regression
 ```
 
+M4 Combined Materials-, backup- es diagnosztikai regresszio:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-m4.ps1"
+```
+
+M4 repair-cycle futtatas:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "M4 Combined Materials backup es diagnosztika" -TestId m4-regression
+```
+
 Valos bongeszos ellenorzes:
 
 1. Nyisd meg a `sPg Crafting List.html` fajlt aktualis Chrome-ban vagy Edge-ben.
@@ -130,3 +142,4 @@ node .\tools\serve-local.mjs
 - `m1-regression`: baseline szintaxis, JS-300, vegyes unit, duplicate-material, UNKNOWN capability es provenance regresszio.
 - `m2-regression`: az M1 kapu mellett 8 kotelezo allocation eset, JS-300/Hofstede szabalyok, determinisztikus kartya-prioritas, input-valtozatlansag es 1000 batch/100 kartya teljesitmenyfixture.
 - `m3-regression`: az M1/M2 kapuk mellett 17 kotelezo mining/location/loadout eset, eltunt equipment es User Data hatar, valamint 5000 locationos teljesitmenyfixture.
+- `m4-regression`: az M1-M3 kapuk mellett 12 kotelezo Combined Materials/backup/diagnosztikai eset, schema 1 migracio, bitazonos roundtrip, rollback es 1000 kartya/3000 slot/5000 batch teljesitmenyfixture.

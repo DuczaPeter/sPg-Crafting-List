@@ -1,0 +1,29 @@
+{
+  "cycleId": "V001-C007",
+  "checkedAt": "2026-08-22T12:19:00+02:00",
+  "browserSurface": "local Chromium browser session",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "result": "PASS",
+  "technicalProbe": {
+    "passed": 11,
+    "total": 11,
+    "m4Result": "6 material; bitazonos roundtrip; rollback PASS"
+  },
+  "userDataFingerprintBeforeAfter": "30efd6b4",
+  "combinedMaterialsFingerprint": "c15d0663",
+  "backupPreview": {
+    "schemaMigration": "1 -> 2",
+    "mode": "REPLACE",
+    "plannedDeletions": 14,
+    "mutatedUserData": false
+  },
+  "diagnosticCopy": {
+    "result": "PASS",
+    "approximateBytes": 189848,
+    "scope": "M1-M4"
+  },
+  "visualChecks": ["Combined Materials desktop", "Data / Settings desktop"],
+  "consoleErrors": 0,
+  "consoleWarnings": 0,
+  "openReleaseGates": ["direct file://", "offline reopen of downloaded standalone export", "separate Edge regression"]
+}

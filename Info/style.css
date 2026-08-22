@@ -3329,6 +3329,180 @@ code {
   box-shadow: inset 3px 0 0 var(--warning);
 }
 
+/* M4 Combined Materials, backup preview and diagnostic summary. */
+
+.spg-m4-panel {
+  grid-column: 1 / -1;
+  scroll-margin-top: 18px;
+}
+
+.spg-combined-summary,
+.spg-combined-totals,
+.spg-diagnostics-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-combined-summary > div,
+.spg-combined-totals > span,
+.spg-diagnostics-summary > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-combined-summary span,
+.spg-combined-totals small,
+.spg-diagnostics-summary small {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.spg-combined-list,
+.spg-combined-usage-list,
+.spg-backup-preview-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-combined-material,
+.spg-backup-export-card,
+.spg-backup-import-card,
+.spg-diagnostics-card,
+.spg-backup-preview-grid article {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-combined-material {
+  padding: 14px;
+}
+
+.spg-combined-material[data-missing="true"] {
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+
+.spg-combined-heading,
+.spg-backup-preview-heading,
+.spg-diagnostics-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.spg-combined-heading > div,
+.spg-backup-preview-heading {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.spg-combined-heading small,
+.spg-backup-preview-heading small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.spg-combined-meta {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-combined-details summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 700;
+}
+
+.spg-combined-usage-list {
+  margin-top: 10px;
+}
+
+.spg-combined-usage {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) minmax(150px, 0.75fr) minmax(260px, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.16);
+  border-radius: 10px;
+}
+
+.spg-combined-usage > span,
+.spg-combined-usage > small {
+  color: var(--muted);
+}
+
+.spg-backup-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.spg-backup-export-card,
+.spg-backup-import-card,
+.spg-diagnostics-card {
+  padding: 14px;
+}
+
+.spg-backup-import-card,
+.spg-backup-import-card label {
+  display: grid;
+  gap: 9px;
+}
+
+.spg-backup-import-card label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.spg-backup-preview {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+}
+
+.spg-backup-preview-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.spg-backup-preview-grid article {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+
+.spg-backup-preview-grid small {
+  color: var(--muted);
+}
+
+.spg-diagnostics-card {
+  align-items: center;
+}
+
+.spg-diagnostics-summary {
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  margin: 0;
+}
+
+.spg-diagnostics-summary strong {
+  overflow-wrap: anywhere;
+}
+
 /* Standalone card export. These rules are embedded from this central CSS. */
 
 .spg-export-page {
@@ -3424,6 +3598,11 @@ code {
   .spg-loadout-basics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .spg-backup-preview-grid,
+  .spg-diagnostics-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -3470,10 +3649,26 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .spg-combined-summary,
+  .spg-combined-totals,
+  .spg-combined-usage,
+  .spg-backup-actions,
+  .spg-backup-preview-grid,
+  .spg-diagnostics-summary {
+    grid-template-columns: 1fr;
+  }
+
   .spg-mining-loadout-heading,
   .spg-gadget-heading,
   .spg-mining-station-heading,
   .spg-loadout-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-combined-heading,
+  .spg-backup-preview-heading,
+  .spg-diagnostics-card {
     align-items: stretch;
     flex-direction: column;
   }

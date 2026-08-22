@@ -15,13 +15,16 @@ Datum: 2026-08-22
 - RAM-alapu process log, lezart blokkonkenti sessionStorage iras.
 - Globalis `window.onerror` es `unhandledrejection` kezeles.
 - Standalone export builder beagyazott CSS-sel es tavoli fontimport nelkul.
-- Egykattintasos, tizlepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation- es M3 mining modell-ellenorzessel.
+- Egykattintasos, tizenegylepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation-, M3 mining modell- es M4 backup roundtrip/rollback-ellenorzessel.
 - M1 verziozott raw/normalizalt blueprint index- es reszlet-cache.
 - Lapozott Blueprint Browser, API-facetekkel es lusta teljes receptbetoltessel.
 - Globalis Quality batch inventory es sorrendezheto Crafting Card User Data.
 - Slotonkenti, tervezesi modu Allocation Engine reszletes batch-dontesi trace-szel.
 - Tranzakcios raw/normalizalt Mining Game Data cache, dinamikus API-facetek es occurrence → spawn → maximum Quality rangsor.
 - Perzisztens mining loadoutok dinamikus station-, module- es gadgetkezeléssel, USER_OVERRIDE es deprecated equipment jelolessel.
+- Combined Materials az Allocation Engine eredmenyenek slot- es Quality-reszleteket megorzo, determinisztikus projekciojakent.
+- Teljes User Data backup schema 2, schema 1 migracio, read-only preview, import elotti snapshot es egytranzakcios import/rollback.
+- Egyetlen `Log masolasa` muvelettel exportalhato M1-M4 allapotcsomag.
 
 ## Bizonyitott
 
@@ -38,6 +41,8 @@ Datum: 2026-08-22
 - M2: Q517 HP_MIN_500 valasztas, Highest/Target Q, ketkartya-prioritas, IndexedDB reload es teljes User Data fingerprint-megorzes PASS.
 - M3: 72 commodity, 14 vehicle, 20 head, 28 module, 6 gadget; 17/17 regresszio, 5000 location 44–45 ms, teljes loadout/User Data fingerprint-megorzes PASS.
 - Aktualis Chrome localhost technikai proba: 10/10 PASS; M3 desktop UI es dinamikus 1/3/5 station/module elrendezes PASS; konzol warning/error 0.
+- M4: 12/12 kotelezo regresszio PASS; 1000 kartya/3000 Recipe Slot/5000 batch Combined fixture a `V001-C007` ciklusban 144 ms.
+- Aktualis helyi bongeszos technikai proba: 11/11 PASS; atomi backup REPLACE roundtrip es megszakitott import rollback bitazonos fingerprinttel; Combined/Data Settings vizualis ellenorzes PASS; konzol warning/error 0.
 
 ## Meg nem bizonyitott
 
