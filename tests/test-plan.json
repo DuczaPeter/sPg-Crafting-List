@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 3,
+  "implemented": {
+    "repairCycle": true,
+    "browserDiagnosticsCapture": false,
+    "artifactRetentionDeletion": false
+  },
+  "allowedExecutables": [
+    "powershell.exe",
+    "pwsh",
+    "npm",
+    "node"
+  ],
+  "tests": [
+    {
+      "id": "smoke-pass",
+      "level": "targeted",
+      "description": "Validation-only command that exits successfully.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-Command", "Write-Output ok; exit 0"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "smoke-fail",
+      "level": "targeted",
+      "description": "Validation-only command that exits with failure.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-Command", "Write-Output fail; exit 7"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "blocked-log-required",
+      "level": "targeted",
+      "description": "Validation-only command that proves required diagnostics block PASS when capture is unavailable.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-Command", "Write-Output requires-log; exit 0"],
+      "captureRequired": { "appLog": true, "browserConsole": false }
+    }
+  ],
+  "diagnosticsSchema": {
+    "implementedInBaseRepairCycle": false,
+    "implementedInBrowserDiagnosticsModule": false,
+    "appLogPanelSelector": null,
+    "logExportFunctionName": null,
+    "logClearFunctionName": null,
+    "globalObjectName": null,
+    "logFormat": "text-or-json",
+    "errorLevels": ["ERROR"],
+    "allowedWarnings": [],
+    "maxBytes": 250000,
+    "notes": "Base repair-cycle writes NOT_CAPTURED placeholders. Real browser/app-log capture requires the optional browser-diagnostics module and project-local Playwright."
+  },
+  "artifactRetention": {
+    "implementedAutomaticDeletion": false,
+    "keepEveryCycleSummary": true,
+    "keepFullArtifactsForLastSuccessfulCycle": true,
+    "keepFullArtifactsForLastFailedCycles": 3,
+    "largeArtifactsExcludedFromGitByDefault": true,
+    "automaticDeletionRequiresExplicitSwitch": true
+  },
+  "releaseGate": [
+    "targeted tests pass",
+    "required regression passes",
+    "no unexplained app ERROR when app log capture is enabled and required",
+    "browser console clean when browser diagnostics is enabled and required",
+    "visual check completed when UI changed",
+    "STATUS.md and WORKLOG.md updated"
+  ]
+}

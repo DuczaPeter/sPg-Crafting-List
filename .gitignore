@@ -1,0 +1,42 @@
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+*token*
+*secret*
+Access Tokens.txt
+
+# Local files
+WORKING.lock
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs and generated outputs
+logs/*
+!logs/.gitkeep
+archive/*.zip
+
+# Large cycle artifacts
+test-artifacts/**/raw-*
+test-artifacts/**/*.zip
+test-artifacts/**/*.har
+test-artifacts/**/*.trace
+test-artifacts/**/*.png
+test-artifacts/**/*.jpg
+test-artifacts/**/*.jpeg
+test-artifacts/**/*.webp
+test-artifacts/**/dom-snapshot.html
+test-artifacts/**/browser-console.json
+test-artifacts/**/page-errors.json
+test-artifacts/**/network-errors.json
+
+# Browser diagnostics dependencies
+node_modules/
+
+# Editors
+.vscode/
+.idea/
