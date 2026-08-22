@@ -17,3 +17,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a karcsu `one-file-html` projektvaz, verziozas es javitasi ciklus letrehozasara.
 - Mely fajlokat vagy donteseket erintett: a teljes indulasi mappastrukturat, a vezirlo dokumentumokat, a `V001-dev` celverziot es a `releases/` kiadasi helyet.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem, jelenleg nincs uj altalanos tanulsag`.
+
+## Chrome baseline ellenorzes
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-22`, a technikai baseline valos Chrome-ellenorzesekor.
+- Mire segitett: localhost API/IndexedDB/export proba, konzolhiba-ellenorzes, desktop es 390 px mobil vizualis ellenorzes.
+- Mely fajlokat vagy donteseket erintett: `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C001/browser-manual-summary.json`; a `file://` automatizalt tesztje biztonsagi korlat miatt kezi kapu maradt.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem; nincs user-owned skillmodositasra alkalmas altalanos tanulsag`.

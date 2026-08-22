@@ -50,7 +50,31 @@ Projektstruktura ellenorzese:
 $required = @('CODEX_START_HERE.md', 'STATUS.md', 'TASKS.md', 'PROJECT_MAP.md', 'WORKLOG.md', 'USED_SKILLS.md', 'TEST_COMMANDS.md', 'AGENTS.md', 'README.md', '.gitignore', 'VERSIONING_RULES.md', 'VERSION.json', 'src', 'releases', 'tests', 'test-artifacts', 'tools', 'docs', 'logs', 'archive'); $missing = @($required | Where-Object { -not (Test-Path -LiteralPath $_) }); if ($missing.Count -gt 0) { Write-Error ("Hianyzo elemek: " + ($missing -join ', ')); exit 1 }; Write-Output 'Project scaffold OK'
 ```
 
-Az HTML szintaktikai es bongeszos smoke tesztjet az elso munkaverzio elkeszulte utan kell felvenni.
+Az HTML szintaktikai es bongeszos smoke tesztje alabb rogzitve van.
+
+Technikai baseline statikus ellenorzese:
+
+\`\`\`powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-baseline.ps1"
+\`\`\`
+
+Repair-cycle futtatas:
+
+\`\`\`powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "technikai baseline" -TestId baseline-static
+\`\`\`
+
+Valos bongeszos ellenorzes:
+
+1. Nyisd meg a \`sPg Crafting List.html\` fajlt aktualis Chrome-ban vagy Edge-ben.
+2. Kattints a \`Technikai proba\` gombra.
+3. Csak akkor tekintheto \`file://\` kompatibilisnek, ha minden sor \`PASS\`, a futtatasi mod pedig \`Kozvetlen file:// futas\`.
+
+A localhost csak fejlesztesi ellenorzeshez hasznalhato, es nem bizonyitja a \`file://\` kompatibilitast:
+
+\`\`\`powershell
+python -m http.server 4177 --bind 127.0.0.1
+\`\`\`
 
 ## Tesztszintek
 

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "cycleId": "V001-C001",
+  "testedAt": "2026-08-22T08:09:54+02:00",
+  "browser": "Chrome",
+  "surface": "localhost development check",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "applicationReady": true,
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 7,
+    "failed": 0,
+    "checks": [
+      "HTTP localhost runtime",
+      "IndexedDB roundtrip",
+      "Star Citizen Wiki API",
+      "DYNAMIC/FIXED Quality capability",
+      "integer SCU arithmetic",
+      "location ordering",
+      "standalone HTML builder"
+    ]
+  },
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "blueprint": "JS-300",
+  "cacheRestoredAfterReload": true,
+  "technicalProbeResultRestoredAfterReload": true,
+  "consoleErrorCount": 0,
+  "consoleWarningCount": 0,
+  "visualChecks": {
+    "desktop": "PASS",
+    "mobile390px": "PASS"
+  },
+  "standaloneExport": {
+    "builderStatus": "PASS",
+    "approximateSizeKiB": 52,
+    "externalStylesheet": false,
+    "remoteCssImport": false,
+    "downloadEventObservedByAutomation": false,
+    "applicationNotice": "A standalone HTML export elkeszult."
+  },
+  "fileProtocol": {
+    "status": "NOT_TESTED",
+    "reason": "The controlled Chrome surface blocks navigation to local file URLs.",
+    "manualGateRequired": true
+  }
+}

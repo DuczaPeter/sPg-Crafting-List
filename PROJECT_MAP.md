@@ -2,7 +2,7 @@
 
 ## Fo belepesi pontok
 
-- Fo programfajl: `sPg Crafting List.html` (tervezett, meg nincs letrehozva)
+- Fo programfajl: `sPg Crafting List.html`
 - Kozponti vizualis fajl: `Info/style.css`
 - Indito mod: `sPg Crafting List.html` kozvetlen megnyitasa Windows 11 alatt aktualis Chrome vagy Edge bongeszoben
 - Minimalis fallback: csak dokumentalt localhost inditas, ha a valos `file://` teszt ezt indokolja
@@ -22,6 +22,7 @@
 - `logs/`: rovid, nem titkos futasi vagy hibakimenetek.
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
+- Baseline validalas: `tools/validate-baseline.ps1`.
 
 ## Elsodleges tervezesi forrasok
 
@@ -29,6 +30,8 @@
 - `docs/IMPLEMENTATION_DECISIONS.md`: lezart nev-, futtatasi-, prioritas-, keszlet- es rangsorolasi dontesek.
 - `Info/Star_Citizen_alapanyag_farm_kartyak_BP_API_C788_P6_P8_Killshot_bovitve.html`: vizualis es export referencia.
 - `Info/style.css`: kozponti alkalmazas-CSS.
+- `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
+- `test-artifacts/V001-C001/`: az elso statikus es Chrome localhost baseline bizonyitekai.
 
 ## Iranyito fajlok
 

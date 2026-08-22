@@ -35,6 +35,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-Command", "Write-Output requires-log; exit 0"],
       "captureRequired": { "appLog": true, "browserConsole": false }
+    },
+    {
+      "id": "baseline-static",
+      "level": "targeted",
+      "description": "Validates the two-file application structure, JavaScript syntax, required architecture markers, and central CSS.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-baseline.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

@@ -1,11 +1,16 @@
-{
-  "stableRelease": null,
-  "stableFile": null,
-  "developmentTarget": "V001-dev",
-  "currentCycle": "C000",
-  "currentCycleId": null,
-  "lastSuccessfulCycle": null,
-  "branch": null,
-  "releaseGate": "not-started",
-  "lastUpdated": "2026-08-22"
+﻿{
+    "stableRelease":  null,
+    "stableFile":  null,
+    "developmentTarget":  "V001-dev",
+    "currentCycle":  "C001",
+    "currentCycleId":  "V001-C001",
+    "lastSuccessfulCycle":  "V001-C001",
+    "branch":  "develop/V001",
+    "releaseGate":  "technical-baseline-localhost-pass-file-pending",
+    "lastUpdated":  "2026-08-22T08:09:54+02:00",
+    "currentCyclePurpose":  "technikai baseline",
+    "currentCycleStartedAt":  "2026-08-22T08:09:23",
+    "currentTestLevel":  "targeted",
+    "currentCycleStatus":  "PASS",
+    "currentCycleStatusReason":  "Selected test command exited with code 0."
 }

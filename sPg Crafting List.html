@@ -1,0 +1,1347 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Star Citizen crafting, Quality, inventory és mining tervező.">
+  <title>sPg Crafting List</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="Info/style.css" data-app-styles>
+</head>
+<body>
+  <div class="spg-app-shell">
+    <header class="spg-app-header">
+      <div>
+        <p class="eyebrow">sPg · Star Citizen crafting planner</p>
+        <h1>sPg Crafting List</h1>
+        <p class="spg-app-lead">Helyi crafting-, készlet-, Quality- és mining-tervező.</p>
+      </div>
+      <div class="spg-header-actions" aria-label="Alkalmazásműveletek">
+        <button id="refreshDataButton" type="button">Adatok frissítése</button>
+        <button id="runProbeButton" type="button" class="primary">Technikai próba</button>
+      </div>
+    </header>
+
+    <section id="offlineBanner" class="spg-banner spg-banner-warning" hidden role="status">
+      Offline – mentett játékadat használatban
+    </section>
+
+    <section class="spg-status-grid" aria-label="Rendszerállapot">
+      <article class="spg-status-card">
+        <span>Futtatási mód</span>
+        <strong id="protocolStatus">Ellenőrzés…</strong>
+      </article>
+      <article class="spg-status-card">
+        <span>Star Citizen adatverzió</span>
+        <strong id="gameVersionStatus">Ellenőrzés…</strong>
+      </article>
+      <article class="spg-status-card">
+        <span>Wiki API</span>
+        <strong id="apiStatus">Ellenőrzés…</strong>
+      </article>
+      <article class="spg-status-card">
+        <span>IndexedDB</span>
+        <strong id="databaseStatus">Ellenőrzés…</strong>
+      </article>
+      <article class="spg-status-card">
+        <span>Utolsó sikeres szinkron</span>
+        <strong id="lastSyncStatus">Még nincs</strong>
+      </article>
+      <article class="spg-status-card">
+        <span>Alkalmazás</span>
+        <strong id="applicationStatus">V001-dev</strong>
+      </article>
+    </section>
+
+    <nav class="spg-module-nav" aria-label="V1.0 alkalmazásrészek">
+      <button type="button" class="active" aria-current="page">Crafting List</button>
+      <button type="button" disabled>Blueprint Browser</button>
+      <button type="button" disabled>My Materials</button>
+      <button type="button" disabled>Material Database</button>
+      <button type="button" disabled>Mining Loadouts</button>
+      <button type="button" disabled>Combined Materials</button>
+      <button type="button" disabled>Data / Settings</button>
+    </nav>
+
+    <main class="spg-main-layout">
+      <section class="panel spg-baseline-panel" aria-labelledby="baselineTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">Első fejlesztési kapu</p>
+            <h2 id="baselineTitle">Technikai baseline</h2>
+          </div>
+          <span id="probeSummary" class="spg-badge spg-badge-neutral" data-status="PENDING">Még nem futott</span>
+        </div>
+
+        <p>
+          Ez a kapu a valós Wiki API-kapcsolatot, a <code>file://</code> futást, az IndexedDB-t,
+          a blueprint-normalizálást és a standalone exportot ellenőrzi.
+        </p>
+
+        <ol id="probeResults" class="spg-check-list" aria-live="polite">
+          <li data-status="PENDING">
+            <span class="spg-check-marker">•</span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu hét célzott ellenőrzést futtat.</small></span>
+          </li>
+        </ol>
+
+        <div class="spg-action-row">
+          <button id="exportTestButton" type="button">Standalone tesztexport</button>
+          <button id="copyLogButton" type="button">Log másolása</button>
+          <button id="clearLogButton" type="button">Log törlése</button>
+        </div>
+        <p id="actionNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel spg-blueprint-panel" aria-labelledby="blueprintTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">Élő normalizálási minta</p>
+            <h2 id="blueprintTitle">JS-300 blueprint</h2>
+          </div>
+          <span id="blueprintStatus" class="spg-badge spg-badge-neutral">Nincs betöltve</span>
+        </div>
+        <p id="blueprintMeta" class="spg-muted">
+          Az első sikeres API-szinkron után itt recipe slot bontásban jelennek meg az inputok.
+        </p>
+        <div id="blueprintRequirements" class="spg-requirement-list"></div>
+      </section>
+
+      <section class="panel spg-roadmap-panel" aria-labelledby="roadmapTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">V1.0 célállapot</p>
+            <h2 id="roadmapTitle">Következő belső milestone-ok</h2>
+          </div>
+        </div>
+        <ol class="spg-roadmap-list">
+          <li><strong>M1:</strong> API cache, Blueprint Browser és normalizált receptmodell.</li>
+          <li><strong>M2:</strong> My Materials, Quality batch-ek és determinisztikus Allocation Engine.</li>
+          <li><strong>M3:</strong> mining adatok, location rangsor és loadoutok.</li>
+          <li><strong>M4:</strong> több Crafting Card, Combined Materials, backup és diagnosztika.</li>
+          <li><strong>M5:</strong> standalone export, teljes referencia-UI és elfogadási regresszió.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="spg-app-footer">
+      <span>Adatforrás: Star Citizen Wiki API</span>
+      <span id="footerRuntime">V001-dev</span>
+    </footer>
+  </div>
+
+  <script>
+  "use strict";
+
+  (function () {
+    var APP = Object.freeze({
+      name: "sPg Crafting List",
+      version: "V001-dev",
+      schemaVersion: 1,
+      cacheSchemaVersion: 1,
+      dbName: "spg-crafting-list",
+      dbVersion: 1,
+      apiBase: "https://api.star-citizen.wiki/api",
+      sessionLogKey: "spgCraftingList.sessionLog.v1",
+      maxLogProcesses: 30,
+      maxLogBytes: 240000,
+      requestTimeoutMs: 20000
+    });
+
+    var STORE_DEFINITIONS = Object.freeze({
+      gameMetadata: "key",
+      blueprints: "uuid",
+      items: "uuid",
+      vehicles: "uuid",
+      commodities: "uuid",
+      locations: "uuid",
+      miningEquipment: "uuid",
+      normalizedBlueprints: "uuid",
+      userInventory: "id",
+      materialBatches: "id",
+      userLoadouts: "id",
+      craftingCards: "id",
+      settings: "key",
+      syncStaging: "key",
+      snapshots: "id"
+    });
+
+    var state = {
+      dbReady: false,
+      apiReady: false,
+      cssReady: false,
+      gameVersion: null,
+      lastSyncAt: null,
+      normalizedBlueprint: null,
+      cssText: null,
+      lastProbe: null
+    };
+
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    function makeId(prefix) {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return prefix + "-" + window.crypto.randomUUID();
+      }
+      return prefix + "-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+
+    function byteLength(value) {
+      try {
+        return new Blob([value]).size;
+      } catch (error) {
+        return String(value).length;
+      }
+    }
+
+    function safeJson(value, fallback) {
+      if (value == null || value === "") {
+        return fallback;
+      }
+      try {
+        var parsed = JSON.parse(value);
+        return parsed == null ? fallback : parsed;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function serializeError(error) {
+      if (!error) {
+        return { name: "Error", message: "Ismeretlen hiba" };
+      }
+      return {
+        name: error.name || "Error",
+        message: error.message || String(error),
+        stack: error.stack || null
+      };
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function toScuUnits(value) {
+      var number = Number(value);
+      if (!Number.isFinite(number)) {
+        throw new TypeError("Érvénytelen SCU mennyiség: " + value);
+      }
+      return Math.round(number * 10000);
+    }
+
+    function fromScuUnits(units) {
+      var number = Number(units);
+      if (!Number.isInteger(number)) {
+        throw new TypeError("Az SCU belső értékének egész számnak kell lennie.");
+      }
+      return number / 10000;
+    }
+
+    function formatScuUnits(units) {
+      return fromScuUnits(units).toLocaleString("hu-HU", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 4
+      }) + " SCU";
+    }
+
+    function formatTimestamp(value) {
+      if (!value) {
+        return "Még nincs";
+      }
+      var date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return String(value);
+      }
+      return new Intl.DateTimeFormat("hu-HU", {
+        dateStyle: "short",
+        timeStyle: "medium"
+      }).format(date);
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || "Az ellenőrzés sikertelen.");
+      }
+    }
+
+    class DiagnosticLogger {
+      constructor() {
+        this.current = null;
+      }
+
+      readBlocks() {
+        try {
+          var blocks = safeJson(sessionStorage.getItem(APP.sessionLogKey), []);
+          return Array.isArray(blocks) ? blocks : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      writeBlocks(blocks) {
+        var retained = Array.isArray(blocks) ? blocks.slice(-APP.maxLogProcesses) : [];
+        var serialized = JSON.stringify(retained);
+        while (retained.length > 1 && byteLength(serialized) > APP.maxLogBytes) {
+          retained.shift();
+          serialized = JSON.stringify(retained);
+        }
+        try {
+          sessionStorage.setItem(APP.sessionLogKey, serialized);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      start(type, context) {
+        if (this.current) {
+          this.finish("INTERRUPTED", { reason: "Új folyamat indult." });
+        }
+        this.current = {
+          id: makeId("process"),
+          type: type,
+          startedAt: nowIso(),
+          context: context || {},
+          events: []
+        };
+        this.event("INFO", "PROCESS_START", type + " elindult.", context || {});
+        return this.current.id;
+      }
+
+      event(level, code, message, context) {
+        if (!this.current) {
+          this.current = {
+            id: makeId("process"),
+            type: "Unscoped",
+            startedAt: nowIso(),
+            context: {},
+            events: []
+          };
+        }
+        this.current.events.push({
+          timestamp: nowIso(),
+          level: level,
+          code: code,
+          message: message,
+          context: context || {}
+        });
+      }
+
+      finish(status, context) {
+        if (!this.current) {
+          return null;
+        }
+        this.event(status === "PASS" ? "INFO" : "ERROR", "PROCESS_END", this.current.type + " lezárult.", context || {});
+        var finished = {
+          application: {
+            name: APP.name,
+            version: APP.version,
+            schemaVersion: APP.schemaVersion,
+            cacheSchemaVersion: APP.cacheSchemaVersion
+          },
+          environment: {
+            timestamp: nowIso(),
+            userAgent: navigator.userAgent,
+            online: navigator.onLine,
+            protocol: location.protocol,
+            gameVersion: state.gameVersion ? state.gameVersion.code : null,
+            databaseVersion: APP.dbVersion
+          },
+          process: Object.assign({}, this.current, {
+            finishedAt: nowIso(),
+            status: status,
+            result: context || {}
+          })
+        };
+        var blocks = this.readBlocks();
+        blocks.push(finished);
+        this.writeBlocks(blocks);
+        this.current = null;
+        return finished;
+      }
+
+      clear() {
+        this.current = null;
+        try {
+          sessionStorage.removeItem(APP.sessionLogKey);
+        } catch (error) {
+          return false;
+        }
+        return true;
+      }
+
+      text() {
+        return JSON.stringify({
+          application: APP.name,
+          generatedAt: nowIso(),
+          processes: this.readBlocks()
+        }, null, 2);
+      }
+    }
+
+    class AppDatabase {
+      constructor() {
+        this.db = null;
+      }
+
+      open() {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!window.indexedDB) {
+            reject(new Error("Az IndexedDB nem érhető el ebben a böngészőben."));
+            return;
+          }
+          var request = indexedDB.open(APP.dbName, APP.dbVersion);
+          request.onupgradeneeded = function () {
+            var db = request.result;
+            Object.keys(STORE_DEFINITIONS).forEach(function (storeName) {
+              if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName, { keyPath: STORE_DEFINITIONS[storeName] });
+              }
+            });
+          };
+          request.onsuccess = function () {
+            self.db = request.result;
+            self.db.onversionchange = function () {
+              self.db.close();
+            };
+            resolve(self.db);
+          };
+          request.onerror = function () {
+            reject(request.error || new Error("Az IndexedDB megnyitása sikertelen."));
+          };
+          request.onblocked = function () {
+            reject(new Error("Az IndexedDB frissítését egy másik megnyitott példány blokkolja."));
+          };
+        });
+      }
+
+      request(storeName, mode, operation) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction;
+          try {
+            transaction = self.db.transaction(storeName, mode);
+            var request = operation(transaction.objectStore(storeName));
+            request.onsuccess = function () {
+              resolve(request.result);
+            };
+            request.onerror = function () {
+              reject(request.error || new Error("IndexedDB műveleti hiba."));
+            };
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
+
+      get(storeName, key) {
+        return this.request(storeName, "readonly", function (store) {
+          return store.get(key);
+        });
+      }
+
+      put(storeName, value) {
+        return this.request(storeName, "readwrite", function (store) {
+          return store.put(value);
+        });
+      }
+
+      delete(storeName, key) {
+        return this.request(storeName, "readwrite", function (store) {
+          return store.delete(key);
+        });
+      }
+
+      commitGameVersion(versionRecord) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["syncStaging", "gameMetadata"], "readwrite");
+          var stageStore = transaction.objectStore("syncStaging");
+          var metadataStore = transaction.objectStore("gameMetadata");
+          var stageRecord = {
+            key: "gameVersionCandidate",
+            value: versionRecord,
+            stagedAt: nowIso()
+          };
+          stageStore.put(stageRecord);
+          metadataStore.put({
+            key: "currentGameVersion",
+            value: versionRecord,
+            updatedAt: nowIso()
+          });
+          stageStore.delete(stageRecord.key);
+          transaction.oncomplete = function () {
+            resolve(versionRecord);
+          };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A tranzakciós verziófrissítés sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A tranzakciós verziófrissítés megszakadt."));
+          };
+        });
+      }
+    }
+
+    class SCWikiAdapter {
+      constructor(logger) {
+        this.logger = logger;
+      }
+
+      async request(path, options) {
+        var settings = options || {};
+        var url = new URL(APP.apiBase + path);
+        Object.keys(settings.query || {}).forEach(function (key) {
+          var value = settings.query[key];
+          if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.set(key, value);
+          }
+        });
+        var attempts = settings.attempts || 2;
+        var lastError = null;
+
+        for (var attempt = 1; attempt <= attempts; attempt += 1) {
+          var controller = new AbortController();
+          var timeout = window.setTimeout(function () {
+            controller.abort();
+          }, APP.requestTimeoutMs);
+          var started = performance.now();
+          this.logger.event("INFO", "API_REQUEST_START", "API kérés indult.", {
+            endpoint: url.origin + url.pathname,
+            query: Object.fromEntries(url.searchParams.entries()),
+            attempt: attempt
+          });
+          try {
+            var response = await fetch(url.href, {
+              method: "GET",
+              headers: { "Accept": "application/json" },
+              signal: controller.signal,
+              cache: "no-store",
+              credentials: "omit"
+            });
+            var durationMs = Math.round(performance.now() - started);
+            var text = await response.text();
+            var payload = null;
+            try {
+              payload = text ? JSON.parse(text) : null;
+            } catch (parseError) {
+              this.logger.event("ERROR", "API_PARSE_ERROR", "Az API válasza nem érvényes JSON.", {
+                endpoint: url.origin + url.pathname,
+                status: response.status,
+                durationMs: durationMs,
+                error: serializeError(parseError)
+              });
+              throw new Error("Érvénytelen JSON-válasz: " + url.pathname);
+            }
+            this.logger.event(response.ok ? "INFO" : "ERROR", "API_REQUEST_END", "API kérés lezárult.", {
+              endpoint: url.origin + url.pathname,
+              status: response.status,
+              durationMs: durationMs,
+              recordCount: payload && Array.isArray(payload.data) ? payload.data.length : (payload && payload.data ? 1 : 0),
+              pagination: payload && payload.meta ? payload.meta : null
+            });
+            if (!response.ok) {
+              var httpError = new Error("HTTP " + response.status + " – " + url.pathname);
+              httpError.status = response.status;
+              throw httpError;
+            }
+            return payload;
+          } catch (error) {
+            lastError = error;
+            var retryable = error.name === "AbortError" || !error.status || error.status === 429 || error.status >= 500;
+            this.logger.event(retryable ? "WARN" : "ERROR", "API_REQUEST_FAILED", "API kérés sikertelen.", {
+              endpoint: url.origin + url.pathname,
+              attempt: attempt,
+              retryable: retryable,
+              error: serializeError(error)
+            });
+            if (!retryable || attempt === attempts) {
+              throw error;
+            }
+            await new Promise(function (resolve) {
+              window.setTimeout(resolve, 300 * attempt + Math.floor(Math.random() * 180));
+            });
+          } finally {
+            window.clearTimeout(timeout);
+          }
+        }
+        throw lastError || new Error("Ismeretlen API-hiba.");
+      }
+
+      async getDefaultGameVersion() {
+        var response = await this.request("/game-versions/default");
+        if (!response || !response.data || typeof response.data.code !== "string") {
+          this.logger.event("WARN", "SCHEMA_WARNING", "Hiányzó game-version mező.", {
+            expectedField: "data.code",
+            availableKeys: response && response.data ? Object.keys(response.data) : []
+          });
+          throw new Error("A game-version API sémája nem felismerhető.");
+        }
+        return response.data;
+      }
+
+      async getBlueprint(identifier, gameVersion) {
+        var response = await this.request("/blueprints/" + encodeURIComponent(identifier), {
+          query: gameVersion ? { version: gameVersion } : {}
+        });
+        if (!response || !response.data || !response.data.uuid) {
+          this.logger.event("WARN", "SCHEMA_WARNING", "Hiányzó blueprint alapmező.", {
+            expectedField: "data.uuid",
+            blueprint: identifier,
+            availableKeys: response && response.data ? Object.keys(response.data) : []
+          });
+          throw new Error("A blueprint API sémája nem felismerhető.");
+        }
+        return response.data;
+      }
+    }
+
+    function deriveQualityCapability(aspect) {
+      if (aspect && aspect.has_dynamic_modifiers === true) {
+        return "DYNAMIC";
+      }
+      if (aspect && aspect.has_dynamic_modifiers === false) {
+        return "FIXED";
+      }
+      return "UNKNOWN";
+    }
+
+    function normalizeBlueprint(raw, provenance) {
+      var aspectRoot = raw && raw.aspects && Array.isArray(raw.aspects.aspects) ? raw.aspects.aspects : [];
+      var requirements = aspectRoot.map(function (aspect, index) {
+        var input = aspect.input || {};
+        var hasScu = Number.isFinite(Number(input.quantity_scu));
+        var hasItems = Number.isFinite(Number(input.quantity));
+        var unit = hasScu ? "SCU" : (hasItems ? "ITEM" : "UNKNOWN");
+        var quantityUnits = hasScu ? toScuUnits(input.quantity_scu) : (hasItems ? Math.round(Number(input.quantity)) : null);
+        return {
+          id: raw.uuid + ":aspect:" + index,
+          blueprintUuid: raw.uuid,
+          outputUuid: raw.output_item_uuid || null,
+          recipeSlotKey: aspect.key || "aspect-" + index,
+          recipeSlotName: aspect.name || aspect.key || "Ismeretlen recipe slot",
+          ingredientUuid: input.uuid || null,
+          materialName: input.name || "Ismeretlen input",
+          requiredQuantityUnits: quantityUnits,
+          unit: unit,
+          qualityCapability: deriveQualityCapability(aspect),
+          defaultQualityStrategy: deriveQualityCapability(aspect) === "FIXED" ? "FIXED" : "UNSET",
+          targetQuality: null,
+          minQuality: Number.isFinite(Number(input.min_quality)) ? Number(input.min_quality) : null,
+          affectedStats: Array.isArray(aspect.modifiers) ? aspect.modifiers.map(function (modifier) {
+            return {
+              key: modifier.property_key || null,
+              label: modifier.label || modifier.property_key || "Ismeretlen stat",
+              betterWhen: modifier.better_when || null,
+              dynamic: aspect.has_dynamic_modifiers === true
+            };
+          }) : [],
+          allocatedBatches: [],
+          missingQuantityUnits: quantityUnits,
+          provenance: provenance
+        };
+      });
+
+      return {
+        uuid: raw.uuid,
+        key: raw.key || null,
+        outputUuid: raw.output_item_uuid || null,
+        outputName: raw.output_name || (raw.output && raw.output.name) || "Ismeretlen output",
+        outputClass: raw.output_class || null,
+        craftTimeSeconds: Number.isFinite(Number(raw.craft_time_seconds)) ? Number(raw.craft_time_seconds) : null,
+        isAvailableByDefault: raw.is_available_by_default === true,
+        gameVersion: raw.game_version || (provenance && provenance.gameVersion) || null,
+        requirements: requirements,
+        normalizedAt: nowIso(),
+        provenance: provenance
+      };
+    }
+
+    function compareLocations(a, b) {
+      function sortable(value) {
+        var number = Number(value);
+        return Number.isFinite(number) ? number : -Infinity;
+      }
+      var occurrenceDifference = sortable(b.occurrence) - sortable(a.occurrence);
+      if (occurrenceDifference !== 0) {
+        return occurrenceDifference;
+      }
+      var spawnDifference = sortable(b.spawn) - sortable(a.spawn);
+      if (spawnDifference !== 0) {
+        return spawnDifference;
+      }
+      return sortable(b.maxQuality) - sortable(a.maxQuality);
+    }
+
+    var logger = new DiagnosticLogger();
+    var database = new AppDatabase();
+    var api = new SCWikiAdapter(logger);
+
+    function setText(id, value) {
+      var element = document.getElementById(id);
+      if (element) {
+        element.textContent = value;
+      }
+    }
+
+    function setNotice(message, tone) {
+      var element = document.getElementById("actionNotice");
+      element.textContent = message || "";
+      element.dataset.tone = tone || "neutral";
+    }
+
+    function setBadge(element, status, label) {
+      if (!element) {
+        return;
+      }
+      element.dataset.status = status;
+      element.className = "spg-badge spg-badge-" + status.toLowerCase();
+      element.textContent = label;
+    }
+
+    function updateEnvironmentUi() {
+      setText("protocolStatus", location.protocol === "file:" ? "file:// – közvetlen fájl" : location.protocol + "//");
+      setText("gameVersionStatus", state.gameVersion ? state.gameVersion.code : "Nincs aktív verzió");
+      setText("apiStatus", state.apiReady ? "Elérhető" : (navigator.onLine ? "Nincs igazolva" : "Offline"));
+      setText("databaseStatus", state.dbReady ? "Elérhető – schema " + APP.dbVersion : "Nem érhető el");
+      setText("lastSyncStatus", formatTimestamp(state.lastSyncAt));
+      setText("applicationStatus", APP.version + " · schema " + APP.schemaVersion);
+      setText("footerRuntime", APP.version + " · cache schema " + APP.cacheSchemaVersion);
+      document.getElementById("offlineBanner").hidden = navigator.onLine;
+      document.body.dataset.online = navigator.onLine ? "true" : "false";
+    }
+
+    function renderBlueprint(blueprint) {
+      var container = document.getElementById("blueprintRequirements");
+      container.replaceChildren();
+      if (!blueprint) {
+        setBadge(document.getElementById("blueprintStatus"), "NEUTRAL", "Nincs betöltve");
+        return;
+      }
+      setBadge(document.getElementById("blueprintStatus"), "PASS", blueprint.requirements.length + " recipe slot");
+      setText("blueprintMeta", blueprint.outputName + " · " + (blueprint.gameVersion || "ismeretlen SC-verzió") + " · " + (blueprint.craftTimeSeconds || "?") + " másodperc");
+
+      blueprint.requirements.forEach(function (requirement) {
+        var article = document.createElement("article");
+        article.className = "spg-requirement-card";
+
+        var heading = document.createElement("div");
+        heading.className = "spg-requirement-heading";
+        var title = document.createElement("div");
+        var slot = document.createElement("span");
+        slot.className = "spg-recipe-slot";
+        slot.textContent = requirement.recipeSlotName;
+        var material = document.createElement("strong");
+        material.textContent = requirement.materialName;
+        title.append(slot, material);
+
+        var capability = document.createElement("span");
+        capability.className = "spg-badge spg-badge-" + requirement.qualityCapability.toLowerCase();
+        capability.textContent = requirement.qualityCapability;
+        heading.append(title, capability);
+
+        var details = document.createElement("div");
+        details.className = "spg-requirement-details";
+        var quantity = document.createElement("span");
+        quantity.textContent = requirement.unit === "SCU" ? formatScuUnits(requirement.requiredQuantityUnits) : String(requirement.requiredQuantityUnits) + " db";
+        var stats = document.createElement("span");
+        stats.textContent = requirement.affectedStats.length ? requirement.affectedStats.map(function (item) {
+          return item.label;
+        }).join(", ") : "Nincs API stat-adat";
+        details.append(quantity, stats);
+        article.append(heading, details);
+        container.append(article);
+      });
+    }
+
+    async function waitForApplicationStylesheet() {
+      var link = document.querySelector("link[data-app-styles]");
+      if (!link) {
+        throw new Error("Az Info/style.css link nem található.");
+      }
+      if (link.sheet) {
+        return link;
+      }
+      await new Promise(function (resolve, reject) {
+        var timer = window.setTimeout(function () {
+          reject(new Error("A style.css betöltése időtúllépés miatt sikertelen."));
+        }, 6000);
+        link.addEventListener("load", function () {
+          window.clearTimeout(timer);
+          resolve();
+        }, { once: true });
+        link.addEventListener("error", function () {
+          window.clearTimeout(timer);
+          reject(new Error("Az Info/style.css nem tölthető be."));
+        }, { once: true });
+      });
+      return link;
+    }
+
+    function stripRemoteCssDependencies(cssText) {
+      return String(cssText || "")
+        .replace(/@import\s+url\([^;]+fonts\.googleapis\.com[^;]+;/gi, "")
+        .replace(/@import\s+["'][^"']+fonts\.googleapis\.com[^"']+["']\s*;/gi, "")
+        .concat("\n/* Standalone offline font fallback */\n")
+        .concat("body{font-family:Arial,Helvetica,sans-serif;}\n")
+        .concat("h1,h2,h3,.eyebrow{font-family:Arial,Helvetica,sans-serif;}\n");
+    }
+
+    async function readApplicationCss() {
+      if (state.cssText) {
+        return state.cssText;
+      }
+      var link = await waitForApplicationStylesheet();
+      var cssText = "";
+      try {
+        cssText = Array.from(link.sheet.cssRules).map(function (rule) {
+          return rule.cssText;
+        }).join("\n");
+      } catch (cssomError) {
+        logger.event("WARN", "CSS_CSSOM_READ_FAILED", "A CSSOM-ból nem olvasható a style.css.", {
+          error: serializeError(cssomError),
+          protocol: location.protocol
+        });
+      }
+
+      if (!cssText && location.protocol !== "file:") {
+        try {
+          var response = await fetch(link.href, { cache: "no-store" });
+          if (response.ok) {
+            cssText = await response.text();
+          }
+        } catch (fetchError) {
+          logger.event("WARN", "CSS_FETCH_FAILED", "A style.css fetch sikertelen.", {
+            error: serializeError(fetchError)
+          });
+        }
+      }
+
+      if (!cssText && state.dbReady) {
+        var cached = await database.get("settings", "applicationCssSnapshot");
+        if (cached && cached.value) {
+          cssText = cached.value;
+          logger.event("WARN", "CSS_CACHE_USED", "Mentett CSS-pillanatkép használata.", {
+            capturedAt: cached.updatedAt || null
+          });
+        }
+      }
+
+      if (!cssText) {
+        throw new Error("A központi Info/style.css tartalma nem olvasható az exporthoz.");
+      }
+
+      state.cssText = stripRemoteCssDependencies(cssText);
+      state.cssReady = true;
+      if (state.dbReady) {
+        await database.put("settings", {
+          key: "applicationCssSnapshot",
+          value: state.cssText,
+          updatedAt: nowIso(),
+          source: "Info/style.css"
+        });
+      }
+      return state.cssText;
+    }
+
+    function exportRequirementMarkup(requirement) {
+      var quantity = requirement.unit === "SCU" ? formatScuUnits(requirement.requiredQuantityUnits) : String(requirement.requiredQuantityUnits) + " db";
+      var stats = requirement.affectedStats.length ? requirement.affectedStats.map(function (item) {
+        return item.label;
+      }).join(", ") : "Nincs API-adat";
+      return [
+        '<article class="spg-export-requirement">',
+        '<div><span class="spg-recipe-slot">', escapeHtml(requirement.recipeSlotName), '</span>',
+        '<strong>', escapeHtml(requirement.materialName), '</strong></div>',
+        '<div class="spg-export-values"><span>', escapeHtml(quantity), '</span>',
+        '<span>', escapeHtml(requirement.qualityCapability), '</span>',
+        '<span>', escapeHtml(stats), '</span></div>',
+        '</article>'
+      ].join("");
+    }
+
+    async function buildStandaloneExport() {
+      var css = await readApplicationCss();
+      var blueprint = state.normalizedBlueprint;
+      var requirements = blueprint ? blueprint.requirements.map(exportRequirementMarkup).join("") :
+        '<p>Nincs betöltött blueprint – technikai exportminta.</p>';
+      var title = blueprint ? blueprint.outputName : "Technikai exportminta";
+      var generatedAt = nowIso();
+      var html = [
+        "<!doctype html>",
+        '<html lang="hu"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        "<title>", escapeHtml(APP.name + " – " + title), "</title>",
+        "<style>", css.replace(/<\/style/gi, "<\\/style"), "</style>",
+        "</head><body>",
+        '<main class="spg-export-page">',
+        '<header class="spg-export-header"><p class="eyebrow">sPg Crafting List export</p>',
+        "<h1>", escapeHtml(title), "</h1>",
+        '<p class="spg-muted">Standalone Crafting/Farm Card</p></header>',
+        '<section class="spg-export-grid">', requirements, "</section>",
+        '<footer class="spg-export-meta">',
+        "<span><strong>Generated by:</strong> ", escapeHtml(APP.name), "</span>",
+        "<span><strong>SC Data Version:</strong> ", escapeHtml(state.gameVersion ? state.gameVersion.code : "Nincs API-adat"), "</span>",
+        "<span><strong>Generated:</strong> ", escapeHtml(generatedAt), "</span>",
+        "<span><strong>Data Source:</strong> Star Citizen Wiki API</span>",
+        "</footer></main></body></html>"
+      ].join("");
+      logger.event("INFO", "EXPORT_BUILT", "Standalone export elkészült.", {
+        blueprint: blueprint ? blueprint.outputName : null,
+        gameVersion: state.gameVersion ? state.gameVersion.code : null,
+        ingredientCount: blueprint ? blueprint.requirements.length : 0,
+        cssRead: Boolean(css),
+        exportBytes: byteLength(html),
+        externalStylesheet: /<link[^>]+stylesheet/i.test(html)
+      });
+      return html;
+    }
+
+    function downloadTextFile(text, filename, type) {
+      var blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    async function downloadStandaloneExport() {
+      logger.start("Card Export", {
+        blueprint: state.normalizedBlueprint ? state.normalizedBlueprint.outputName : null
+      });
+      try {
+        var html = await buildStandaloneExport();
+        var title = state.normalizedBlueprint ? state.normalizedBlueprint.outputName : "Technical Baseline";
+        var safeName = title.replace(/[<>:"/\\|?*\u0000-\u001F]/g, "-");
+        downloadTextFile(html, "sPg Crafting List - " + safeName + ".html", "text/html;charset=utf-8");
+        logger.finish("PASS", { exportBytes: byteLength(html) });
+        setNotice("A standalone HTML export elkészült.", "success");
+        return html;
+      } catch (error) {
+        logger.event("ERROR", "EXPORT_FAILED", "A standalone export sikertelen.", {
+          error: serializeError(error)
+        });
+        logger.finish("FAIL", { error: serializeError(error) });
+        setNotice("Exporthiba: " + error.message, "error");
+        throw error;
+      }
+    }
+
+    async function syncGameVersionAndBlueprint(options) {
+      var settings = options || {};
+      var ownsProcess = settings.ownsProcess !== false;
+      if (ownsProcess) {
+        logger.start("API Sync", { mode: "version-and-blueprint-spike" });
+      }
+      try {
+        var version = await api.getDefaultGameVersion();
+        await database.commitGameVersion(version);
+        state.gameVersion = version;
+
+        var rawBlueprint = await api.getBlueprint("js-300", version.code);
+        var fetchedAt = nowIso();
+        var provenance = {
+          source: APP.apiBase + "/blueprints/js-300",
+          gameVersion: version.code,
+          fetchedAt: fetchedAt,
+          origin: "API"
+        };
+        var normalized = normalizeBlueprint(rawBlueprint, provenance);
+        await database.put("blueprints", Object.assign({}, rawBlueprint, {
+          fetchedAt: fetchedAt,
+          provenance: provenance
+        }));
+        await database.put("normalizedBlueprints", normalized);
+        await database.put("gameMetadata", {
+          key: "lastSuccessfulSync",
+          value: {
+            gameVersion: version.code,
+            syncedAt: fetchedAt,
+            scope: ["game-version", "blueprint:js-300"],
+            blueprintUuid: normalized.uuid
+          },
+          updatedAt: fetchedAt
+        });
+
+        state.apiReady = true;
+        state.lastSyncAt = fetchedAt;
+        state.normalizedBlueprint = normalized;
+        renderBlueprint(normalized);
+        updateEnvironmentUi();
+        if (ownsProcess) {
+          logger.finish("PASS", {
+            gameVersion: version.code,
+            blueprint: normalized.outputName,
+            requirementCount: normalized.requirements.length
+          });
+        }
+        return normalized;
+      } catch (error) {
+        state.apiReady = false;
+        updateEnvironmentUi();
+        if (ownsProcess) {
+          logger.event("ERROR", "SYNC_FAILED", "Az API-szinkron sikertelen.", {
+            error: serializeError(error)
+          });
+          logger.finish("FAIL", { error: serializeError(error) });
+        }
+        throw error;
+      }
+    }
+
+    function renderProbeResults(results) {
+      var list = document.getElementById("probeResults");
+      list.replaceChildren();
+      results.forEach(function (result) {
+        var item = document.createElement("li");
+        item.dataset.status = result.status;
+        var marker = document.createElement("span");
+        marker.className = "spg-check-marker";
+        marker.textContent = result.status === "PASS" ? "✓" : "×";
+        var text = document.createElement("span");
+        var strong = document.createElement("strong");
+        strong.textContent = result.label;
+        var details = document.createElement("small");
+        details.textContent = result.details || "";
+        text.append(strong, details);
+        item.append(marker, text);
+        list.append(item);
+      });
+    }
+
+    async function runTechnicalProbe() {
+      var button = document.getElementById("runProbeButton");
+      button.disabled = true;
+      setNotice("A technikai próba fut…", "neutral");
+      var results = [];
+      logger.start("Technical Baseline", {
+        protocol: location.protocol,
+        online: navigator.onLine
+      });
+
+      async function check(label, operation) {
+        try {
+          var details = await operation();
+          results.push({ label: label, status: "PASS", details: details || "Rendben" });
+        } catch (error) {
+          results.push({ label: label, status: "FAIL", details: error.message });
+          logger.event("ERROR", "TECHNICAL_CHECK_FAILED", label + " sikertelen.", {
+            error: serializeError(error)
+          });
+        }
+        renderProbeResults(results);
+      }
+
+      await check("Futtatási mód", async function () {
+        assert(location.protocol === "file:" || /^https?:$/.test(location.protocol), "Nem támogatott protokoll: " + location.protocol);
+        return location.protocol === "file:" ? "Közvetlen file:// futás" : location.protocol + "// futás";
+      });
+
+      await check("IndexedDB roundtrip", async function () {
+        if (!state.dbReady) {
+          await database.open();
+          state.dbReady = true;
+        }
+        var value = makeId("probe");
+        await database.put("settings", {
+          key: "technicalProbe",
+          value: value,
+          updatedAt: nowIso()
+        });
+        var loaded = await database.get("settings", "technicalProbe");
+        assert(loaded && loaded.value === value, "A visszaolvasott IndexedDB érték eltér.");
+        return "Írás és visszaolvasás sikeres";
+      });
+
+      await check("Star Citizen Wiki API", async function () {
+        var normalized = await syncGameVersionAndBlueprint({ ownsProcess: false });
+        assert(normalized.requirements.length > 0, "A blueprintnek nincs normalizált inputja.");
+        return state.gameVersion.code + " · " + normalized.outputName;
+      });
+
+      await check("Quality capability", async function () {
+        var requirements = state.normalizedBlueprint ? state.normalizedBlueprint.requirements : [];
+        var dynamicCount = requirements.filter(function (item) {
+          return item.qualityCapability === "DYNAMIC";
+        }).length;
+        var fixedCount = requirements.filter(function (item) {
+          return item.qualityCapability === "FIXED";
+        }).length;
+        assert(dynamicCount >= 1, "Nem található DYNAMIC JS-300 input.");
+        assert(fixedCount >= 1, "Nem található FIXED JS-300 input.");
+        return "DYNAMIC: " + dynamicCount + " · FIXED: " + fixedCount;
+      });
+
+      await check("SCU egészpontos számítás", async function () {
+        assert(toScuUnits(0.1) + toScuUnits(0.2) === toScuUnits(0.3), "Az egészpontos SCU összeadás hibás.");
+        assert(formatScuUnits(toScuUnits(10.111)) === "10,111 SCU", "A négytizedes megjelenítés hibás.");
+        return "1 SCU = 10 000 belső egység";
+      });
+
+      await check("Location rendezési szabály", async function () {
+        var sample = [
+          { name: "B", occurrence: 20, spawn: 40, maxQuality: 900 },
+          { name: "A", occurrence: 30, spawn: 10, maxQuality: 500 },
+          { name: "C", occurrence: 20, spawn: 40, maxQuality: 950 }
+        ].sort(compareLocations);
+        assert(sample.map(function (item) { return item.name; }).join("") === "ACB", "A location rendezési sorrend hibás.");
+        return "occurrence → spawn → max Quality";
+      });
+
+      await check("Standalone HTML export", async function () {
+        var html = await buildStandaloneExport();
+        assert(!/<link[^>]+stylesheet/i.test(html), "Az export külső stylesheetet tartalmaz.");
+        assert(!/@import[^;]+https?:/i.test(html), "Az export távoli CSS-importot tartalmaz.");
+        assert(/<style>[\s\S]+<\/style>/i.test(html), "Az exportból hiányzik a beágyazott CSS.");
+        assert(html.indexOf("Star Citizen Wiki API") !== -1, "Az export metaadata hiányos.");
+        return Math.round(byteLength(html) / 1024) + " KiB · nincs külső CSS";
+      });
+
+      var failed = results.filter(function (result) {
+        return result.status !== "PASS";
+      });
+      var status = failed.length ? "FAIL" : "PASS";
+      state.lastProbe = {
+        status: status,
+        finishedAt: nowIso(),
+        protocol: location.protocol,
+        results: results
+      };
+      if (state.dbReady) {
+        await database.put("settings", {
+          key: "lastTechnicalProbe",
+          value: state.lastProbe,
+          updatedAt: state.lastProbe.finishedAt
+        });
+      }
+      setBadge(document.getElementById("probeSummary"), status, status === "PASS" ? "Minden próba sikeres" : failed.length + " sikertelen próba");
+      document.body.dataset.technicalProbe = status;
+      logger.finish(status, {
+        passed: results.length - failed.length,
+        failed: failed.length,
+        results: results
+      });
+      setNotice(status === "PASS" ? "A technikai baseline minden próbája sikeres." : "A technikai baseline javítást igényel.", status === "PASS" ? "success" : "error");
+      updateEnvironmentUi();
+      button.disabled = false;
+      return state.lastProbe;
+    }
+
+    async function copyLog() {
+      var text = logger.text();
+      try {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          await navigator.clipboard.writeText(text);
+        } else {
+          throw new Error("A modern Clipboard API nem érhető el.");
+        }
+      } catch (error) {
+        var textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.className = "spg-clipboard-fallback";
+        document.body.append(textarea);
+        textarea.select();
+        var copied = document.execCommand("copy");
+        textarea.remove();
+        if (!copied) {
+          throw new Error("A vágólapra másolás sikertelen.");
+        }
+      }
+      setNotice("A diagnosztikai log a vágólapra került.", "success");
+      document.body.dataset.lastCopyBytes = String(byteLength(text));
+    }
+
+    async function restoreCachedState() {
+      var versionRecord = await database.get("gameMetadata", "currentGameVersion");
+      var syncRecord = await database.get("gameMetadata", "lastSuccessfulSync");
+      var technicalProbeRecord = await database.get("settings", "technicalProbe");
+      var lastProbeRecord = await database.get("settings", "lastTechnicalProbe");
+      var blueprintUuid = syncRecord && syncRecord.value ? syncRecord.value.blueprintUuid : null;
+      var blueprintRecord = blueprintUuid ? await database.get("normalizedBlueprints", blueprintUuid).catch(function () {
+        return null;
+      }) : null;
+
+      if (versionRecord && versionRecord.value) {
+        state.gameVersion = versionRecord.value;
+      }
+      if (syncRecord && syncRecord.value) {
+        state.lastSyncAt = syncRecord.value.syncedAt || syncRecord.updatedAt || null;
+      }
+      if (blueprintRecord) {
+        state.normalizedBlueprint = blueprintRecord;
+        renderBlueprint(blueprintRecord);
+      }
+      if (lastProbeRecord && lastProbeRecord.value && Array.isArray(lastProbeRecord.value.results)) {
+        state.lastProbe = lastProbeRecord.value;
+        renderProbeResults(state.lastProbe.results);
+        setBadge(
+          document.getElementById("probeSummary"),
+          state.lastProbe.status,
+          "Utolsó próba: " + state.lastProbe.status + " · " + (state.lastProbe.protocol || "ismeretlen mód")
+        );
+        document.body.dataset.technicalProbe = state.lastProbe.status;
+      }
+      document.body.dataset.cacheRestored = versionRecord && blueprintRecord ? "true" : "false";
+      document.body.dataset.technicalProbePersisted = technicalProbeRecord && technicalProbeRecord.value ? "true" : "false";
+    }
+
+    async function bootstrap() {
+      document.body.dataset.appReady = "false";
+      logger.start("Startup", {
+        protocol: location.protocol,
+        online: navigator.onLine
+      });
+      try {
+        await database.open();
+        state.dbReady = true;
+        await restoreCachedState();
+        updateEnvironmentUi();
+
+        try {
+          await readApplicationCss();
+        } catch (cssError) {
+          logger.event("WARN", "CSS_SNAPSHOT_UNAVAILABLE", "A CSS export-pillanatkép induláskor nem készült el.", {
+            error: serializeError(cssError)
+          });
+        }
+
+        if (navigator.onLine) {
+          try {
+            await syncGameVersionAndBlueprint({ ownsProcess: false });
+          } catch (syncError) {
+            logger.event("WARN", "STARTUP_SYNC_FAILED", "Az induláskori szinkron sikertelen; cache marad aktív.", {
+              error: serializeError(syncError),
+              cacheAvailable: Boolean(state.gameVersion)
+            });
+          }
+        }
+
+        updateEnvironmentUi();
+        document.body.dataset.appReady = "true";
+        logger.finish("PASS", {
+          databaseReady: state.dbReady,
+          apiReady: state.apiReady,
+          cacheAvailable: Boolean(state.gameVersion),
+          cssReady: state.cssReady
+        });
+      } catch (error) {
+        logger.event("ERROR", "STARTUP_FAILED", "Az alkalmazás indulása sikertelen.", {
+          error: serializeError(error)
+        });
+        logger.finish("FAIL", { error: serializeError(error) });
+        setNotice("Indítási hiba: " + error.message, "error");
+        document.body.dataset.appReady = "error";
+        updateEnvironmentUi();
+      }
+    }
+
+    window.addEventListener("online", function () {
+      updateEnvironmentUi();
+      setNotice("Az internetkapcsolat helyreállt.", "success");
+    });
+
+    window.addEventListener("offline", function () {
+      updateEnvironmentUi();
+      setNotice("Offline mód: a mentett játékadatok maradnak aktívak.", "warning");
+    });
+
+    window.onerror = function (message, source, line, column, error) {
+      logger.event("ERROR", "WINDOW_ERROR", message || "Globális JavaScript hiba.", {
+        source: source || null,
+        line: line || null,
+        column: column || null,
+        error: serializeError(error)
+      });
+      return false;
+    };
+
+    window.addEventListener("unhandledrejection", function (event) {
+      logger.event("ERROR", "UNHANDLED_REJECTION", "Kezeletlen Promise-elutasítás.", {
+        reason: serializeError(event.reason)
+      });
+    });
+
+    document.getElementById("runProbeButton").addEventListener("click", function () {
+      runTechnicalProbe().catch(function (error) {
+        setNotice("Technikai próbahiba: " + error.message, "error");
+        document.getElementById("runProbeButton").disabled = false;
+      });
+    });
+
+    document.getElementById("refreshDataButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      setNotice("Az API-adatok frissítése folyamatban…", "neutral");
+      syncGameVersionAndBlueprint()
+        .then(function () {
+          setNotice("Az API-adatok frissítése sikeres.", "success");
+        })
+        .catch(function (error) {
+          setNotice("Frissítési hiba: " + error.message, "error");
+        })
+        .finally(function () {
+          button.disabled = false;
+        });
+    });
+
+    document.getElementById("exportTestButton").addEventListener("click", function () {
+      downloadStandaloneExport().catch(function () {
+        return null;
+      });
+    });
+
+    document.getElementById("copyLogButton").addEventListener("click", function () {
+      copyLog().catch(function (error) {
+        setNotice("A log másolása sikertelen: " + error.message, "error");
+      });
+    });
+
+    document.getElementById("clearLogButton").addEventListener("click", function () {
+      logger.clear();
+      setNotice("A RAM- és session log törölve. A felhasználói adatok és a cache változatlanok.", "success");
+    });
+
+    window.__SPG_TEST__ = Object.freeze({
+      app: APP,
+      state: state,
+      database: database,
+      adapter: api,
+      logger: logger,
+      toScuUnits: toScuUnits,
+      fromScuUnits: fromScuUnits,
+      normalizeBlueprint: normalizeBlueprint,
+      compareLocations: compareLocations,
+      buildStandaloneExport: buildStandaloneExport,
+      runTechnicalProbe: runTechnicalProbe,
+      syncGameVersionAndBlueprint: syncGameVersionAndBlueprint
+    });
+
+    bootstrap();
+  }());
+  </script>
+</body>
+</html>
