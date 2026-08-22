@@ -3194,6 +3194,75 @@
       AMBIGUOUS: "AMBIGUOUS"
     });
 
+    var M5_CANONICAL_ALIAS_REGISTRY_VERSION = "2026-08-22.1";
+    var M5_VERIFIED_CANONICAL_ALIASES = Object.freeze([
+      {
+        rule: "STRICT_RAW_FORM",
+        canonicalName: "RAW:HEPHAESTANITE",
+        wikiCommodityUuid: "cad319d9-e0e5-420d-bbfd-dd62a0362d05",
+        wikiCommodityName: "Hephaestanite (R)",
+        wikiKind: "mineable",
+        wikiSourceUrl: "https://api.star-citizen.wiki/api/commodities/cad319d9-e0e5-420d-bbfd-dd62a0362d05",
+        uexCommodityId: "40",
+        acceptedUexNames: ["Hephaestanite Raw", "Hephaestanite (Raw)"],
+        verifiedScVersions: ["4.9.0-LIVE.12232306"],
+        verifiedUexDataVersion: "UEX_API_2.0/refineries_yields@2026-08-22",
+        verifiedAt: "2026-08-22T11:37:17.263Z"
+      },
+      {
+        rule: "STRICT_RAW_FORM",
+        canonicalName: "RAW:SILICON",
+        wikiCommodityUuid: "d137b905-b3bc-4721-a790-830499263c0c",
+        wikiCommodityName: "Raw Silicon",
+        wikiKind: "mineable",
+        wikiSourceUrl: "https://api.star-citizen.wiki/api/commodities/d137b905-b3bc-4721-a790-830499263c0c",
+        uexCommodityId: "161",
+        acceptedUexNames: ["Silicon Raw", "Silicon (Raw)"],
+        verifiedScVersions: ["4.9.0-LIVE.12232306"],
+        verifiedUexDataVersion: "UEX_API_2.0/refineries_yields@2026-08-22",
+        verifiedAt: "2026-08-22T11:37:17.263Z"
+      },
+      {
+        rule: "STRICT_RAW_FORM",
+        canonicalName: "RAW:ICE",
+        wikiCommodityUuid: "d9653427-af7f-4fea-bbd6-ae89393524b7",
+        wikiCommodityName: "Raw Ice",
+        wikiKind: "mineable",
+        wikiSourceUrl: "https://api.star-citizen.wiki/api/commodities/d9653427-af7f-4fea-bbd6-ae89393524b7",
+        uexCommodityId: "125",
+        acceptedUexNames: ["Ice Raw", "Ice (Raw)"],
+        verifiedScVersions: ["4.9.0-LIVE.12232306"],
+        verifiedUexDataVersion: "UEX_API_2.0/refineries_yields@2026-08-22",
+        verifiedAt: "2026-08-22T11:37:17.263Z"
+      },
+      {
+        rule: "EXPLICIT_ALIAS",
+        canonicalName: "CONSTRUCTION:SALVAGE",
+        wikiCommodityUuid: "ebacf963-517e-4b05-b6cd-ee135e04a1ae",
+        wikiCommodityName: "Construction Salvage",
+        wikiKind: null,
+        wikiSourceUrl: "https://api.star-citizen.wiki/api/commodities/ebacf963-517e-4b05-b6cd-ee135e04a1ae",
+        uexCommodityId: "183",
+        acceptedUexNames: ["Construction Material Salvage"],
+        verifiedScVersions: ["4.9.0-LIVE.12232306"],
+        verifiedUexDataVersion: "UEX_API_2.0/refineries_yields@2026-08-22",
+        verifiedAt: "2026-08-22T11:37:17.263Z"
+      },
+      {
+        rule: "EXPLICIT_ALIAS",
+        canonicalName: "CONSTRUCTION:RUBBLE",
+        wikiCommodityUuid: "344b54b4-e1c3-4863-b605-f4498b0a8a27",
+        wikiCommodityName: "Construction Rubble",
+        wikiKind: null,
+        wikiSourceUrl: "https://api.star-citizen.wiki/api/commodities/344b54b4-e1c3-4863-b605-f4498b0a8a27",
+        uexCommodityId: "181",
+        acceptedUexNames: ["Construction Material Rubble"],
+        verifiedScVersions: ["4.9.0-LIVE.12232306"],
+        verifiedUexDataVersion: "UEX_API_2.0/refineries_yields@2026-08-22",
+        verifiedAt: "2026-08-22T11:37:17.263Z"
+      }
+    ]);
+
     function m5FiniteNumber(value) {
       if (value === null || value === undefined || value === "") {
         return null;
@@ -3235,6 +3304,79 @@
         .replace(/[^a-z0-9]+/g, " ")
         .trim()
         .replace(/\s+/g, " ");
+    }
+
+    function strictRawCanonicalName(name, wikiKind) {
+      var value = String(name || "").trim();
+      var kind = String(wikiKind || "").trim();
+      if (kind) {
+        var kindSuffix = " (" + kind + ")";
+        if (value.toLocaleLowerCase("en-US").endsWith(kindSuffix.toLocaleLowerCase("en-US"))) {
+          value = value.slice(0, -kindSuffix.length).trim();
+        }
+      }
+      value = value.replace(/\s+\((UnrefinedOres|Raw_Minerals|Nonmetal|Organic|ProcessedGoods)\)$/i, "").trim();
+      var match = value.match(/^Raw\s+([a-z0-9]+(?:[ -][a-z0-9]+)*)$/i) ||
+        value.match(/^([a-z0-9]+(?:[ -][a-z0-9]+)*)\s+Raw$/i) ||
+        value.match(/^([a-z0-9]+(?:[ -][a-z0-9]+)*)\s+\((?:R|Raw)\)$/i);
+      if (!match) {
+        return null;
+      }
+      return "RAW:" + match[1].normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleUpperCase("en-US")
+        .replace(/[^A-Z0-9]+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function activeVerifiedCanonicalAliases(scVersion) {
+      return M5_VERIFIED_CANONICAL_ALIASES.filter(function (alias) {
+        return alias.verifiedScVersions.indexOf(String(scVersion || "")) !== -1;
+      });
+    }
+
+    function m5MappingWikiCommodities(wikiCommodities, scVersion) {
+      var records = (wikiCommodities || []).map(function (commodity) { return commodity; });
+      var uuids = new Set(records.map(function (commodity) { return String(commodity.uuid); }));
+      activeVerifiedCanonicalAliases(scVersion).forEach(function (alias) {
+        if (!uuids.has(alias.wikiCommodityUuid)) {
+          records.push({
+            uuid: alias.wikiCommodityUuid,
+            name: alias.wikiCommodityName,
+            kind: alias.wikiKind,
+            recordType: "VERIFIED_ALIAS_COMMODITY",
+            provenance: {
+              dataSource: "Star Citizen Wiki API",
+              source: alias.wikiSourceUrl,
+              gameVersion: scVersion,
+              origin: "VERIFIED_CANONICAL_ALIAS",
+              aliasRegistryVersion: M5_CANONICAL_ALIAS_REGISTRY_VERSION,
+              verifiedAt: alias.verifiedAt
+            }
+          });
+          uuids.add(alias.wikiCommodityUuid);
+        }
+      });
+      return records;
+    }
+
+    function findVerifiedCanonicalAlias(wiki, uexCommodity, scVersion) {
+      var candidates = activeVerifiedCanonicalAliases(scVersion).filter(function (alias) {
+        if (alias.wikiCommodityUuid !== String(wiki.uuid) || alias.uexCommodityId !== String(uexCommodity.id)) {
+          return false;
+        }
+        if (alias.acceptedUexNames.indexOf(String(uexCommodity.name)) === -1) {
+          return false;
+        }
+        if (alias.rule === "STRICT_RAW_FORM") {
+          return strictRawCanonicalName(wiki.name, wiki.kind) === alias.canonicalName &&
+            strictRawCanonicalName(uexCommodity.name) === alias.canonicalName;
+        }
+        return normalizeCommodityMappingName(wiki.name, wiki.kind) === normalizeCommodityMappingName(alias.wikiCommodityName, alias.wikiKind) &&
+          String(uexCommodity.name) === alias.acceptedUexNames[0];
+      });
+      return candidates.length === 1 ? candidates[0] : null;
     }
 
     function normalizeUexTimestamp(value) {
@@ -3294,7 +3436,9 @@
       };
     }
 
-    function buildCommodityMappings(wikiCommodities, uexRecords, overrides) {
+    function buildCommodityMappings(wikiCommodities, uexRecords, overrides, options) {
+      var settings = options || {};
+      var scVersion = settings.scVersion || null;
       var uexCommoditiesById = new Map();
       (uexRecords || []).forEach(function (record) {
         if (!uexCommoditiesById.has(record.uexCommodityId)) {
@@ -3318,7 +3462,7 @@
           overridesByWikiUuid.set(String(override.wikiCommodityUuid), override);
         }
       });
-      return (wikiCommodities || []).map(function (wiki) {
+      return m5MappingWikiCommodities(wikiCommodities, scVersion).map(function (wiki) {
         var wikiUuid = String(wiki.uuid);
         var wikiNormalizedName = normalizeCommodityMappingName(wiki.name, wiki.kind);
         var override = overridesByWikiUuid.get(wikiUuid);
@@ -3358,6 +3502,50 @@
         var candidates = (uexByNormalizedName.get(wikiNormalizedName) || []).slice().sort(function (a, b) {
           return a.name.localeCompare(b.name, "en") || a.id.localeCompare(b.id);
         });
+        var aliasMatches = Array.from(uexCommoditiesById.values()).map(function (commodity) {
+          var alias = findVerifiedCanonicalAlias(wiki, commodity, scVersion);
+          return alias ? { alias: alias, commodity: commodity } : null;
+        }).filter(Boolean);
+        if (candidates.length === 0 && aliasMatches.length === 1) {
+          var verified = aliasMatches[0];
+          var commodityRecords = (uexRecords || []).filter(function (record) {
+            return record.uexCommodityId === verified.commodity.id;
+          });
+          var modifiedValues = commodityRecords.map(function (record) { return record.dateModified; }).filter(Boolean).sort();
+          return {
+            wikiCommodityUuid: wikiUuid,
+            wikiCommodityName: wiki.name,
+            wikiKind: wiki.kind || null,
+            normalizedWikiName: wikiNormalizedName,
+            status: M5_MAPPING_STATUS.MATCHED,
+            origin: "VERIFIED_CANONICAL_ALIAS",
+            canonicalName: verified.alias.canonicalName,
+            canonicalAliasVersion: M5_CANONICAL_ALIAS_REGISTRY_VERSION,
+            uexCommodityId: verified.commodity.id,
+            uexCommodityName: verified.commodity.name,
+            candidateCount: 1,
+            candidates: [verified.commodity],
+            provenance: {
+              mappingOrigin: "VERIFIED_CANONICAL_ALIAS",
+              aliasRule: verified.alias.rule,
+              aliasRegistryVersion: M5_CANONICAL_ALIAS_REGISTRY_VERSION,
+              apiSources: [
+                { source: "Star Citizen Wiki API", url: verified.alias.wikiSourceUrl },
+                { source: "UEX", url: APP.uexRefineryEndpoint }
+              ],
+              wikiCommodityUuid: wikiUuid,
+              uexCommodityId: verified.commodity.id,
+              originalNames: { wiki: wiki.name, uex: verified.commodity.name },
+              canonicalName: verified.alias.canonicalName,
+              verifiedScVersion: scVersion,
+              verifiedUexDataVersion: verified.alias.verifiedUexDataVersion,
+              uexDatasetId: settings.uexDatasetId || null,
+              uexModifiedMin: modifiedValues.length ? modifiedValues[0] : null,
+              uexModifiedMax: modifiedValues.length ? modifiedValues[modifiedValues.length - 1] : null,
+              verifiedAt: verified.alias.verifiedAt
+            }
+          };
+        }
         return {
           wikiCommodityUuid: wikiUuid,
           wikiCommodityName: wiki.name,
@@ -4077,7 +4265,7 @@
       state.requirementCommodityUuidBySlotId = slotCommodityMap;
       var detailsByUuid = new Map(detailRecords.map(function (record) { return [record.uuid, record]; }));
       var intelligence = new Map();
-      state.miningCommodityIndex.forEach(function (commodity) {
+      m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null).forEach(function (commodity) {
         var detail = detailsByUuid.get(commodity.uuid) || null;
         var refinery = state.uexRefineryRecommendations.get(commodity.uuid) || {
           wikiCommodityUuid: commodity.uuid,
@@ -4097,7 +4285,7 @@
           mining: {
             status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
             radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
-            methods: (detail ? detail.categories : commodity.categories).slice(),
+            methods: (detail ? detail.categories : (commodity.categories || [])).slice(),
             systems: detail ? mergeBestMiningLocationsBySystem(detail.locations, state.miningSystems) : [],
             locationRecordCount: detail ? detail.locations.length : 0,
             source: detail ? m4Clone(detail.provenance) : m4Clone(commodity.provenance)
@@ -4125,10 +4313,11 @@
       if (!state.requirementCommodityUuidBySlotId.size) {
         await refreshMaterialIntelligenceSnapshots("CARD_DETAIL_RESOLUTION");
       }
+      var mappingCommodities = m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null);
       var requestedCommodityUuids = Array.from(new Set(state.craftingCards.reduce(function (uuids, card) {
         (card.requirements || []).forEach(function (requirement) {
           var commodityUuid = requirement.commodityUuid || state.requirementCommodityUuidBySlotId.get(requirement.id);
-          if (commodityUuid && state.miningCommodityIndex.some(function (commodity) { return commodity.uuid === commodityUuid; })) {
+          if (commodityUuid && mappingCommodities.some(function (commodity) { return commodity.uuid === commodityUuid; })) {
             uuids.push(commodityUuid);
           }
         });
@@ -4166,7 +4355,15 @@
     }
 
     async function rebuildUexRefineryProjection(trigger) {
-      state.uexCommodityMappings = buildCommodityMappings(state.miningCommodityIndex, state.uexRefineryRecords, currentUexMappingOverrides());
+      state.uexCommodityMappings = buildCommodityMappings(
+        state.miningCommodityIndex,
+        state.uexRefineryRecords,
+        currentUexMappingOverrides(),
+        {
+          scVersion: state.gameVersion ? state.gameVersion.code : null,
+          uexDatasetId: state.activeUexRefineryDataset ? state.activeUexRefineryDataset.datasetId : null
+        }
+      );
       var recommendations = buildUexRefineryRecommendations(state.uexCommodityMappings, state.uexRefineryRecords, state.activeUexRefineryDataset);
       state.uexRefineryRecommendations = new Map(recommendations.map(function (recommendation) {
         return [recommendation.wikiCommodityUuid, recommendation];
@@ -4191,6 +4388,10 @@
         noRefineryDataCount: recommendations.filter(function (recommendation) { return recommendation.status === "NO_REFINERY_DATA"; }).length,
         unresolvedMappingCount: recommendations.filter(function (recommendation) { return recommendation.status === "MAPPING_UNRESOLVED"; }).length,
         rankingField: "value_month",
+        canonicalAliasRegistryVersion: M5_CANONICAL_ALIAS_REGISTRY_VERSION,
+        verifiedCanonicalAliasCount: state.uexCommodityMappings.filter(function (mapping) {
+          return mapping.origin === "VERIFIED_CANONICAL_ALIAS";
+        }).length,
         commodityResults: recommendations.map(function (recommendation) {
           return {
             wikiCommodityUuid: recommendation.wikiCommodityUuid,

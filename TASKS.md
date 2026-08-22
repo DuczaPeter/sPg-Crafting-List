@@ -28,6 +28,7 @@
 - [x] `value_month` szerinti naprendszerenkenti rangsor, tie-, nulla- es negativ-ertek kezelessel.
 - [x] Kozos Crafting Card/Combined mining+refinery snapshot M6 offline export-elokeszitessel.
 - [x] Tizenhet kotelezo M5 regresszio, valos auth nelkuli UEX fetch es 12/12 helyi bongeszos technikai proba.
+- [x] M5.1: ot igazolt, verziozott `VERIFIED_CANONICAL_ALIAS`; nincs altalanos fuzzy vagy Construction-szoeldobas.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.

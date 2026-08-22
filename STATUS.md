@@ -7,16 +7,16 @@
 - Stabil verzio vagy baseline: `nincs meg`
 - Stabil fajl, commit vagy tag: `nincs meg`
 - Aktualis fejlesztesi celverzio: `V001-dev`
-- Aktualis javitasi ciklus: `V001-C008`
-- Utolso sikeres ciklus: `V001-C008`
+- Aktualis javitasi ciklus: `V001-C009`
+- Utolso sikeres ciklus: `V001-C009`
 - Candidate vagy munkaverzio: `sPg Crafting List.html (V001-dev celallapot)`
 - Aktualis branch: `develop/V001`
-- Utolso ellenorzesi szint: `V001-C008 related-regression PASS; 17/17 M5; valos UEX auth nelkul HTTP 200/215 rekord; browser 12/12; desktop/390 px; warning/error 0`
-- Kovetkezo kotelezo teszt: `M6 standalone export utan kozvetlen file://, offline export-ujranyitas es kulon Edge-regresszio`
+- Utolso ellenorzesi szint: `PASS`
+- Kovetkezo kotelezo teszt: `related-regression`
 - Aktualis feladat: `M5 lezarasa es atadasa; M6 teljes standalone Crafting/Farm Card export elokeszitve`
 - Blokkolo problema: `nincs`
 - Kovetkezo lepes: `felhasznaloi jovahagyas utan M6: refinery snapshotos standalone export, referencia-UI es vegso V1 regresszio`
-- Utolso frissites: `2026-08-22T13:02:33`
+- Utolso frissites: `2026-08-22T13:42:34`
 
 ## Ellenorzesi igazsag
 

@@ -171,3 +171,12 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Talalt/javitott pontok: Wiki taxonomy-utotag exact normalizalasa; regi kartya commodity UUID visszakovetese a blueprint cache-bol; kartya mining location lazy load; UEX epoch datum ISO-normalizalasa.
 - Nyitott: M6 vegleges standalone export/refencia-UI; kozvetlen `file://`, offline export-ujranyitas es kulon Edge-regresszio. Stabil kiadas nincs.
 - Reszletes jelentes: `docs/M5_REPORT.md`.
+
+### 2026-08-22T13:42:34 - V001-C009
+
+- Cel: M5.1 verziozott canonical Wiki UEX alias korrekcio
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested 
+- Artifact: `test-artifacts/V001-C009/test-summary.json`

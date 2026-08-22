@@ -31,7 +31,12 @@ ${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("M5_UEX_REFINERY_MODEL")}
 globalThis.__M5__ = {
   statuses: M5_MAPPING_STATUS,
+  aliasRegistryVersion: M5_CANONICAL_ALIAS_REGISTRY_VERSION,
+  verifiedAliases: M5_VERIFIED_CANONICAL_ALIASES,
   normalizeCommodityMappingName,
+  strictRawCanonicalName,
+  activeVerifiedCanonicalAliases,
+  m5MappingWikiCommodities,
   normalizeUexTimestamp,
   normalizeUexRefineryYield,
   buildCommodityMappings,
@@ -64,6 +69,60 @@ assert.equal(mappingByUuid.get("wiki-unmapped").status, m5.statuses.UNMAPPED);
 // 3. Multiple possible exact candidates -> AMBIGUOUS.
 assert.equal(mappingByUuid.get("wiki-ambiguous").status, m5.statuses.AMBIGUOUS);
 assert.equal(mappingByUuid.get("wiki-ambiguous").candidateCount, 2);
+
+// M5.1. Five API-verified Wiki ↔ UEX format differences use only versioned canonical aliases.
+const aliasWiki = [
+  { uuid: "cad319d9-e0e5-420d-bbfd-dd62a0362d05", name: "Hephaestanite (R) (Raw_Minerals)", kind: "mineable" },
+  { uuid: "d137b905-b3bc-4721-a790-830499263c0c", name: "Raw Silicon (Nonmetal)", kind: "mineable" },
+  { uuid: "d9653427-af7f-4fea-bbd6-ae89393524b7", name: "Raw Ice (Organic)", kind: "mineable" }
+];
+const aliasRaw = [
+  { id: 40, id_commodity: 40, commodity_name: "Hephaestanite (Raw)", id_star_system: 1, star_system_name: "Stanton", id_terminal: 1, terminal_name: "HUR-L1", value_month: 1, date_modified: 1787323543 },
+  { id: 125, id_commodity: 125, commodity_name: "Ice (Raw)", id_star_system: 1, star_system_name: "Stanton", id_terminal: 2, terminal_name: "HUR-L2", value_month: 2, date_modified: 1781976622 },
+  { id: 161, id_commodity: 161, commodity_name: "Silicon (Raw)", id_star_system: 1, star_system_name: "Stanton", id_terminal: 3, terminal_name: "HUR-L3", value_month: 3, date_modified: 1781976622 },
+  { id: 181, id_commodity: 181, commodity_name: "Construction Material Rubble", id_star_system: 1, star_system_name: "Stanton", id_terminal: 4, terminal_name: "HUR-L4", value_month: 4, date_modified: 1781976622 },
+  { id: 183, id_commodity: 183, commodity_name: "Construction Material Salvage", id_star_system: 1, star_system_name: "Stanton", id_terminal: 5, terminal_name: "HUR-L5", value_month: 5, date_modified: 1781976622 }
+];
+const aliasRecords = aliasRaw.map((raw, index) => m5.normalizeUexRefineryYield(raw, { datasetId: "live-verified", fetchedAt: "2026-08-22T11:37:17.263Z" }, index));
+const aliasMappings = m5.buildCommodityMappings(aliasWiki, aliasRecords, [], {
+  scVersion: "4.9.0-LIVE.12232306",
+  uexDatasetId: "live-verified"
+});
+const aliasByUuid = new Map(Array.from(aliasMappings, (mapping) => [mapping.wikiCommodityUuid, mapping]));
+const aliasSummary = m5.summarizeUexMappings(aliasMappings);
+assert.deepEqual(
+  { MATCHED: aliasSummary.MATCHED, UNMAPPED: aliasSummary.UNMAPPED, AMBIGUOUS: aliasSummary.AMBIGUOUS },
+  { MATCHED: 5, UNMAPPED: 0, AMBIGUOUS: 0 }
+);
+for (const alias of m5.verifiedAliases) {
+  const mapping = aliasByUuid.get(alias.wikiCommodityUuid);
+  assert.equal(mapping.status, m5.statuses.MATCHED);
+  assert.equal(mapping.origin, "VERIFIED_CANONICAL_ALIAS");
+  assert.equal(mapping.canonicalName, alias.canonicalName);
+  assert.equal(mapping.canonicalAliasVersion, m5.aliasRegistryVersion);
+  assert.equal(mapping.uexCommodityId, alias.uexCommodityId);
+  assert.equal(mapping.provenance.wikiCommodityUuid, alias.wikiCommodityUuid);
+  assert.equal(mapping.provenance.uexCommodityId, alias.uexCommodityId);
+  assert.equal(mapping.provenance.verifiedScVersion, "4.9.0-LIVE.12232306");
+  assert.equal(mapping.provenance.uexDatasetId, "live-verified");
+  assert.equal(mapping.provenance.apiSources.length, 2);
+}
+assert.equal(m5.strictRawCanonicalName("Raw Silicon"), "RAW:SILICON");
+assert.equal(m5.strictRawCanonicalName("Silicon Raw"), "RAW:SILICON");
+assert.equal(m5.strictRawCanonicalName("Silicon (R)"), "RAW:SILICON");
+assert.equal(m5.strictRawCanonicalName("Silicon (Raw)"), "RAW:SILICON");
+assert.equal(m5.strictRawCanonicalName("Salvage Construction Material"), null);
+
+// A registry is version-locked and does not become a fuzzy Construction word-dropper.
+const rejectedVersion = m5.buildCommodityMappings(aliasWiki, aliasRecords, [], { scVersion: "5.0.0-UNVERIFIED" });
+assert.equal(rejectedVersion.find((mapping) => mapping.wikiCommodityUuid === "d137b905-b3bc-4721-a790-830499263c0c").status, m5.statuses.UNMAPPED);
+const rejectedConstruction = m5.buildCommodityMappings(
+  [{ uuid: "wiki-construction-pieces", name: "Construction Pieces", kind: null }],
+  [m5.normalizeUexRefineryYield({ id: 999, id_commodity: 999, commodity_name: "Construction Material Pieces", id_star_system: 1, star_system_name: "Stanton", id_terminal: 9, terminal_name: "X", value_month: 1 }, contextMeta, 99)],
+  [],
+  { scVersion: "4.9.0-LIVE.12232306" }
+);
+assert.equal(rejectedConstruction.find((mapping) => mapping.wikiCommodityUuid === "wiki-construction-pieces").status, m5.statuses.UNMAPPED);
 
 // Explicit override mapping can remain valid even when the active yield dataset has no row for it.
 const overrideOnlyMapping = m5.buildCommodityMappings(
@@ -185,8 +244,10 @@ assert.ok(durationMs < 1000, `Az M5 500 rekordos fixture túl lassú: ${duration
 
 console.log("M5_UEX_REFINERY_TEST_PASS");
 console.log(JSON.stringify({
-  mandatoryCases: 17,
+  mandatoryCases: 18,
   mappingSummary: m5.summarizeUexMappings(mappings),
+  verifiedAliasSummary: m5.summarizeUexMappings(aliasMappings),
+  verifiedAliasOrigins: Array.from(aliasMappings, (mapping) => ({ wiki: mapping.wikiCommodityName, uex: mapping.uexCommodityName, canonical: mapping.canonicalName, origin: mapping.origin })),
   systems: Array.from(agricium.systems, (system) => ({ name: system.starSystemName, best: system.rankingValue, ties: system.tieCount })),
   performance: { records: 500, commodities: 20, durationMs: Number(durationMs.toFixed(2)) }
 }, null, 2));

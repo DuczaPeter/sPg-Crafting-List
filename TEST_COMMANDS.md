@@ -118,6 +118,12 @@ Valos, hitelesites nelkuli UEX semaproba:
 node .\tools\probe-m5-api.mjs
 ```
 
+Az ot verziozott canonical alias valos Wiki/UEX ellenorzese:
+
+```powershell
+node .\tools\probe-m5-aliases.mjs
+```
+
 M5 repair-cycle futtatas:
 
 ```powershell
@@ -161,4 +167,4 @@ node .\tools\serve-local.mjs
 - `m2-regression`: az M1 kapu mellett 8 kotelezo allocation eset, JS-300/Hofstede szabalyok, determinisztikus kartya-prioritas, input-valtozatlansag es 1000 batch/100 kartya teljesitmenyfixture.
 - `m3-regression`: az M1/M2 kapuk mellett 17 kotelezo mining/location/loadout eset, eltunt equipment es User Data hatar, valamint 5000 locationos teljesitmenyfixture.
 - `m4-regression`: az M1-M3 kapuk mellett 12 kotelezo Combined Materials/backup/diagnosztikai eset, schema 1 migracio, bitazonos roundtrip, rollback es 1000 kartya/3000 slot/5000 batch teljesitmenyfixture.
-- `m5-regression`: az M1-M4 kapuk mellett 17 kotelezo UEX mapping/ranking/cache/snapshot/diagnosztikai eset, 500 soros limitfixture es teljesitmenyproba.
+- `m5-regression`: az M1-M4 kapuk mellett 18 kotelezo UEX mapping/ranking/cache/snapshot/diagnosztikai eset, az 5 verziozott canonical alias, fuzzy-elutasitas, 500 soros limitfixture es teljesitmenyproba.

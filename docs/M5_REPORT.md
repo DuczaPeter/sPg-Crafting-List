@@ -136,6 +136,28 @@ A logger tovabbra is RAM-ban epul, es csak process-lezaraskor ir egyszer session
 
 ## M6 elott nyitott
 
+### M5.1 canonical alias korrekcio
+
+Az eloben ellenorzott `4.9.0-LIVE.12232306` Wiki-adat es a UEX `2.0/refineries_yields` dataset alapjan mind az ot kert par igazolhato volt. A runtime `2026-08-22.1` verzioju registryvel, `VERIFIED_CANONICAL_ALIAS` eredettel tarolja a Wiki UUID-t, UEX commodity ID-t, eredeti neveket, canonical nevet, API-forrasokat, ellenorzott SC/UEX adatverziot es idopontot.
+
+Elfogadott aliasok:
+
+- `Hephaestanite (R)` ↔ `Hephaestanite (Raw)` → `RAW:HEPHAESTANITE`;
+- `Raw Silicon` ↔ `Silicon (Raw)` → `RAW:SILICON`;
+- `Raw Ice` ↔ `Ice (Raw)` → `RAW:ICE`;
+- `Construction Salvage` ↔ `Construction Material Salvage` → `CONSTRUCTION:SALVAGE`;
+- `Construction Rubble` ↔ `Construction Material Rubble` → `CONSTRUCTION:RUBBLE`.
+
+A Raw szabaly csak a `Raw X`, `X Raw`, `X (R)` es az elo UEX-ben hasznalt `X (Raw)` szerkezetet canonicalizalja; mas szavakat nem rendez at. A Construction parok csak a konkret Wiki UUID + UEX ID + nev kombinacioval ervenyesek. Nem igazolt SC-verzion es ismeretlen Construction nevnel az eredmeny tovabbra is `UNMAPPED`.
+
+Valos M5.1 regresszio:
+
+- elo UEX rekord: 215;
+- teljes mapping: `MATCHED 24 / UNMAPPED 50 / AMBIGUOUS 0`, osszesen 74 Wiki commodity a ket igazolt raw-version rekorddal;
+- elfogadott alias: 5; elutasitott kert alias: 0;
+- `node tools/probe-m5-aliases.mjs`: PASS;
+- M5 kotelezo esetek: 18/18 PASS.
+
 - teljes standalone Crafting/Farm Card export a refinery snapshottal;
 - az `Info` referencia-UI vegleges feldolgozasa;
 - standalone export offline ujranyitasa;

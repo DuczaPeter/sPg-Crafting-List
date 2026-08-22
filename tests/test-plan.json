@@ -79,7 +79,7 @@
     {
       "id": "m5-regression",
       "level": "related-regression",
-      "description": "Validates UEX refinery normalization, safe Wiki mapping, value_month per-system ranking, ties, zero/negative values, TTL/limit/rollback boundaries, shared Crafting/Combined snapshots, diagnostics, and a 500-row performance fixture.",
+      "description": "Validates UEX refinery normalization, exact and versioned VERIFIED_CANONICAL_ALIAS Wiki mapping without fuzzy matching, value_month per-system ranking, ties, zero/negative values, TTL/limit/rollback boundaries, shared Crafting/Combined snapshots, diagnostics, and a 500-row performance fixture.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m5.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
