@@ -1,0 +1,27 @@
+{
+  "uuid": "00000000-0000-4000-8000-000000000001",
+  "key": "TEST_DUPLICATE_MATERIAL",
+  "output_item_uuid": "00000000-0000-4000-8000-000000000002",
+  "output_name": "Duplicate Material Fixture",
+  "game_version": "TEST-1",
+  "output": { "uuid": "00000000-0000-4000-8000-000000000002", "name": "Duplicate Material Fixture", "type": "TEST" },
+  "ingredients": [
+    { "name": "Copper", "kind": "resource", "resource_type_uuid": "a789f57a-e12b-4bcd-8132-e0c03d84fc89", "quantity_scu": 0.3, "quantity": null }
+  ],
+  "aspects": {
+    "aspects": [
+      {
+        "key": "FRAME",
+        "name": "Frame",
+        "input": { "kind": "resource", "uuid": "a789f57a-e12b-4bcd-8132-e0c03d84fc89", "name": "Copper", "quantity_scu": 0.1, "quantity": null },
+        "has_dynamic_modifiers": true
+      },
+      {
+        "key": "CONDUCTOR",
+        "name": "Conductor",
+        "input": { "kind": "resource", "uuid": "a789f57a-e12b-4bcd-8132-e0c03d84fc89", "name": "Copper", "quantity_scu": 0.2, "quantity": null },
+        "has_dynamic_modifiers": false
+      }
+    ]
+  }
+}

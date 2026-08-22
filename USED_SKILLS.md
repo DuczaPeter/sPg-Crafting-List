@@ -25,3 +25,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: localhost API/IndexedDB/export proba, konzolhiba-ellenorzes, desktop es 390 px mobil vizualis ellenorzes.
 - Mely fajlokat vagy donteseket erintett: `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C001/browser-manual-summary.json`; a `file://` automatizalt tesztje biztonsagi korlat miatt kezi kapu maradt.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem; nincs user-owned skillmodositasra alkalmas altalanos tanulsag`.
+
+## Chrome M1 regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-22`, az M1 verziozott cache es Blueprint Browser valos bongeszos kapujanal.
+- Mire segitett: 1591 rekordos lapozott cache-frissites, IndexedDB-perzisztencia, rollback, Hofstede-S1 lazy load, API-filter, konzol es responsive UI ellenorzes.
+- Mely fajlokat vagy donteseket erintett: `docs/M1_REPORT.md`, `docs/TECHNICAL_BASELINE.md`; a `file://` kapu tovabbra is kezi maradt.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -23,6 +23,7 @@
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
 - Baseline validalas: `tools/validate-baseline.ps1`.
+- M1 modell- es cache-regresszio: `tools/validate-m1.ps1`, amely a `tools/run-m1-tests.mjs` fixture-tesztet is futtatja.
 
 ## Elsodleges tervezesi forrasok
 
@@ -31,7 +32,11 @@
 - `Info/Star_Citizen_alapanyag_farm_kartyak_BP_API_C788_P6_P8_Killshot_bovitve.html`: vizualis es export referencia.
 - `Info/style.css`: kozponti alkalmazas-CSS.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
+- `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
+- `tests/fixtures/`: JS-300, Hofstede-S1 es azonos materialt ket slotban tarto regresszios fixture.
 - `test-artifacts/V001-C001/`: az elso statikus es Chrome localhost baseline bizonyitekai.
+- `test-artifacts/V001-C002/`: az M1 normalizalt modell related-regression ciklus rovid bizonyitekai.
+- `test-artifacts/V001-C003/`: az M1 azonos verzioju indexcsere vegso regresszios es Chrome-bizonyitekai.
 
 ## Iranyito fajlok
 

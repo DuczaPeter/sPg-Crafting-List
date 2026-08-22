@@ -1,0 +1,109 @@
+{
+  "uuid": "9585b0dc-b660-4e2a-9136-0092af1e72c1",
+  "key": "BP_CRAFT_POWR_AMRS_S01_JS300_SCItem",
+  "output_item_uuid": "b1c89d89-d408-4998-9b17-76986d78a9dd",
+  "output_name": "JS-300",
+  "output_class": "powr_amrs_s01_js300_scitem",
+  "craft_time_seconds": 900,
+  "game_version": "4.9.0-LIVE.12232306",
+  "ingredient_count": 3,
+  "output": {
+    "uuid": "b1c89d89-d408-4998-9b17-76986d78a9dd",
+    "name": "JS-300",
+    "type": "PowerPlant",
+    "type_label": "Power Plant"
+  },
+  "ingredients": [
+    {
+      "name": "Stileron",
+      "kind": "resource",
+      "resource_type_uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "item_uuid": null,
+      "quantity_scu": 0.35,
+      "quantity": null,
+      "link": "https://api.star-citizen.wiki/api/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471"
+    },
+    {
+      "name": "Beryl",
+      "kind": "resource",
+      "resource_type_uuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+      "item_uuid": null,
+      "quantity_scu": 0.14,
+      "quantity": null,
+      "link": "https://api.star-citizen.wiki/api/commodities/eb503701-389a-48a1-af28-eb7374009d5d"
+    },
+    {
+      "name": "Savrilium",
+      "kind": "resource",
+      "resource_type_uuid": "4a47cad8-0271-4048-b19b-d9b52521fc20",
+      "item_uuid": null,
+      "quantity_scu": 0.24,
+      "quantity": null,
+      "link": "https://api.star-citizen.wiki/api/commodities/d76ea7ef-5116-488c-93d3-71e02bada13d"
+    }
+  ],
+  "aspects": {
+    "aspects": [
+      {
+        "key": "SHELL",
+        "name": "Shell",
+        "required_count": 1,
+        "selection_group": null,
+        "input": {
+          "kind": "resource",
+          "uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+          "name": "Stileron",
+          "quantity": null,
+          "quantity_scu": 0.35,
+          "min_quality": 1
+        },
+        "modifiers": [{ "property_key": "health_maxhealth", "label": "Integrity" }],
+        "initial_quality": 500,
+        "slider_min": 1,
+        "slider_max": 1000,
+        "has_dynamic_modifiers": true,
+        "is_selected": true
+      },
+      {
+        "key": "VOLTAGE REGULATOR",
+        "name": "Voltage Regulator",
+        "required_count": 1,
+        "selection_group": null,
+        "input": {
+          "kind": "resource",
+          "uuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+          "name": "Beryl",
+          "quantity": null,
+          "quantity_scu": 0.14,
+          "min_quality": 1
+        },
+        "modifiers": [{ "property_key": "itemresource_powergeneration", "label": "Power Pips" }],
+        "initial_quality": 500,
+        "slider_min": 1,
+        "slider_max": 1000,
+        "has_dynamic_modifiers": false,
+        "is_selected": true
+      },
+      {
+        "key": "STATOR CORES",
+        "name": "Stator Cores",
+        "required_count": 1,
+        "selection_group": null,
+        "input": {
+          "kind": "resource",
+          "uuid": "4a47cad8-0271-4048-b19b-d9b52521fc20",
+          "name": "Savrilium",
+          "quantity": null,
+          "quantity_scu": 0.24,
+          "min_quality": 1
+        },
+        "modifiers": [{ "property_key": "itemresource_powergeneration", "label": "Power Pips" }],
+        "initial_quality": 500,
+        "slider_min": 1,
+        "slider_max": 1000,
+        "has_dynamic_modifiers": false,
+        "is_selected": true
+      }
+    ]
+  }
+}

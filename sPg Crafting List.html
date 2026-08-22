@@ -56,7 +56,7 @@
 
     <nav class="spg-module-nav" aria-label="V1.0 alkalmazásrészek">
       <button type="button" class="active" aria-current="page">Crafting List</button>
-      <button type="button" disabled>Blueprint Browser</button>
+      <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
       <button type="button" disabled>My Materials</button>
       <button type="button" disabled>Material Database</button>
       <button type="button" disabled>Mining Loadouts</button>
@@ -65,6 +65,46 @@
     </nav>
 
     <main class="spg-main-layout">
+      <section id="blueprintBrowserPanel" class="panel spg-browser-panel" aria-labelledby="blueprintBrowserTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M1 · verziózott játékadat</p>
+            <h2 id="blueprintBrowserTitle">Blueprint Browser</h2>
+          </div>
+          <span id="blueprintDatasetStatus" class="spg-badge spg-badge-neutral" data-status="NEUTRAL">Cache betöltése…</span>
+        </div>
+
+        <div class="spg-browser-toolbar" role="search">
+          <label>
+            <span>Keresés</span>
+            <input id="blueprintSearchInput" type="search" autocomplete="off" placeholder="Blueprint, output vagy UUID">
+          </label>
+          <label>
+            <span>Output típus</span>
+            <select id="blueprintTypeFilter">
+              <option value="">Minden típus</option>
+            </select>
+          </label>
+          <button id="syncBlueprintIndexButton" type="button">Blueprint cache frissítése</button>
+        </div>
+
+        <p id="blueprintBrowserMeta" class="spg-muted">
+          Az index lapozva töltődik; a teljes recept csak egy blueprint megnyitásakor kerül a cache-be.
+        </p>
+        <div class="spg-browser-layout">
+          <div>
+            <div class="spg-browser-list-heading">
+              <strong>Találatok</strong>
+              <span id="blueprintResultCount">0</span>
+            </div>
+            <div id="blueprintBrowserResults" class="spg-browser-results" aria-live="polite"></div>
+          </div>
+          <aside id="blueprintBrowserDetail" class="spg-browser-detail" aria-live="polite">
+            <p class="spg-muted">Válassz blueprintet a teljes, slotonkénti recept lusta betöltéséhez.</p>
+          </aside>
+        </div>
+      </section>
+
       <section class="panel spg-baseline-panel" aria-labelledby="baselineTitle">
         <div class="spg-section-heading">
           <div>
@@ -82,7 +122,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu hét célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu nyolc célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -97,13 +137,13 @@
       <section class="panel spg-blueprint-panel" aria-labelledby="blueprintTitle">
         <div class="spg-section-heading">
           <div>
-            <p class="eyebrow">Élő normalizálási minta</p>
-            <h2 id="blueprintTitle">JS-300 blueprint</h2>
+            <p class="eyebrow">Teljes normalizált receptmodell</p>
+            <h2 id="blueprintTitle">Megnyitott blueprint</h2>
           </div>
           <span id="blueprintStatus" class="spg-badge spg-badge-neutral">Nincs betöltve</span>
         </div>
         <p id="blueprintMeta" class="spg-muted">
-          Az első sikeres API-szinkron után itt recipe slot bontásban jelennek meg az inputok.
+          A JS-300 technikai fixture vagy a Browserben megnyitott blueprint slotjai jelennek meg itt.
         </p>
         <div id="blueprintRequirements" class="spg-requirement-list"></div>
       </section>
@@ -138,15 +178,17 @@
     var APP = Object.freeze({
       name: "sPg Crafting List",
       version: "V001-dev",
-      schemaVersion: 1,
-      cacheSchemaVersion: 1,
+      schemaVersion: 2,
+      cacheSchemaVersion: 2,
       dbName: "spg-crafting-list",
-      dbVersion: 1,
+      dbVersion: 2,
       apiBase: "https://api.star-citizen.wiki/api",
       sessionLogKey: "spgCraftingList.sessionLog.v1",
       maxLogProcesses: 30,
       maxLogBytes: 240000,
-      requestTimeoutMs: 20000
+      requestTimeoutMs: 20000,
+      blueprintPageSize: 200,
+      maxBlueprintPages: 100
     });
 
     var STORE_DEFINITIONS = Object.freeze({
@@ -158,6 +200,11 @@
       locations: "uuid",
       miningEquipment: "uuid",
       normalizedBlueprints: "uuid",
+      blueprintIndexRawCache: "cacheKey",
+      blueprintIndexCache: "cacheKey",
+      blueprintRawCache: "cacheKey",
+      blueprintNormalizedCache: "cacheKey",
+      blueprintDatasets: "version",
       userInventory: "id",
       materialBatches: "id",
       userLoadouts: "id",
@@ -174,6 +221,10 @@
       gameVersion: null,
       lastSyncAt: null,
       normalizedBlueprint: null,
+      blueprintIndex: [],
+      blueprintFilters: [],
+      activeBlueprintDataset: null,
+      blueprintIndexSyncing: false,
       cssText: null,
       lastProbe: null
     };
@@ -465,6 +516,204 @@
         });
       }
 
+      getAll(storeName) {
+        return this.request(storeName, "readonly", function (store) {
+          return store.getAll();
+        });
+      }
+
+      getAllKeys(storeName) {
+        return this.request(storeName, "readonly", function (store) {
+          return store.getAllKeys();
+        });
+      }
+
+      count(storeName) {
+        return this.request(storeName, "readonly", function (store) {
+          return store.count();
+        });
+      }
+
+      commitBlueprintDataset(payload) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var stores = [
+            "syncStaging",
+            "gameMetadata",
+            "blueprintDatasets",
+            "blueprintIndexRawCache",
+            "blueprintIndexCache"
+          ];
+          var transaction = self.db.transaction(stores, "readwrite");
+          var stageKey = "blueprintDatasetCandidate:" + payload.versionRecord.code;
+          var stageStore = transaction.objectStore("syncStaging");
+          var metadataStore = transaction.objectStore("gameMetadata");
+          var datasetStore = transaction.objectStore("blueprintDatasets");
+          var rawStore = transaction.objectStore("blueprintIndexRawCache");
+          var normalizedStore = transaction.objectStore("blueprintIndexCache");
+
+          stageStore.put({
+            key: stageKey,
+            status: "COMMITTING",
+            version: payload.versionRecord.code,
+            recordCount: payload.normalizedRecords.length,
+            startedAt: payload.fetchedAt
+          });
+          (payload.previousRawKeys || []).forEach(function (key) {
+            rawStore.delete(key);
+          });
+          (payload.previousNormalizedKeys || []).forEach(function (key) {
+            normalizedStore.delete(key);
+          });
+          payload.rawRecords.forEach(function (record) {
+            rawStore.put(record);
+          });
+          rawStore.put({
+            cacheKey: payload.versionRecord.code + "::filters",
+            version: payload.versionRecord.code,
+            fetchedAt: payload.fetchedAt,
+            endpoint: APP.apiBase + "/blueprints/filters",
+            raw: payload.rawFilters
+          });
+          payload.normalizedRecords.forEach(function (record) {
+            normalizedStore.put(record);
+          });
+
+          var dataset = {
+            version: payload.versionRecord.code,
+            status: "ACTIVE",
+            cacheSchemaVersion: APP.cacheSchemaVersion,
+            recordCount: payload.normalizedRecords.length,
+            pageCount: payload.pageCount,
+            pageSize: payload.pageSize,
+            filters: payload.normalizedFilters,
+            fetchedAt: payload.fetchedAt,
+            activatedAt: nowIso(),
+            source: APP.apiBase + "/blueprints"
+          };
+          datasetStore.put(dataset);
+          metadataStore.put({
+            key: "currentGameVersion",
+            value: payload.versionRecord,
+            updatedAt: dataset.activatedAt
+          });
+          metadataStore.put({
+            key: "activeBlueprintDataset",
+            value: {
+              version: dataset.version,
+              activatedAt: dataset.activatedAt,
+              recordCount: dataset.recordCount
+            },
+            updatedAt: dataset.activatedAt
+          });
+          metadataStore.put({
+            key: "lastSuccessfulSync",
+            value: {
+              gameVersion: dataset.version,
+              syncedAt: dataset.activatedAt,
+              scope: ["game-version", "blueprint-index", "blueprint-filters"],
+              blueprintCount: dataset.recordCount
+            },
+            updatedAt: dataset.activatedAt
+          });
+          stageStore.delete(stageKey);
+
+          transaction.oncomplete = function () {
+            resolve(dataset);
+          };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A blueprint dataset tranzakció sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A blueprint dataset tranzakció megszakadt."));
+          };
+        });
+      }
+
+      putBlueprintDetail(rawRecord, normalizedRecord) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["blueprintRawCache", "blueprintNormalizedCache"], "readwrite");
+          transaction.objectStore("blueprintRawCache").put(rawRecord);
+          transaction.objectStore("blueprintNormalizedCache").put(normalizedRecord);
+          transaction.oncomplete = function () {
+            resolve(normalizedRecord);
+          };
+          transaction.onerror = function () {
+            reject(transaction.error || new Error("A blueprint részlet-cache írása sikertelen."));
+          };
+          transaction.onabort = function () {
+            reject(transaction.error || new Error("A blueprint részlet-cache írása megszakadt."));
+          };
+        });
+      }
+
+      recordBlueprintSyncFailure(version, error) {
+        return this.put("syncStaging", {
+          key: "blueprintDatasetFailure:" + (version || "unknown"),
+          status: "FAILED",
+          version: version || null,
+          failedAt: nowIso(),
+          error: serializeError(error)
+        });
+      }
+
+      async verifyBlueprintRollbackPreservesActive() {
+        var self = this;
+        var before = await this.get("gameMetadata", "activeBlueprintDataset");
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["syncStaging", "gameMetadata"], "readwrite");
+          var transactionError = null;
+          transaction.objectStore("syncStaging").put({
+            key: "blueprintRollbackProbe",
+            status: "ROLLBACK_EXPECTED",
+            stagedAt: nowIso()
+          });
+          transaction.objectStore("gameMetadata").put({
+            key: "activeBlueprintDataset",
+            value: { version: "ROLLBACK-PROBE-MUST-NOT-ACTIVATE" },
+            updatedAt: nowIso()
+          });
+          transaction.onabort = async function () {
+            try {
+              if (transactionError && transactionError.name !== "AbortError") {
+                reject(transactionError);
+                return;
+              }
+              var after = await self.get("gameMetadata", "activeBlueprintDataset");
+              var beforeVersion = before && before.value ? before.value.version : null;
+              var afterVersion = after && after.value ? after.value.version : null;
+              if (beforeVersion !== afterVersion) {
+                reject(new Error("A megszakított tranzakció megváltoztatta az aktív datasetet."));
+                return;
+              }
+              resolve({ activeVersion: afterVersion, preserved: true });
+            } catch (error) {
+              reject(error);
+            }
+          };
+          transaction.onerror = function (event) {
+            transactionError = transaction.error || (event && event.target ? event.target.error : null);
+            if (event && typeof event.preventDefault === "function") {
+              event.preventDefault();
+            }
+          };
+          transaction.abort();
+        });
+      }
+
       commitGameVersion(versionRecord) {
         var self = this;
         return new Promise(function (resolve, reject) {
@@ -597,6 +846,41 @@
         return response.data;
       }
 
+      async getBlueprintFilters() {
+        var response = await this.request("/blueprints/filters");
+        if (!response || !response.filters || !Array.isArray(response.filters["output.type"])) {
+          this.logger.event("WARN", "SCHEMA_WARNING", "A blueprint filter API sémája nem felismerhető.", {
+            expectedField: "filters.output.type"
+          });
+          throw new Error("A blueprint filter API sémája nem felismerhető.");
+        }
+        return response;
+      }
+
+      async getBlueprintPage(pageNumber, pageSize, gameVersion, filters) {
+        var query = {
+          "page[number]": pageNumber,
+          "page[size]": pageSize,
+          version: gameVersion || null
+        };
+        var requestedFilters = filters || {};
+        if (requestedFilters.outputType) {
+          query["filter[output.type]"] = requestedFilters.outputType;
+        }
+        if (requestedFilters.ingredientUuid) {
+          query["filter[ingredient.uuid]"] = requestedFilters.ingredientUuid;
+        }
+        var response = await this.request("/blueprints", { query: query });
+        if (!response || !Array.isArray(response.data) || !response.meta || !Number.isFinite(Number(response.meta.last_page))) {
+          this.logger.event("WARN", "SCHEMA_WARNING", "A lapozott blueprint API sémája nem felismerhető.", {
+            expectedFields: ["data[]", "meta.last_page"],
+            pageNumber: pageNumber
+          });
+          throw new Error("A lapozott blueprint API sémája nem felismerhető.");
+        }
+        return response;
+      }
+
       async getBlueprint(identifier, gameVersion) {
         var response = await this.request("/blueprints/" + encodeURIComponent(identifier), {
           query: gameVersion ? { version: gameVersion } : {}
@@ -613,6 +897,16 @@
       }
     }
 
+    /* M1_PURE_MODEL_START */
+    function hasNumericValue(value) {
+      return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+    }
+
+    function extractApiUuid(url) {
+      var match = String(url || "").match(/\/([0-9a-f]{8}-[0-9a-f-]{27,})\/?(?:\?.*)?$/i);
+      return match ? match[1] : null;
+    }
+
     function deriveQualityCapability(aspect) {
       if (aspect && aspect.has_dynamic_modifiers === true) {
         return "DYNAMIC";
@@ -623,56 +917,218 @@
       return "UNKNOWN";
     }
 
-    function normalizeBlueprint(raw, provenance) {
-      var aspectRoot = raw && raw.aspects && Array.isArray(raw.aspects.aspects) ? raw.aspects.aspects : [];
-      var requirements = aspectRoot.map(function (aspect, index) {
-        var input = aspect.input || {};
-        var hasScu = Number.isFinite(Number(input.quantity_scu));
-        var hasItems = Number.isFinite(Number(input.quantity));
-        var unit = hasScu ? "SCU" : (hasItems ? "ITEM" : "UNKNOWN");
-        var quantityUnits = hasScu ? toScuUnits(input.quantity_scu) : (hasItems ? Math.round(Number(input.quantity)) : null);
-        return {
-          id: raw.uuid + ":aspect:" + index,
-          blueprintUuid: raw.uuid,
-          outputUuid: raw.output_item_uuid || null,
-          recipeSlotKey: aspect.key || "aspect-" + index,
-          recipeSlotName: aspect.name || aspect.key || "Ismeretlen recipe slot",
-          ingredientUuid: input.uuid || null,
-          materialName: input.name || "Ismeretlen input",
-          requiredQuantityUnits: quantityUnits,
-          unit: unit,
-          qualityCapability: deriveQualityCapability(aspect),
-          defaultQualityStrategy: deriveQualityCapability(aspect) === "FIXED" ? "FIXED" : "UNSET",
-          targetQuality: null,
-          minQuality: Number.isFinite(Number(input.min_quality)) ? Number(input.min_quality) : null,
-          affectedStats: Array.isArray(aspect.modifiers) ? aspect.modifiers.map(function (modifier) {
-            return {
-              key: modifier.property_key || null,
-              label: modifier.label || modifier.property_key || "Ismeretlen stat",
-              betterWhen: modifier.better_when || null,
-              dynamic: aspect.has_dynamic_modifiers === true
-            };
-          }) : [],
-          allocatedBatches: [],
-          missingQuantityUnits: quantityUnits,
-          provenance: provenance
-        };
-      });
-
+    function createNormalizedProvenance(provenance, apiUuid, recordType, parentId) {
+      var source = provenance || {};
       return {
-        uuid: raw.uuid,
-        key: raw.key || null,
-        outputUuid: raw.output_item_uuid || null,
-        outputName: raw.output_name || (raw.output && raw.output.name) || "Ismeretlen output",
-        outputClass: raw.output_class || null,
-        craftTimeSeconds: Number.isFinite(Number(raw.craft_time_seconds)) ? Number(raw.craft_time_seconds) : null,
-        isAvailableByDefault: raw.is_available_by_default === true,
-        gameVersion: raw.game_version || (provenance && provenance.gameVersion) || null,
-        requirements: requirements,
-        normalizedAt: nowIso(),
+        apiUuid: apiUuid || null,
+        rawBlueprintUuid: source.rawBlueprintUuid || source.blueprintUuid || null,
+        gameVersion: source.gameVersion || null,
+        dataSource: source.dataSource || "Star Citizen Wiki API",
+        source: source.source || null,
+        fetchedAt: source.fetchedAt || null,
+        origin: source.origin || "UNKNOWN",
+        rawCacheKey: source.rawCacheKey || null,
+        recordType: recordType,
+        parentId: parentId || null
+      };
+    }
+
+    function normalizeOutputTypeFilters(rawFilters) {
+      var values = rawFilters && rawFilters.filters && Array.isArray(rawFilters.filters["output.type"])
+        ? rawFilters.filters["output.type"]
+        : [];
+      return values.map(function (item) {
+        return {
+          value: item.value || "",
+          label: item.label || item.value || "Ismeretlen",
+          count: hasNumericValue(item.count) ? Number(item.count) : null
+        };
+      }).filter(function (item) {
+        return Boolean(item.value);
+      });
+    }
+
+    function normalizeBlueprintIndex(raw, gameVersion, fetchedAt) {
+      var output = raw && raw.output ? raw.output : {};
+      var uuid = raw && raw.uuid ? raw.uuid : null;
+      var provenance = createNormalizedProvenance({
+        rawBlueprintUuid: uuid,
+        gameVersion: raw && raw.game_version ? raw.game_version : gameVersion,
+        dataSource: "Star Citizen Wiki API",
+        source: "https://api.star-citizen.wiki/api/blueprints",
+        fetchedAt: fetchedAt,
+        origin: "API",
+        rawCacheKey: gameVersion + "::" + uuid
+      }, uuid, "BLUEPRINT_INDEX", null);
+      return {
+        cacheKey: gameVersion + "::" + uuid,
+        uuid: uuid,
+        key: raw && raw.key ? raw.key : null,
+        outputUuid: (raw && raw.output_item_uuid) || output.uuid || null,
+        outputName: (raw && raw.output_name) || output.name || "Ismeretlen output",
+        outputClass: (raw && raw.output_class) || output.class || null,
+        outputType: output.type || null,
+        outputTypeLabel: output.type_label || output.type || "Ismeretlen típus",
+        ingredientCount: hasNumericValue(raw && raw.ingredient_count)
+          ? Number(raw.ingredient_count)
+          : (raw && Array.isArray(raw.ingredients) ? raw.ingredients.length : 0),
+        gameVersion: (raw && raw.game_version) || gameVersion,
+        webUrl: (raw && raw.web_url) || null,
+        fetchedAt: fetchedAt,
         provenance: provenance
       };
     }
+
+    function blueprintAspectCandidates(raw) {
+      if (raw && raw.aspects && Array.isArray(raw.aspects.aspects) && raw.aspects.aspects.length) {
+        return raw.aspects.aspects.map(function (aspect) {
+          return aspect;
+        });
+      }
+      var groups = raw && Array.isArray(raw.requirement_groups) ? raw.requirement_groups : [];
+      var fallback = [];
+      groups.forEach(function (group, groupIndex) {
+        var children = Array.isArray(group.children) ? group.children : [];
+        children.forEach(function (child, childIndex) {
+          fallback.push({
+            key: group.key || "group-" + groupIndex,
+            name: group.name || group.key || "Ismeretlen recipe slot",
+            required_count: group.required_count,
+            selection_group: null,
+            input: child,
+            modifiers: Array.isArray(group.modifiers) ? group.modifiers : [],
+            __fallbackIndex: groupIndex + ":" + childIndex
+          });
+        });
+      });
+      return fallback;
+    }
+
+    function findRawIngredient(raw, input) {
+      var ingredients = raw && Array.isArray(raw.ingredients) ? raw.ingredients : [];
+      var uuid = input && input.uuid ? input.uuid : null;
+      var exact = ingredients.find(function (ingredient) {
+        return uuid && (ingredient.resource_type_uuid === uuid || ingredient.item_uuid === uuid);
+      });
+      if (exact) {
+        return exact;
+      }
+      return ingredients.find(function (ingredient) {
+        return ingredient.name === (input && input.name) && ingredient.kind === (input && input.kind);
+      }) || null;
+    }
+
+    function normalizeBlueprint(raw, provenance) {
+      if (!raw || !raw.uuid) {
+        throw new TypeError("A normalizáláshoz blueprint UUID szükséges.");
+      }
+      var normalizedAt = nowIso();
+      var blueprintProvenanceInput = Object.assign({}, provenance || {}, {
+        rawBlueprintUuid: raw.uuid,
+        gameVersion: raw.game_version || (provenance && provenance.gameVersion) || null
+      });
+      var blueprintProvenance = createNormalizedProvenance(blueprintProvenanceInput, raw.uuid, "BLUEPRINT", null);
+      var aspectRoot = blueprintAspectCandidates(raw);
+      var recipeSlots = aspectRoot.map(function (aspect, index) {
+        var input = aspect.input || {};
+        var matchedIngredient = findRawIngredient(raw, input);
+        var hasScu = hasNumericValue(input.quantity_scu);
+        var hasItems = hasNumericValue(input.quantity);
+        var unit = hasScu ? "SCU" : (hasItems ? "ITEM" : "UNKNOWN");
+        var rawQuantity = hasScu ? Number(input.quantity_scu) : (hasItems ? Number(input.quantity) : null);
+        var quantityUnits = hasScu ? toScuUnits(rawQuantity) : (hasItems ? Math.round(rawQuantity) : null);
+        var slotId = raw.uuid + ":aspect:" + index;
+        var ingredientUuid = input.uuid || (matchedIngredient && (matchedIngredient.resource_type_uuid || matchedIngredient.item_uuid)) || null;
+        var capability = deriveQualityCapability(aspect);
+        var slotProvenance = createNormalizedProvenance(blueprintProvenanceInput, ingredientUuid, "RECIPE_SLOT", raw.uuid);
+        var ingredientProvenance = createNormalizedProvenance(blueprintProvenanceInput, ingredientUuid, "INGREDIENT", slotId);
+        var ingredientApiUrl = matchedIngredient && matchedIngredient.link ? matchedIngredient.link : null;
+        var ingredient = {
+          uuid: ingredientUuid,
+          name: input.name || (matchedIngredient && matchedIngredient.name) || "Ismeretlen input",
+          kind: input.kind || (matchedIngredient && matchedIngredient.kind) || "unknown",
+          resourceTypeUuid: (matchedIngredient && matchedIngredient.resource_type_uuid) || (input.kind === "resource" ? ingredientUuid : null),
+          itemUuid: (matchedIngredient && matchedIngredient.item_uuid) || (input.kind === "item" ? ingredientUuid : null),
+          commodityUuid: extractApiUuid(ingredientApiUrl || input.web_url),
+          apiUrl: ingredientApiUrl,
+          webUrl: input.web_url || (matchedIngredient && matchedIngredient.web_url) || null,
+          provenance: ingredientProvenance
+        };
+        var affectedStats = Array.isArray(aspect.modifiers) ? aspect.modifiers.map(function (modifier, modifierIndex) {
+          return {
+            id: slotId + ":modifier:" + modifierIndex,
+            key: modifier.property_key || null,
+            propertyUuid: modifier.property_uuid || null,
+            label: modifier.label || modifier.property_key || "Ismeretlen stat",
+            betterWhen: modifier.better_when || null,
+            valueRangeType: modifier.value_range_type || null,
+            qualityRange: modifier.quality_range || null,
+            modifierRange: modifier.modifier_range || null,
+            valueSegments: Array.isArray(modifier.value_segments) ? modifier.value_segments : [],
+            dynamic: aspect.has_dynamic_modifiers === true,
+            provenance: createNormalizedProvenance(blueprintProvenanceInput, modifier.property_uuid || null, "MODIFIER", slotId)
+          };
+        }) : [];
+        return {
+          id: slotId,
+          aspectIndex: index,
+          blueprintUuid: raw.uuid,
+          outputUuid: raw.output_item_uuid || (raw.output && raw.output.uuid) || null,
+          recipeSlotKey: aspect.key || "aspect-" + index,
+          recipeSlotName: aspect.name || aspect.key || "Ismeretlen recipe slot",
+          requiredCount: hasNumericValue(aspect.required_count) ? Number(aspect.required_count) : null,
+          selectionGroup: aspect.selection_group || null,
+          isSelected: typeof aspect.is_selected === "boolean" ? aspect.is_selected : null,
+          ingredientUuid: ingredient.uuid,
+          materialName: ingredient.name,
+          ingredient: ingredient,
+          quantity: {
+            unit: unit,
+            rawValue: rawQuantity,
+            internalUnits: quantityUnits,
+            scuUnitScale: unit === "SCU" ? 10000 : null
+          },
+          requiredQuantityUnits: quantityUnits,
+          unit: unit,
+          qualityCapability: capability,
+          quality: {
+            capability: capability,
+            min: hasNumericValue(input.min_quality) ? Number(input.min_quality) : null,
+            initial: hasNumericValue(aspect.initial_quality) ? Number(aspect.initial_quality) : null,
+            sliderMin: hasNumericValue(aspect.slider_min) ? Number(aspect.slider_min) : null,
+            sliderMax: hasNumericValue(aspect.slider_max) ? Number(aspect.slider_max) : null,
+            modifiers: affectedStats
+          },
+          defaultQualityStrategy: capability === "FIXED" ? "FIXED" : "UNSET",
+          targetQuality: null,
+          minQuality: hasNumericValue(input.min_quality) ? Number(input.min_quality) : null,
+          affectedStats: affectedStats,
+          allocatedBatches: [],
+          missingQuantityUnits: quantityUnits,
+          provenance: slotProvenance
+        };
+      });
+
+      var gameVersion = raw.game_version || (provenance && provenance.gameVersion) || null;
+      return {
+        cacheKey: gameVersion + "::" + raw.uuid,
+        uuid: raw.uuid,
+        key: raw.key || null,
+        outputUuid: raw.output_item_uuid || (raw.output && raw.output.uuid) || null,
+        outputName: raw.output_name || (raw.output && raw.output.name) || "Ismeretlen output",
+        outputClass: raw.output_class || (raw.output && raw.output.class) || null,
+        outputType: raw.output && raw.output.type ? raw.output.type : null,
+        outputTypeLabel: raw.output && raw.output.type_label ? raw.output.type_label : null,
+        craftTimeSeconds: hasNumericValue(raw.craft_time_seconds) ? Number(raw.craft_time_seconds) : null,
+        isAvailableByDefault: raw.is_available_by_default === true,
+        gameVersion: gameVersion,
+        recipeSlots: recipeSlots,
+        requirements: recipeSlots,
+        normalizedAt: normalizedAt,
+        provenance: blueprintProvenance
+      };
+    }
+    /* M1_PURE_MODEL_END */
 
     function compareLocations(a, b) {
       function sortable(value) {
@@ -728,6 +1184,424 @@
       document.body.dataset.online = navigator.onLine ? "true" : "false";
     }
 
+    function foldSearchText(value) {
+      return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    function populateBlueprintTypeFilter(filters) {
+      var select = document.getElementById("blueprintTypeFilter");
+      var selected = select.value;
+      select.replaceChildren();
+      var allOption = document.createElement("option");
+      allOption.value = "";
+      allOption.textContent = "Minden típus";
+      select.append(allOption);
+      (filters || []).forEach(function (filter) {
+        var option = document.createElement("option");
+        option.value = filter.value;
+        option.textContent = filter.label + (filter.count == null ? "" : " (" + filter.count + ")");
+        select.append(option);
+      });
+      select.value = Array.from(select.options).some(function (option) {
+        return option.value === selected;
+      }) ? selected : "";
+    }
+
+    function renderBlueprintDatasetState() {
+      var dataset = state.activeBlueprintDataset;
+      var status = document.getElementById("blueprintDatasetStatus");
+      if (state.blueprintIndexSyncing) {
+        setBadge(status, "PENDING", "Szinkron folyamatban");
+      } else if (dataset) {
+        setBadge(status, "PASS", dataset.recordCount + " blueprint");
+      } else {
+        setBadge(status, "NEUTRAL", "Nincs aktív cache");
+      }
+      setText("blueprintBrowserMeta", dataset
+        ? dataset.version + " · " + dataset.recordCount + " rekord · aktiválva: " + formatTimestamp(dataset.activatedAt)
+        : "Nincs aktív blueprint dataset. Az előző működő cache sikertelen szinkron esetén változatlan marad.");
+      document.body.dataset.blueprintDatasetVersion = dataset ? dataset.version : "";
+      document.body.dataset.blueprintIndexCount = String(state.blueprintIndex.length);
+    }
+
+    async function readUserDataCounts() {
+      var storeNames = ["userInventory", "materialBatches", "userLoadouts", "craftingCards"];
+      var counts = {};
+      for (var index = 0; index < storeNames.length; index += 1) {
+        counts[storeNames[index]] = await database.count(storeNames[index]);
+      }
+      return counts;
+    }
+
+    async function updateCacheDiagnostics() {
+      var counts = {
+        indexRaw: await database.count("blueprintIndexRawCache"),
+        indexNormalized: await database.count("blueprintIndexCache"),
+        detailRaw: await database.count("blueprintRawCache"),
+        detailNormalized: await database.count("blueprintNormalizedCache")
+      };
+      var rawDetails = await database.getAll("blueprintRawCache");
+      var normalizedDetails = await database.getAll("blueprintNormalizedCache");
+      document.body.dataset.blueprintIndexRawCount = String(counts.indexRaw);
+      document.body.dataset.blueprintIndexNormalizedCount = String(counts.indexNormalized);
+      document.body.dataset.blueprintDetailRawCount = String(counts.detailRaw);
+      document.body.dataset.blueprintDetailNormalizedCount = String(counts.detailNormalized);
+      document.body.dataset.blueprintRawSeparated = rawDetails.every(function (record) {
+        return Object.prototype.hasOwnProperty.call(record, "raw");
+      }) && normalizedDetails.every(function (record) {
+        return !Object.prototype.hasOwnProperty.call(record, "raw");
+      }) ? "true" : "false";
+      document.body.dataset.blueprintProvenanceComplete = normalizedDetails.every(function (record) {
+        return Boolean(record.provenance && record.provenance.rawBlueprintUuid && record.provenance.gameVersion && record.provenance.fetchedAt);
+      }) ? "true" : "false";
+      return counts;
+    }
+
+    function visibleBlueprintIndex() {
+      var query = foldSearchText(document.getElementById("blueprintSearchInput").value);
+      var outputType = document.getElementById("blueprintTypeFilter").value;
+      return state.blueprintIndex.filter(function (record) {
+        if (outputType && record.outputType !== outputType) {
+          return false;
+        }
+        if (!query) {
+          return true;
+        }
+        return foldSearchText([
+          record.outputName,
+          record.outputClass,
+          record.key,
+          record.uuid,
+          record.outputTypeLabel
+        ].join(" ")).includes(query);
+      });
+    }
+
+    function renderBlueprintBrowserResults() {
+      var results = visibleBlueprintIndex();
+      var container = document.getElementById("blueprintBrowserResults");
+      container.replaceChildren();
+      setText("blueprintResultCount", results.length + (results.length > 100 ? " · első 100" : ""));
+      if (!results.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = state.blueprintIndex.length ? "Nincs a szűrésnek megfelelő blueprint." : "A blueprint index még nincs betöltve.";
+        container.append(empty);
+        return;
+      }
+      results.slice(0, 100).forEach(function (record) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "spg-blueprint-result";
+        button.dataset.blueprintUuid = record.uuid;
+        var title = document.createElement("strong");
+        title.textContent = record.outputName;
+        var meta = document.createElement("span");
+        meta.textContent = (record.outputTypeLabel || "Ismeretlen típus") + " · " + record.ingredientCount + " input";
+        button.append(title, meta);
+        button.addEventListener("click", function () {
+          loadBlueprintDetail(record.uuid).catch(function (error) {
+            setNotice("Blueprint betöltési hiba: " + error.message, "error");
+          });
+        });
+        container.append(button);
+      });
+    }
+
+    function appendDetailValue(container, label, value) {
+      var item = document.createElement("div");
+      var name = document.createElement("span");
+      name.textContent = label;
+      var content = document.createElement("strong");
+      content.textContent = value == null || value === "" ? "—" : String(value);
+      item.append(name, content);
+      container.append(item);
+    }
+
+    function renderBlueprintBrowserDetail(blueprint, cacheOrigin) {
+      var container = document.getElementById("blueprintBrowserDetail");
+      container.replaceChildren();
+      if (!blueprint) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Válassz blueprintet a teljes recept lusta betöltéséhez.";
+        container.append(empty);
+        return;
+      }
+      var eyebrow = document.createElement("p");
+      eyebrow.className = "eyebrow";
+      eyebrow.textContent = cacheOrigin === "CACHE" ? "Részlet-cache" : "Friss API-adat";
+      var title = document.createElement("h3");
+      title.textContent = blueprint.outputName;
+      var grid = document.createElement("div");
+      grid.className = "spg-browser-detail-grid";
+      appendDetailValue(grid, "Blueprint UUID", blueprint.uuid);
+      appendDetailValue(grid, "SC-verzió", blueprint.gameVersion);
+      appendDetailValue(grid, "Output típus", blueprint.outputTypeLabel || blueprint.outputType);
+      appendDetailValue(grid, "Recipe slot", blueprint.recipeSlots.length);
+      appendDetailValue(grid, "Adatforrás", blueprint.provenance.dataSource);
+      appendDetailValue(grid, "Lekérés", formatTimestamp(blueprint.provenance.fetchedAt));
+      container.append(eyebrow, title, grid);
+    }
+
+    async function loadBlueprintIndexFromCache(version) {
+      var allRecords = await database.getAll("blueprintIndexCache");
+      return allRecords.filter(function (record) {
+        return record.gameVersion === version || String(record.cacheKey || "").indexOf(version + "::") === 0;
+      }).sort(function (a, b) {
+        return String(a.outputName).localeCompare(String(b.outputName), "hu");
+      });
+    }
+
+    function findBlueprintIndexRecord(identifier) {
+      var folded = foldSearchText(identifier);
+      return state.blueprintIndex.find(function (record) {
+        return record.uuid === identifier ||
+          foldSearchText(record.key) === folded ||
+          foldSearchText(record.outputName) === folded ||
+          (record.webUrl && foldSearchText(record.webUrl.split("/").pop()) === folded);
+      }) || null;
+    }
+
+    async function loadBlueprintDetail(identifier, options) {
+      var settings = options || {};
+      var ownsProcess = settings.ownsProcess !== false;
+      var indexRecord = findBlueprintIndexRecord(identifier);
+      var resolvedIdentifier = indexRecord ? indexRecord.uuid : identifier;
+      var version = state.activeBlueprintDataset ? state.activeBlueprintDataset.version : (state.gameVersion && state.gameVersion.code);
+      if (!version) {
+        throw new Error("Nincs aktív SC-verzió a blueprint részlethez.");
+      }
+      if (ownsProcess) {
+        logger.start("Blueprint Detail Load", { identifier: resolvedIdentifier, gameVersion: version });
+      }
+      try {
+        var cacheKey = version + "::" + resolvedIdentifier;
+        var cached = await database.get("blueprintNormalizedCache", cacheKey);
+        var normalized;
+        var cacheOrigin;
+        if (cached) {
+          normalized = cached;
+          cacheOrigin = "CACHE";
+          logger.event("INFO", "BLUEPRINT_DETAIL_CACHE_HIT", "A teljes blueprint a verziózott cache-ből töltődött.", {
+            cacheKey: cacheKey,
+            recipeSlotCount: normalized.recipeSlots.length
+          });
+        } else {
+          var raw = await api.getBlueprint(resolvedIdentifier, version);
+          var fetchedAt = nowIso();
+          cacheKey = version + "::" + raw.uuid;
+          var provenance = {
+            rawBlueprintUuid: raw.uuid,
+            gameVersion: raw.game_version || version,
+            dataSource: "Star Citizen Wiki API",
+            source: APP.apiBase + "/blueprints/" + encodeURIComponent(resolvedIdentifier),
+            fetchedAt: fetchedAt,
+            origin: "API",
+            rawCacheKey: cacheKey
+          };
+          normalized = normalizeBlueprint(raw, provenance);
+          await database.putBlueprintDetail({
+            cacheKey: cacheKey,
+            version: version,
+            uuid: raw.uuid,
+            fetchedAt: fetchedAt,
+            endpoint: provenance.source,
+            raw: raw
+          }, normalized);
+          cacheOrigin = "API";
+          state.apiReady = true;
+          logger.event("INFO", "BLUEPRINT_DETAIL_CACHED", "A teljes blueprint raw és normalizált cache-be került.", {
+            cacheKey: cacheKey,
+            recipeSlotCount: normalized.recipeSlots.length
+          });
+        }
+        state.normalizedBlueprint = normalized;
+        renderBlueprint(normalized);
+          renderBlueprintBrowserDetail(normalized, cacheOrigin);
+        await updateCacheDiagnostics();
+        updateEnvironmentUi();
+        if (ownsProcess) {
+          logger.finish("PASS", {
+            cacheOrigin: cacheOrigin,
+            blueprintUuid: normalized.uuid,
+            recipeSlotCount: normalized.recipeSlots.length
+          });
+        }
+        return normalized;
+      } catch (error) {
+        logger.event("ERROR", "BLUEPRINT_DETAIL_FAILED", "A blueprint részlet betöltése sikertelen.", {
+          identifier: resolvedIdentifier,
+          gameVersion: version,
+          error: serializeError(error)
+        });
+        if (ownsProcess) {
+          logger.finish("FAIL", { error: serializeError(error) });
+        }
+        throw error;
+      }
+    }
+
+    async function syncBlueprintIndex(options) {
+      var settings = options || {};
+      var ownsProcess = settings.ownsProcess !== false;
+      if (state.blueprintIndexSyncing) {
+        throw new Error("Már fut blueprint index szinkron.");
+      }
+      if (ownsProcess) {
+        logger.start("Blueprint Index Sync", { force: settings.force === true });
+      }
+      state.blueprintIndexSyncing = true;
+      document.getElementById("syncBlueprintIndexButton").disabled = true;
+      renderBlueprintDatasetState();
+      var candidateVersion = null;
+      var userCountsBefore = null;
+      try {
+        userCountsBefore = await readUserDataCounts();
+        var versionRecord = await api.getDefaultGameVersion();
+        candidateVersion = versionRecord.code;
+        var existingDataset = await database.get("blueprintDatasets", candidateVersion);
+        if (existingDataset && existingDataset.status === "ACTIVE" && settings.force !== true) {
+          state.gameVersion = versionRecord;
+          state.activeBlueprintDataset = existingDataset;
+          state.blueprintIndex = await loadBlueprintIndexFromCache(candidateVersion);
+          state.blueprintFilters = existingDataset.filters || [];
+          state.lastSyncAt = existingDataset.activatedAt;
+          state.apiReady = true;
+          populateBlueprintTypeFilter(state.blueprintFilters);
+          renderBlueprintBrowserResults();
+          await updateCacheDiagnostics();
+          logger.event("INFO", "BLUEPRINT_DATASET_CACHE_HIT", "Az aktív blueprint dataset változatlan SC-verzióhoz elérhető.", {
+            gameVersion: candidateVersion,
+            recordCount: state.blueprintIndex.length
+          });
+          if (ownsProcess) {
+            logger.finish("PASS", { cacheOrigin: "CACHE", gameVersion: candidateVersion, recordCount: state.blueprintIndex.length });
+          }
+          return existingDataset;
+        }
+
+        var rawFilters = await api.getBlueprintFilters();
+        var normalizedFilters = normalizeOutputTypeFilters(rawFilters);
+        var firstPage = await api.getBlueprintPage(1, APP.blueprintPageSize, candidateVersion, settings.filters || {});
+        var pageCount = Number(firstPage.meta.last_page);
+        var expectedTotal = Number(firstPage.meta.total);
+        assert(pageCount >= 1 && pageCount <= APP.maxBlueprintPages, "Érvénytelen blueprint oldalszám: " + pageCount);
+        var rawBlueprints = firstPage.data.slice();
+        logger.event("INFO", "BLUEPRINT_INDEX_PAGE", "Blueprint indexoldal letöltve.", {
+          page: 1,
+          pageCount: pageCount,
+          records: firstPage.data.length
+        });
+        for (var page = 2; page <= pageCount; page += 1) {
+          var response = await api.getBlueprintPage(page, APP.blueprintPageSize, candidateVersion, settings.filters || {});
+          rawBlueprints.push.apply(rawBlueprints, response.data);
+          logger.event("INFO", "BLUEPRINT_INDEX_PAGE", "Blueprint indexoldal letöltve.", {
+            page: page,
+            pageCount: pageCount,
+            records: response.data.length
+          });
+        }
+        assert(rawBlueprints.length === expectedTotal, "Hiányos blueprint index: " + rawBlueprints.length + "/" + expectedTotal);
+        var uuidSet = new Set();
+        rawBlueprints.forEach(function (raw) {
+          assert(raw && raw.uuid, "UUID nélküli blueprint érkezett az indexben.");
+          assert(!uuidSet.has(raw.uuid), "Duplikált blueprint UUID az indexben: " + raw.uuid);
+          uuidSet.add(raw.uuid);
+        });
+        var fetchedAt = nowIso();
+        var candidatePrefix = candidateVersion + "::";
+        var previousRawKeys = (await database.getAllKeys("blueprintIndexRawCache")).filter(function (key) {
+          return String(key).indexOf(candidatePrefix) === 0;
+        });
+        var previousNormalizedKeys = (await database.getAllKeys("blueprintIndexCache")).filter(function (key) {
+          return String(key).indexOf(candidatePrefix) === 0;
+        });
+        var rawRecords = rawBlueprints.map(function (raw) {
+          return {
+            cacheKey: candidateVersion + "::" + raw.uuid,
+            version: candidateVersion,
+            uuid: raw.uuid,
+            fetchedAt: fetchedAt,
+            endpoint: APP.apiBase + "/blueprints",
+            raw: raw
+          };
+        });
+        var normalizedRecords = rawBlueprints.map(function (raw) {
+          return normalizeBlueprintIndex(raw, candidateVersion, fetchedAt);
+        }).sort(function (a, b) {
+          return String(a.outputName).localeCompare(String(b.outputName), "hu");
+        });
+        var dataset = await database.commitBlueprintDataset({
+          versionRecord: versionRecord,
+          rawRecords: rawRecords,
+          normalizedRecords: normalizedRecords,
+          rawFilters: rawFilters,
+          normalizedFilters: normalizedFilters,
+          fetchedAt: fetchedAt,
+          pageCount: pageCount,
+          pageSize: APP.blueprintPageSize,
+          previousRawKeys: previousRawKeys,
+          previousNormalizedKeys: previousNormalizedKeys
+        });
+        var userCountsAfter = await readUserDataCounts();
+        assert(JSON.stringify(userCountsAfter) === JSON.stringify(userCountsBefore), "A Game Data szinkron módosította a User Data rekordszámát.");
+        document.body.dataset.userDataCountsPreserved = "true";
+
+        state.gameVersion = versionRecord;
+        state.activeBlueprintDataset = dataset;
+        state.blueprintIndex = normalizedRecords;
+        state.blueprintFilters = normalizedFilters;
+        state.lastSyncAt = dataset.activatedAt;
+        state.apiReady = true;
+        populateBlueprintTypeFilter(normalizedFilters);
+        renderBlueprintBrowserResults();
+        await updateCacheDiagnostics();
+        logger.event("INFO", "BLUEPRINT_DATASET_ACTIVATED", "A teljes dataset egyetlen sikeres tranzakció után aktív.", {
+          gameVersion: dataset.version,
+          recordCount: dataset.recordCount,
+          pageCount: dataset.pageCount,
+          userDataCountsPreserved: userCountsAfter
+        });
+        if (ownsProcess) {
+          logger.finish("PASS", { cacheOrigin: "API", gameVersion: dataset.version, recordCount: dataset.recordCount });
+        }
+        return dataset;
+      } catch (error) {
+        await database.recordBlueprintSyncFailure(candidateVersion, error).catch(function () {
+          return null;
+        });
+        state.apiReady = false;
+        logger.event("ERROR", "BLUEPRINT_DATASET_SYNC_FAILED", "A jelölt dataset nem aktiválódott; az előző cache marad aktív.", {
+          candidateVersion: candidateVersion,
+          activeVersion: state.activeBlueprintDataset ? state.activeBlueprintDataset.version : null,
+          error: serializeError(error)
+        });
+        if (ownsProcess) {
+          logger.finish("FAIL", {
+            error: serializeError(error),
+            activeVersionPreserved: state.activeBlueprintDataset ? state.activeBlueprintDataset.version : null
+          });
+        }
+        throw error;
+      } finally {
+        state.blueprintIndexSyncing = false;
+        document.getElementById("syncBlueprintIndexButton").disabled = false;
+        renderBlueprintDatasetState();
+        updateEnvironmentUi();
+      }
+    }
+
+    function formatRequirementQuantity(requirement) {
+      if (requirement.unit === "SCU" && Number.isInteger(requirement.requiredQuantityUnits)) {
+        return formatScuUnits(requirement.requiredQuantityUnits);
+      }
+      if (requirement.unit === "ITEM" && Number.isInteger(requirement.requiredQuantityUnits)) {
+        return String(requirement.requiredQuantityUnits) + " db";
+      }
+      return "Ismeretlen mennyiség";
+    }
+
     function renderBlueprint(blueprint) {
       var container = document.getElementById("blueprintRequirements");
       container.replaceChildren();
@@ -760,7 +1634,7 @@
         var details = document.createElement("div");
         details.className = "spg-requirement-details";
         var quantity = document.createElement("span");
-        quantity.textContent = requirement.unit === "SCU" ? formatScuUnits(requirement.requiredQuantityUnits) : String(requirement.requiredQuantityUnits) + " db";
+        quantity.textContent = formatRequirementQuantity(requirement);
         var stats = document.createElement("span");
         stats.textContent = requirement.affectedStats.length ? requirement.affectedStats.map(function (item) {
           return item.label;
@@ -862,7 +1736,7 @@
     }
 
     function exportRequirementMarkup(requirement) {
-      var quantity = requirement.unit === "SCU" ? formatScuUnits(requirement.requiredQuantityUnits) : String(requirement.requiredQuantityUnits) + " db";
+      var quantity = formatRequirementQuantity(requirement);
       var stats = requirement.affectedStats.length ? requirement.affectedStats.map(function (item) {
         return item.label;
       }).join(", ") : "Nincs API-adat";
@@ -954,48 +1828,20 @@
       var settings = options || {};
       var ownsProcess = settings.ownsProcess !== false;
       if (ownsProcess) {
-        logger.start("API Sync", { mode: "version-and-blueprint-spike" });
+        logger.start("API Sync", { mode: "versioned-index-and-js-300" });
       }
       try {
-        var version = await api.getDefaultGameVersion();
-        await database.commitGameVersion(version);
-        state.gameVersion = version;
-
-        var rawBlueprint = await api.getBlueprint("js-300", version.code);
-        var fetchedAt = nowIso();
-        var provenance = {
-          source: APP.apiBase + "/blueprints/js-300",
-          gameVersion: version.code,
-          fetchedAt: fetchedAt,
-          origin: "API"
-        };
-        var normalized = normalizeBlueprint(rawBlueprint, provenance);
-        await database.put("blueprints", Object.assign({}, rawBlueprint, {
-          fetchedAt: fetchedAt,
-          provenance: provenance
-        }));
-        await database.put("normalizedBlueprints", normalized);
-        await database.put("gameMetadata", {
-          key: "lastSuccessfulSync",
-          value: {
-            gameVersion: version.code,
-            syncedAt: fetchedAt,
-            scope: ["game-version", "blueprint:js-300"],
-            blueprintUuid: normalized.uuid
-          },
-          updatedAt: fetchedAt
+        await syncBlueprintIndex({
+          ownsProcess: false,
+          force: settings.forceIndex === true
         });
-
-        state.apiReady = true;
-        state.lastSyncAt = fetchedAt;
-        state.normalizedBlueprint = normalized;
-        renderBlueprint(normalized);
-        updateEnvironmentUi();
+        var normalized = await loadBlueprintDetail("JS-300", { ownsProcess: false });
         if (ownsProcess) {
           logger.finish("PASS", {
-            gameVersion: version.code,
+            gameVersion: state.gameVersion.code,
             blueprint: normalized.outputName,
-            requirementCount: normalized.requirements.length
+            requirementCount: normalized.recipeSlots.length,
+            activeDataset: state.activeBlueprintDataset ? state.activeBlueprintDataset.version : null
           });
         }
         return normalized;
@@ -1076,10 +1922,21 @@
         return "Írás és visszaolvasás sikeres";
       });
 
+      await check("Dataset tranzakció rollback", async function () {
+        var result = await database.verifyBlueprintRollbackPreservesActive();
+        assert(result.preserved === true, "Az aktív cache nem maradt változatlan.");
+        logger.event("INFO", "BLUEPRINT_ROLLBACK_PASS", "A megszakított dataset-tranzakció nem aktiválta a jelölt verziót.", result);
+        return (result.activeVersion || "nincs aktív verzió") + " változatlan";
+      });
+
       await check("Star Citizen Wiki API", async function () {
         var normalized = await syncGameVersionAndBlueprint({ ownsProcess: false });
         assert(normalized.requirements.length > 0, "A blueprintnek nincs normalizált inputja.");
-        return state.gameVersion.code + " · " + normalized.outputName;
+        var filteredPage = await api.getBlueprintPage(1, 3, state.gameVersion.code, { outputType: "PowerPlant" });
+        assert(filteredPage.data.length > 0 && filteredPage.data.every(function (record) {
+          return record.output && record.output.type === "PowerPlant";
+        }), "Az API output.type filter nem csak PowerPlant rekordot adott.");
+        return state.gameVersion.code + " · " + normalized.outputName + " · API filter PASS";
       });
 
       await check("Quality capability", async function () {
@@ -1178,22 +2035,36 @@
     async function restoreCachedState() {
       var versionRecord = await database.get("gameMetadata", "currentGameVersion");
       var syncRecord = await database.get("gameMetadata", "lastSuccessfulSync");
+      var activeDatasetRecord = await database.get("gameMetadata", "activeBlueprintDataset");
       var technicalProbeRecord = await database.get("settings", "technicalProbe");
       var lastProbeRecord = await database.get("settings", "lastTechnicalProbe");
-      var blueprintUuid = syncRecord && syncRecord.value ? syncRecord.value.blueprintUuid : null;
-      var blueprintRecord = blueprintUuid ? await database.get("normalizedBlueprints", blueprintUuid).catch(function () {
-        return null;
-      }) : null;
+      var activeVersion = activeDatasetRecord && activeDatasetRecord.value ? activeDatasetRecord.value.version : null;
+      var dataset = activeVersion ? await database.get("blueprintDatasets", activeVersion) : null;
+      var blueprintRecord = null;
 
       if (versionRecord && versionRecord.value) {
         state.gameVersion = versionRecord.value;
       }
-      if (syncRecord && syncRecord.value) {
+      if (dataset) {
+        state.activeBlueprintDataset = dataset;
+        state.blueprintIndex = await loadBlueprintIndexFromCache(dataset.version);
+        state.blueprintFilters = dataset.filters || [];
+        state.lastSyncAt = dataset.activatedAt || dataset.fetchedAt || null;
+        populateBlueprintTypeFilter(state.blueprintFilters);
+        renderBlueprintBrowserResults();
+        var js300Index = findBlueprintIndexRecord("JS-300");
+        if (js300Index) {
+          blueprintRecord = await database.get("blueprintNormalizedCache", dataset.version + "::" + js300Index.uuid).catch(function () {
+            return null;
+          });
+        }
+      } else if (syncRecord && syncRecord.value) {
         state.lastSyncAt = syncRecord.value.syncedAt || syncRecord.updatedAt || null;
       }
       if (blueprintRecord) {
         state.normalizedBlueprint = blueprintRecord;
         renderBlueprint(blueprintRecord);
+        renderBlueprintBrowserDetail(blueprintRecord, "CACHE");
       }
       if (lastProbeRecord && lastProbeRecord.value && Array.isArray(lastProbeRecord.value.results)) {
         state.lastProbe = lastProbeRecord.value;
@@ -1205,7 +2076,8 @@
         );
         document.body.dataset.technicalProbe = state.lastProbe.status;
       }
-      document.body.dataset.cacheRestored = versionRecord && blueprintRecord ? "true" : "false";
+      renderBlueprintDatasetState();
+      document.body.dataset.cacheRestored = dataset ? "true" : "false";
       document.body.dataset.technicalProbePersisted = technicalProbeRecord && technicalProbeRecord.value ? "true" : "false";
     }
 
@@ -1296,7 +2168,7 @@
       var button = this;
       button.disabled = true;
       setNotice("Az API-adatok frissítése folyamatban…", "neutral");
-      syncGameVersionAndBlueprint()
+      syncGameVersionAndBlueprint({ forceIndex: true })
         .then(function () {
           setNotice("Az API-adatok frissítése sikeres.", "success");
         })
@@ -1312,6 +2184,24 @@
       downloadStandaloneExport().catch(function () {
         return null;
       });
+    });
+
+    document.getElementById("syncBlueprintIndexButton").addEventListener("click", function () {
+      setNotice("A verziózott blueprint index frissítése folyamatban…", "neutral");
+      syncBlueprintIndex({ force: true })
+        .then(function (dataset) {
+          setNotice(dataset.recordCount + " blueprint tranzakciósan aktiválva.", "success");
+        })
+        .catch(function (error) {
+          setNotice("Cache-frissítési hiba; az előző dataset maradt aktív: " + error.message, "error");
+        });
+    });
+
+    document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
+    document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
+    document.getElementById("blueprintBrowserNav").addEventListener("click", function () {
+      document.getElementById("blueprintBrowserPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("blueprintSearchInput").focus({ preventScroll: true });
     });
 
     document.getElementById("copyLogButton").addEventListener("click", function () {
@@ -1334,10 +2224,15 @@
       toScuUnits: toScuUnits,
       fromScuUnits: fromScuUnits,
       normalizeBlueprint: normalizeBlueprint,
+      normalizeBlueprintIndex: normalizeBlueprintIndex,
+      normalizeOutputTypeFilters: normalizeOutputTypeFilters,
       compareLocations: compareLocations,
       buildStandaloneExport: buildStandaloneExport,
       runTechnicalProbe: runTechnicalProbe,
-      syncGameVersionAndBlueprint: syncGameVersionAndBlueprint
+      syncGameVersionAndBlueprint: syncGameVersionAndBlueprint,
+      syncBlueprintIndex: syncBlueprintIndex,
+      loadBlueprintDetail: loadBlueprintDetail,
+      visibleBlueprintIndex: visibleBlueprintIndex
     });
 
     bootstrap();

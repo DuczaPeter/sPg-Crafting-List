@@ -43,6 +43,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-baseline.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "m1-regression",
+      "level": "related-regression",
+      "description": "Validates the M1 cache architecture and normalized Blueprint/Recipe Slot/Ingredient model fixtures.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m1.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

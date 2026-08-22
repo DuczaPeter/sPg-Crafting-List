@@ -1,0 +1,20 @@
+{
+  "cycleId": "V001-C003",
+  "checkedAt": "2026-08-22T09:08:05+02:00",
+  "browser": "Chrome",
+  "mode": "localhost",
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "results": {
+    "sameVersionIndexReplacement": "PASS",
+    "forcedSyncBlueprintRecords": 1591,
+    "rawIndexRecordsIncludingFilterPayload": 1592,
+    "transactionRollbackPreservesActiveVersion": "PASS",
+    "rawNormalizedSeparation": "PASS",
+    "normalizedProvenance": "PASS",
+    "userDataRecordCountsPreserved": "PASS",
+    "apiOutputTypeFilter": "PASS",
+    "technicalProbe": "8/8 PASS",
+    "consoleWarnErrorCount": 0
+  },
+  "openGate": "Direct file:// Chrome or Edge test remains manual; no stable release."
+}

@@ -1,0 +1,33 @@
+{
+  "cycleId": "V001-C002",
+  "checkedAt": "2026-08-22T08:58:42+02:00",
+  "browser": "Chrome",
+  "mode": "localhost",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "results": {
+    "appReady": true,
+    "blueprintIndexRecords": 1591,
+    "blueprintIndexPages": 8,
+    "blueprintIndexRawRecordsIncludingFilterPayload": 1592,
+    "transactionalForcedSync": "PASS",
+    "transactionRollbackPreservesActiveVersion": "PASS",
+    "cacheRestoreAfterReload": "PASS",
+    "rawNormalizedSeparation": "PASS",
+    "normalizedProvenance": "PASS",
+    "userDataRecordCountsPreserved": "PASS",
+    "apiOutputTypeFilter": "PASS",
+    "js300": "3 slots; 1 DYNAMIC; 2 FIXED",
+    "hofstedeS1": "SCU, ITEM, SCU lazy detail load PASS",
+    "technicalProbe": "8/8 PASS",
+    "consoleWarnErrorCount": 0,
+    "desktopVisual": "PASS",
+    "mobile390Visual": "PASS"
+  },
+  "openGates": [
+    "Direct file:// Chrome or Edge test",
+    "Open the exported standalone HTML offline",
+    "Separate Edge regression"
+  ],
+  "notes": "The direct file:// URL is blocked by the browser-control safety policy, so it remains a manual release gate. This manual Chrome summary is separate from the repair-cycle browserDiagnostics capture, which remains NOT_CAPTURED."
+}

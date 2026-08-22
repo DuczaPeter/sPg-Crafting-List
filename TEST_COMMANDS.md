@@ -54,27 +54,33 @@ Az HTML szintaktikai es bongeszos smoke tesztje alabb rogzitve van.
 
 Technikai baseline statikus ellenorzese:
 
-\`\`\`powershell
+```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-baseline.ps1"
-\`\`\`
+```
 
-Repair-cycle futtatas:
+M1 normalizalt modell- es regresszios teszt:
 
-\`\`\`powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "technikai baseline" -TestId baseline-static
-\`\`\`
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-m1.ps1"
+```
+
+M1 repair-cycle futtatas:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "M1 blueprint cache es normalizalt modell" -TestId m1-regression
+```
 
 Valos bongeszos ellenorzes:
 
-1. Nyisd meg a \`sPg Crafting List.html\` fajlt aktualis Chrome-ban vagy Edge-ben.
-2. Kattints a \`Technikai proba\` gombra.
-3. Csak akkor tekintheto \`file://\` kompatibilisnek, ha minden sor \`PASS\`, a futtatasi mod pedig \`Kozvetlen file:// futas\`.
+1. Nyisd meg a `sPg Crafting List.html` fajlt aktualis Chrome-ban vagy Edge-ben.
+2. Kattints a `Technikai proba` gombra.
+3. Csak akkor tekintheto `file://` kompatibilisnek, ha minden sor `PASS`, a futtatasi mod pedig `Kozvetlen file:// futas`.
 
 A localhost csak fejlesztesi ellenorzeshez hasznalhato, es nem bizonyitja a \`file://\` kompatibilitast:
 
-\`\`\`powershell
+```powershell
 python -m http.server 4177 --bind 127.0.0.1
-\`\`\`
+```
 
 ## Tesztszintek
 
@@ -97,3 +103,4 @@ python -m http.server 4177 --bind 127.0.0.1
 - `smoke-fail`: validacios sikertelen parancs.
 - `blocked-log-required`: bizonyitja, hogy kotelezo, de nem begyujtott log mellett nincs PASS.
 - `browser-diagnostics-sample`: opcionlis minta; csak browser-diagnostics modul es projektlokalis Playwright mellett fut.
+- `m1-regression`: baseline szintaxis, JS-300, vegyes unit, duplicate-material, UNKNOWN capability es provenance regresszio.
