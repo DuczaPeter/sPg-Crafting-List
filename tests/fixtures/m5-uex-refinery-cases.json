@@ -1,0 +1,16 @@
+{
+  "wikiCommodities": [
+    { "uuid": "wiki-agricium", "name": "Agricium (Ore) (UnrefinedOres)", "kind": "UnrefinedOres" },
+    { "uuid": "wiki-unmapped", "name": "Fixture Unmapped (Ore) (UnrefinedOres)", "kind": "UnrefinedOres" },
+    { "uuid": "wiki-ambiguous", "name": "Fixture Ambiguous (Ore) (UnrefinedOres)", "kind": "UnrefinedOres" }
+  ],
+  "rawYields": [
+    { "id": 1, "id_commodity": 2, "commodity_name": "Agricium (Ore)", "id_star_system": 1, "star_system_name": "Stanton", "id_terminal": 10, "terminal_name": "MIC-L5", "value": 1, "value_week": 4, "value_month": 7, "date_modified": "2026-08-01T00:00:00Z" },
+    { "id": 2, "id_commodity": 2, "commodity_name": "Agricium (Ore)", "id_star_system": 1, "star_system_name": "Stanton", "id_terminal": 11, "terminal_name": "HUR-L1", "value": 9, "value_week": 5, "value_month": 7, "date_modified": "2026-08-02T00:00:00Z" },
+    { "id": 3, "id_commodity": 2, "commodity_name": "Agricium (Ore)", "id_star_system": 2, "star_system_name": "Pyro", "id_terminal": 12, "terminal_name": "Pyro Gateway", "value": 20, "value_week": 0, "value_month": 0, "date_modified": "2026-08-03T00:00:00Z" },
+    { "id": 4, "id_commodity": 2, "commodity_name": "Agricium (Ore)", "id_star_system": 3, "star_system_name": "Nyx", "id_terminal": 13, "terminal_name": "Levski", "value": 100, "value_week": -9, "value_month": -2, "date_modified": "2026-08-04T00:00:00Z" },
+    { "id": 5, "id_commodity": 2, "commodity_name": "Agricium (Ore)", "id_star_system": 3, "star_system_name": "Nyx", "id_terminal": 14, "terminal_name": "Nyx Gateway", "value": 1, "value_week": -1, "value_month": -6, "date_modified": "2026-08-05T00:00:00Z" },
+    { "id": 6, "id_commodity": 91, "commodity_name": "Fixture Ambiguous (Ore)", "id_star_system": 1, "star_system_name": "Stanton", "id_terminal": 15, "terminal_name": "A", "value": 0, "value_week": 0, "value_month": 1, "date_modified": "2026-08-06T00:00:00Z" },
+    { "id": 7, "id_commodity": 92, "commodity_name": "Fixture Ambiguous (Ore)", "id_star_system": 1, "star_system_name": "Stanton", "id_terminal": 16, "terminal_name": "B", "value": 0, "value_week": 0, "value_month": 2, "date_modified": "2026-08-07T00:00:00Z" }
+  ]
+}

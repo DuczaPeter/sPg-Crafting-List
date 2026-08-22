@@ -23,6 +23,11 @@
 - [x] Combined Materials az Allocation Engine kozvetlen projekciojakent, slot- es Quality-reszletek megorzesevel.
 - [x] Teljes User Data backup schema 2, read-only import preview, schema 1 migracio, automatikus snapshot es atomi rollback.
 - [x] Egyetlen muvelettel masolhato M1-M4 diagnosztikai csomag es 12 kotelezo M4 regresszios eset.
+- [x] Kulon UEX refinery raw/normalizalt cache napi TTL-lel, kezi frissitessel es tranzakcios rollbackkel.
+- [x] Biztonsagos Wiki–UEX exact mapping, MATCHED/UNMAPPED/AMBIGUOUS es USER_OVERRIDE adatmodell.
+- [x] `value_month` szerinti naprendszerenkenti rangsor, tie-, nulla- es negativ-ertek kezelessel.
+- [x] Kozos Crafting Card/Combined mining+refinery snapshot M6 offline export-elokeszitessel.
+- [x] Tizenhet kotelezo M5 regresszio, valos auth nelkuli UEX fetch es 12/12 helyi bongeszos technikai proba.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.
@@ -36,12 +41,15 @@
 - [x] M2: My Materials, Quality batch-ek es determinisztikus Allocation Engine.
 - [x] M3: mining adatok, location rangsor es loadoutok.
 - [x] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
+- [x] M5: UEX Refinery Data es naprendszerenkenti legjobb finomito.
+- [ ] M6: teljes standalone Crafting/Farm Card export, referencia-UI es vegso V1 regresszio.
 - [ ] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
 - [x] M1 ellenorzes futtatasa a `TEST_COMMANDS.md` alapjan.
 - [x] M1 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
 - [x] M2 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
 - [x] M3 `STATUS.md`, `WORKLOG.md` es jelentes frissitese.
 - [x] M4 `STATUS.md`, `WORKLOG.md`, `BACKUP_RESTORE.md` es jelentes frissitese.
+- [x] M5 `STATUS.md`, `WORKLOG.md`, technikai baseline es jelentes frissitese.
 
 ## Blokkolo problema
 

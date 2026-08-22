@@ -3555,6 +3555,115 @@ code {
   text-align: right;
 }
 
+/* M5 UEX Refinery cache, mapping and shared card snapshot. */
+
+.spg-m5-panel {
+  grid-column: 1 / -1;
+}
+
+.spg-refinery-toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.spg-refinery-toolbar label {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-refinery-toolbar label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spg-refinery-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-refinery-summary > div {
+  display: grid;
+  gap: 5px;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-refinery-summary span,
+.spg-refinery-terminal-list small,
+.spg-material-intelligence small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-refinery-system-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spg-refinery-system-heading > strong {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.spg-refinery-terminal-list,
+.spg-refinery-terminal-list > div {
+  display: grid;
+  gap: 5px;
+}
+
+.spg-refinery-terminal-list {
+  margin-top: 10px;
+}
+
+.spg-refinery-terminal-list > div {
+  padding-top: 9px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-material-intelligence {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.42);
+}
+
+.spg-material-intelligence > summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 700;
+}
+
+.spg-intelligence-meta {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-intelligence-row {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+}
+
+.spg-intelligence-refinery {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
 .spg-export-meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3592,6 +3701,10 @@ code {
   }
 
   .spg-mining-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-refinery-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -3641,9 +3754,11 @@ code {
   }
 
   .spg-mining-toolbar,
+  .spg-refinery-toolbar,
   .spg-loadout-toolbar,
   .spg-loadout-basics,
   .spg-mining-summary,
+  .spg-refinery-summary,
   .spg-system-ranking,
   .spg-gadget-row {
     grid-template-columns: 1fr;

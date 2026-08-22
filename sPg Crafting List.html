@@ -59,6 +59,7 @@
       <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
       <button id="myMaterialsNav" type="button">My Materials</button>
       <button id="miningNav" type="button">Mining &amp; Loadouts</button>
+      <button id="refineryNav" type="button">UEX Refinery</button>
       <button type="button" disabled>Material Database</button>
       <button type="button" disabled>Mining Loadouts</button>
       <button id="combinedMaterialsNav" type="button">Combined Materials</button>
@@ -263,6 +264,31 @@
         <p id="miningNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
       </section>
 
+      <section id="refineryPanel" class="panel spg-m5-panel" aria-labelledby="refineryTitle">
+        <div class="spg-section-heading">
+          <div>
+            <p class="eyebrow">M5 · külön UEX Game Data</p>
+            <h2 id="refineryTitle">UEX Refinery ajánló</h2>
+          </div>
+          <span id="refineryDatasetStatus" class="spg-badge spg-badge-neutral">Nincs aktív cache</span>
+        </div>
+        <div class="spg-refinery-toolbar">
+          <label>
+            <span>Wiki mining commodity</span>
+            <select id="refineryCommoditySelect">
+              <option value="">Nincs betöltött commodity</option>
+            </select>
+          </label>
+          <button id="syncRefineryDataButton" type="button">UEX adatok kézi frissítése</button>
+        </div>
+        <p id="refineryDataMeta" class="spg-muted">A UEX cache a Wiki Game Data-tól és a User Data-tól elkülönül; legfeljebb naponta frissül automatikusan.</p>
+        <div id="refineryMappingSummary" class="spg-refinery-summary" aria-live="polite"></div>
+        <div id="refineryRecommendation" class="spg-system-ranking" aria-live="polite">
+          <p class="spg-muted">Válassz commodityt a rendszerenkénti legjobb <code>value_month</code> refinery megjelenítéséhez.</p>
+        </div>
+        <p id="refineryNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+      </section>
+
       <section id="dataSettingsPanel" class="panel spg-m4-panel" aria-labelledby="dataSettingsTitle">
         <div class="spg-section-heading">
           <div>
@@ -305,8 +331,8 @@
 
         <div class="spg-diagnostics-card">
           <div>
-            <h3>M1–M4 diagnosztikai csomag</h3>
-            <p class="spg-muted">A meglévő „Log másolása” gomb az aktív cache-, fingerprint-, allocation-, Combined Materials- és backupállapotot is tartalmazza.</p>
+            <h3>M1–M5 diagnosztikai csomag</h3>
+            <p class="spg-muted">A „Log másolása” gomb az UEX kérés-, cache-, mapping-, ranking- és rollbackállapotot is tartalmazza.</p>
           </div>
           <div id="diagnosticsSummary" class="spg-diagnostics-summary"></div>
         </div>
@@ -329,7 +355,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tizenegy célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tizenkét célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -367,13 +393,14 @@
           <li><strong>M2:</strong> My Materials, Quality batch-ek, több Crafting Card és determinisztikus Allocation Engine.</li>
           <li><strong>M3:</strong> mining adatok, location rangsor és loadoutok.</li>
           <li><strong>M4:</strong> Combined Materials, backup és kibővített diagnosztika.</li>
-          <li><strong>M5:</strong> standalone export, teljes referencia-UI és elfogadási regresszió.</li>
+          <li><strong>M5:</strong> UEX Refinery Data, commodity mapping és rendszerenkénti ajánló.</li>
+          <li><strong>M6:</strong> standalone export, teljes referencia-UI és elfogadási regresszió.</li>
         </ol>
       </section>
     </main>
 
     <footer class="spg-app-footer">
-      <span>Adatforrás: Star Citizen Wiki API</span>
+      <span>Adatforrás: Star Citizen Wiki API · UEX Corp API</span>
       <span id="footerRuntime">V001-dev</span>
     </footer>
   </div>
@@ -385,11 +412,14 @@
     var APP = Object.freeze({
       name: "sPg Crafting List",
       version: "V001-dev",
-      schemaVersion: 5,
-      cacheSchemaVersion: 3,
+      schemaVersion: 6,
+      cacheSchemaVersion: 4,
       dbName: "spg-crafting-list",
-      dbVersion: 3,
+      dbVersion: 4,
       apiBase: "https://api.star-citizen.wiki/api",
+      uexRefineryEndpoint: "https://api.uexcorp.uk/2.0/refineries_yields",
+      uexRefineryTtlMs: 86400000,
+      uexRefineryDocumentedLimit: 500,
       sessionLogKey: "spgCraftingList.sessionLog.v1",
       maxLogProcesses: 30,
       maxLogBytes: 240000,
@@ -419,6 +449,9 @@
       miningRawCache: "cacheKey",
       miningNormalizedCache: "cacheKey",
       miningDatasets: "version",
+      uexRefineryRawCache: "cacheKey",
+      uexRefineryNormalizedCache: "cacheKey",
+      uexRefineryDatasets: "datasetId",
       userInventory: "id",
       materialBatches: "id",
       userLoadouts: "id",
@@ -450,6 +483,15 @@
       miningSystems: [],
       activeMiningDataset: null,
       miningDatasetSyncing: false,
+      activeUexRefineryDataset: null,
+      uexRefineryRecords: [],
+      uexCommodityMappings: [],
+      uexRefineryRecommendations: new Map(),
+      uexRefineryDatasetSyncing: false,
+      selectedRefineryCommodityUuid: null,
+      refineryLastSyncResult: null,
+      materialIntelligenceByWikiUuid: new Map(),
+      requirementCommodityUuidBySlotId: new Map(),
       selectedMiningCommodity: null,
       miningLoadouts: [],
       selectedMiningLoadoutId: null,
@@ -988,6 +1030,79 @@
         });
       }
 
+      commitUexRefineryDataset(payload) {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction([
+            "syncStaging",
+            "gameMetadata",
+            "uexRefineryDatasets",
+            "uexRefineryRawCache",
+            "uexRefineryNormalizedCache"
+          ], "readwrite");
+          var stageStore = transaction.objectStore("syncStaging");
+          var metadataStore = transaction.objectStore("gameMetadata");
+          var datasetStore = transaction.objectStore("uexRefineryDatasets");
+          var rawStore = transaction.objectStore("uexRefineryRawCache");
+          var normalizedStore = transaction.objectStore("uexRefineryNormalizedCache");
+          var stageKey = "uexRefineryDatasetCandidate:" + payload.datasetId;
+          var abortReason = null;
+          stageStore.put({
+            key: stageKey,
+            status: "COMMITTING",
+            datasetId: payload.datasetId,
+            startedAt: payload.fetchedAt,
+            recordCount: payload.normalizedRecords.length
+          });
+          rawStore.clear();
+          normalizedStore.clear();
+          datasetStore.clear();
+          payload.rawRecords.forEach(function (record) { rawStore.put(record); });
+          payload.normalizedRecords.forEach(function (record) { normalizedStore.put(record); });
+          var dataset = {
+            datasetId: payload.datasetId,
+            status: "ACTIVE",
+            cacheSchemaVersion: APP.cacheSchemaVersion,
+            source: "UEX",
+            sourceUrl: APP.uexRefineryEndpoint,
+            endpoint: APP.uexRefineryEndpoint,
+            responseStatus: payload.responseStatus,
+            responseHttpCode: payload.responseHttpCode,
+            recordCount: payload.normalizedRecords.length,
+            uexCommodityCount: payload.uexCommodityCount,
+            systemCount: payload.systemCount,
+            terminalCount: payload.terminalCount,
+            limitWarning: payload.limitWarning === true,
+            fetchedAt: payload.fetchedAt,
+            expiresAt: payload.expiresAt,
+            activatedAt: nowIso(),
+            scVersion: payload.scVersion || null
+          };
+          datasetStore.put(dataset);
+          metadataStore.put({
+            key: "activeUexRefineryDataset",
+            value: { datasetId: dataset.datasetId, activatedAt: dataset.activatedAt },
+            updatedAt: dataset.activatedAt
+          });
+          stageStore.delete(stageKey);
+          transaction.oncomplete = function () { resolve(dataset); };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A UEX Refinery Game Data tranzakció visszagörgetve."));
+          };
+          if (payload.simulateFailure) {
+            abortReason = new Error("Szimulált UEX dataset commit-hiba.");
+            transaction.abort();
+          }
+        });
+      }
+
       putMiningDetail(rawRecord, normalizedRecord) {
         var self = this;
         return new Promise(function (resolve, reject) {
@@ -1460,6 +1575,86 @@
           throw new Error("A vehicle detail API sémája nem felismerhető.");
         }
         return response.data;
+      }
+    }
+
+    class UEXAdapter {
+      constructor(logger) {
+        this.logger = logger;
+      }
+
+      async getRefineryYields(options) {
+        var settings = options || {};
+        var attempts = settings.attempts || 2;
+        var lastError = null;
+        for (var attempt = 1; attempt <= attempts; attempt += 1) {
+          var controller = new AbortController();
+          var timeout = window.setTimeout(function () { controller.abort(); }, APP.requestTimeoutMs);
+          var started = performance.now();
+          this.logger.event("INFO", "UEX_REQUEST_START", "UEX refinery-yield kérés indult.", {
+            endpoint: APP.uexRefineryEndpoint,
+            attempt: attempt,
+            authorizationHeader: false,
+            paginationRequested: false
+          });
+          try {
+            var response = await fetch(APP.uexRefineryEndpoint, {
+              method: "GET",
+              headers: { "Accept": "application/json" },
+              signal: controller.signal,
+              cache: "no-store",
+              credentials: "omit"
+            });
+            var durationMs = Math.round(performance.now() - started);
+            var text = await response.text();
+            var envelope;
+            try {
+              envelope = text ? JSON.parse(text) : null;
+            } catch (parseError) {
+              throw new Error("A UEX válasz nem érvényes JSON.");
+            }
+            var recordCount = envelope && Array.isArray(envelope.data) ? envelope.data.length : 0;
+            this.logger.event(response.ok ? "INFO" : "ERROR", "UEX_REQUEST_END", "UEX refinery-yield kérés lezárult.", {
+              endpoint: APP.uexRefineryEndpoint,
+              status: response.status,
+              durationMs: durationMs,
+              recordCount: recordCount,
+              cacheControl: response.headers.get("cache-control"),
+              authorizationHeader: false
+            });
+            if (!response.ok) {
+              var httpError = new Error("UEX HTTP " + response.status);
+              httpError.status = response.status;
+              throw httpError;
+            }
+            if (!envelope || !Array.isArray(envelope.data)) {
+              throw new Error("A UEX refineries_yields séma nem felismerhető: data[] hiányzik.");
+            }
+            return {
+              envelope: envelope,
+              records: envelope.data,
+              httpStatus: response.status,
+              durationMs: durationMs,
+              cacheControl: response.headers.get("cache-control")
+            };
+          } catch (error) {
+            lastError = error;
+            var retryable = error.name === "AbortError" || !error.status || error.status === 429 || error.status >= 500;
+            this.logger.event(retryable ? "WARN" : "ERROR", "UEX_REQUEST_FAILED", "UEX refinery-yield kérés sikertelen.", {
+              endpoint: APP.uexRefineryEndpoint,
+              attempt: attempt,
+              retryable: retryable,
+              error: serializeError(error)
+            });
+            if (!retryable || attempt === attempts) {
+              throw error;
+            }
+            await new Promise(function (resolve) { window.setTimeout(resolve, 350 * attempt); });
+          } finally {
+            window.clearTimeout(timeout);
+          }
+        }
+        throw lastError || new Error("Ismeretlen UEX API-hiba.");
       }
     }
 
@@ -2927,10 +3122,14 @@
               blueprints: [],
               recipeSlots: [],
               qualityRules: [],
-              usages: []
+              usages: [],
+              materialIntelligence: requirement.materialIntelligence ? m4Clone(requirement.materialIntelligence) : null
             });
           }
           var group = groups.get(key);
+          if (!group.materialIntelligence && requirement.materialIntelligence) {
+            group.materialIntelligence = m4Clone(requirement.materialIntelligence);
+          }
           var missingUnits = Math.max(0, Number(requirement.requiredUnits || 0) - Number(requirement.allocatedUnits || 0));
           var usage = {
             cardId: cardResult.cardId,
@@ -2948,7 +3147,8 @@
             missingAmountUnits: requirement.missingAmountUnits,
             missingQualityUnits: requirement.missingQualityUnits,
             status: requirement.status,
-            allocatedBatches: m4Clone(requirement.allocatedBatches || [])
+            allocatedBatches: m4Clone(requirement.allocatedBatches || []),
+            refinerySnapshotFingerprint: requirement.materialIntelligence ? requirement.materialIntelligence.refinerySnapshotFingerprint : null
           };
           group.requiredUnits += Number(usage.requiredUnits || 0);
           group.reservedUnits += Number(usage.reservedUnits || 0);
@@ -2987,6 +3187,281 @@
     }
     /* M4_COMBINED_BACKUP_MODEL_END */
 
+    /* M5_UEX_REFINERY_MODEL_START */
+    var M5_MAPPING_STATUS = Object.freeze({
+      MATCHED: "MATCHED",
+      UNMAPPED: "UNMAPPED",
+      AMBIGUOUS: "AMBIGUOUS"
+    });
+
+    function m5FiniteNumber(value) {
+      if (value === null || value === undefined || value === "") {
+        return null;
+      }
+      var number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function uexDatasetAgeMs(dataset, referenceTime) {
+      var fetched = dataset && Date.parse(dataset.fetchedAt);
+      var current = referenceTime === undefined ? Date.now() : Number(referenceTime);
+      return Number.isFinite(fetched) ? Math.max(0, current - fetched) : Infinity;
+    }
+
+    function isUexDatasetFresh(dataset, referenceTime) {
+      return uexDatasetAgeMs(dataset, referenceTime) < APP.uexRefineryTtlMs;
+    }
+
+    function hasUexLimitWarning(recordCount) {
+      return Number(recordCount) === APP.uexRefineryDocumentedLimit;
+    }
+
+    function normalizeCommodityMappingName(name, wikiKind) {
+      var value = String(name || "").trim();
+      var kind = String(wikiKind || "").trim();
+      if (kind) {
+        var suffix = " (" + kind + ")";
+        if (value.toLocaleLowerCase("en-US").endsWith(suffix.toLocaleLowerCase("en-US"))) {
+          value = value.slice(0, -suffix.length).trim();
+        }
+      }
+      var structuralWikiSuffix = value.match(/\s+\((UnrefinedOres|Raw_Minerals)\)$/i);
+      if (structuralWikiSuffix) {
+        value = value.slice(0, -structuralWikiSuffix[0].length).trim();
+      }
+      return value.normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("en-US")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function normalizeUexTimestamp(value) {
+      if (value === null || value === undefined || value === "") {
+        return null;
+      }
+      var numeric = Number(value);
+      var date = Number.isFinite(numeric)
+        ? new Date(numeric < 100000000000 ? numeric * 1000 : numeric)
+        : new Date(value);
+      return Number.isNaN(date.getTime()) ? String(value) : date.toISOString();
+    }
+
+    function normalizeUexRefineryYield(raw, context, index) {
+      if (!raw || raw.id_commodity === null || raw.id_commodity === undefined || !raw.commodity_name) {
+        throw new TypeError("A UEX refinery-yield rekordból hiányzik a commodity azonosító vagy név.");
+      }
+      var valueMonth = m5FiniteNumber(raw.value_month);
+      if (valueMonth === null) {
+        throw new TypeError("A UEX refinery-yield rekord value_month mezője nem szám.");
+      }
+      var datasetId = context.datasetId;
+      var recordId = raw.id === null || raw.id === undefined ? String(index) : String(raw.id);
+      var terminalId = raw.id_terminal === null || raw.id_terminal === undefined ? null : String(raw.id_terminal);
+      return {
+        cacheKey: datasetId + "::yield::" + recordId + "::" + index,
+        datasetId: datasetId,
+        recordType: "UEX_REFINERY_YIELD",
+        id: recordId,
+        uexCommodityId: String(raw.id_commodity),
+        uexCommodityName: String(raw.commodity_name),
+        starSystemId: raw.id_star_system === null || raw.id_star_system === undefined ? null : String(raw.id_star_system),
+        starSystemName: String(raw.star_system_name || "UNKNOWN"),
+        terminalId: terminalId,
+        terminalName: String(raw.terminal_name || (terminalId ? "Terminal " + terminalId : "Ismeretlen refinery")),
+        reportId: raw.id_report === null || raw.id_report === undefined ? null : String(raw.id_report),
+        value: m5FiniteNumber(raw.value),
+        valueWeek: m5FiniteNumber(raw.value_week),
+        valueMonth: valueMonth,
+        dateAdded: normalizeUexTimestamp(raw.date_added),
+        dateModified: normalizeUexTimestamp(raw.date_modified),
+        provenance: {
+          dataSource: "UEX",
+          source: "UEX",
+          sourceUrl: APP.uexRefineryEndpoint,
+          fetchedAt: context.fetchedAt,
+          modifiedAt: normalizeUexTimestamp(raw.date_modified),
+          uexCommodityId: String(raw.id_commodity),
+          starSystemId: raw.id_star_system === null || raw.id_star_system === undefined ? null : String(raw.id_star_system),
+          starSystemName: String(raw.star_system_name || "UNKNOWN"),
+          terminalId: terminalId,
+          terminalName: String(raw.terminal_name || (terminalId ? "Terminal " + terminalId : "Ismeretlen refinery")),
+          rankingField: "value_month",
+          rankingValue: valueMonth,
+          origin: "API"
+        }
+      };
+    }
+
+    function buildCommodityMappings(wikiCommodities, uexRecords, overrides) {
+      var uexCommoditiesById = new Map();
+      (uexRecords || []).forEach(function (record) {
+        if (!uexCommoditiesById.has(record.uexCommodityId)) {
+          uexCommoditiesById.set(record.uexCommodityId, {
+            id: record.uexCommodityId,
+            name: record.uexCommodityName,
+            normalizedName: normalizeCommodityMappingName(record.uexCommodityName)
+          });
+        }
+      });
+      var uexByNormalizedName = new Map();
+      uexCommoditiesById.forEach(function (commodity) {
+        if (!uexByNormalizedName.has(commodity.normalizedName)) {
+          uexByNormalizedName.set(commodity.normalizedName, []);
+        }
+        uexByNormalizedName.get(commodity.normalizedName).push(commodity);
+      });
+      var overridesByWikiUuid = new Map();
+      (overrides || []).forEach(function (override) {
+        if (override && override.wikiCommodityUuid) {
+          overridesByWikiUuid.set(String(override.wikiCommodityUuid), override);
+        }
+      });
+      return (wikiCommodities || []).map(function (wiki) {
+        var wikiUuid = String(wiki.uuid);
+        var wikiNormalizedName = normalizeCommodityMappingName(wiki.name, wiki.kind);
+        var override = overridesByWikiUuid.get(wikiUuid);
+        if (override) {
+          var overridden = uexCommoditiesById.get(String(override.uexCommodityId)) || (override.uexCommodityId && override.uexCommodityName ? {
+            id: String(override.uexCommodityId),
+            name: String(override.uexCommodityName),
+            normalizedName: normalizeCommodityMappingName(override.uexCommodityName)
+          } : null);
+          if (overridden) {
+            return {
+              wikiCommodityUuid: wikiUuid,
+              wikiCommodityName: wiki.name,
+              wikiKind: wiki.kind || null,
+              normalizedWikiName: wikiNormalizedName,
+              status: M5_MAPPING_STATUS.MATCHED,
+              origin: "USER_OVERRIDE",
+              uexCommodityId: overridden.id,
+              uexCommodityName: overridden.name,
+              candidateCount: 1,
+              candidates: [overridden]
+            };
+          }
+          return {
+            wikiCommodityUuid: wikiUuid,
+            wikiCommodityName: wiki.name,
+            wikiKind: wiki.kind || null,
+            normalizedWikiName: wikiNormalizedName,
+            status: M5_MAPPING_STATUS.UNMAPPED,
+            origin: "USER_OVERRIDE_INVALID",
+            uexCommodityId: null,
+            uexCommodityName: null,
+            candidateCount: 0,
+            candidates: []
+          };
+        }
+        var candidates = (uexByNormalizedName.get(wikiNormalizedName) || []).slice().sort(function (a, b) {
+          return a.name.localeCompare(b.name, "en") || a.id.localeCompare(b.id);
+        });
+        return {
+          wikiCommodityUuid: wikiUuid,
+          wikiCommodityName: wiki.name,
+          wikiKind: wiki.kind || null,
+          normalizedWikiName: wikiNormalizedName,
+          status: candidates.length === 1 ? M5_MAPPING_STATUS.MATCHED : (candidates.length ? M5_MAPPING_STATUS.AMBIGUOUS : M5_MAPPING_STATUS.UNMAPPED),
+          origin: candidates.length === 1 ? "AUTO_NORMALIZED_EXACT" : "NONE",
+          uexCommodityId: candidates.length === 1 ? candidates[0].id : null,
+          uexCommodityName: candidates.length === 1 ? candidates[0].name : null,
+          candidateCount: candidates.length,
+          candidates: candidates
+        };
+      }).sort(function (a, b) {
+        return a.wikiCommodityName.localeCompare(b.wikiCommodityName, "hu") || a.wikiCommodityUuid.localeCompare(b.wikiCommodityUuid);
+      });
+    }
+
+    function rankUexRefineriesBySystem(records) {
+      var groups = new Map();
+      (records || []).forEach(function (record) {
+        var key = record.starSystemId || "name:" + record.starSystemName;
+        if (!groups.has(key)) {
+          groups.set(key, { starSystemId: record.starSystemId, starSystemName: record.starSystemName, records: [] });
+        }
+        groups.get(key).records.push(record);
+      });
+      return Array.from(groups.values()).map(function (group) {
+        var bestValue = Math.max.apply(Math, group.records.map(function (record) { return record.valueMonth; }));
+        var terminals = group.records.filter(function (record) {
+          return record.valueMonth === bestValue;
+        }).sort(function (a, b) {
+          return a.terminalName.localeCompare(b.terminalName, "en") || String(a.terminalId).localeCompare(String(b.terminalId));
+        }).map(function (record) {
+          return {
+            terminalId: record.terminalId,
+            terminalName: record.terminalName,
+            valueMonth: record.valueMonth,
+            dateModified: record.dateModified,
+            provenance: m4Clone(record.provenance)
+          };
+        });
+        return {
+          starSystemId: group.starSystemId,
+          starSystemName: group.starSystemName,
+          status: "AVAILABLE",
+          rankingField: "value_month",
+          rankingValue: bestValue,
+          tieCount: terminals.length,
+          terminals: terminals
+        };
+      }).sort(function (a, b) {
+        return a.starSystemName.localeCompare(b.starSystemName, "en") || String(a.starSystemId).localeCompare(String(b.starSystemId));
+      });
+    }
+
+    function buildUexRefineryRecommendations(mappings, records, dataset) {
+      var recordsByCommodity = new Map();
+      (records || []).forEach(function (record) {
+        if (!recordsByCommodity.has(record.uexCommodityId)) {
+          recordsByCommodity.set(record.uexCommodityId, []);
+        }
+        recordsByCommodity.get(record.uexCommodityId).push(record);
+      });
+      return (mappings || []).map(function (mapping) {
+        var commodityRecords = mapping.status === M5_MAPPING_STATUS.MATCHED
+          ? (recordsByCommodity.get(mapping.uexCommodityId) || [])
+          : [];
+        var systems = commodityRecords.length ? rankUexRefineriesBySystem(commodityRecords) : [];
+        var status = mapping.status !== M5_MAPPING_STATUS.MATCHED
+          ? "MAPPING_UNRESOLVED"
+          : (systems.length ? "AVAILABLE" : "NO_REFINERY_DATA");
+        return {
+          wikiCommodityUuid: mapping.wikiCommodityUuid,
+          wikiCommodityName: mapping.wikiCommodityName,
+          mapping: m4Clone(mapping),
+          status: status,
+          source: "UEX",
+          sourceUrl: APP.uexRefineryEndpoint,
+          datasetId: dataset ? dataset.datasetId : null,
+          fetchedAt: dataset ? dataset.fetchedAt : null,
+          expiresAt: dataset ? dataset.expiresAt : null,
+          scVersion: dataset ? dataset.scVersion : null,
+          rankingField: "value_month",
+          systems: systems,
+          snapshotFingerprint: m4FingerprintText(JSON.stringify(m4Canonicalize({
+            mapping: mapping,
+            systems: systems,
+            datasetId: dataset ? dataset.datasetId : null
+          })))
+        };
+      });
+    }
+
+    function summarizeUexMappings(mappings) {
+      return (mappings || []).reduce(function (summary, mapping) {
+        summary.total += 1;
+        summary[mapping.status] += 1;
+        if (mapping.origin === "USER_OVERRIDE") { summary.USER_OVERRIDE += 1; }
+        if (mapping.origin === "USER_OVERRIDE_INVALID") { summary.INVALID_OVERRIDE += 1; }
+        return summary;
+      }, { total: 0, MATCHED: 0, UNMAPPED: 0, AMBIGUOUS: 0, USER_OVERRIDE: 0, INVALID_OVERRIDE: 0 });
+    }
+    /* M5_UEX_REFINERY_MODEL_END */
+
     function compareLocations(a, b) {
       function sortable(value) {
         var number = Number(value);
@@ -3007,6 +3482,7 @@
     var database = new AppDatabase();
     var userDataRepository = new UserDataRepository(database);
     var api = new SCWikiAdapter(logger);
+    var uexApi = new UEXAdapter(logger);
 
     function setText(id, value) {
       var element = document.getElementById(id);
@@ -3240,6 +3716,9 @@
           await loadMiningIndexFromCache(version);
           populateMiningCommoditySelect();
           renderMiningDatasetState();
+          if (state.activeUexRefineryDataset) {
+            await rebuildUexRefineryProjection("MINING_CACHE_RELOAD");
+          }
           if (ownsProcess) {
             logger.finish("PASS", { origin: "CACHE", version: version, commodityCount: state.miningCommodityIndex.length });
           }
@@ -3328,6 +3807,9 @@
         await loadMiningIndexFromCache(version);
         populateMiningCommoditySelect();
         renderMiningDatasetState();
+        if (state.activeUexRefineryDataset) {
+          await rebuildUexRefineryProjection("MINING_DATASET_SYNC");
+        }
         logger.event("INFO", "MINING_DATASET_ACTIVATED", "A Mining Game Data tranzakciósan aktiválva.", {
           version: version,
           commodityCount: commodityRecords.length,
@@ -3415,6 +3897,7 @@
         }),
         origin: origin
       });
+      await refreshMaterialIntelligenceSnapshots("MINING_DETAIL_CACHE");
       return normalized;
     }
 
@@ -3436,6 +3919,476 @@
         document.getElementById("miningCommoditySelect").value = candidate.uuid;
         return null;
       }
+    }
+
+    function currentUexMappingOverrides() {
+      return (state.userSettings || []).filter(function (record) {
+        return record && String(record.key || "").indexOf("user:uexCommodityMapping:") === 0;
+      }).map(function (record) {
+        var value = record.value && typeof record.value === "object" ? record.value : {};
+        return {
+          wikiCommodityUuid: value.wikiCommodityUuid || String(record.key).slice("user:uexCommodityMapping:".length),
+          uexCommodityId: value.uexCommodityId,
+          uexCommodityName: value.uexCommodityName || null,
+          updatedAt: record.updatedAt || null
+        };
+      });
+    }
+
+    function populateRefineryCommoditySelect() {
+      var select = document.getElementById("refineryCommoditySelect");
+      var selected = state.selectedRefineryCommodityUuid || select.value;
+      select.replaceChildren();
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = state.uexCommodityMappings.length ? "Válassz commodityt" : "Nincs betöltött commodity";
+      select.append(empty);
+      state.uexCommodityMappings.forEach(function (mapping) {
+        var option = document.createElement("option");
+        option.value = mapping.wikiCommodityUuid;
+        option.textContent = mapping.wikiCommodityName + " · " + mapping.status;
+        select.append(option);
+      });
+      if (state.uexCommodityMappings.some(function (mapping) { return mapping.wikiCommodityUuid === selected; })) {
+        select.value = selected;
+      } else {
+        var firstMatched = state.uexCommodityMappings.find(function (mapping) { return mapping.status === M5_MAPPING_STATUS.MATCHED; });
+        select.value = firstMatched ? firstMatched.wikiCommodityUuid : "";
+      }
+      state.selectedRefineryCommodityUuid = select.value || null;
+    }
+
+    function formatRefineryBonus(value) {
+      var number = Number(value);
+      return (number > 0 ? "+" : "") + number.toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + "%";
+    }
+
+    function setRefineryNotice(message, tone) {
+      var notice = document.getElementById("refineryNotice");
+      notice.textContent = message || "";
+      notice.dataset.tone = tone || "neutral";
+    }
+
+    function renderRefineryRecommendation() {
+      var container = document.getElementById("refineryRecommendation");
+      container.replaceChildren();
+      var recommendation = state.selectedRefineryCommodityUuid
+        ? state.uexRefineryRecommendations.get(state.selectedRefineryCommodityUuid)
+        : null;
+      if (!recommendation) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Válassz commodityt a refinery ajánlóhoz.";
+        container.append(empty);
+        return;
+      }
+      if (recommendation.status === "MAPPING_UNRESOLVED") {
+        var unresolved = document.createElement("article");
+        unresolved.className = "spg-system-card";
+        unresolved.innerHTML = "<h3>Mapping nem oldható fel biztonságosan</h3><p class=\"spg-muted\">" +
+          escapeHtml(recommendation.mapping.status + " · nincs fuzzy egyezés vagy találgatás") + "</p>";
+        container.append(unresolved);
+        return;
+      }
+      if (recommendation.status === "NO_REFINERY_DATA") {
+        var noData = document.createElement("article");
+        noData.className = "spg-system-card";
+        noData.innerHTML = "<h3>Nincs refinery adat</h3><p class=\"spg-muted\">A mapping sikeres, de ehhez a UEX commodityhoz nincs yield rekord.</p>";
+        container.append(noData);
+        return;
+      }
+      recommendation.systems.forEach(function (system) {
+        var article = document.createElement("article");
+        article.className = "spg-system-card spg-refinery-system-card";
+        var heading = document.createElement("div");
+        heading.className = "spg-refinery-system-heading";
+        var title = document.createElement("h3");
+        title.textContent = system.starSystemName;
+        var bonus = document.createElement("strong");
+        bonus.textContent = formatRefineryBonus(system.rankingValue);
+        heading.append(title, bonus);
+        var terminalList = document.createElement("div");
+        terminalList.className = "spg-refinery-terminal-list";
+        system.terminals.forEach(function (terminal) {
+          var row = document.createElement("div");
+          var name = document.createElement("strong");
+          name.textContent = terminal.terminalName;
+          var provenance = document.createElement("small");
+          provenance.textContent = "UEX terminal " + (terminal.terminalId || "?") + " · value_month " + formatRefineryBonus(terminal.valueMonth) + " · módosítva " + formatTimestamp(terminal.dateModified);
+          row.append(name, provenance);
+          terminalList.append(row);
+        });
+        var tie = document.createElement("p");
+        tie.className = "spg-muted";
+        tie.textContent = system.tieCount > 1 ? system.tieCount + " azonos legjobb refinery" : "Egyetlen legjobb refinery";
+        article.append(heading, terminalList, tie);
+        container.append(article);
+      });
+      document.body.dataset.refinerySelectedCommodity = recommendation.wikiCommodityUuid;
+      document.body.dataset.refinerySelectedStatus = recommendation.status;
+      document.body.dataset.refinerySelectedSystemCount = String(recommendation.systems.length);
+    }
+
+    function renderRefineryDatasetState() {
+      var dataset = state.activeUexRefineryDataset;
+      var badge = document.getElementById("refineryDatasetStatus");
+      if (state.uexRefineryDatasetSyncing) {
+        setBadge(badge, "PENDING", "Szinkron folyamatban");
+      } else if (dataset) {
+        setBadge(badge, dataset.limitWarning ? "FAIL" : "PASS", dataset.recordCount + " yield rekord");
+      } else {
+        setBadge(badge, "NEUTRAL", "Nincs aktív cache");
+      }
+      var ageHours = dataset ? uexDatasetAgeMs(dataset) / 3600000 : null;
+      setText("refineryDataMeta", dataset
+        ? dataset.recordCount + " rekord · " + dataset.uexCommodityCount + " UEX commodity · " + dataset.systemCount + " rendszer · cache kor " + ageHours.toLocaleString("hu-HU", { maximumFractionDigits: 1 }) + " óra" + (dataset.limitWarning ? " · FIGYELEM: elérte a dokumentált 500 rekordos limitet" : "")
+        : "A UEX cache a Wiki Game Data-tól és a User Data-tól elkülönül; legfeljebb naponta frissül automatikusan.");
+      var summary = summarizeUexMappings(state.uexCommodityMappings);
+      var mappingSummary = document.getElementById("refineryMappingSummary");
+      mappingSummary.replaceChildren();
+      [["Wiki commodity", summary.total], ["Matched", summary.MATCHED], ["Unmapped", summary.UNMAPPED], ["Ambiguous", summary.AMBIGUOUS], ["User override", summary.USER_OVERRIDE]].forEach(function (value) {
+        var item = document.createElement("div");
+        item.innerHTML = "<span>" + escapeHtml(value[0]) + "</span><strong>" + escapeHtml(value[1]) + "</strong>";
+        mappingSummary.append(item);
+      });
+      document.body.dataset.uexRefineryDatasetId = dataset ? dataset.datasetId : "";
+      document.body.dataset.uexRefineryRecordCount = String(state.uexRefineryRecords.length);
+      document.body.dataset.uexMappingMatched = String(summary.MATCHED);
+      document.body.dataset.uexMappingUnmapped = String(summary.UNMAPPED);
+      document.body.dataset.uexMappingAmbiguous = String(summary.AMBIGUOUS);
+      populateRefineryCommoditySelect();
+      renderRefineryRecommendation();
+    }
+
+    async function refreshMaterialIntelligenceSnapshots(trigger) {
+      var detailRecords = state.dbReady ? (await database.getAll("miningNormalizedCache")).filter(function (record) {
+        return record.recordType === "COMMODITY_DETAIL";
+      }) : [];
+      var blueprintDetails = state.dbReady ? await database.getAll("blueprintNormalizedCache") : [];
+      var slotCommodityMap = new Map();
+      blueprintDetails.forEach(function (blueprint) {
+        (blueprint.recipeSlots || []).forEach(function (slot) {
+          var commodityUuid = slot.ingredient && slot.ingredient.commodityUuid;
+          if (slot.id && commodityUuid) {
+            slotCommodityMap.set(slot.id, commodityUuid);
+          }
+        });
+      });
+      state.requirementCommodityUuidBySlotId = slotCommodityMap;
+      var detailsByUuid = new Map(detailRecords.map(function (record) { return [record.uuid, record]; }));
+      var intelligence = new Map();
+      state.miningCommodityIndex.forEach(function (commodity) {
+        var detail = detailsByUuid.get(commodity.uuid) || null;
+        var refinery = state.uexRefineryRecommendations.get(commodity.uuid) || {
+          wikiCommodityUuid: commodity.uuid,
+          wikiCommodityName: commodity.name,
+          status: "MAPPING_UNRESOLVED",
+          mapping: { status: M5_MAPPING_STATUS.UNMAPPED, origin: "NONE" },
+          systems: [],
+          rankingField: "value_month",
+          datasetId: state.activeUexRefineryDataset ? state.activeUexRefineryDataset.datasetId : null
+        };
+        intelligence.set(commodity.uuid, {
+          snapshotSchemaVersion: 1,
+          generatedFor: "M6_STANDALONE_EXPORT",
+          commodityUuid: commodity.uuid,
+          commodityName: commodity.name,
+          scVersion: state.gameVersion ? state.gameVersion.code : null,
+          mining: {
+            status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
+            radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
+            methods: (detail ? detail.categories : commodity.categories).slice(),
+            systems: detail ? mergeBestMiningLocationsBySystem(detail.locations, state.miningSystems) : [],
+            locationRecordCount: detail ? detail.locations.length : 0,
+            source: detail ? m4Clone(detail.provenance) : m4Clone(commodity.provenance)
+          },
+          loadouts: state.miningLoadouts.filter(function (loadout) {
+            return loadout.materialUuid === commodity.uuid;
+          }).map(function (loadout) {
+            return { id: loadout.id, name: loadout.name, default: loadout.isDefault === true };
+          }),
+          refinery: m4Clone(refinery),
+          refinerySnapshotFingerprint: refinery.snapshotFingerprint || null
+        });
+      });
+      state.materialIntelligenceByWikiUuid = intelligence;
+      if (state.userDataReady) {
+        recalculateAllocation(trigger || "M5_SNAPSHOT_REFRESH");
+      }
+      return intelligence;
+    }
+
+    async function ensureCraftingCardMiningDetails() {
+      if (!state.activeMiningDataset || !navigator.onLine || !state.craftingCards.length) {
+        return { requested: 0, loaded: 0 };
+      }
+      if (!state.requirementCommodityUuidBySlotId.size) {
+        await refreshMaterialIntelligenceSnapshots("CARD_DETAIL_RESOLUTION");
+      }
+      var requestedCommodityUuids = Array.from(new Set(state.craftingCards.reduce(function (uuids, card) {
+        (card.requirements || []).forEach(function (requirement) {
+          var commodityUuid = requirement.commodityUuid || state.requirementCommodityUuidBySlotId.get(requirement.id);
+          if (commodityUuid && state.miningCommodityIndex.some(function (commodity) { return commodity.uuid === commodityUuid; })) {
+            uuids.push(commodityUuid);
+          }
+        });
+        return uuids;
+      }, [])));
+      var cachedDetails = (await database.getAll("miningNormalizedCache")).filter(function (record) {
+        return record.recordType === "COMMODITY_DETAIL";
+      });
+      var cachedUuids = new Set(cachedDetails.map(function (record) { return record.uuid; }));
+      var missingUuids = requestedCommodityUuids.filter(function (uuid) { return !cachedUuids.has(uuid); });
+      var version = state.activeMiningDataset.version;
+      var loaded = await Promise.all(missingUuids.map(async function (uuid) {
+        var raw = await api.getCommodity(uuid, version);
+        var fetchedAt = nowIso();
+        var normalized = normalizeMiningCommodity(raw, miningProvenance(version, APP.apiBase + "/commodities/" + encodeURIComponent(uuid), fetchedAt));
+        normalized.recordType = "COMMODITY_DETAIL";
+        await database.putMiningDetail({
+          cacheKey: version + "::raw::commodity-detail::" + raw.uuid,
+          version: version,
+          recordType: "RAW_COMMODITY_DETAIL",
+          endpoint: APP.apiBase + "/commodities/" + encodeURIComponent(uuid),
+          fetchedAt: fetchedAt,
+          raw: raw
+        }, normalized);
+        return normalized;
+      }));
+      logger.event("INFO", "CARD_MINING_DETAILS_LAZY_LOADED", "A Crafting Cardok mining részletei igény szerint betöltődtek.", {
+        requestedCommodityCount: requestedCommodityUuids.length,
+        cacheHitCount: requestedCommodityUuids.length - missingUuids.length,
+        apiLoadCount: loaded.length,
+        commodityUuids: requestedCommodityUuids
+      });
+      await refreshMaterialIntelligenceSnapshots("CARD_MINING_DETAILS_READY");
+      return { requested: requestedCommodityUuids.length, loaded: loaded.length };
+    }
+
+    async function rebuildUexRefineryProjection(trigger) {
+      state.uexCommodityMappings = buildCommodityMappings(state.miningCommodityIndex, state.uexRefineryRecords, currentUexMappingOverrides());
+      var recommendations = buildUexRefineryRecommendations(state.uexCommodityMappings, state.uexRefineryRecords, state.activeUexRefineryDataset);
+      state.uexRefineryRecommendations = new Map(recommendations.map(function (recommendation) {
+        return [recommendation.wikiCommodityUuid, recommendation];
+      }));
+      if (!state.selectedRefineryCommodityUuid || !state.uexRefineryRecommendations.has(state.selectedRefineryCommodityUuid)) {
+        var preferred = state.uexCommodityMappings.find(function (mapping) { return /^Agricium\b/i.test(mapping.wikiCommodityName) && mapping.status === M5_MAPPING_STATUS.MATCHED; }) ||
+          state.uexCommodityMappings.find(function (mapping) { return mapping.status === M5_MAPPING_STATUS.MATCHED; }) || state.uexCommodityMappings[0];
+        state.selectedRefineryCommodityUuid = preferred ? preferred.wikiCommodityUuid : null;
+      }
+      await refreshMaterialIntelligenceSnapshots(trigger || "UEX_PROJECTION_REBUILD");
+      renderRefineryDatasetState();
+      var mappingSummary = summarizeUexMappings(state.uexCommodityMappings);
+      var systemGroupCount = recommendations.reduce(function (sum, recommendation) { return sum + recommendation.systems.length; }, 0);
+      var tieGroupCount = recommendations.reduce(function (sum, recommendation) {
+        return sum + recommendation.systems.filter(function (system) { return system.tieCount > 1; }).length;
+      }, 0);
+      logger.event(mappingSummary.UNMAPPED || mappingSummary.AMBIGUOUS ? "WARN" : "INFO", "UEX_MAPPING_AND_RANKING", "A UEX commodity mapping és rendszerenkénti refinery rangsor elkészült.", {
+        trigger: trigger || "REBUILD",
+        mapping: mappingSummary,
+        systemGroupCount: systemGroupCount,
+        tieGroupCount: tieGroupCount,
+        noRefineryDataCount: recommendations.filter(function (recommendation) { return recommendation.status === "NO_REFINERY_DATA"; }).length,
+        unresolvedMappingCount: recommendations.filter(function (recommendation) { return recommendation.status === "MAPPING_UNRESOLVED"; }).length,
+        rankingField: "value_month",
+        commodityResults: recommendations.map(function (recommendation) {
+          return {
+            wikiCommodityUuid: recommendation.wikiCommodityUuid,
+            wikiCommodityName: recommendation.wikiCommodityName,
+            mappingStatus: recommendation.mapping.status,
+            mappingOrigin: recommendation.mapping.origin,
+            uexCommodityId: recommendation.mapping.uexCommodityId,
+            recommendationStatus: recommendation.status,
+            systems: recommendation.systems.map(function (system) {
+              return {
+                starSystemId: system.starSystemId,
+                starSystemName: system.starSystemName,
+                rankingField: system.rankingField,
+                rankingValue: system.rankingValue,
+                tieCount: system.tieCount,
+                terminals: system.terminals.map(function (terminal) {
+                  return { terminalId: terminal.terminalId, terminalName: terminal.terminalName, valueMonth: terminal.valueMonth };
+                })
+              };
+            })
+          };
+        })
+      });
+      return recommendations;
+    }
+
+    async function loadUexRefineryDatasetFromCache(dataset) {
+      if (!dataset) {
+        return null;
+      }
+      state.activeUexRefineryDataset = dataset;
+      state.uexRefineryRecords = (await database.getAll("uexRefineryNormalizedCache")).filter(function (record) {
+        return record.datasetId === dataset.datasetId && record.recordType === "UEX_REFINERY_YIELD";
+      }).sort(function (a, b) { return a.cacheKey.localeCompare(b.cacheKey); });
+      return dataset;
+    }
+
+    async function syncUexRefineryDataset(options) {
+      var settings = options || {};
+      var ownsProcess = settings.ownsProcess !== false;
+      if (state.uexRefineryDatasetSyncing) {
+        throw new Error("Már fut UEX Refinery Game Data szinkron.");
+      }
+      state.uexRefineryDatasetSyncing = true;
+      document.getElementById("syncRefineryDataButton").disabled = true;
+      renderRefineryDatasetState();
+      if (ownsProcess) {
+        logger.start("UEX Refinery Game Data Sync", { force: settings.force === true, endpoint: APP.uexRefineryEndpoint });
+      }
+      var previousDataset = state.activeUexRefineryDataset;
+      var userFingerprintBefore = null;
+      try {
+        var activeMetadata = await database.get("gameMetadata", "activeUexRefineryDataset");
+        var activeId = activeMetadata && activeMetadata.value ? activeMetadata.value.datasetId : null;
+        var activeDataset = previousDataset || (activeId ? await database.get("uexRefineryDatasets", activeId) : null);
+        if (activeDataset && settings.force !== true && isUexDatasetFresh(activeDataset)) {
+          await loadUexRefineryDatasetFromCache(activeDataset);
+          await rebuildUexRefineryProjection("UEX_CACHE_HIT");
+          state.refineryLastSyncResult = { status: "CACHE_HIT", at: nowIso(), datasetId: activeDataset.datasetId, ageMs: uexDatasetAgeMs(activeDataset) };
+          logger.event("INFO", "UEX_CACHE_HIT", "A friss UEX refinery cache maradt aktív; hálózati kérés nem indult.", {
+            datasetId: activeDataset.datasetId,
+            ageMs: uexDatasetAgeMs(activeDataset),
+            ttlMs: APP.uexRefineryTtlMs,
+            recordCount: activeDataset.recordCount
+          });
+          if (ownsProcess) { logger.finish("PASS", state.refineryLastSyncResult); }
+          return activeDataset;
+        }
+        logger.event("INFO", activeDataset ? "UEX_CACHE_MISS_STALE" : "UEX_CACHE_MISS_EMPTY", activeDataset ? "A UEX refinery cache lejárt; frissítés szükséges." : "Nincs UEX refinery cache; frissítés szükséges.", {
+          datasetId: activeDataset ? activeDataset.datasetId : null,
+          ageMs: activeDataset ? uexDatasetAgeMs(activeDataset) : null,
+          ttlMs: APP.uexRefineryTtlMs,
+          forced: settings.force === true
+        });
+        userFingerprintBefore = await userDataRepository.fingerprint();
+        var fetchedAt = nowIso();
+        var datasetId = "uex-refinery-" + fetchedAt.replace(/[^0-9]/g, "");
+        var response = await uexApi.getRefineryYields({ attempts: settings.attempts || 2 });
+        var context = { datasetId: datasetId, fetchedAt: fetchedAt };
+        var normalizedRecords = response.records.map(function (record, index) {
+          return normalizeUexRefineryYield(record, context, index);
+        });
+        var limitWarning = hasUexLimitWarning(normalizedRecords.length);
+        if (limitWarning) {
+          logger.event("WARN", "UEX_LIMIT_WARNING", "A UEX válasz pontosan elérte a dokumentált 500 rekordos maximumot; lehetséges csonkolás.", {
+            recordCount: normalizedRecords.length,
+            documentedLimit: APP.uexRefineryDocumentedLimit,
+            paginationInvented: false
+          });
+        }
+        var rawRecords = response.records.map(function (record, index) {
+          return {
+            cacheKey: datasetId + "::raw::yield::" + (record.id === undefined || record.id === null ? index : record.id) + "::" + index,
+            datasetId: datasetId,
+            recordType: "RAW_UEX_REFINERY_YIELD",
+            endpoint: APP.uexRefineryEndpoint,
+            fetchedAt: fetchedAt,
+            raw: record
+          };
+        });
+        var expiresAt = new Date(Date.parse(fetchedAt) + APP.uexRefineryTtlMs).toISOString();
+        var uexCommodityCount = new Set(normalizedRecords.map(function (record) { return record.uexCommodityId; })).size;
+        var systemCount = new Set(normalizedRecords.map(function (record) { return record.starSystemId || record.starSystemName; })).size;
+        var terminalCount = new Set(normalizedRecords.map(function (record) { return record.terminalId || record.terminalName; })).size;
+        var dataset = await database.commitUexRefineryDataset({
+          datasetId: datasetId,
+          fetchedAt: fetchedAt,
+          expiresAt: expiresAt,
+          responseStatus: response.envelope.status || null,
+          responseHttpCode: response.envelope.http_code || response.httpStatus,
+          rawRecords: rawRecords,
+          normalizedRecords: normalizedRecords,
+          uexCommodityCount: uexCommodityCount,
+          systemCount: systemCount,
+          terminalCount: terminalCount,
+          limitWarning: limitWarning,
+          scVersion: state.gameVersion ? state.gameVersion.code : null,
+          simulateFailure: settings.simulateCommitFailure === true
+        });
+        var userFingerprintAfter = await userDataRepository.fingerprint();
+        assert(userFingerprintAfter === userFingerprintBefore, "A UEX Game Data sync módosította a User Data-t.");
+        await loadUexRefineryDatasetFromCache(dataset);
+        await rebuildUexRefineryProjection("UEX_API_SYNC");
+        state.refineryLastSyncResult = {
+          status: "ACTIVATED",
+          at: nowIso(),
+          datasetId: dataset.datasetId,
+          recordCount: dataset.recordCount,
+          durationMs: response.durationMs,
+          limitWarning: dataset.limitWarning,
+          userDataFingerprintPreserved: true
+        };
+        document.body.dataset.uexUserDataFingerprintPreserved = "true";
+        logger.event("INFO", "UEX_DATASET_ACTIVATED", "A UEX Refinery Game Data tranzakciósan aktiválva.", state.refineryLastSyncResult);
+        if (ownsProcess) { logger.finish("PASS", state.refineryLastSyncResult); }
+        return dataset;
+      } catch (error) {
+        state.refineryLastSyncResult = {
+          status: "ROLLBACK_PREVIOUS_ACTIVE",
+          at: nowIso(),
+          retainedDatasetId: previousDataset ? previousDataset.datasetId : null,
+          error: serializeError(error)
+        };
+        logger.event("ERROR", "UEX_SYNC_ROLLBACK", "A UEX frissítés sikertelen; az előző aktív dataset változatlan maradt.", state.refineryLastSyncResult);
+        if (ownsProcess) { logger.finish("FAIL", state.refineryLastSyncResult); }
+        throw error;
+      } finally {
+        state.uexRefineryDatasetSyncing = false;
+        document.getElementById("syncRefineryDataButton").disabled = false;
+        renderRefineryDatasetState();
+      }
+    }
+
+    async function verifyUexRefineryRollbackPreservesActiveDataset() {
+      var metadataBefore = await database.get("gameMetadata", "activeUexRefineryDataset");
+      var activeIdBefore = metadataBefore && metadataBefore.value ? metadataBefore.value.datasetId : null;
+      if (!activeIdBefore) {
+        throw new Error("A UEX rollback próbához nincs aktív dataset.");
+      }
+      var rawCountBefore = await database.count("uexRefineryRawCache");
+      var normalizedCountBefore = await database.count("uexRefineryNormalizedCache");
+      var failed = false;
+      try {
+        await database.commitUexRefineryDataset({
+          datasetId: "uex-rollback-probe-" + Date.now(),
+          fetchedAt: nowIso(),
+          expiresAt: new Date(Date.now() + APP.uexRefineryTtlMs).toISOString(),
+          responseStatus: "probe",
+          responseHttpCode: 200,
+          rawRecords: [],
+          normalizedRecords: [],
+          uexCommodityCount: 0,
+          systemCount: 0,
+          terminalCount: 0,
+          limitWarning: false,
+          scVersion: state.gameVersion ? state.gameVersion.code : null,
+          simulateFailure: true
+        });
+      } catch (error) {
+        failed = true;
+      }
+      assert(failed, "A szimulált UEX commit-hiba nem szakította meg a tranzakciót.");
+      var metadataAfter = await database.get("gameMetadata", "activeUexRefineryDataset");
+      var activeIdAfter = metadataAfter && metadataAfter.value ? metadataAfter.value.datasetId : null;
+      var rawCountAfter = await database.count("uexRefineryRawCache");
+      var normalizedCountAfter = await database.count("uexRefineryNormalizedCache");
+      assert(activeIdAfter === activeIdBefore, "A rollback lecserélte az aktív UEX datasetet.");
+      assert(rawCountAfter === rawCountBefore && normalizedCountAfter === normalizedCountBefore, "A rollback módosította az aktív UEX cache rekordjait.");
+      logger.event("INFO", "UEX_ROLLBACK_PROBE_PASS", "A szimulált UEX commit-hiba után az előző aktív dataset sértetlen maradt.", {
+        activeDatasetId: activeIdAfter,
+        rawRecordCount: rawCountAfter,
+        normalizedRecordCount: normalizedCountAfter
+      });
+      return {
+        activeDatasetId: activeIdAfter,
+        rawRecordCount: rawCountAfter,
+        normalizedRecordCount: normalizedCountAfter
+      };
     }
 
     async function loadMiningHeadDetail(identifier) {
@@ -3986,6 +4939,9 @@
         recipeSlotKey: requirement.recipeSlotKey,
         recipeSlotName: requirement.recipeSlotName,
         ingredientUuid: requirement.ingredientUuid,
+        commodityUuid: requirement.ingredient && requirement.ingredient.commodityUuid ? requirement.ingredient.commodityUuid : (requirement.commodityUuid || null),
+        resourceTypeUuid: requirement.ingredient && requirement.ingredient.resourceTypeUuid ? requirement.ingredient.resourceTypeUuid : null,
+        itemUuid: requirement.ingredient && requirement.ingredient.itemUuid ? requirement.ingredient.itemUuid : null,
         materialName: requirement.materialName,
         requiredQuantityUnits: requirement.requiredQuantityUnits,
         unit: requirement.unit,
@@ -4110,6 +5066,57 @@
       return usage.qualityRule;
     }
 
+    function renderMaterialIntelligenceSnapshot(snapshot) {
+      var details = document.createElement("details");
+      details.className = "spg-material-intelligence";
+      var summary = document.createElement("summary");
+      summary.textContent = "Mining + UEX Refinery adatpillanatkép";
+      details.append(summary);
+      if (!snapshot) {
+        var missing = document.createElement("p");
+        missing.className = "spg-muted";
+        missing.textContent = "Ehhez az ingredienthez nincs biztonságosan összekapcsolható mining commodity.";
+        details.append(missing);
+        return details;
+      }
+      var mining = snapshot.mining || {};
+      var miningMeta = document.createElement("p");
+      miningMeta.className = "spg-intelligence-meta";
+      miningMeta.textContent = "Radar: " + (mining.radarSignature === null || mining.radarSignature === undefined ? "nincs adat" : mining.radarSignature) +
+        " · módszer: " + (mining.methods || []).join(" / ") +
+        " · loadout: " + ((snapshot.loadouts || []).length ? snapshot.loadouts.map(function (loadout) { return loadout.name + (loadout.default ? " (default)" : ""); }).join(", ") : "nincs mentett loadout");
+      details.append(miningMeta);
+      (mining.systems || []).forEach(function (system) {
+        if (system.status !== "AVAILABLE") { return; }
+        system.methods.forEach(function (method) {
+          var row = document.createElement("div");
+          row.className = "spg-intelligence-row";
+          row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.method) + "</strong><span>" +
+            escapeHtml(method.locationLabel) + "</span><small>Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) +
+            " · Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) + " · Max Q " + escapeHtml(formatMiningMetric(method.maximumQuality, "")) + "</small>";
+          details.append(row);
+        });
+      });
+      var refinery = snapshot.refinery || {};
+      if (refinery.status === "AVAILABLE") {
+        refinery.systems.forEach(function (system) {
+          var row = document.createElement("div");
+          row.className = "spg-intelligence-row spg-intelligence-refinery";
+          row.innerHTML = "<strong>Refinery · " + escapeHtml(system.starSystemName) + " · " + escapeHtml(formatRefineryBonus(system.rankingValue)) + "</strong><span>" +
+            escapeHtml(system.terminals.map(function (terminal) { return terminal.terminalName; }).join(" / ")) + "</span><small>UEX · value_month · " + escapeHtml(system.tieCount) + " azonos legjobb</small>";
+          details.append(row);
+        });
+      } else {
+        var refineryStatus = document.createElement("p");
+        refineryStatus.className = "spg-muted";
+        refineryStatus.textContent = refinery.status === "NO_REFINERY_DATA"
+          ? "UEX mapping sikeres, de nincs refinery adat."
+          : "UEX mapping nem oldható fel biztonságosan (" + ((refinery.mapping && refinery.mapping.status) || "UNMAPPED") + ").";
+        details.append(refineryStatus);
+      }
+      return details;
+    }
+
     function renderCombinedMaterials() {
       var groups = state.combinedMaterials || [];
       var missingGroups = groups.filter(function (group) { return group.missingUnits > 0; });
@@ -4197,7 +5204,7 @@
           list.append(row);
         });
         details.append(detailsSummary, list);
-        article.append(heading, totals, meta, details);
+        article.append(heading, totals, meta, renderMaterialIntelligenceSnapshot(group.materialIntelligence), details);
         container.append(article);
       });
     }
@@ -4416,6 +5423,7 @@
         values.append(item);
       });
       article.append(values);
+      article.append(renderMaterialIntelligenceSnapshot(allocation ? allocation.materialIntelligence : null));
 
       if (allocation && allocation.allocatedBatches.length) {
         var allocated = document.createElement("p");
@@ -4582,6 +5590,17 @@
 
     function recalculateAllocation(logReason) {
       state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches);
+      state.allocationResult.cards.forEach(function (cardResult) {
+        cardResult.requirements.forEach(function (requirement) {
+          var sourceCard = state.craftingCards.find(function (card) { return card.id === cardResult.cardId; });
+          var sourceRequirement = sourceCard && sourceCard.requirements.find(function (item) { return item.id === requirement.recipeSlotId; });
+          var commodityUuid = sourceRequirement && sourceRequirement.commodityUuid
+            ? sourceRequirement.commodityUuid
+            : state.requirementCommodityUuidBySlotId.get(requirement.recipeSlotId);
+          requirement.commodityUuid = commodityUuid || null;
+          requirement.materialIntelligence = state.materialIntelligenceByWikiUuid.get(commodityUuid || requirement.ingredientUuid) || null;
+        });
+      });
       state.combinedMaterials = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
       document.body.dataset.allocationCardCount = String(state.allocationResult.summary.cardCount);
       document.body.dataset.allocationUnsatisfiedCount = String(state.allocationResult.summary.unsatisfiedRequirementCount);
@@ -4630,6 +5649,7 @@
       try {
         state.craftingCards = await userDataRepository.saveCraftingCards(nextCards);
         recalculateAllocation(processType);
+        await ensureCraftingCardMiningDetails();
         updateKnownMaterials();
         logger.finish("PASS", {
           cardCount: state.craftingCards.length,
@@ -4999,6 +6019,9 @@
           currentUserSettingKeys: beforeData.userSettings.map(function (record) { return record.key; })
         });
         await restoreUserDataState();
+        if (state.activeUexRefineryDataset) {
+          await rebuildUexRefineryProjection("BACKUP_IMPORT_USER_OVERRIDES");
+        }
         var actualFingerprint = await userDataRepository.fingerprint();
         var expectedFingerprint = fingerprintUserDataPayload(expected);
         assert(actualFingerprint === expectedFingerprint, "Az import utáni User Data fingerprint eltér a várt eredménytől.");
@@ -5186,6 +6209,7 @@
         loadoutCount: state.miningLoadouts.length,
         selectedLoadoutId: state.selectedMiningLoadoutId
       });
+      await refreshMaterialIntelligenceSnapshots("MINING_LOADOUT_UPDATE");
       renderMiningLoadoutControls(true);
     }
 
@@ -5900,6 +6924,22 @@
         return combined.length + " material · bitazonos roundtrip · rollback PASS";
       });
 
+      await check("M5 UEX mapping + refinery ranking", async function () {
+        var context = { datasetId: "probe-uex", fetchedAt: "2026-08-22T12:00:00.000Z" };
+        var records = [
+          { id: 1, id_commodity: 2, commodity_name: "Agricium (Ore)", id_star_system: 1, star_system_name: "Stanton", id_terminal: 10, terminal_name: "A", value_month: 7 },
+          { id: 2, id_commodity: 2, commodity_name: "Agricium (Ore)", id_star_system: 1, star_system_name: "Stanton", id_terminal: 11, terminal_name: "B", value_month: 7 },
+          { id: 3, id_commodity: 2, commodity_name: "Agricium (Ore)", id_star_system: 2, star_system_name: "Pyro", id_terminal: 12, terminal_name: "C", value_month: -5 }
+        ].map(function (raw, index) { return normalizeUexRefineryYield(raw, context, index); });
+        var mappings = buildCommodityMappings([{ uuid: "wiki-agricium", name: "Agricium (Ore) (UnrefinedOres)", kind: "UnrefinedOres" }], records, []);
+        var recommendation = buildUexRefineryRecommendations(mappings, records, { datasetId: context.datasetId, fetchedAt: context.fetchedAt })[0];
+        assert(mappings[0].status === M5_MAPPING_STATUS.MATCHED, "A biztonságos exact mapping hibás.");
+        assert(recommendation.systems.find(function (system) { return system.starSystemName === "Stanton"; }).tieCount === 2, "A refinery döntetlen nem tartotta meg az összes terminált.");
+        assert(recommendation.systems.find(function (system) { return system.starSystemName === "Pyro"; }).rankingValue === -5, "A negatív value_month rangsorolása hibás.");
+        var rollback = await verifyUexRefineryRollbackPreservesActiveDataset();
+        return "exact MATCHED · tie 2 · negatív maximum · rollback " + rollback.activeDatasetId;
+      });
+
       await check("Standalone HTML export", async function () {
         var html = await buildStandaloneExport();
         assert(!/<link[^>]+stylesheet/i.test(html), "Az export külső stylesheetet tartalmaz.");
@@ -5942,7 +6982,8 @@
     async function buildDiagnosticStateSnapshot() {
       var cacheStores = [
         "blueprintIndexRawCache", "blueprintIndexCache", "blueprintRawCache", "blueprintNormalizedCache",
-        "miningRawCache", "miningNormalizedCache", "blueprintDatasets", "miningDatasets"
+        "miningRawCache", "miningNormalizedCache", "blueprintDatasets", "miningDatasets",
+        "uexRefineryRawCache", "uexRefineryNormalizedCache", "uexRefineryDatasets"
       ];
       var cacheCounts = {};
       await Promise.all(cacheStores.map(async function (storeName) {
@@ -5976,6 +7017,16 @@
             commodityCount: state.activeMiningDataset.commodityCount,
             activatedAt: state.activeMiningDataset.activatedAt
           } : null,
+          activeUexRefineryDataset: state.activeUexRefineryDataset ? {
+            datasetId: state.activeUexRefineryDataset.datasetId,
+            status: state.activeUexRefineryDataset.status,
+            recordCount: state.activeUexRefineryDataset.recordCount,
+            fetchedAt: state.activeUexRefineryDataset.fetchedAt,
+            expiresAt: state.activeUexRefineryDataset.expiresAt,
+            ageMs: uexDatasetAgeMs(state.activeUexRefineryDataset),
+            limitWarning: state.activeUexRefineryDataset.limitWarning,
+            endpoint: state.activeUexRefineryDataset.endpoint
+          } : null,
           cacheCounts: cacheCounts
         },
         userData: {
@@ -6008,7 +7059,8 @@
                   allocatedUnits: requirement.allocatedUnits,
                   missingAmountUnits: requirement.missingAmountUnits,
                   missingQualityUnits: requirement.missingQualityUnits,
-                  status: requirement.status
+                  status: requirement.status,
+                  refinerySnapshotFingerprint: requirement.materialIntelligence ? requirement.materialIntelligence.refinerySnapshotFingerprint : null
                 };
               })
             };
@@ -6019,6 +7071,19 @@
           materialCount: (state.combinedMaterials || []).length,
           missingMaterialCount: (state.combinedMaterials || []).filter(function (group) { return group.missingUnits > 0; }).length,
           results: m4Clone(state.combinedMaterials || [])
+        },
+        uexRefinery: {
+          endpoint: APP.uexRefineryEndpoint,
+          authentication: "NONE",
+          ttlMs: APP.uexRefineryTtlMs,
+          documentedLimit: APP.uexRefineryDocumentedLimit,
+          lastSync: m4Clone(state.refineryLastSyncResult),
+          mappingSummary: summarizeUexMappings(state.uexCommodityMappings),
+          mappings: m4Clone(state.uexCommodityMappings),
+          recommendationCount: state.uexRefineryRecommendations.size,
+          recommendations: m4Clone(Array.from(state.uexRefineryRecommendations.values())),
+          normalizedRecordCount: state.uexRefineryRecords.length,
+          rankingField: "value_month"
         },
         backup: {
           format: M4_BACKUP_FORMAT,
@@ -6049,7 +7114,7 @@
       }
       var snapshot = await buildDiagnosticStateSnapshot();
       container.replaceChildren();
-      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
+      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
         var item = document.createElement("span");
         var label = document.createElement("small");
         var content = document.createElement("strong");
@@ -6060,18 +7125,21 @@
       });
       document.body.dataset.userDataFingerprint = snapshot.userData.fingerprint;
       document.body.dataset.diagnosticM4Ready = "true";
+      document.body.dataset.diagnosticM5Ready = "true";
     }
 
     async function copyLog() {
-      logger.start("Diagnostic Log Copy", { scope: "M1-M4" });
+      logger.start("Diagnostic Log Copy", { scope: "M1-M5" });
       var preCopySnapshot = await buildDiagnosticStateSnapshot();
-      logger.event("INFO", "DIAGNOSTIC_BUNDLE_BUILT", "Az M1–M4 állapot egyetlen diagnosztikai csomagba került.", {
+      logger.event("INFO", "DIAGNOSTIC_BUNDLE_BUILT", "Az M1–M5 állapot egyetlen diagnosztikai csomagba került.", {
         activeScVersion: preCopySnapshot.activeScVersion,
         userDataFingerprint: preCopySnapshot.userData.fingerprint,
         combinedMaterialsFingerprint: preCopySnapshot.combinedMaterials.fingerprint,
-        backupStatus: preCopySnapshot.backup.state.lastStatus
+        backupStatus: preCopySnapshot.backup.state.lastStatus,
+        uexDatasetId: preCopySnapshot.gameDataCache.activeUexRefineryDataset ? preCopySnapshot.gameDataCache.activeUexRefineryDataset.datasetId : null,
+        uexMapping: preCopySnapshot.uexRefinery.mappingSummary
       });
-      logger.finish("PASS", { scope: "M1-M4", userDataFingerprint: preCopySnapshot.userData.fingerprint });
+      logger.finish("PASS", { scope: "M1-M5", userDataFingerprint: preCopySnapshot.userData.fingerprint });
       var text = logger.text(await buildDiagnosticStateSnapshot());
       try {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
@@ -6095,6 +7163,7 @@
       setNotice("A diagnosztikai log a vágólapra került.", "success");
       document.body.dataset.lastCopyBytes = String(byteLength(text));
       document.body.dataset.diagnosticBundleM4 = "true";
+      document.body.dataset.diagnosticBundleM5 = "true";
       await renderDiagnosticsSummary();
     }
 
@@ -6103,12 +7172,15 @@
       var syncRecord = await database.get("gameMetadata", "lastSuccessfulSync");
       var activeDatasetRecord = await database.get("gameMetadata", "activeBlueprintDataset");
       var activeMiningDatasetRecord = await database.get("gameMetadata", "activeMiningDataset");
+      var activeUexRefineryDatasetRecord = await database.get("gameMetadata", "activeUexRefineryDataset");
       var technicalProbeRecord = await database.get("settings", "technicalProbe");
       var lastProbeRecord = await database.get("settings", "lastTechnicalProbe");
       var activeVersion = activeDatasetRecord && activeDatasetRecord.value ? activeDatasetRecord.value.version : null;
       var dataset = activeVersion ? await database.get("blueprintDatasets", activeVersion) : null;
       var activeMiningVersion = activeMiningDatasetRecord && activeMiningDatasetRecord.value ? activeMiningDatasetRecord.value.version : null;
       var miningDataset = activeMiningVersion ? await database.get("miningDatasets", activeMiningVersion) : null;
+      var activeUexRefineryDatasetId = activeUexRefineryDatasetRecord && activeUexRefineryDatasetRecord.value ? activeUexRefineryDatasetRecord.value.datasetId : null;
+      var uexRefineryDataset = activeUexRefineryDatasetId ? await database.get("uexRefineryDatasets", activeUexRefineryDatasetId) : null;
       var blueprintRecord = null;
 
       if (versionRecord && versionRecord.value) {
@@ -6143,6 +7215,9 @@
         populateMiningCommoditySelect();
         renderMiningDatasetState();
       }
+      if (uexRefineryDataset) {
+        await loadUexRefineryDatasetFromCache(uexRefineryDataset);
+      }
       if (lastProbeRecord && lastProbeRecord.value && Array.isArray(lastProbeRecord.value.results)) {
         state.lastProbe = lastProbeRecord.value;
         renderProbeResults(state.lastProbe.results);
@@ -6156,6 +7231,7 @@
       renderBlueprintDatasetState();
       document.body.dataset.cacheRestored = dataset ? "true" : "false";
       document.body.dataset.miningCacheRestored = miningDataset ? "true" : "false";
+      document.body.dataset.uexRefineryCacheRestored = uexRefineryDataset ? "true" : "false";
       document.body.dataset.technicalProbePersisted = technicalProbeRecord && technicalProbeRecord.value ? "true" : "false";
     }
 
@@ -6170,6 +7246,12 @@
         state.dbReady = true;
         await restoreCachedState();
         await restoreUserDataState();
+        if (state.activeUexRefineryDataset) {
+          await rebuildUexRefineryProjection("STARTUP_CACHE_RESTORE");
+        } else {
+          await refreshMaterialIntelligenceSnapshots("STARTUP_NO_UEX_CACHE");
+          renderRefineryDatasetState();
+        }
         updateEnvironmentUi();
 
         try {
@@ -6197,9 +7279,18 @@
               cacheAvailable: Boolean(state.activeMiningDataset)
             });
           }
+          try {
+            await syncUexRefineryDataset({ ownsProcess: false });
+          } catch (uexSyncError) {
+            logger.event("WARN", "STARTUP_UEX_SYNC_FAILED", "Az induláskori UEX szinkron sikertelen; az előző cache marad aktív.", {
+              error: serializeError(uexSyncError),
+              cacheAvailable: Boolean(state.activeUexRefineryDataset)
+            });
+          }
         }
 
         if (state.activeMiningDataset) {
+          await ensureCraftingCardMiningDetails();
           await selectDefaultMiningCommodity();
         }
 
@@ -6209,6 +7300,7 @@
           databaseReady: state.dbReady,
           apiReady: state.apiReady,
           cacheAvailable: Boolean(state.gameVersion),
+          uexRefineryCacheAvailable: Boolean(state.activeUexRefineryDataset),
           cssReady: state.cssReady
         });
         renderBackupPreview();
@@ -6293,7 +7385,7 @@
     document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
     document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
     function navigateToPanel(navId, panelId, focusId) {
-      ["craftingListNav", "blueprintBrowserNav", "combinedMaterialsNav", "myMaterialsNav", "miningNav", "dataSettingsNav"].forEach(function (id) {
+      ["craftingListNav", "blueprintBrowserNav", "combinedMaterialsNav", "myMaterialsNav", "miningNav", "refineryNav", "dataSettingsNav"].forEach(function (id) {
         var navigationButton = document.getElementById(id);
         var active = id === navId;
         navigationButton.classList.toggle("active", active);
@@ -6323,6 +7415,9 @@
     document.getElementById("miningNav").addEventListener("click", function () {
       navigateToPanel("miningNav", "miningPanel", "miningCommoditySelect");
     });
+    document.getElementById("refineryNav").addEventListener("click", function () {
+      navigateToPanel("refineryNav", "refineryPanel", "refineryCommoditySelect");
+    });
     document.getElementById("dataSettingsNav").addEventListener("click", function () {
       navigateToPanel("dataSettingsNav", "dataSettingsPanel", "backupExportButton");
     });
@@ -6341,6 +7436,24 @@
       }).finally(function () {
         button.disabled = false;
       });
+    });
+
+    document.getElementById("syncRefineryDataButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      setRefineryNotice("A UEX Refinery Game Data tranzakciós frissítése folyamatban…", "neutral");
+      syncUexRefineryDataset({ force: true }).then(function (dataset) {
+        setRefineryNotice(dataset.recordCount + " UEX yield rekord aktiválva.", dataset.limitWarning ? "warning" : "success");
+      }).catch(function (error) {
+        setRefineryNotice("UEX frissítési hiba; az előző dataset maradt aktív: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
+    document.getElementById("refineryCommoditySelect").addEventListener("change", function () {
+      state.selectedRefineryCommodityUuid = this.value || null;
+      renderRefineryRecommendation();
     });
 
     document.getElementById("miningCommoditySelect").addEventListener("change", function () {
@@ -6532,6 +7645,7 @@
       database: database,
       userDataRepository: userDataRepository,
       adapter: api,
+      uexAdapter: uexApi,
       logger: logger,
       toScuUnits: toScuUnits,
       fromScuUnits: fromScuUnits,
@@ -6572,7 +7686,21 @@
       previewUserDataBackup: previewUserDataBackup,
       applyUserDataBackup: applyUserDataBackup,
       buildDiagnosticStateSnapshot: buildDiagnosticStateSnapshot,
-      verifyM4ImportRollbackPreservesUserData: verifyM4ImportRollbackPreservesUserData
+      verifyM4ImportRollbackPreservesUserData: verifyM4ImportRollbackPreservesUserData,
+      normalizeCommodityMappingName: normalizeCommodityMappingName,
+      normalizeUexTimestamp: normalizeUexTimestamp,
+      normalizeUexRefineryYield: normalizeUexRefineryYield,
+      buildCommodityMappings: buildCommodityMappings,
+      rankUexRefineriesBySystem: rankUexRefineriesBySystem,
+      buildUexRefineryRecommendations: buildUexRefineryRecommendations,
+      summarizeUexMappings: summarizeUexMappings,
+      isUexDatasetFresh: isUexDatasetFresh,
+      hasUexLimitWarning: hasUexLimitWarning,
+      syncUexRefineryDataset: syncUexRefineryDataset,
+      rebuildUexRefineryProjection: rebuildUexRefineryProjection,
+      refreshMaterialIntelligenceSnapshots: refreshMaterialIntelligenceSnapshots,
+      ensureCraftingCardMiningDetails: ensureCraftingCardMiningDetails,
+      verifyUexRefineryRollbackPreservesActiveDataset: verifyUexRefineryRollbackPreservesActiveDataset
     });
 
     bootstrap();

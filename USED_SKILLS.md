@@ -89,3 +89,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: igazolta, hogy a ChatGPT/Codex ablakot Windows automatizalassal nem szabad vezerelni; nem tortent Computer Use input, a teszt friss bongeszolapon folytatodott.
 - Mely fajlokat vagy donteseket erintett: csak a bongeszos teszt helyreallitasi donteset.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M5 projektfolytatas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-22`, az M5 UEX refinery cache, mapping, rangsor es kartya-snapshot megvalositasakor.
+- Mire segitett: haromsoros modositas elotti terv, feladatfokuszu fajlolvasas, M5 related-regression es `V001-C008` javitasi ciklus.
+- Mely fajlokat vagy donteseket erintett: `TEST_COMMANDS.md`, `tests/test-plan.json`, `STATUS.md`, `WORKLOG.md`, `VERSION.json`, `docs/M5_REPORT.md` es az M5 artifactok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M5 bongeszos regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-22`, a helyi M5 UEX cache, IndexedDB rollback, Crafting/Combined snapshot es responsive UI ellenorzesekor.
+- Mire segitett: a bongeszofelulet a helyi URL-hez az in-app browsert valasztotta; 215 rekordos valos UEX sync, TTL cache-hit, 12/12 technikai kapu, Beryl UUID-kapcsolat, desktop es 390 px mobil nezet, valamint warning/error 0 ellenorzese.
+- Mely fajlokat vagy donteseket erintett: `docs/M5_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C008/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -15,7 +15,7 @@ Datum: 2026-08-22
 - RAM-alapu process log, lezart blokkonkenti sessionStorage iras.
 - Globalis `window.onerror` es `unhandledrejection` kezeles.
 - Standalone export builder beagyazott CSS-sel es tavoli fontimport nelkul.
-- Egykattintasos, tizenegylepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation-, M3 mining modell- es M4 backup roundtrip/rollback-ellenorzessel.
+- Egykattintasos, tizenketlepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation-, M3 mining modell-, M4 backup- es M5 UEX rollback/ranking-ellenorzessel.
 - M1 verziozott raw/normalizalt blueprint index- es reszlet-cache.
 - Lapozott Blueprint Browser, API-facetekkel es lusta teljes receptbetoltessel.
 - Globalis Quality batch inventory es sorrendezheto Crafting Card User Data.
@@ -24,7 +24,10 @@ Datum: 2026-08-22
 - Perzisztens mining loadoutok dinamikus station-, module- es gadgetkezeléssel, USER_OVERRIDE es deprecated equipment jelolessel.
 - Combined Materials az Allocation Engine eredmenyenek slot- es Quality-reszleteket megorzo, determinisztikus projekciojakent.
 - Teljes User Data backup schema 2, schema 1 migracio, read-only preview, import elotti snapshot es egytranzakcios import/rollback.
-- Egyetlen `Log masolasa` muvelettel exportalhato M1-M4 allapotcsomag.
+- Kulon UEX raw/normalizalt/dataset cache napi TTL-lel, kezi frissitessel es atomi rollbackkel.
+- Biztonsagos Wiki–UEX commodity mapping es `value_month` szerinti rendszerenkenti refinery rangsor.
+- Azonos normalizalt mining+refinery snapshot a Crafting Cardon es Combined Materialsben, M6 offline exporthoz elokeszitve.
+- Egyetlen `Log masolasa` muvelettel exportalhato M1-M5 allapotcsomag.
 
 ## Bizonyitott
 
@@ -43,6 +46,10 @@ Datum: 2026-08-22
 - Aktualis Chrome localhost technikai proba: 10/10 PASS; M3 desktop UI es dinamikus 1/3/5 station/module elrendezes PASS; konzol warning/error 0.
 - M4: 12/12 kotelezo regresszio PASS; 1000 kartya/3000 Recipe Slot/5000 batch Combined fixture a `V001-C007` ciklusban 144 ms.
 - Aktualis helyi bongeszos technikai proba: 11/11 PASS; atomi backup REPLACE roundtrip es megszakitott import rollback bitazonos fingerprinttel; Combined/Data Settings vizualis ellenorzes PASS; konzol warning/error 0.
+- M5: 17/17 kotelezo regresszio PASS; 500 rekordos limit/performance fixture kb. 11 ms; `V001-C008` PASS.
+- Valos UEX fetch auth fejlec nelkul: HTTP 200, 215 rekord, 24 commodity, Stanton/Pyro/Nyx, napi cache-fejlec.
+- Valos mapping: 72 Wiki commoditybol 19 MATCHED, 53 UNMAPPED, 0 AMBIGUOUS; agressziv alias/fuzzy mapping nincs.
+- Aktualis helyi in-app browser technikai proba: 12/12 PASS; UEX manual refresh es User Data fingerprint-megorzes; TTL cache-hit; commit rollback; Beryl Crafting/Combined azonos snapshot; desktop/390 px PASS; warning/error 0.
 
 ## Meg nem bizonyitott
 

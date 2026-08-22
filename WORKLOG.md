@@ -151,3 +151,23 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Talalt/javitott pontok: User Settings bekerult a teljes fingerprintbe; belso settings importja tiltva; a logmasolas teljes allapotsnapshotot kapott; M4 navigacio aktivalva; a preview-fixture vart rekordszama javitva.
 - Nyitott: kozvetlen `file://`, letoltott standalone export offline ujranyitasa es Edge-regresszio; stabil kiadas nincs. UEX refinery kesobbi V1 milestone, nem M4-hiany.
 - Reszletes jelentes: `docs/M4_REPORT.md`; hasznalati leiras: `BACKUP_RESTORE.md`.
+
+### 2026-08-22T13:02:33 - V001-C008
+
+- Cel: M5 UEX refinery mapping ranking cache es kartyasnapshot
+- Tesztszint: related-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C008/test-summary.json`
+
+### M5 UEX Refinery Data es kartyaintegracio - 2026-08-22
+
+- Mi tortent: elkeszult a kulon UEX raw/normalizalt/dataset cache, napi TTL es kezi sync, az atomi aktivalas/rollback, a biztonsagos Wiki–UEX mapping es a `value_month` naprendszerenkenti rangsor.
+- Valos adat: auth fejlec nelkuli HTTP 200; 215 rekord, 24 UEX commodity, Stanton/Pyro/Nyx; 19/72 Wiki exact MATCHED, 53 UNMAPPED, 0 AMBIGUOUS.
+- Kartya: a Blueprint Recipe Slot API `commodityUuid` kapcsolata alapjan az aktiv Crafting Card es Combined Materials ugyanazt a mining+refinery snapshotot hasznalja; a hianyzo location reszlet lazy cache-betoltest kapott.
+- Teszt: 17/17 M5 es teljes M1-M4 regresszio PASS; 500 rekordos fixture kb. 11 ms; `V001-C008` PASS; valos UEX probe PASS.
+- Bongeszo: 12/12 technikai proba, manual sync fingerprint-megorzessel, TTL reload cache-hit, szimulalt commit rollback, Beryl kartya/Combined azonos snapshot, desktop es 390 px PASS; warning/error 0.
+- Talalt/javitott pontok: Wiki taxonomy-utotag exact normalizalasa; regi kartya commodity UUID visszakovetese a blueprint cache-bol; kartya mining location lazy load; UEX epoch datum ISO-normalizalasa.
+- Nyitott: M6 vegleges standalone export/refencia-UI; kozvetlen `file://`, offline export-ujranyitas es kulon Edge-regresszio. Stabil kiadas nincs.
+- Reszletes jelentes: `docs/M5_REPORT.md`.

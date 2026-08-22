@@ -1,0 +1,35 @@
+{
+  "cycleId": "V001-C008",
+  "date": "2026-08-22",
+  "browserSurface": "Codex in-app browser",
+  "url": "http://127.0.0.1:4177/",
+  "appReady": true,
+  "technicalProbe": { "status": "PASS", "passed": 12, "failed": 0 },
+  "uex": {
+    "httpStatus": 200,
+    "authorizationHeaderSent": false,
+    "recordCount": 215,
+    "commodityCount": 24,
+    "systems": ["Nyx", "Pyro", "Stanton"],
+    "wikiMapping": { "total": 72, "matched": 19, "unmapped": 53, "ambiguous": 0, "userOverride": 0 },
+    "manualRefresh": "PASS",
+    "ttlReloadReusedDataset": true,
+    "rollbackProbe": "PASS",
+    "userDataFingerprintBefore": "30efd6b4",
+    "userDataFingerprintAfter": "30efd6b4"
+  },
+  "sharedSnapshot": {
+    "commodity": "Beryl",
+    "craftingAndCombinedVisibleTextEqual": true,
+    "radarSignature": 4000,
+    "miningLocation": "All Lagrange Points",
+    "occurrence": 18,
+    "spawn": 10,
+    "maximumQuality": 1000,
+    "refinerySystems": ["Nyx", "Stanton"]
+  },
+  "visual": { "desktop": "PASS", "mobile390px": "PASS" },
+  "console": { "warnings": 0, "errors": 0 },
+  "openReleaseGates": ["direct file://", "standalone export offline reopen", "separate Edge regression"],
+  "stableReleaseCreated": false
+}
