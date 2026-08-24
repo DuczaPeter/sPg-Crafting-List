@@ -233,3 +233,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a stabil V002 vedelmere, a haromsoros scope-tervre, a valos API-bizonyitek elso auditjara, a C002 repair-cycle-re, a teljes regresszios kapura es a localhost Material Database valos DOM/vizualis ellenorzesere.
 - Mely fajlokat vagy donteseket erintett: V003 mining presentation modell/UI/export, M3/M6 fixture-ek, elo API-proba, C002 dokumentacio es test artifact; a bongeszoproba konzol warning/error 0 eredmenyt adott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C003 material canonical naming
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a teljes Wiki commodity-nevaudit, a centralizalt materialnev-resolver es a valodi Chrome localhost regresszio soran.
+- Mire segitett: a szuk C003 scope, a V002 stabil allapot vedelme, a repair-cycle es teljes regresszio, valamint a 14/14 technikai proba, raw/alias kereses, duplicate UI, reload-fingerprint es alkalmazas-konzol ellenorzese.
+- Mely fajlokat vagy donteseket erintett: V003 material naming modell es UI/export fogyasztok, naming fixture/audit/validator, C003 riport/artifact es projekt statuszfajlok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

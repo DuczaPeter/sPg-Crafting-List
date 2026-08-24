@@ -1,0 +1,27 @@
+{
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "cases": [
+    { "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "key": "Ore_Agricium", "name": "Agricium (Ore)", "display_name": "Agricium (Ore) (UnrefinedOres)", "expected": "Agricium", "source": "SAFE_SUFFIX_NORMALIZATION" },
+    { "uuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37", "key": "Ore_Aluminum", "name": "Aluminum (Ore)", "display_name": "Aluminum (Ore) (UnrefinedOres)", "expected": "Aluminum", "source": "SAFE_SUFFIX_NORMALIZATION" },
+    { "uuid": "eb503701-389a-48a1-af28-eb7374009d5d", "key": "Raw_Beryl", "name": "Beryl (Raw)", "display_name": "Beryl (Raw) (Raw_Minerals)", "expected": "Beryl", "source": "SAFE_SUFFIX_NORMALIZATION" },
+    { "uuid": "f0c1f30b-001c-4a80-ac20-27df27183056", "key": "Raw_Aslarite", "name": "Aslarite (Raw)", "display_name": "Aslarite (Raw) (Raw_Minerals)", "expected": "Aslarite", "source": "SAFE_SUFFIX_NORMALIZATION" },
+    { "uuid": "c339897c-d682-48ad-a16f-daf145bc0f4d", "key": "Beradom", "name": "Beradom", "display_name": "Beradom (Mineral)", "expected": "Beradon", "source": "EXPLICIT_ALIAS" },
+    { "uuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a", "key": "Aphorite", "name": "Aphorite", "display_name": "Aphorite (Mineral)", "expected": "Aphorite", "source": "API_EXACT" },
+    { "uuid": "293cbddc-9515-456e-8090-bdc94f746619", "key": "HeartOfTheWoods", "name": "Heart of the Woods", "display_name": "Heart of the Woods (Food)", "expected": "Heart of the Woods", "source": "API_EXACT" },
+    { "uuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8", "key": "GoldenMedmon", "name": "Golden Medmon", "display_name": "Golden Medmon (Food)", "expected": "Golden Medmon", "source": "API_EXACT" },
+    { "uuid": "306f93e6-a500-415b-b71b-631e8c93721c", "key": "SunsetBerry", "name": "Sunset Berries", "display_name": "Sunset Berries (Food)", "expected": "Sunset Berry", "source": "EXPLICIT_ALIAS" },
+    { "uuid": "9177e3bb-6714-49f5-8beb-46a981226ff6", "key": "CompBoard", "name": "Compboard", "display_name": "Compboard (Waste)", "expected": "Comp Board", "source": "EXPLICIT_ALIAS" }
+  ],
+  "invalid": [
+    { "uuid": "unknown-fixture", "name": "UNKNOWN", "display_name": "UNKNOWN", "diagnosticStatus": "UNMAPPED_NAME" },
+    { "uuid": "272539c8-e211-4c82-8bd0-6ecaabbc9c10", "key": "Vlk_Limpet", "name": "", "display_name": " (Organic)", "diagnosticStatus": "TECHNICAL_FRAGMENT_ONLY" }
+  ],
+  "relatedDuplicate": [
+    { "uuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6", "key": "Ore_Tungsten", "name": "Tungsten (Ore)", "display_name": "Tungsten (Ore) (UnrefinedOres)", "kind": "mineable", "categories": ["SHIP_MINING"], "refinedVersion": { "uuid": "60f116f4-c02a-45b2-9ded-333747795124", "name": "Tungsten" } },
+    { "uuid": "60f116f4-c02a-45b2-9ded-333747795124", "key": "Tungsten", "name": "Tungsten", "display_name": "Tungsten (Metal)", "kind": "harvestable", "categories": ["UNKNOWN"], "refinedVersion": null }
+  ],
+  "unrelatedDuplicate": [
+    { "uuid": "duplicate-a", "name": "Fixture Crystal", "display_name": "Fixture Crystal (Mineral)", "categories": ["FPS_MINING"] },
+    { "uuid": "duplicate-b", "name": "Fixture Crystal", "display_name": "Fixture Crystal (Organic)", "categories": ["HARVESTABLE"] }
+  ]
+}

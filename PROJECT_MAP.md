@@ -34,6 +34,9 @@
 - V002 stabil release kapu: `tools/validate-v002-release.ps1`; a teljes regresszio mellett az egyetlen release HTML-t, checksumot, elo Wiki/UEX API-t es V001-integritast ellenorzi.
 - V003 farm recommendation kapu: `tools/validate-v003-farm.ps1`; a teljes regresszio mellett elo Wiki common/uncommon/legendary resource-probat es V002-integritast ellenoriz.
 - V003 elo farmhely API-proba: `tools/probe-v003-farm-api.mjs`, csak olvaso Aluminum/Agricium/Stileron bizonyitekkal.
+- V003 materialnev kapu: `tools/validate-v003-c003.ps1`; a celzott canonical naming tesztet, elo commodity-auditot, teljes V003 farm-regressziot es V002-integritast egyutt ellenorzi.
+- V003 materialnev fixture: `tests/fixtures/v003-c003-material-names.json`; exact alias, suffix, invalid rekord es duplicate projection esetek.
+- V003 elo materialnev audit: `tools/audit-v003-material-names.mjs`; a teljes `/commodities` es az alkalmazas `mineable`/`harvestable` mintajat olvassa, az audit JSON-t a C003 artifactba irja.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -48,6 +51,7 @@
 - `docs/V002_SINGLE_FILE_REPORT.md`: a V002-C001 regresszio, Chrome localhost es valos `file://` kezi PASS bizonyitek, valamint a V001 vedelme.
 - `docs/V002_RELEASE_REPORT.md`: a stabil V002 approval, V002-C002 regresszio, single-file artifact, hash, API-probak es Git tag release-riportja.
 - `docs/V003_FARM_RECOMMENDATION_REPORT.md`: a primary/secondary API-audit, uj rangsor, space/normal besorolas, tesztek es nyitott `file://` kapu.
+- `docs/V003_MATERIAL_NAMING_REPORT.md`: a C003 teljes nevmező/suffix/alias/invalid/duplicate auditja, kozos resolvere, fogyasztoi es regresszios bizonyiteka.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -78,6 +82,8 @@
 - `test-artifacts/V002-C001/`: a V002 egyfajlos teljes regresszio es Chrome localhost/manual-gate summary bizonyiteka.
 - `test-artifacts/V002-C002/`: a stabil V002 kiadas elotti teljes regresszio es release evidence.
 - `test-artifacts/V003-C001/`: a V003 farm recommendation teljes regresszio, standalone artifact es Chrome localhost/file-gate summary bizonyiteka.
+- `test-artifacts/V003-C002/`: a ranking utani bizonyitekos farmhely-grouping teljes regresszios es browser bizonyiteka.
+- `test-artifacts/V003-C003/`: a material naming teljes elo API-auditja, Chrome localhost summaryja es repair-cycle PASS summaryja.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

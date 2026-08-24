@@ -217,6 +217,30 @@ V003-C002 presentation/grouping repair-cycle:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "V003 mining recommendation emberi farmhely-csoportok" -TestId v003-c002-grouping-regression
 ```
 
+V003-C003 material canonical naming celzott + elo API + teljes regresszio:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c003.ps1"
+```
+
+Csak a celzott materialnev/alias/duplicate/invalid fixture-ek:
+
+```powershell
+node .\tools\run-v003-c003-tests.mjs
+```
+
+Csak a teljes es aktiv Wiki commodity-nevaudit:
+
+```powershell
+node .\tools\audit-v003-material-names.mjs --output="test-artifacts/V003-C003/material-name-audit.json"
+```
+
+V003-C003 repair-cycle:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "V003 material canonical naming es display cleanup" -TestId v003-c003-material-naming-regression
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -281,4 +305,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v002-single-file-regression`: a C04 teljes kapuja V002 ciklusazonositoval; bizonyitja, hogy a fo alkalmazas runtime-oldalon egyetlen HTML.
 - `v003-farm-recommendation-regression`: teljes M1-M6.1 + C04, elo Wiki common/uncommon/legendary location/resource proba, primary/secondary gate, spawn/occurrence/quantized-Quality sorrend es valtozatlan V002 tag/artifact.
 - `v003-c002-grouping-regression`: a C001 teljes kapuja mellett provider/resource/parent-bizonyitekos Lagrange, Pyro deep-space es Aaron Halo presentation grouping; nyers location lista megorzese; Material Database/standalone kozos modell.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`.
+- `v003-c003-material-naming-regression`: exact UUID-alias, biztonsagos terminalis suffix, invalid rekord rejtese, raw/alias kereses, `refined_version`-bizonyitekos duplicate projection, kozos UI/export consumer es teljes C001/C002/fagyasztott V002 regresszio.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`.

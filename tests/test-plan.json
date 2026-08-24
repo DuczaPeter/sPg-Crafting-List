@@ -139,6 +139,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-farm.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c003-material-naming-regression",
+      "level": "full-regression",
+      "description": "V003-C003 gate: full M1-M6.1/C04/C001/C002 regression, live 206-record Wiki commodity audit, centralized deterministic display names, alias/raw search, proven duplicate projection, standalone export naming, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c003.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

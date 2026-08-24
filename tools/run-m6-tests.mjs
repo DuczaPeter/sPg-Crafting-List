@@ -22,6 +22,7 @@ const context = vm.createContext({
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
 vm.runInContext(`${block("M1_PURE_MODEL")}
+${block("MATERIAL_NAMING_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
 globalThis.__M6__ = {
   normalizeBlueprint,
@@ -166,6 +167,24 @@ assert.equal(snapshot.requirements[0].rule, "HP_MIN_500");
 assert.equal(snapshot.requirements[0].allocatedBatches[0].quality, 517);
 assert.equal(snapshot.requirements[2].bottleneck, true);
 assert.equal(snapshot.requirements[2].missingQualityUnits, card.requirements[2].requiredQuantityUnits * 2);
+
+// V003-C003. The export snapshot consumes the shared material display-name resolver.
+const dirtyNameCard = structuredClone(card);
+dirtyNameCard.requirements[0].ingredientUuid = "fc1ec740-3047-48d8-81f0-396f4c9a90ef";
+dirtyNameCard.requirements[0].materialName = "Agricium (Ore) (UnrefinedOres)";
+const dirtyNameSnapshot = m6.buildSnapshot({
+  appName: "sPg Crafting List",
+  generatedAt: "2026-08-22T14:00:00.000Z",
+  scDataVersion: blueprint.gameVersion,
+  card: dirtyNameCard,
+  cardResult,
+  blueprint,
+  trace
+});
+const dirtyNameHtml = m6.renderHtml(dirtyNameSnapshot, offlineCss);
+assert.equal(dirtyNameSnapshot.requirements[0].materialName, "Agricium");
+assert.ok(dirtyNameHtml.includes("Agricium"));
+assert.ok(!dirtyNameHtml.includes("Agricium (Ore) (UnrefinedOres)"));
 
 // 5-7. Farm location, radar, default loadout and UEX refinery snapshot are embedded.
 for (const marker of ["Pyro Deep Space Asteroids", "Akiro Cluster, RAB és RMB helyszínek", "3185", "Prospector Helix", "Prospector", "Helix I", "Rieger-C3", "OptiMax", "MIC-L5", "HUR-L1", "+8%"] ) {

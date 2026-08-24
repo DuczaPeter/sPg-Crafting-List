@@ -17,7 +17,8 @@ function block(name) {
 }
 
 const context = vm.createContext({ console });
-vm.runInContext(`${block("M61_UI_COMPLETENESS_MODEL")}
+vm.runInContext(`${block("MATERIAL_NAMING_MODEL")}
+${block("M61_UI_COMPLETENESS_MODEL")}
 globalThis.__M61__ = {
   navigation: M61_REQUIRED_NAVIGATION,
   filter: m61FilterMaterialIndex,

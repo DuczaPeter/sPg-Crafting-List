@@ -1,10 +1,10 @@
-# V003-dev farm recommendation audit es C001-C002 riport
+# V003-dev farm recommendation audit es C001-C003 riport
 
 Datum: 2026-08-24
 
 Branch: `develop/V003`
 
-Ciklus: `V003-C002`
+Ciklus: `V003-C003`
 
 Allapot: fejlesztesi verzio; stabil V003 release vagy tag nem keszult.
 
@@ -111,6 +111,14 @@ Ha azonos ranku rekordokhoz nincs kozos, bizonyithato provider/resource/parent c
 - Valodi Chrome `file://`: `MANUAL PASS`. Ezt a felhasznalo futtatta: a Technikai baseline minden sora zold volt, beleertve a kozvetlen `file://` futast, IndexedDB-t, Wiki API-t, az uj location-ranking szabalyokat, az M3 modellt es a standalone exportot. Ez nem Codex automation eredmeny.
 
 Bizonyitek: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`.
+
+## C003 material canonical naming kapcsolodas
+
+A C003 nem valtoztatta meg a C001 primary/secondary kaput, a spawn -> occurrence -> Quality rangsort, a NORMAL/SPACE szetvalasztast vagy a C002 presentation groupingot. A recommendation modell a material UUID mellett most ugyanabbol a centralizalt resolverbol kapja a tiszta `commodityDisplayName` mezot, mint a Material Database es a standalone export.
+
+A teljes 206 rekordos Wiki commodity-nevaudit, a 72 aktiv rekord eredmenye, a verziozott alias registry, a suffix-szabalyok, az invalid rekord es a bizonyitott duplicate projection reszletesen itt szerepel: `docs/V003_MATERIAL_NAMING_REPORT.md`.
+
+C003 ellenorzes: celzott naming fixture, elo API-audit, teljes M1-M6.1 + C04 + C001/C002 regresszio, standalone export es Chrome localhost 14/14 PASS. V002 valtozatlan; stabil V003 release/tag nem keszult.
 
 ## Visszaallas
 

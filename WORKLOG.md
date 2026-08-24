@@ -411,3 +411,24 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome `file://`: USER MANUAL PASS, minden Technikai baseline sor zold; a bizonyitekot a felhasznalo futtatta, nem Codex automation.
 - V002: tag commit `b326aaff...150e35`, stabil HTML SHA-256 `de2d59b4...9f2357`; valtozatlan. Stabil V003 release/tag nem keszult.
 - Visszaallas: a C002 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.
+
+### 2026-08-24T18:28:05 - V003-C003
+
+- Cel: V003 material canonical naming es display cleanup
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C003/test-summary.json`
+
+### V003-C003 material canonical naming es display cleanup - 2026-08-24
+
+- Elo audit: Wiki `4.9.0-LIVE.12232306`, 206 teljes commodity es 72 aktiv mineable/harvestable rekord; raw nev-, UUID-, category-, method-, group- es `refined_version` adatok megorizve.
+- Resolver: `rawName`, `canonicalName`, `displayName`, `aliases`, `nameSource`, `nameStatus`; exact UUID-alias -> biztonsagos terminalis suffix -> API exact sorrend, fuzzy matching nelkul.
+- Eredmeny: 71 resolved, 11 explicit alias, 25 suffix-normalized, 35 API-exact, 1 unmapped/rejtett technikai fragment, 0 ambiguous, 64 user-facing rekord.
+- Duplicate: Copper, Gold, Iron, Lindinium, Riccite, Silicon es Tungsten csak az API `refined_version` kapcsolata alapjan egyesul; bizonyitek nelkuli canonical egyezes kulon marad.
+- Fogyasztok: Material Database/search/detail/select, Mining Loadouts, My Materials, Crafting, Combined, farm, UEX megjelenites, standalone export es diagnosztika ugyanazt a projekciot hasznalja.
+- Teszt: celzott 20 eset (mas UUID es nem ellenorzott SC-verzio alias-elutasitasaval), elo nevaudit, teljes M1-M6.1 + C04 + C001/C002 es V002-integritas PASS; standalone export PASS.
+- Chrome localhost: 14/14 PASS; Tungsten egy tiszta sor, raw `Agricium (Ore)` es `Beradom` alias kereses PASS; fingerprint `e6d8dec8` reload utan valtozatlan; alkalmazas WARN/ERROR 0.
+- A korabbi valos Chrome `file://` kapu tovabbra is USER MANUAL PASS, nem Codex automation. V002 valtozatlan; stabil V003 release/tag nem keszult.
+- Riport: `docs/V003_MATERIAL_NAMING_REPORT.md`. Visszaallas: a C003 commit revertje vagy a fagyasztott V002 tag/release.

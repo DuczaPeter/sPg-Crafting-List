@@ -20,6 +20,13 @@
 - [x] Material Database, Crafting/Combined snapshot es standalone export ugyanazt a csoportositott recommendation modellt hasznalja.
 - [x] `V003-C002` teljes regresszio, 33 M3 eset es elo Aluminum/Agricium/Stileron grouping-proba PASS.
 - [x] Valodi Chrome `file://` kezi kapu: USER MANUAL PASS; a felhasznalo futtatta, nem Codex automation.
+- [x] `V003-C003`: teljes Wiki commodity/material nev- es duplicate-audit a `4.9.0-LIVE.12232306` API-verzion.
+- [x] Centralizalt `resolveMaterialName()` modell raw/canonical/display/alias/source/status mezokkel; fuzzy matching nelkul.
+- [x] 11 exact UUID-hoz kotott verziozott alias, 25 biztonsagos suffix-normalizalas, 1 invalid technical fragment rejtese es 0 ambiguous eset.
+- [x] Het `refined_version` kapcsolattal bizonyitott duplicate materialcsalad egyetlen felhasznaloi rekordra projektalva, raw UUID-k megorzesevel.
+- [x] Material Database, loadout, inventory, crafting, Combined, farm, UEX, datalist/select es standalone export kozos materialnev-projekcioja.
+- [x] `V003-C003` celzott 20 eset, elo 206/72 rekordos audit es teljes M1-M6.1 + C04 + C001/C002 regresszio PASS.
+- [x] Valodi Chrome localhost 14/14, raw/alias kereses, duplicate UI, reload fingerprint es alkalmazas-konzol WARN/ERROR 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V002 GitHub- es Discord-dokumentacio

@@ -4823,6 +4823,7 @@ code {
       combinedMaterials: [],
       editingBatchId: null,
       miningCommodityIndex: [],
+      materialNamingAudit: null,
       miningEquipment: { heads: [], modules: [], gadgets: [] },
       miningVehicles: [],
       miningSystems: [],
@@ -6759,6 +6760,323 @@ code {
     /* M2_ALLOCATION_ENGINE_END */
 
     /* M3_MINING_MODEL_START */
+    /* MATERIAL_NAMING_MODEL_START */
+    var MATERIAL_NAMING_MODEL_VERSION = 1;
+    var MATERIAL_NAME_ALIAS_REGISTRY_VERSION = "V003-C003-1";
+    var MATERIAL_NAME_STATUS = Object.freeze({
+      RESOLVED: "RESOLVED",
+      UNMAPPED: "UNMAPPED",
+      AMBIGUOUS: "AMBIGUOUS"
+    });
+    var MATERIAL_NAME_SOURCE = Object.freeze({
+      API_EXACT: "API_EXACT",
+      EXPLICIT_ALIAS: "EXPLICIT_ALIAS",
+      SAFE_SUFFIX_NORMALIZATION: "SAFE_SUFFIX_NORMALIZATION",
+      NONE: "NONE"
+    });
+    var MATERIAL_NAME_INVALID_REASON = Object.freeze({
+      UNMAPPED_NAME: "UNMAPPED_NAME",
+      EMPTY_NAME: "EMPTY_NAME",
+      TECHNICAL_FRAGMENT_ONLY: "TECHNICAL_FRAGMENT_ONLY",
+      AMBIGUOUS_NAME: "AMBIGUOUS_NAME"
+    });
+    var MATERIAL_SAFE_TERMINAL_SUFFIXES = Object.freeze([
+      "Alloy", "Bulk_Supplies", "CleanAir", "Food", "Gas", "Halogen", "HeatPlaceholder",
+      "LifeSupportPlaceholder", "Metal", "Mineral", "Nonmetal", "Organic", "PowerPlaceholder",
+      "ProcessedGoods", "Raw_Minerals", "SyntheticMaterials", "UnrefinedOres", "Vice", "Waste",
+      "Ore", "Raw", "R"
+    ]);
+    function materialNameAliasRecord(uuid, displayName, acceptedRawNames) {
+      return Object.freeze({
+        uuid: uuid,
+        displayName: displayName,
+        acceptedRawNames: Object.freeze(acceptedRawNames.slice()),
+        verifiedScVersions: Object.freeze(["4.9.0-LIVE.12232306"]),
+        evidence: "USER_APPROVED_NAME_WITH_LIVE_WIKI_UUID_AUDIT"
+      });
+    }
+    var MATERIAL_NAME_ALIASES = Object.freeze([
+      materialNameAliasRecord("c339897c-d682-48ad-a16f-daf145bc0f4d", "Beradon", ["Beradom", "Beradom (Mineral)"]),
+      materialNameAliasRecord("9177e3bb-6714-49f5-8beb-46a981226ff6", "Comp Board", ["Compboard", "Compboard (Waste)"]),
+      materialNameAliasRecord("469a34fe-2e37-4269-82eb-490eaed361a1", "Decari", ["Decari Pod", "Decari Pod (Organic)"]),
+      materialNameAliasRecord("a0046f6f-ce84-4ca2-b5d1-d6598a9aad39", "Degnous", ["Degnous Root", "Degnous Root (Organic)"]),
+      materialNameAliasRecord("def044a7-a56a-4f99-a497-ef6022113922", "Fotia", ["Fotia Seedpod", "Fotia Seedpod (Organic)"]),
+      materialNameAliasRecord("b442105e-6eeb-46b7-b50b-15cb39918d09", "Pingala", ["Pingala Seeds", "Pingala Seeds (Organic)"]),
+      materialNameAliasRecord("75982fed-2b4b-4433-be1f-5657fb783918", "Revenant", ["Revenant Pod", "Revenant Pod (Organic)"]),
+      materialNameAliasRecord("306f93e6-a500-415b-b71b-631e8c93721c", "Sunset Berry", ["Sunset Berries", "Sunset Berries (Food)"]),
+      materialNameAliasRecord("d9653427-af7f-4fea-bbd6-ae89393524b7", "Ice", ["Raw Ice", "Raw Ice (Organic)"]),
+      materialNameAliasRecord("ca3ae4c1-3483-4985-ba61-50412994dc83", "Ouratite", ["Raw Ouratite", "Raw Ouratite (Nonmetal)"]),
+      materialNameAliasRecord("d137b905-b3bc-4721-a790-830499263c0c", "Silicon", ["Raw Silicon", "Raw Silicon (Nonmetal)"])
+    ]);
+
+    function materialNameText(value) {
+      return String(value === null || value === undefined ? "" : value).trim();
+    }
+
+    function materialNameUuid(value) {
+      return materialNameText(value && typeof value === "object"
+        ? (value.uuid || value.materialUuid || value.ingredientUuid || value.wikiCommodityUuid)
+        : "");
+    }
+
+    function materialUniqueNames(values) {
+      var seen = new Set();
+      return (values || []).map(materialNameText).filter(function (value) {
+        var key = value.toLocaleLowerCase("en-US");
+        if (!value || seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function stripAuditedMaterialSuffixes(value) {
+      var result = materialNameText(value);
+      var removed = [];
+      var suffixPattern = /\s*\(([^()]+)\)\s*$/;
+      while (result) {
+        var match = result.match(suffixPattern);
+        if (!match || MATERIAL_SAFE_TERMINAL_SUFFIXES.indexOf(match[1]) === -1) {
+          break;
+        }
+        removed.unshift(match[1]);
+        result = result.slice(0, match.index).trim();
+      }
+      return { value: result, removedSuffixes: removed };
+    }
+
+    function materialAliasCandidates(uuid, values, scVersion) {
+      if (!uuid) {
+        return [];
+      }
+      var foldedValues = new Set((values || []).map(function (value) { return materialNameText(value).toLocaleLowerCase("en-US"); }).filter(Boolean));
+      return MATERIAL_NAME_ALIASES.filter(function (alias) {
+        var versionAllowed = !scVersion || alias.verifiedScVersions.indexOf(scVersion) !== -1;
+        var nameAllowed = alias.acceptedRawNames.concat([alias.displayName]).some(function (rawName) {
+          return foldedValues.has(rawName.toLocaleLowerCase("en-US"));
+        });
+        return alias.uuid === uuid && versionAllowed && nameAllowed;
+      });
+    }
+
+    function resolveMaterialName(input) {
+      var source = input && typeof input === "object" ? input : { name: input };
+      var uuid = materialNameUuid(source);
+      var rawName = materialNameText(source.rawName || source.display_name || source.rawDisplayName || source.displayName || source.name);
+      var apiName = materialNameText(source.apiName || source.name || source.materialName || rawName);
+      var diagnosticRaw = rawName || apiName;
+      var aliases = materialUniqueNames([rawName, apiName, source.materialName, source.key, source.slug]);
+      var fragmentOnly = /^\([^()]+\)$/.test(diagnosticRaw);
+      var unknown = /^(?:UNKNOWN|Ismeretlen(?: commodity| material| input)?)$/i.test(apiName || diagnosticRaw);
+      if ((!apiName && !diagnosticRaw) || fragmentOnly || unknown) {
+        return {
+          modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+          registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+          uuid: uuid || null,
+          rawName: diagnosticRaw,
+          canonicalName: null,
+          displayName: null,
+          aliases: aliases,
+          nameSource: MATERIAL_NAME_SOURCE.NONE,
+          nameStatus: MATERIAL_NAME_STATUS.UNMAPPED,
+          diagnosticStatus: fragmentOnly ? MATERIAL_NAME_INVALID_REASON.TECHNICAL_FRAGMENT_ONLY :
+            ((!apiName && !diagnosticRaw) ? MATERIAL_NAME_INVALID_REASON.EMPTY_NAME : MATERIAL_NAME_INVALID_REASON.UNMAPPED_NAME),
+          removedSuffixes: []
+        };
+      }
+      var explicit = materialAliasCandidates(uuid, [rawName, apiName, source.materialName], materialNameText(source.scVersion || source.dataVersion || source.gameVersion));
+      var explicitNames = Array.from(new Set(explicit.map(function (alias) { return alias.displayName; })));
+      if (explicitNames.length > 1) {
+        return {
+          modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+          registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+          uuid: uuid || null,
+          rawName: diagnosticRaw,
+          canonicalName: null,
+          displayName: null,
+          aliases: materialUniqueNames(aliases.concat(explicit.reduce(function (all, alias) { return all.concat(alias.acceptedRawNames); }, []))),
+          nameSource: MATERIAL_NAME_SOURCE.EXPLICIT_ALIAS,
+          nameStatus: MATERIAL_NAME_STATUS.AMBIGUOUS,
+          diagnosticStatus: MATERIAL_NAME_INVALID_REASON.AMBIGUOUS_NAME,
+          removedSuffixes: []
+        };
+      }
+      if (explicitNames.length === 1) {
+        return {
+          modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+          registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+          uuid: uuid || null,
+          rawName: diagnosticRaw,
+          canonicalName: explicitNames[0],
+          displayName: explicitNames[0],
+          aliases: materialUniqueNames(aliases.concat(explicit[0].acceptedRawNames).concat(explicitNames)),
+          nameSource: MATERIAL_NAME_SOURCE.EXPLICIT_ALIAS,
+          nameStatus: MATERIAL_NAME_STATUS.RESOLVED,
+          diagnosticStatus: null,
+          removedSuffixes: []
+        };
+      }
+      var normalized = stripAuditedMaterialSuffixes(apiName || diagnosticRaw);
+      var canonical = normalized.value;
+      if (!canonical || /^\([^()]+\)$/.test(canonical) || /^(?:UNKNOWN|Ismeretlen(?: commodity| material| input)?)$/i.test(canonical)) {
+        return {
+          modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+          registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+          uuid: uuid || null,
+          rawName: diagnosticRaw,
+          canonicalName: null,
+          displayName: null,
+          aliases: aliases,
+          nameSource: MATERIAL_NAME_SOURCE.NONE,
+          nameStatus: MATERIAL_NAME_STATUS.UNMAPPED,
+          diagnosticStatus: canonical ? MATERIAL_NAME_INVALID_REASON.UNMAPPED_NAME : MATERIAL_NAME_INVALID_REASON.EMPTY_NAME,
+          removedSuffixes: normalized.removedSuffixes
+        };
+      }
+      return {
+        modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+        registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+        uuid: uuid || null,
+        rawName: diagnosticRaw,
+        canonicalName: canonical,
+        displayName: canonical,
+        aliases: materialUniqueNames(aliases.concat([canonical])),
+        nameSource: normalized.removedSuffixes.length ? MATERIAL_NAME_SOURCE.SAFE_SUFFIX_NORMALIZATION : MATERIAL_NAME_SOURCE.API_EXACT,
+        nameStatus: MATERIAL_NAME_STATUS.RESOLVED,
+        diagnosticStatus: null,
+        removedSuffixes: normalized.removedSuffixes
+      };
+    }
+
+    function resolveMaterialDisplayName(input, fallback) {
+      var resolved = resolveMaterialName(input);
+      return resolved.nameStatus === MATERIAL_NAME_STATUS.RESOLVED ? resolved.displayName : (fallback === undefined ? null : fallback);
+    }
+
+    function withResolvedMaterialName(record, rawRecord) {
+      var source = Object.assign({}, record || {}, rawRecord || {});
+      var resolved = resolveMaterialName(source);
+      return Object.assign({}, record || {}, resolved, {
+        apiName: materialNameText(source.apiName || source.name || source.materialName),
+        rawName: resolved.rawName,
+        canonicalName: resolved.canonicalName,
+        displayName: resolved.displayName,
+        aliases: resolved.aliases.slice(),
+        nameSource: resolved.nameSource,
+        nameStatus: resolved.nameStatus,
+        nameDiagnosticStatus: resolved.diagnosticStatus,
+        namingModelVersion: MATERIAL_NAMING_MODEL_VERSION,
+        namingRegistryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION
+      });
+    }
+
+    function materialRecordsRelated(a, b) {
+      var aRefined = a && a.refinedVersion && a.refinedVersion.uuid;
+      var bRefined = b && b.refinedVersion && b.refinedVersion.uuid;
+      return Boolean((aRefined && aRefined === b.uuid) || (bRefined && bRefined === a.uuid));
+    }
+
+    function materialPrimaryRecord(records) {
+      return (records || []).slice().sort(function (a, b) {
+        function score(record) {
+          var categories = Array.isArray(record.categories) ? record.categories : [];
+          return (record.refinedVersion && record.refinedVersion.uuid ? 100 : 0) +
+            (categories.some(function (category) { return category && category !== "UNKNOWN"; }) ? 20 : 0) +
+            (record.kind === "mineable" ? 5 : 0);
+        }
+        return score(b) - score(a) || String(a.uuid).localeCompare(String(b.uuid));
+      })[0];
+    }
+
+    function buildMaterialDisplayIndex(records) {
+      var resolvedRecords = (records || []).map(function (record) { return withResolvedMaterialName(record); });
+      var visible = resolvedRecords.filter(function (record) { return record.nameStatus === MATERIAL_NAME_STATUS.RESOLVED; });
+      var byCanonical = new Map();
+      visible.forEach(function (record) {
+        var key = record.canonicalName.toLocaleLowerCase("en-US");
+        if (!byCanonical.has(key)) { byCanonical.set(key, []); }
+        byCanonical.get(key).push(record);
+      });
+      var projected = [];
+      byCanonical.forEach(function (sameNameRecords) {
+        var unvisited = new Set(sameNameRecords);
+        while (unvisited.size) {
+          var seed = unvisited.values().next().value;
+          var component = [seed];
+          unvisited.delete(seed);
+          for (var index = 0; index < component.length; index += 1) {
+            Array.from(unvisited).forEach(function (candidate) {
+              if (component.some(function (member) { return materialRecordsRelated(member, candidate); })) {
+                component.push(candidate);
+                unvisited.delete(candidate);
+              }
+            });
+          }
+          var primary = materialPrimaryRecord(component);
+          projected.push(Object.assign({}, primary, {
+            sourceUuids: component.map(function (record) { return record.uuid; }).filter(Boolean).sort(),
+            sourceRecords: component.map(function (record) {
+              return { uuid: record.uuid, rawName: record.rawName, apiName: record.apiName, categories: (record.categories || []).slice(), refinedVersionUuid: record.refinedVersion && record.refinedVersion.uuid || null };
+            }),
+            aliases: materialUniqueNames(component.reduce(function (all, record) { return all.concat(record.aliases || []); }, [])),
+            duplicateCanonicalStatus: component.length > 1 ? "RELATED_TECHNICAL_RECORDS" : "SINGLE_RECORD"
+          }));
+        }
+      });
+      return projected.sort(function (a, b) {
+        return a.displayName.localeCompare(b.displayName, "hu") || String(a.uuid).localeCompare(String(b.uuid));
+      });
+    }
+
+    function auditMaterialNames(records) {
+      var resolved = (records || []).map(function (record) { return withResolvedMaterialName(record); });
+      var displayIndex = buildMaterialDisplayIndex(resolved);
+      var canonicalGroups = new Map();
+      resolved.filter(function (record) { return record.nameStatus === MATERIAL_NAME_STATUS.RESOLVED; }).forEach(function (record) {
+        var key = record.canonicalName.toLocaleLowerCase("en-US");
+        if (!canonicalGroups.has(key)) { canonicalGroups.set(key, []); }
+        canonicalGroups.get(key).push(record);
+      });
+      var duplicateCanonical = Array.from(canonicalGroups.values()).filter(function (group) { return group.length > 1; }).map(function (group) {
+        var relatedPairs = 0;
+        group.forEach(function (record, index) {
+          group.slice(index + 1).forEach(function (candidate) {
+            if (materialRecordsRelated(record, candidate)) { relatedPairs += 1; }
+          });
+        });
+        return {
+          canonicalName: group[0].canonicalName,
+          recordCount: group.length,
+          relatedPairs: relatedPairs,
+          decision: relatedPairs ? "RELATED_TECHNICAL_RECORDS" : "SEPARATE_UNPROVEN",
+          records: group.map(function (record) {
+            return { uuid: record.uuid, rawName: record.rawName, apiName: record.apiName, kind: record.kind || null, categories: (record.categories || []).slice(), refinedVersionUuid: record.refinedVersion && record.refinedVersion.uuid || null };
+          })
+        };
+      }).sort(function (a, b) { return a.canonicalName.localeCompare(b.canonicalName, "hu"); });
+      var unresolved = resolved.filter(function (record) { return record.nameStatus !== MATERIAL_NAME_STATUS.RESOLVED; }).map(function (record) {
+        return { uuid: record.uuid || null, category: (record.categories || []).join(" / ") || record.kind || null, rawName: record.rawName, nameStatus: record.nameStatus, diagnosticStatus: record.nameDiagnosticStatus };
+      });
+      return {
+        modelVersion: MATERIAL_NAMING_MODEL_VERSION,
+        registryVersion: MATERIAL_NAME_ALIAS_REGISTRY_VERSION,
+        totalRawMaterialRecords: resolved.length,
+        resolvedCanonicalNames: resolved.filter(function (record) { return record.nameStatus === MATERIAL_NAME_STATUS.RESOLVED; }).length,
+        explicitAliasMatches: resolved.filter(function (record) { return record.nameSource === MATERIAL_NAME_SOURCE.EXPLICIT_ALIAS; }).length,
+        suffixNormalized: resolved.filter(function (record) { return record.nameSource === MATERIAL_NAME_SOURCE.SAFE_SUFFIX_NORMALIZATION; }).length,
+        apiExact: resolved.filter(function (record) { return record.nameSource === MATERIAL_NAME_SOURCE.API_EXACT; }).length,
+        unmapped: resolved.filter(function (record) { return record.nameStatus === MATERIAL_NAME_STATUS.UNMAPPED; }).length,
+        ambiguous: resolved.filter(function (record) { return record.nameStatus === MATERIAL_NAME_STATUS.AMBIGUOUS; }).length,
+        hiddenInvalidRecords: unresolved.length,
+        userFacingRecords: displayIndex.length,
+        explicitMappingRecordCount: MATERIAL_NAME_ALIASES.length,
+        unresolvedRecords: unresolved,
+        duplicateCanonical: duplicateCanonical
+      };
+    }
+    /* MATERIAL_NAMING_MODEL_END */
+
     var M3_MINING_CATEGORIES = Object.freeze({
       SHIP: "SHIP_MINING",
       VEHICLE: "VEHICLE_MINING",
@@ -7021,13 +7339,15 @@ code {
       var locations = (Array.isArray(raw.locations) ? raw.locations : []).map(function (location, index) {
         return normalizeMiningLocation(location, raw, provenance, index);
       });
-      return {
+      var normalized = {
         cacheKey: provenance.gameVersion + "::commodity-detail::" + raw.uuid,
-        recommendationModelVersion: 4,
+        recommendationModelVersion: 5,
         uuid: raw.uuid,
         key: raw.key || null,
         slug: raw.slug || null,
         name: raw.display_name || raw.name || "Ismeretlen commodity",
+        apiName: raw.name || null,
+        rawName: raw.display_name || raw.name || "",
         kind: raw.kind || null,
         categories: classification.categories,
         classificationSource: classification.source,
@@ -7049,16 +7369,20 @@ code {
         rawLocationCount: locations.length,
         provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
       };
+      return withResolvedMaterialName(normalized, raw);
     }
 
     function normalizeMiningCommodityIndex(raw, provenance) {
       var classification = classifyMiningCommodity(raw || {});
-      return {
+      var normalized = {
         cacheKey: provenance.gameVersion + "::commodity-index::" + raw.uuid,
         recordType: "COMMODITY_INDEX",
         uuid: raw.uuid,
+        key: raw.key || null,
         slug: raw.slug || null,
         name: raw.display_name || raw.name || "Ismeretlen commodity",
+        apiName: raw.name || null,
+        rawName: raw.display_name || raw.name || "",
         kind: raw.kind || null,
         categories: classification.categories,
         classificationSource: classification.source,
@@ -7070,8 +7394,14 @@ code {
         instability: m3FiniteNumber(raw.instability),
         resistance: m3FiniteNumber(raw.resistance),
         systems: Array.isArray(raw.systems) ? raw.systems.slice() : [],
+        commodityGroups: Array.isArray(raw.commodity_groups) ? raw.commodity_groups.slice() : [],
+        refinedVersion: raw.refined_version ? {
+          uuid: raw.refined_version.uuid || null,
+          name: raw.refined_version.name || null
+        } : null,
         provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
       };
+      return withResolvedMaterialName(normalized, raw);
     }
 
     function m3ConsistentMetric(values) {
@@ -7413,6 +7743,8 @@ code {
       });
       return {
         schemaVersion: 4,
+        commodityUuid: commodity && commodity.uuid || null,
+        commodityDisplayName: resolveMaterialDisplayName(commodity, "Ismeretlen material"),
         rankingOrder: ["PRIMARY_RESOURCE_GATE", "GROUP_PROBABILITY_SPAWN_DESC", "RELATIVE_PROBABILITY_OCCURRENCE_DESC", "HIGH_Q_QUANTIZED_VALUES_DESC", "QUALITY_RANGE_DESC"],
         systems: systemResults,
         decisions: decisions.map(function (candidate) {
@@ -7622,15 +7954,22 @@ code {
     function m61FilterMaterialIndex(records, query, category) {
       var foldedQuery = m61FoldSearchText(query);
       return (records || []).filter(function (record) {
+        var naming = resolveMaterialName(record);
+        if (naming.nameStatus !== MATERIAL_NAME_STATUS.RESOLVED) {
+          return false;
+        }
         if (category && (!Array.isArray(record.categories) || record.categories.indexOf(category) === -1)) {
           return false;
         }
         if (!foldedQuery) {
           return true;
         }
-        return m61FoldSearchText([record.name, record.uuid, record.slug, record.kind].join(" ")).indexOf(foldedQuery) !== -1;
+        return m61FoldSearchText([
+          naming.displayName, naming.canonicalName, naming.rawName,
+          (naming.aliases || []).join(" "), record.uuid, record.slug, record.key, record.kind
+        ].join(" ")).indexOf(foldedQuery) !== -1;
       }).sort(function (a, b) {
-        return String(a.name).localeCompare(String(b.name), "hu") || String(a.uuid).localeCompare(String(b.uuid));
+        return String(resolveMaterialDisplayName(a, "")).localeCompare(String(resolveMaterialDisplayName(b, "")), "hu") || String(a.uuid).localeCompare(String(b.uuid));
       });
     }
 
@@ -8604,9 +8943,27 @@ code {
       var records = (await database.getAll("miningNormalizedCache")).filter(function (record) {
         return record.provenance && record.provenance.gameVersion === version;
       });
+      var rawCommodityByUuid = new Map((await database.getAll("miningRawCache")).filter(function (record) {
+        return record.version === version && record.recordType === "RAW_COMMODITY_INDEX" && record.raw && record.raw.uuid;
+      }).map(function (record) { return [record.raw.uuid, record.raw]; }));
       state.miningCommodityIndex = records.filter(function (record) {
         return record.recordType === "COMMODITY_INDEX";
-      }).sort(function (a, b) { return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid); });
+      }).map(function (record) {
+        var raw = rawCommodityByUuid.get(record.uuid);
+        if (!raw) {
+          return withResolvedMaterialName(record);
+        }
+        return withResolvedMaterialName(Object.assign({}, record, {
+          key: raw.key || record.key || null,
+          apiName: raw.name || record.apiName || null,
+          rawName: raw.display_name || raw.name || record.rawName || record.name || "",
+          refinedVersion: raw.refined_version ? { uuid: raw.refined_version.uuid || null, name: raw.refined_version.name || null } : null,
+          commodityGroups: Array.isArray(raw.commodity_groups) ? raw.commodity_groups.slice() : (record.commodityGroups || [])
+        }), raw);
+      }).sort(function (a, b) {
+        return String(resolveMaterialDisplayName(a, a.rawName || a.name)).localeCompare(String(resolveMaterialDisplayName(b, b.rawName || b.name)), "hu") || a.uuid.localeCompare(b.uuid);
+      });
+      state.materialNamingAudit = auditMaterialNames(state.miningCommodityIndex);
       var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
       state.miningEquipment = {
         heads: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }),
@@ -8634,6 +8991,7 @@ code {
           target.stations = detail.stations;
         }
       });
+      logger.event("INFO", "MATERIAL_NAMING_AUDIT", "A központi materialnév-projekció elkészült.", state.materialNamingAudit);
       return records;
     }
 
@@ -8653,6 +9011,11 @@ code {
         : "A commodity lista és az equipment index dinamikusan, API-filterekből épül.");
       document.body.dataset.miningDatasetVersion = dataset ? dataset.version : "";
       document.body.dataset.miningCommodityCount = String(state.miningCommodityIndex.length);
+      var namingAudit = state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex);
+      document.body.dataset.materialNamingResolved = String(namingAudit.resolvedCanonicalNames);
+      document.body.dataset.materialNamingHidden = String(namingAudit.hiddenInvalidRecords);
+      document.body.dataset.materialNamingAmbiguous = String(namingAudit.ambiguous);
+      document.body.dataset.materialNamingRegistry = namingAudit.registryVersion;
       document.body.dataset.miningVehicleCount = String(state.miningVehicles.length);
       document.body.dataset.miningHeadCount = String(state.miningEquipment.heads.length);
       renderMaterialDatabaseResults();
@@ -8670,7 +9033,7 @@ code {
 
     function visibleMaterialDatabaseIndex() {
       return m61FilterMaterialIndex(
-        state.miningCommodityIndex,
+        buildMaterialDisplayIndex(state.miningCommodityIndex),
         document.getElementById("materialDatabaseSearch").value,
         document.getElementById("materialDatabaseCategory").value
       );
@@ -8702,7 +9065,7 @@ code {
         button.dataset.materialUuid = record.uuid;
         button.classList.toggle("active", Boolean(state.selectedMiningCommodity && state.selectedMiningCommodity.uuid === record.uuid));
         var title = document.createElement("strong");
-        title.textContent = record.name;
+        title.textContent = resolveMaterialDisplayName(record, "Ismeretlen material");
         var categories = document.createElement("span");
         categories.textContent = (record.categories || []).map(m61CategoryLabel).join(" / ") || "UNKNOWN";
         var radar = document.createElement("small");
@@ -8720,18 +9083,23 @@ code {
     function populateMiningCommoditySelect() {
       var select = document.getElementById("miningCommoditySelect");
       var selected = state.selectedMiningCommodity ? state.selectedMiningCommodity.uuid : select.value;
+      var displayIndex = buildMaterialDisplayIndex(state.miningCommodityIndex);
       select.replaceChildren();
       var empty = document.createElement("option");
       empty.value = "";
       empty.textContent = state.miningCommodityIndex.length ? "Válassz commodityt" : "Nincs betöltött commodity";
       select.append(empty);
-      state.miningCommodityIndex.forEach(function (commodity) {
+      displayIndex.forEach(function (commodity) {
         var option = document.createElement("option");
         option.value = commodity.uuid;
-        option.textContent = commodity.name + " · " + commodity.categories.join(" / ");
+        option.textContent = resolveMaterialDisplayName(commodity, "Ismeretlen material") + " · " + commodity.categories.map(m61CategoryLabel).join(" / ");
+        option.dataset.sourceUuids = (commodity.sourceUuids || [commodity.uuid]).join(",");
         select.append(option);
       });
-      select.value = state.miningCommodityIndex.some(function (commodity) { return commodity.uuid === selected; }) ? selected : "";
+      var selectedProjection = displayIndex.find(function (commodity) {
+        return commodity.uuid === selected || (commodity.sourceUuids || []).indexOf(selected) !== -1;
+      });
+      select.value = selectedProjection ? selectedProjection.uuid : "";
       document.getElementById("addMiningLoadoutButton").disabled = !select.value;
       renderMaterialDatabaseResults();
     }
@@ -8930,7 +9298,7 @@ code {
       var cached = await database.get("miningNormalizedCache", cacheKey);
       var normalized = cached;
       var origin = "CACHE";
-      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 4)) {
+      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 5 || cached.namingModelVersion !== MATERIAL_NAMING_MODEL_VERSION)) {
         var cachedRaw = await database.get("miningRawCache", version + "::raw::commodity-detail::" + cached.uuid);
         if (cachedRaw && cachedRaw.raw) {
           normalized = normalizeMiningCommodity(cachedRaw.raw, miningProvenance(
@@ -8960,7 +9328,17 @@ code {
         }, normalized);
         origin = "API";
       }
-      state.selectedMiningCommodity = normalized;
+      var displayProjection = buildMaterialDisplayIndex(state.miningCommodityIndex).find(function (record) {
+        return record.uuid === normalized.uuid || (record.sourceUuids || []).indexOf(normalized.uuid) !== -1;
+      });
+      state.selectedMiningCommodity = Object.assign({}, normalized, displayProjection ? {
+        displayName: displayProjection.displayName,
+        canonicalName: displayProjection.canonicalName,
+        aliases: displayProjection.aliases.slice(),
+        sourceUuids: displayProjection.sourceUuids.slice(),
+        sourceRecords: m4Clone(displayProjection.sourceRecords),
+        duplicateCanonicalStatus: displayProjection.duplicateCanonicalStatus
+      } : {});
       document.getElementById("miningCommoditySelect").value = normalized.uuid;
       document.getElementById("addMiningLoadoutButton").disabled = false;
       renderSelectedMiningCommodity(origin);
@@ -9008,9 +9386,12 @@ code {
         return null;
       }
       var selectedUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
-      var candidate = state.miningCommodityIndex.find(function (commodity) { return commodity.uuid === selectedUuid; }) ||
-        state.miningCommodityIndex.find(function (commodity) { return /^Agricium\b/i.test(commodity.name); }) ||
-        state.miningCommodityIndex[0];
+      var displayIndex = buildMaterialDisplayIndex(state.miningCommodityIndex);
+      var candidate = displayIndex.find(function (commodity) {
+        return commodity.uuid === selectedUuid || (commodity.sourceUuids || []).indexOf(selectedUuid) !== -1;
+      }) || displayIndex.find(function (commodity) {
+        return /^Agricium$/i.test(resolveMaterialDisplayName(commodity, ""));
+      }) || displayIndex[0];
       try {
         return await loadMiningCommodityDetail(candidate.uuid);
       } catch (error) {
@@ -9048,7 +9429,11 @@ code {
       state.uexCommodityMappings.forEach(function (mapping) {
         var option = document.createElement("option");
         option.value = mapping.wikiCommodityUuid;
-        option.textContent = mapping.wikiCommodityName + " · " + mapping.status;
+        option.textContent = resolveMaterialDisplayName({
+          uuid: mapping.wikiCommodityUuid,
+          name: mapping.wikiCommodityName,
+          rawName: mapping.wikiCommodityName
+        }, "Ismeretlen material") + " · " + mapping.status;
         select.append(option);
       });
       if (state.uexCommodityMappings.some(function (mapping) { return mapping.wikiCommodityUuid === selected; })) {
@@ -9177,7 +9562,7 @@ code {
         });
       });
       state.requirementCommodityUuidBySlotId = slotCommodityMap;
-      var detailsByUuid = new Map(detailRecords.map(function (record) { return [record.uuid, record]; }));
+      var detailsByUuid = new Map(detailRecords.map(function (record) { return [record.uuid, withResolvedMaterialName(record)]; }));
       var intelligence = new Map();
       m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null).forEach(function (commodity) {
         var detail = detailsByUuid.get(commodity.uuid) || null;
@@ -9195,7 +9580,7 @@ code {
           snapshotSchemaVersion: 1,
           generatedFor: "M6_STANDALONE_EXPORT",
           commodityUuid: commodity.uuid,
-          commodityName: commodity.name,
+          commodityName: resolveMaterialDisplayName(commodity, "Ismeretlen material"),
           scVersion: state.gameVersion ? state.gameVersion.code : null,
           mining: {
             status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
@@ -9597,7 +9982,9 @@ code {
         container.append(noSelection);
         return;
       }
-      var recommendation = state.uexRefineryRecommendations.get(commodity.uuid);
+      var recommendation = (commodity.sourceUuids || [commodity.uuid]).map(function (uuid) {
+        return state.uexRefineryRecommendations.get(uuid);
+      }).find(Boolean);
       if (!recommendation || recommendation.status === "MAPPING_UNRESOLVED") {
         var unresolved = document.createElement("p");
         unresolved.className = "spg-muted";
@@ -9640,7 +10027,9 @@ code {
         container.append(noSelection);
         return;
       }
-      var loadout = m61DefaultLoadout(state.miningLoadouts, commodity.uuid);
+      var loadout = (commodity.sourceUuids || [commodity.uuid]).map(function (uuid) {
+        return m61DefaultLoadout(state.miningLoadouts, uuid);
+      }).find(Boolean) || null;
       if (!loadout) {
         var noLoadout = document.createElement("p");
         noLoadout.className = "spg-muted";
@@ -9689,7 +10078,7 @@ code {
         return;
       }
       [
-        ["Material", commodity.name],
+        ["Material", resolveMaterialDisplayName(commodity, "Ismeretlen material")],
         ["Mining kategória", commodity.categories.map(m61CategoryLabel).join(" / ") || "UNKNOWN"],
         ["Radar Signature", m61ApiMetric(commodity.radarSignature)],
         ["Rarity", m61ApiMetric(commodity.rarity) + (commodity.rarity && commodity.raritySourceField === "tier" ? " · API tier" : "")],
@@ -10156,7 +10545,7 @@ code {
         slot.className = "spg-recipe-slot";
         slot.textContent = requirement.recipeSlotName;
         var material = document.createElement("strong");
-        material.textContent = requirement.materialName;
+        material.textContent = resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material");
         title.append(slot, material);
 
         var capability = document.createElement("span");
@@ -10271,19 +10660,19 @@ code {
       var datalist = document.getElementById("knownMaterials");
       var records = new Map();
       state.materialBatches.forEach(function (batch) {
-        records.set(batch.materialUuid, { uuid: batch.materialUuid, name: batch.materialName });
+        records.set(batch.materialUuid, { uuid: batch.materialUuid, name: resolveMaterialDisplayName({ uuid: batch.materialUuid, materialName: batch.materialName }, "Ismeretlen material"), rawName: batch.materialName });
       });
       state.craftingCards.forEach(function (card) {
         (card.requirements || []).forEach(function (requirement) {
           if (requirement.ingredientUuid) {
-            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: requirement.materialName });
+            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material"), rawName: requirement.materialName });
           }
         });
       });
       if (state.normalizedBlueprint) {
         state.normalizedBlueprint.recipeSlots.forEach(function (requirement) {
           if (requirement.ingredientUuid) {
-            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: requirement.materialName });
+            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material"), rawName: requirement.materialName });
           }
         });
       }
@@ -10428,7 +10817,7 @@ code {
         var title = document.createElement("div");
         var name = document.createElement("h3");
         var uuid = document.createElement("small");
-        name.textContent = group.materialName;
+        name.textContent = resolveMaterialDisplayName({ uuid: group.materialUuid, materialName: group.materialName }, "Ismeretlen material");
         uuid.textContent = group.materialUuid;
         title.append(name, uuid);
         var status = document.createElement("span");
@@ -10528,7 +10917,7 @@ code {
         return;
       }
       Array.from(groups.values()).sort(function (a, b) {
-        return a.materialName.localeCompare(b.materialName, "hu") || a.unit.localeCompare(b.unit);
+        return resolveMaterialDisplayName({ uuid: a.materialUuid, materialName: a.materialName }, "").localeCompare(resolveMaterialDisplayName({ uuid: b.materialUuid, materialName: b.materialName }, ""), "hu") || a.unit.localeCompare(b.unit);
       }).forEach(function (group) {
         var article = document.createElement("article");
         article.className = "spg-material-group";
@@ -10536,7 +10925,7 @@ code {
         heading.className = "spg-material-group-heading";
         var title = document.createElement("div");
         var name = document.createElement("strong");
-        name.textContent = group.materialName;
+        name.textContent = resolveMaterialDisplayName({ uuid: group.materialUuid, materialName: group.materialName }, "Ismeretlen material");
         var uuid = document.createElement("small");
         uuid.textContent = group.materialUuid;
         title.append(name, uuid);
@@ -10622,7 +11011,7 @@ code {
       slot.className = "spg-recipe-slot";
       slot.textContent = requirement.recipeSlotName;
       var material = document.createElement("strong");
-      material.textContent = requirement.materialName;
+      material.textContent = resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material");
       title.append(slot, material);
       var slotStrategies = card.slotStrategies || {};
       var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
@@ -10703,7 +11092,7 @@ code {
       if (allocation && allocation.bottleneck) {
         var bottleneck = document.createElement("p");
         bottleneck.className = "spg-bottleneck";
-        bottleneck.textContent = "Szűk keresztmetszet: " + requirement.materialName + " / " + requirement.recipeSlotName;
+        bottleneck.textContent = "Szűk keresztmetszet: " + resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material") + " / " + requirement.recipeSlotName;
         article.append(bottleneck);
       }
       if (trace) {
@@ -11028,7 +11417,7 @@ code {
         return;
       }
       state.editingBatchId = batchId;
-      document.getElementById("batchMaterialName").value = batch.materialName;
+      document.getElementById("batchMaterialName").value = resolveMaterialDisplayName({ uuid: batch.materialUuid, materialName: batch.materialName }, batch.materialName);
       document.getElementById("batchMaterialUuid").value = batch.materialUuid;
       document.getElementById("batchQuality").value = batch.quality == null ? "" : String(batch.quality);
       document.getElementById("batchQuantity").value = batch.unit === "SCU" ? String(fromScuUnits(batch.quantityUnits)) : String(batch.quantityUnits);
@@ -11410,9 +11799,11 @@ code {
     }
 
     function currentMaterialMiningLoadouts() {
-      var materialUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
+      var materialUuids = new Set(state.selectedMiningCommodity
+        ? (state.selectedMiningCommodity.sourceUuids || [state.selectedMiningCommodity.uuid])
+        : []);
       return state.miningLoadouts.filter(function (loadout) {
-        return loadout.materialUuid === materialUuid;
+        return materialUuids.has(loadout.materialUuid);
       });
     }
 
@@ -11501,8 +11892,8 @@ code {
       return normalizeStoredMiningLoadout({
         id: makeId("loadout"),
         materialUuid: state.selectedMiningCommodity.uuid,
-        materialName: state.selectedMiningCommodity.name,
-        name: state.selectedMiningCommodity.name + " Loadout " + (materialLoadouts.length + 1),
+        materialName: resolveMaterialDisplayName(state.selectedMiningCommodity, "Ismeretlen material"),
+        name: resolveMaterialDisplayName(state.selectedMiningCommodity, "Material") + " Loadout " + (materialLoadouts.length + 1),
         isDefault: materialLoadouts.length === 0,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -11920,6 +12311,11 @@ code {
       var loadoutCount = 0;
       var refinerySystemCount = 0;
       var requirements = (card.requirements || []).map(function (requirement) {
+        var materialDisplayName = resolveMaterialDisplayName({
+          uuid: requirement.ingredientUuid,
+          materialName: requirement.materialName,
+          rawName: requirement.materialName
+        }, "Ismeretlen material");
         var allocation = resultBySlot.get(requirement.id) || {};
         var trace = traceBySlot.get(requirement.id) || null;
         var intelligence = allocation.materialIntelligence || null;
@@ -11933,12 +12329,12 @@ code {
         loadoutCount += selectedLoadout ? 1 : 0;
         refinerySystemCount += refinery && refinery.status === "AVAILABLE" ? (refinery.systems || []).length : 0;
         if (!intelligence) {
-          missingData.push(requirement.materialName + ": nincs biztonságosan kapcsolható mining commodity");
+          missingData.push(materialDisplayName + ": nincs biztonságosan kapcsolható mining commodity");
         } else if (!mining || mining.status !== "AVAILABLE") {
-          missingData.push(requirement.materialName + ": mining location részlet nincs cache-ben");
+          missingData.push(materialDisplayName + ": mining location részlet nincs cache-ben");
         }
         if (refinery && refinery.status === "MAPPING_UNRESOLVED") {
-          missingData.push(requirement.materialName + ": UEX mapping nem oldható fel");
+          missingData.push(materialDisplayName + ": UEX mapping nem oldható fel");
         }
         var availableUnitsAtSlot = trace ? (trace.available || []).reduce(function (sum, batch) {
           return sum + (batch.unit === requirement.unit ? Number(batch.availableUnitsAtSlot || 0) : 0);
@@ -11948,7 +12344,7 @@ code {
           recipeSlotName: requirement.recipeSlotName,
           materialUuid: requirement.ingredientUuid,
           commodityUuid: allocation.commodityUuid || requirement.commodityUuid || null,
-          materialName: requirement.materialName,
+          materialName: materialDisplayName,
           unit: requirement.unit,
           perCraftUnits: requirement.requiredQuantityUnits,
           requiredUnits: Number(allocation.requiredUnits || (requirement.requiredQuantityUnits * Number(card.quantity || 1))),
@@ -12553,6 +12949,28 @@ code {
         return "primary gate + secondary kizárás · SHIP_MINING · 3 module slot · 5 dinamikus station";
       });
 
+      await check("V003 material canonical naming", async function () {
+        var agricium = resolveMaterialName({
+          uuid: "fc1ec740-3047-48d8-81f0-396f4c9a90ef",
+          name: "Agricium (Ore)",
+          display_name: "Agricium (Ore) (UnrefinedOres)"
+        });
+        var beryl = resolveMaterialName({
+          uuid: "eb503701-389a-48a1-af28-eb7374009d5d",
+          name: "Beryl (Raw)",
+          display_name: "Beryl (Raw) (Raw_Minerals)"
+        });
+        var invalid = resolveMaterialName({ uuid: "272539c8-e211-4c82-8bd0-6ecaabbc9c10", name: "", display_name: " (Organic)" });
+        assert(agricium.displayName === "Agricium" && beryl.displayName === "Beryl", "A biztonságos suffix-normalization hibás.");
+        assert(invalid.nameStatus === MATERIAL_NAME_STATUS.UNMAPPED && invalid.diagnosticStatus === MATERIAL_NAME_INVALID_REASON.TECHNICAL_FRAGMENT_ONLY, "A technikai fragment kizárása hibás.");
+        var audit = state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex);
+        assert(audit.ambiguous === 0, "Az aktív materialnév-indexben név-ambiguitás maradt.");
+        assert(buildMaterialDisplayIndex(state.miningCommodityIndex).every(function (record) {
+          return Boolean(record.displayName) && !/(?:\(Ore\)|\(Raw\)|\(UnrefinedOres\)|\(Raw_Minerals\))/.test(record.displayName);
+        }), "A Material Database user-facing indexében technikai név maradt.");
+        return audit.resolvedCanonicalNames + " resolved · " + audit.hiddenInvalidRecords + " hidden · registry " + audit.registryVersion;
+      });
+
       await check("M4 Combined + backup rollback", async function () {
         var combined = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
         var engineReserved = state.allocationResult.batchUsage.reduce(function (sum, usage) { return sum + usage.reservedUnits; }, 0);
@@ -12740,6 +13158,7 @@ code {
           missingMaterialCount: (state.combinedMaterials || []).filter(function (group) { return group.missingUnits > 0; }).length,
           results: m4Clone(state.combinedMaterials || [])
         },
+        materialNaming: m4Clone(state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex)),
         miningRecommendation: selectedFarmRecommendation ? {
           schemaVersion: selectedFarmRecommendation.schemaVersion,
           commodityUuid: state.selectedMiningCommodity.uuid,
@@ -12802,7 +13221,7 @@ code {
       }
       var snapshot = await buildDiagnosticStateSnapshot();
       container.replaceChildren();
-      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
+      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Materialnév", snapshot.materialNaming.resolvedCanonicalNames + " resolved · " + snapshot.materialNaming.hiddenInvalidRecords + " hidden"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
         var item = document.createElement("span");
         var label = document.createElement("small");
         var content = document.createElement("strong");
@@ -13350,6 +13769,11 @@ code {
       addCurrentBlueprintCard: addCurrentBlueprintCard,
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,
+      resolveMaterialName: resolveMaterialName,
+      resolveMaterialDisplayName: resolveMaterialDisplayName,
+      buildMaterialDisplayIndex: buildMaterialDisplayIndex,
+      auditMaterialNames: auditMaterialNames,
+      materialNameAliases: MATERIAL_NAME_ALIASES,
       compareMiningLocations: compareMiningLocations,
       mergeBestMiningLocationsBySystem: mergeBestMiningLocationsBySystem,
       buildMiningFarmRecommendations: buildMiningFarmRecommendations,

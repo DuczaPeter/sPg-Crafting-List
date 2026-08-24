@@ -1,0 +1,34 @@
+{
+  "cycle": "V003-C003",
+  "testedAt": "2026-08-24T18:27:42+02:00",
+  "runner": "Codex Chrome control",
+  "mode": "REAL_CHROME_LOCALHOST",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "appVersion": "V003-dev",
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 14,
+    "failed": 0,
+    "materialNamingCheck": "71 resolved · 1 hidden · registry V003-C003-1",
+    "standaloneExport": "PASS"
+  },
+  "materialDatabase": {
+    "tungstenResultCount": 1,
+    "tungstenDisplayName": "Tungsten",
+    "technicalSuffixVisible": false,
+    "rawAgriciumSearchResultCount": 1,
+    "rawAgriciumSearchDisplayName": "Agricium",
+    "beradomAliasSearchResultCount": 1,
+    "beradomAliasDisplayName": "Beradon"
+  },
+  "userDataFingerprintBeforeReload": "e6d8dec8",
+  "userDataFingerprintAfterReload": "e6d8dec8",
+  "userDataChanged": false,
+  "applicationConsoleWarningCount": 0,
+  "applicationConsoleErrorCount": 0,
+  "manualFileGate": {
+    "status": "PASS",
+    "evidenceOwner": "USER",
+    "note": "A korabbi V003 file:// technikai baseline minden sora zold volt; nem Codex automation."
+  }
+}
