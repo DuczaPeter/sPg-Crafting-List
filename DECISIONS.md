@@ -67,3 +67,17 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Ship Mining kaphat kulon NORMAL es SPACE listat; nem-Ship materialnak nem keszul ertelmetlen SPACE ajanlas.
 - Az SCMDB csak read-only masodlagos, emberi naming/grouping sanity reference. Szazaleka nem Wiki spawn/occurrence, nem ranking input, es nincs runtime SCMDB-fugges.
 - Stabil V003 release vagy tag a C004 fejlesztesi korben sem keszulhet kulon felhasznaloi jovahagyas nelkul.
+
+## 2026-08-24 - V003-C005 forraskonzisztencia es final-card roadmap
+
+- Radar Signature user-facing kanonikus forrasa kizárólag az `Info/Radar Signature.png`; a Wiki `signature` marad `API_RAW_NOT_USER_FACING`.
+- Minden mas mining adat kanonikus forrasa a Star Citizen Wiki API `4.9.0-LIVE.12232306`: identity, UUID, rendszer, location, provider, resource, primary/secondary, spawn, occurrence, Quality es ranking.
+- Az SCMDB `4.10.0-ptu.12497254` csak read-only comparison/naming/grouping sanity reference; verzioelterese nem automatikus hiba, es nem irhatja felul a Wiki eredmenyt.
+- Lagrange F Aluminum primary resource a SPACE dense rank 2 resze. Csak az ugyanott levo Corundum resource Aluminum mellékanyaga secondary es kizarando. A C004 Top-3 nem valtozik.
+- Radar kategoriak csak exact UUID + bizonyitott Wiki mining category flag/method alapjan vezethetok le. A Wiki `signature=3000` onmagaban nem FPS-bizonyitek; Carinite, Jaclium, Sadaryx es Saldynium ezert `Nincs adat`.
+- A vegso V003 felhasznaloi alapnezet card-first lesz. A kartyan csak gameplayhez szukseges adatok maradnak: blueprint/item nev, Size, Class/Type, Grade/Quality, Crafting Time, requested quantity, max craftable, Recipe Slot, material, egy darabra es osszesen szukseges mennyiseg, keszlet, hiany/maradek, Quality rule, Mining+UEX snapshot es curated Radar.
+- A Radar PNG szinei csak bizonyitott material mappingnel adhatnak nevszint, chip-hatteret es border/accentet; ismeretlen anyag neutralis fallbacket kap.
+- Blueprint, material, mining, refinery es radar elemek kattinthatoak lesznek, de a reszletnezet ugyanabban az egyfajlos HTML-ben marad. Ott jelenhet meg teljes Top-3, spawn, occurrence, Quality, provider, source, radar, refinery es Wiki deep link.
+- Nem keszul kulon runtime HTML. A default nezet Crafting Card + szukseges user UI; diagnosztika, baseline, debug es raw adatok Advanced/Diagnostics ala kerulnek.
+- A standalone export ugyanazt a tiszta final-card adatmodellt hasznalja. A roadmap: V003-C006 adatkontraktus, V003-C007 card-first UI, V003-C008 in-app detail/deep link, V003-C009 Advanced/Diagnostics, V003-C010 standalone parity es acceptance.
+- A roadmap zarasa nem V003 release-engedely. Stabil V003 tag/release csak kulon felhasznaloi jovahagyassal keszulhet.

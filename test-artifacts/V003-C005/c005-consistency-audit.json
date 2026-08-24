@@ -1,0 +1,2792 @@
+{
+  "auditId": "V003-C005-CONSISTENCY",
+  "auditedAt": "2026-08-24T18:17:47.068Z",
+  "sources": {
+    "radarSignature": {
+      "canonical": "Info/Radar Signature.png",
+      "role": "USER_FACING_CANONICAL"
+    },
+    "wiki": {
+      "baseUrl": "https://api.star-citizen.wiki/api",
+      "version": "4.9.0-LIVE.12232306",
+      "role": "CANONICAL_MINING_GAME_DATA"
+    },
+    "scmdb": {
+      "version": "4.10.0-ptu.12497254",
+      "role": "READ_ONLY_COMPARISON_ONLY"
+    }
+  },
+  "lagrangeFVerdict": {
+    "verdict": "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
+    "topThreeChanged": false,
+    "trace": [
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::0b8b226a-076f-44fb-a522-dee6b0c4be4c",
+          "rawUuid": "0b8b226a-076f-44fb-a522-dee6b0c4be4c",
+          "name": "ARC L1",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Aluminum",
+          "uuid": "1c949ce0-c99b-485b-b783-2ea3b49162c0",
+          "label": "Aluminum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "PRIMARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_MATCH",
+        "spawn": 15,
+        "occurrence": 17.8,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 245,
+              "max": 490,
+              "quantizedValues": [
+                318,
+                511
+              ],
+              "materialIndex": 0
+            },
+            {
+              "min": 501,
+              "max": 1000,
+              "quantizedValues": [
+                511,
+                614,
+                783,
+                896,
+                919,
+                953,
+                1000
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 1000,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": {
+          "label": "Lagrange F",
+          "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+          "evidence": {
+            "kind": "EXACT_API_PROVIDER_RESOURCE_PARENT",
+            "providerNames": [
+              "HPP_Lagrange_F"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "parentUuids": [
+              "34ff378f-faee-47bb-b5fe-f505e665c5ca"
+            ],
+            "parentNames": [
+              "Stanton"
+            ],
+            "locationTypes": [
+              "Asteroid"
+            ],
+            "resourceUuids": [
+              "1c949ce0-c99b-485b-b783-2ea3b49162c0"
+            ],
+            "resourceKeys": [
+              "MineableRock_AsteroidCommon_Aluminum"
+            ]
+          }
+        },
+        "finalRank": 2,
+        "finalDecision": "RANKED_SPACE",
+        "includedOrExcluded": "INCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::0b8b226a-076f-44fb-a522-dee6b0c4be4c",
+          "rawUuid": "0b8b226a-076f-44fb-a522-dee6b0c4be4c",
+          "name": "ARC L1",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Corundum",
+          "uuid": "b8c75d71-52f1-44bb-9d27-61075591d91a",
+          "label": "Corundum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "SECONDARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_DIFFERS",
+        "spawn": 15,
+        "occurrence": 17.9,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 395,
+              "max": 789,
+              "quantizedValues": [
+                318,
+                511,
+                614,
+                783
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 783,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": null,
+        "finalRank": null,
+        "finalDecision": "SECONDARY_EXCLUDED",
+        "includedOrExcluded": "EXCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::6c9dd307-7b70-451f-bb38-9e70c0177f46",
+          "rawUuid": "6c9dd307-7b70-451f-bb38-9e70c0177f46",
+          "name": "ARC L2",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Aluminum",
+          "uuid": "1c949ce0-c99b-485b-b783-2ea3b49162c0",
+          "label": "Aluminum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "PRIMARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_MATCH",
+        "spawn": 15,
+        "occurrence": 17.8,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 245,
+              "max": 490,
+              "quantizedValues": [
+                318,
+                511
+              ],
+              "materialIndex": 0
+            },
+            {
+              "min": 501,
+              "max": 1000,
+              "quantizedValues": [
+                511,
+                614,
+                783,
+                896,
+                919,
+                953,
+                1000
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 1000,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": {
+          "label": "Lagrange F",
+          "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+          "evidence": {
+            "kind": "EXACT_API_PROVIDER_RESOURCE_PARENT",
+            "providerNames": [
+              "HPP_Lagrange_F"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "parentUuids": [
+              "34ff378f-faee-47bb-b5fe-f505e665c5ca"
+            ],
+            "parentNames": [
+              "Stanton"
+            ],
+            "locationTypes": [
+              "Asteroid"
+            ],
+            "resourceUuids": [
+              "1c949ce0-c99b-485b-b783-2ea3b49162c0"
+            ],
+            "resourceKeys": [
+              "MineableRock_AsteroidCommon_Aluminum"
+            ]
+          }
+        },
+        "finalRank": 2,
+        "finalDecision": "RANKED_SPACE",
+        "includedOrExcluded": "INCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::6c9dd307-7b70-451f-bb38-9e70c0177f46",
+          "rawUuid": "6c9dd307-7b70-451f-bb38-9e70c0177f46",
+          "name": "ARC L2",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Corundum",
+          "uuid": "b8c75d71-52f1-44bb-9d27-61075591d91a",
+          "label": "Corundum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "SECONDARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_DIFFERS",
+        "spawn": 15,
+        "occurrence": 17.9,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 395,
+              "max": 789,
+              "quantizedValues": [
+                318,
+                511,
+                614,
+                783
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 783,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": null,
+        "finalRank": null,
+        "finalDecision": "SECONDARY_EXCLUDED",
+        "includedOrExcluded": "EXCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::ba1492c3-5e0a-4e7e-83e8-f55aed92a756",
+          "rawUuid": "ba1492c3-5e0a-4e7e-83e8-f55aed92a756",
+          "name": "ARC L4",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Aluminum",
+          "uuid": "1c949ce0-c99b-485b-b783-2ea3b49162c0",
+          "label": "Aluminum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "PRIMARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_MATCH",
+        "spawn": 15,
+        "occurrence": 17.8,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 245,
+              "max": 490,
+              "quantizedValues": [
+                318,
+                511
+              ],
+              "materialIndex": 0
+            },
+            {
+              "min": 501,
+              "max": 1000,
+              "quantizedValues": [
+                511,
+                614,
+                783,
+                896,
+                919,
+                953,
+                1000
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 1000,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": {
+          "label": "Lagrange F",
+          "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+          "evidence": {
+            "kind": "EXACT_API_PROVIDER_RESOURCE_PARENT",
+            "providerNames": [
+              "HPP_Lagrange_F"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "parentUuids": [
+              "34ff378f-faee-47bb-b5fe-f505e665c5ca"
+            ],
+            "parentNames": [
+              "Stanton"
+            ],
+            "locationTypes": [
+              "Asteroid"
+            ],
+            "resourceUuids": [
+              "1c949ce0-c99b-485b-b783-2ea3b49162c0"
+            ],
+            "resourceKeys": [
+              "MineableRock_AsteroidCommon_Aluminum"
+            ]
+          }
+        },
+        "finalRank": 2,
+        "finalDecision": "RANKED_SPACE",
+        "includedOrExcluded": "INCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::ba1492c3-5e0a-4e7e-83e8-f55aed92a756",
+          "rawUuid": "ba1492c3-5e0a-4e7e-83e8-f55aed92a756",
+          "name": "ARC L4",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Corundum",
+          "uuid": "b8c75d71-52f1-44bb-9d27-61075591d91a",
+          "label": "Corundum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "SECONDARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_DIFFERS",
+        "spawn": 15,
+        "occurrence": 17.9,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 395,
+              "max": 789,
+              "quantizedValues": [
+                318,
+                511,
+                614,
+                783
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 783,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": null,
+        "finalRank": null,
+        "finalDecision": "SECONDARY_EXCLUDED",
+        "includedOrExcluded": "EXCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::ebe4b6d6-9013-4ad9-bd25-7a8390262c4b",
+          "rawUuid": "ebe4b6d6-9013-4ad9-bd25-7a8390262c4b",
+          "name": "HUR L2",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Aluminum",
+          "uuid": "1c949ce0-c99b-485b-b783-2ea3b49162c0",
+          "label": "Aluminum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "PRIMARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_MATCH",
+        "spawn": 15,
+        "occurrence": 17.8,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 245,
+              "max": 490,
+              "quantizedValues": [
+                318,
+                511
+              ],
+              "materialIndex": 0
+            },
+            {
+              "min": 501,
+              "max": 1000,
+              "quantizedValues": [
+                511,
+                614,
+                783,
+                896,
+                919,
+                953,
+                1000
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783,
+            896,
+            919,
+            953,
+            1000
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 1000,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": {
+          "label": "Lagrange F",
+          "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+          "evidence": {
+            "kind": "EXACT_API_PROVIDER_RESOURCE_PARENT",
+            "providerNames": [
+              "HPP_Lagrange_F"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "parentUuids": [
+              "34ff378f-faee-47bb-b5fe-f505e665c5ca"
+            ],
+            "parentNames": [
+              "Stanton"
+            ],
+            "locationTypes": [
+              "Asteroid"
+            ],
+            "resourceUuids": [
+              "1c949ce0-c99b-485b-b783-2ea3b49162c0"
+            ],
+            "resourceKeys": [
+              "MineableRock_AsteroidCommon_Aluminum"
+            ]
+          }
+        },
+        "finalRank": 2,
+        "finalDecision": "RANKED_SPACE",
+        "includedOrExcluded": "INCLUDED"
+      },
+      {
+        "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+        "targetMaterialUuids": [
+          "e30bdd32-8fd5-44b8-9994-5fd253a16c37"
+        ],
+        "location": {
+          "id": "e30bdd32-8fd5-44b8-9994-5fd253a16c37::location::ebe4b6d6-9013-4ad9-bd25-7a8390262c4b",
+          "rawUuid": "ebe4b6d6-9013-4ad9-bd25-7a8390262c4b",
+          "name": "HUR L2",
+          "type": "Asteroid"
+        },
+        "provider": [
+          "HPP_Lagrange_F"
+        ],
+        "parent": {
+          "uuid": "34ff378f-faee-47bb-b5fe-f505e665c5ca",
+          "name": "Stanton",
+          "type": "Star"
+        },
+        "resource": {
+          "key": "MineableRock_AsteroidCommon_Corundum",
+          "uuid": "b8c75d71-52f1-44bb-9d27-61075591d91a",
+          "label": "Corundum",
+          "group": "SpaceShip_Mineables",
+          "kind": "mineable"
+        },
+        "primaryOrSecondary": "SECONDARY",
+        "primaryGateResult": "API_RESOURCE_LABEL_DIFFERS",
+        "spawn": 15,
+        "occurrence": 17.9,
+        "qualityTuple": {
+          "ranges": [
+            {
+              "min": 395,
+              "max": 789,
+              "quantizedValues": [
+                318,
+                511,
+                614,
+                783
+              ],
+              "materialIndex": 2
+            }
+          ],
+          "quantizedValues": [
+            318,
+            511,
+            614,
+            783
+          ],
+          "highQualityValues": [
+            511,
+            614,
+            783
+          ],
+          "hasHighQuality": true,
+          "reachableMinimum": 318,
+          "reachableMaximum": 783,
+          "evidence": "API_QUALITY_QUANTIZED_VALUES"
+        },
+        "presentationGroup": null,
+        "finalRank": null,
+        "finalDecision": "SECONDARY_EXCLUDED",
+        "includedOrExcluded": "EXCLUDED"
+      }
+    ]
+  },
+  "radarReconciliation": {
+    "rawRecords": 72,
+    "userFacingRecords": 64,
+    "verified": 33,
+    "unmapped": 31,
+    "previouslyFalselyUnmappedNowVerified": [],
+    "provenRocFpsMaterials": [
+      {
+        "canonicalName": "Beradon",
+        "apiName": "Beradom",
+        "uuid": "c339897c-d682-48ad-a16f-daf145bc0f4d",
+        "miningCategory": "VEHICLE_MINING",
+        "categoryEvidence": {
+          "flag": "has_ground_vehicle_mineables=true",
+          "method": "Ground Vehicle",
+          "locationCount": 18
+        },
+        "radarResult": "4000–28 000 (1–7× cluster)",
+        "radarSourceRow": "ROC Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Feynmaline",
+        "apiName": "Feynmaline",
+        "uuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        "miningCategory": "VEHICLE_MINING",
+        "categoryEvidence": {
+          "flag": "has_ground_vehicle_mineables=true",
+          "method": "Ground Vehicle",
+          "locationCount": 18
+        },
+        "radarResult": "4000–28 000 (1–7× cluster)",
+        "radarSourceRow": "ROC Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Glacosite",
+        "apiName": "Glacosite",
+        "uuid": "960eda23-d77c-425e-8cbd-89d94ca6e2aa",
+        "miningCategory": "VEHICLE_MINING",
+        "categoryEvidence": {
+          "flag": "has_ground_vehicle_mineables=true",
+          "method": "Ground Vehicle",
+          "locationCount": 18
+        },
+        "radarResult": "4000–28 000 (1–7× cluster)",
+        "radarSourceRow": "ROC Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Aphorite",
+        "apiName": "Aphorite",
+        "uuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a",
+        "miningCategory": "FPS_MINING",
+        "categoryEvidence": {
+          "flag": "has_fps_mineables=true",
+          "method": "FPS",
+          "locationCount": 41
+        },
+        "radarResult": "3000–30 000 (1–10× cluster)",
+        "radarSourceRow": "FPS Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Dolivine",
+        "apiName": "Dolivine",
+        "uuid": "7e86e2f4-6c31-41f8-9438-0fd8ad037426",
+        "miningCategory": "FPS_MINING",
+        "categoryEvidence": {
+          "flag": "has_fps_mineables=true",
+          "method": "FPS",
+          "locationCount": 41
+        },
+        "radarResult": "3000–30 000 (1–10× cluster)",
+        "radarSourceRow": "FPS Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Hadanite",
+        "apiName": "Hadanite",
+        "uuid": "3e5fdc37-cb59-4fd3-8168-e3c538ab9722",
+        "miningCategory": "FPS_MINING",
+        "categoryEvidence": {
+          "flag": "has_fps_mineables=true",
+          "method": "FPS",
+          "locationCount": 32
+        },
+        "radarResult": "3000–30 000 (1–10× cluster)",
+        "radarSourceRow": "FPS Mineables",
+        "status": "VERIFIED"
+      },
+      {
+        "canonicalName": "Janalite",
+        "apiName": "Janalite",
+        "uuid": "f3379bda-0520-4c75-920a-c29a50eb6b50",
+        "miningCategory": "FPS_MINING",
+        "categoryEvidence": {
+          "flag": "has_fps_mineables=true",
+          "method": "FPS",
+          "locationCount": 25
+        },
+        "radarResult": "3000–30 000 (1–10× cluster)",
+        "radarSourceRow": "FPS Mineables",
+        "status": "VERIFIED"
+      }
+    ],
+    "targetedRightfullyUnmapped": [
+      {
+        "canonicalName": "Carinite",
+        "apiName": "Carinite",
+        "uuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+        "miningCategory": "UNKNOWN",
+        "categoryEvidence": {
+          "hasShipMineables": false,
+          "hasGroundVehicleMineables": false,
+          "hasFpsMineables": false,
+          "hasHarvestables": false,
+          "methods": [],
+          "systems": [],
+          "locationCount": 0
+        },
+        "radarResult": "Nincs adat",
+        "wikiSignatureDiagnostic": {
+          "value": 3000,
+          "status": "API_RAW_NOT_USER_FACING"
+        },
+        "decision": "RIGHTFULLY_UNMAPPED_NO_PROVEN_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Jaclium",
+        "apiName": "Jaclium (Ore)",
+        "uuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+        "miningCategory": "UNKNOWN",
+        "categoryEvidence": {
+          "hasShipMineables": false,
+          "hasGroundVehicleMineables": false,
+          "hasFpsMineables": false,
+          "hasHarvestables": false,
+          "methods": [],
+          "systems": [],
+          "locationCount": 0
+        },
+        "radarResult": "Nincs adat",
+        "wikiSignatureDiagnostic": {
+          "value": 3000,
+          "status": "API_RAW_NOT_USER_FACING"
+        },
+        "decision": "RIGHTFULLY_UNMAPPED_NO_PROVEN_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Sadaryx",
+        "apiName": "Sadaryx",
+        "uuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+        "miningCategory": "UNKNOWN",
+        "categoryEvidence": {
+          "hasShipMineables": false,
+          "hasGroundVehicleMineables": false,
+          "hasFpsMineables": false,
+          "hasHarvestables": false,
+          "methods": [],
+          "systems": [],
+          "locationCount": 0
+        },
+        "radarResult": "Nincs adat",
+        "wikiSignatureDiagnostic": {
+          "value": 3000,
+          "status": "API_RAW_NOT_USER_FACING"
+        },
+        "decision": "RIGHTFULLY_UNMAPPED_NO_PROVEN_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Saldynium",
+        "apiName": "Saldynium (Ore)",
+        "uuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+        "miningCategory": "UNKNOWN",
+        "categoryEvidence": {
+          "hasShipMineables": false,
+          "hasGroundVehicleMineables": false,
+          "hasFpsMineables": false,
+          "hasHarvestables": false,
+          "methods": [],
+          "systems": [],
+          "locationCount": 0
+        },
+        "radarResult": "Nincs adat",
+        "wikiSignatureDiagnostic": {
+          "value": 3000,
+          "status": "API_RAW_NOT_USER_FACING"
+        },
+        "decision": "RIGHTFULLY_UNMAPPED_NO_PROVEN_MINING_CATEGORY"
+      }
+    ],
+    "allRightfullyUnmapped": [
+      {
+        "canonicalName": "Altruciatoxin",
+        "uuid": "6fc6df10-0267-4097-8233-67983e594669",
+        "sourceUuids": [
+          "6fc6df10-0267-4097-8233-67983e594669"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "6fc6df10-0267-4097-8233-67983e594669",
+            "apiName": "Altruciatoxin",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Amioshi Plague",
+        "uuid": "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+        "sourceUuids": [
+          "6c45b24e-bb2d-45f1-9622-f7ef9359dc77"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+            "apiName": "Amioshi Plague",
+            "methods": [],
+            "systems": [
+              "Pyro System",
+              "Stanton System"
+            ],
+            "locationCount": 15,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Bluemoon Fungus",
+        "uuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+        "sourceUuids": [
+          "1996b79b-14bc-42ad-9cc4-36b0705fd284"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+            "apiName": "Bluemoon Fungus",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Pyro System",
+              "Stanton System"
+            ],
+            "locationCount": 15,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Carinite",
+        "uuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+        "sourceUuids": [
+          "d7d39082-ba27-470c-bc9a-d9e82ce838ae"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+            "apiName": "Carinite",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Carinite (Pure)",
+        "uuid": "80dd9dd7-1a4e-41b9-9b3b-4f385b87396c",
+        "sourceUuids": [
+          "80dd9dd7-1a4e-41b9-9b3b-4f385b87396c"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "80dd9dd7-1a4e-41b9-9b3b-4f385b87396c",
+            "apiName": "Carinite (Pure)",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Comp Board",
+        "uuid": "9177e3bb-6714-49f5-8beb-46a981226ff6",
+        "sourceUuids": [
+          "9177e3bb-6714-49f5-8beb-46a981226ff6"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "9177e3bb-6714-49f5-8beb-46a981226ff6",
+            "apiName": "Compboard",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Construction Materials",
+        "uuid": "98aa6a70-80e7-41d7-9128-9692053d57a2",
+        "sourceUuids": [
+          "98aa6a70-80e7-41d7-9128-9692053d57a2"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "98aa6a70-80e7-41d7-9128-9692053d57a2",
+            "apiName": "Construction Materials",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Decari",
+        "uuid": "469a34fe-2e37-4269-82eb-490eaed361a1",
+        "sourceUuids": [
+          "469a34fe-2e37-4269-82eb-490eaed361a1"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "469a34fe-2e37-4269-82eb-490eaed361a1",
+            "apiName": "Decari Pod",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Pyro System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Degnous",
+        "uuid": "a0046f6f-ce84-4ca2-b5d1-d6598a9aad39",
+        "sourceUuids": [
+          "a0046f6f-ce84-4ca2-b5d1-d6598a9aad39"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "a0046f6f-ce84-4ca2-b5d1-d6598a9aad39",
+            "apiName": "Degnous Root",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 2,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "E'tam",
+        "uuid": "ba11589f-a278-44e9-9bd9-79552832fc94",
+        "sourceUuids": [
+          "ba11589f-a278-44e9-9bd9-79552832fc94"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "ba11589f-a278-44e9-9bd9-79552832fc94",
+            "apiName": "E'tam",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Fotia",
+        "uuid": "def044a7-a56a-4f99-a497-ef6022113922",
+        "sourceUuids": [
+          "def044a7-a56a-4f99-a497-ef6022113922"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "def044a7-a56a-4f99-a497-ef6022113922",
+            "apiName": "Fotia Seedpod",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Pyro System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Fresh Food",
+        "uuid": "096618a0-1f7d-48db-9c6a-9ac459386527",
+        "sourceUuids": [
+          "096618a0-1f7d-48db-9c6a-9ac459386527"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "096618a0-1f7d-48db-9c6a-9ac459386527",
+            "apiName": "Fresh Food",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Golden Medmon",
+        "uuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8",
+        "sourceUuids": [
+          "d99498e8-1464-4ff7-8177-afd05d75c3d8"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8",
+            "apiName": "Golden Medmon",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 2,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Heart of the Woods",
+        "uuid": "293cbddc-9515-456e-8090-bdc94f746619",
+        "sourceUuids": [
+          "293cbddc-9515-456e-8090-bdc94f746619"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "293cbddc-9515-456e-8090-bdc94f746619",
+            "apiName": "Heart of the Woods",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Jaclium",
+        "uuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+        "sourceUuids": [
+          "2c1e1693-4d19-446c-8224-ebad36feb618"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+            "apiName": "Jaclium (Ore)",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Maze",
+        "uuid": "ca8dcc9f-35d9-4652-b270-7db91ccd25a8",
+        "sourceUuids": [
+          "ca8dcc9f-35d9-4652-b270-7db91ccd25a8"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "ca8dcc9f-35d9-4652-b270-7db91ccd25a8",
+            "apiName": "Maze",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Neograph",
+        "uuid": "c184c595-78c9-4e19-8e27-5ae16e166f20",
+        "sourceUuids": [
+          "c184c595-78c9-4e19-8e27-5ae16e166f20"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "c184c595-78c9-4e19-8e27-5ae16e166f20",
+            "apiName": "Neograph",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Neon",
+        "uuid": "d3c3ec68-b4ac-4504-85b3-e860a70eb9a5",
+        "sourceUuids": [
+          "d3c3ec68-b4ac-4504-85b3-e860a70eb9a5"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "d3c3ec68-b4ac-4504-85b3-e860a70eb9a5",
+            "apiName": "Neon",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Nitrogen",
+        "uuid": "8ee121cc-aabb-4394-87dd-02552d228d0b",
+        "sourceUuids": [
+          "8ee121cc-aabb-4394-87dd-02552d228d0b"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "8ee121cc-aabb-4394-87dd-02552d228d0b",
+            "apiName": "Nitrogen",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Organics",
+        "uuid": "7f72bf18-3334-4e60-837d-d51d9fa745cd",
+        "sourceUuids": [
+          "7f72bf18-3334-4e60-837d-d51d9fa745cd"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "7f72bf18-3334-4e60-837d-d51d9fa745cd",
+            "apiName": "Organics",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Pingala",
+        "uuid": "b442105e-6eeb-46b7-b50b-15cb39918d09",
+        "sourceUuids": [
+          "b442105e-6eeb-46b7-b50b-15cb39918d09"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "b442105e-6eeb-46b7-b50b-15cb39918d09",
+            "apiName": "Pingala Seeds",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Pyro System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Pitambu",
+        "uuid": "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+        "sourceUuids": [
+          "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+            "apiName": "Pitambu",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 2,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Prota",
+        "uuid": "70684af3-55f1-43db-8aca-eae33cfac445",
+        "sourceUuids": [
+          "70684af3-55f1-43db-8aca-eae33cfac445"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "70684af3-55f1-43db-8aca-eae33cfac445",
+            "apiName": "Prota",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Pyro System",
+              "Stanton System"
+            ],
+            "locationCount": 5,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Ranta Dung",
+        "uuid": "5cc98bf3-8edd-4184-9e47-2ff40e4c556b",
+        "sourceUuids": [
+          "5cc98bf3-8edd-4184-9e47-2ff40e4c556b"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "5cc98bf3-8edd-4184-9e47-2ff40e4c556b",
+            "apiName": "Ranta Dung",
+            "methods": [],
+            "systems": [
+              "Pyro System",
+              "Stanton System"
+            ],
+            "locationCount": 12,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Recycled Material Composite",
+        "uuid": "a0e6c4cf-face-4f52-a020-dfa869607901",
+        "sourceUuids": [
+          "a0e6c4cf-face-4f52-a020-dfa869607901"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "a0e6c4cf-face-4f52-a020-dfa869607901",
+            "apiName": "Recycled Material Composite",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Revenant",
+        "uuid": "75982fed-2b4b-4433-be1f-5657fb783918",
+        "sourceUuids": [
+          "75982fed-2b4b-4433-be1f-5657fb783918"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "75982fed-2b4b-4433-be1f-5657fb783918",
+            "apiName": "Revenant Pod",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 2,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "Sadaryx",
+        "uuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+        "sourceUuids": [
+          "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+            "apiName": "Sadaryx",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Saldynium",
+        "uuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+        "sourceUuids": [
+          "5fdfdea8-3d75-4287-85c7-f29a722ee351"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+            "apiName": "Saldynium (Ore)",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "SLAM",
+        "uuid": "8950d9c5-8a54-4e2c-87a2-c56c1b9edd3c",
+        "sourceUuids": [
+          "8950d9c5-8a54-4e2c-87a2-c56c1b9edd3c"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "8950d9c5-8a54-4e2c-87a2-c56c1b9edd3c",
+            "apiName": "SLAM",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      },
+      {
+        "canonicalName": "Sunset Berry",
+        "uuid": "306f93e6-a500-415b-b71b-631e8c93721c",
+        "sourceUuids": [
+          "306f93e6-a500-415b-b71b-631e8c93721c"
+        ],
+        "miningCategories": [
+          "HARVESTABLE"
+        ],
+        "classificationSources": [
+          "API_FLAGS"
+        ],
+        "evidence": [
+          {
+            "uuid": "306f93e6-a500-415b-b71b-631e8c93721c",
+            "apiName": "Sunset Berries",
+            "methods": [
+              "Harvestable"
+            ],
+            "systems": [
+              "Stanton System"
+            ],
+            "locationCount": 1,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": true
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "RADAR_REFERENCE_IMAGE_HAS_NO_HARVESTABLE_CATEGORY_ROW"
+      },
+      {
+        "canonicalName": "WiDoW",
+        "uuid": "a69c19f9-f33e-4c87-bfd2-09663585d158",
+        "sourceUuids": [
+          "a69c19f9-f33e-4c87-bfd2-09663585d158"
+        ],
+        "miningCategories": [
+          "UNKNOWN"
+        ],
+        "classificationSources": [
+          "UNKNOWN"
+        ],
+        "evidence": [
+          {
+            "uuid": "a69c19f9-f33e-4c87-bfd2-09663585d158",
+            "apiName": "WiDoW",
+            "methods": [],
+            "systems": [],
+            "locationCount": 0,
+            "hasShipMineables": false,
+            "hasGroundVehicleMineables": false,
+            "hasFpsMineables": false,
+            "hasHarvestables": false
+          }
+        ],
+        "radarResult": "Nincs adat",
+        "reason": "NO_PROVEN_WIKI_MINING_CATEGORY"
+      }
+    ]
+  },
+  "topThreeConsistency": {
+    "changedFromC004": false,
+    "checkedMaterials": [
+      {
+        "material": "Aluminum (Ore)",
+        "radarSignature": 4285,
+        "radarSignatureDisplay": "4285–25 710 (1–6× cluster)",
+        "systems": [
+          {
+            "system": "Nyx System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Keeger Belt",
+                "memberSummary": "1 nyertes location",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 20.75,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 1
+              }
+            ]
+          },
+          {
+            "system": "Pyro System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Pyro Deep Space Asteroids",
+                "memberSummary": "86 RMB helyszín",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 14.9,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 86
+              }
+            ]
+          },
+          {
+            "system": "Stanton System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "NORMAL",
+                "rank": 1,
+                "farmLocation": "Hurston",
+                "memberSummary": "1 nyertes location",
+                "method": "SHIP_MINING",
+                "spawn": 6,
+                "occurrence": 44,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 1
+              },
+              {
+                "environment": "NORMAL",
+                "rank": 2,
+                "farmLocation": "Magda",
+                "memberSummary": "1 nyertes location",
+                "method": "SHIP_MINING",
+                "spawn": 6,
+                "occurrence": 34.8,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 1
+              },
+              {
+                "environment": "NORMAL",
+                "rank": 3,
+                "farmLocation": "Ita",
+                "memberSummary": "1 nyertes location",
+                "method": "SHIP_MINING",
+                "spawn": 6,
+                "occurrence": 34.7,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 1
+              },
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Aaron Halo",
+                "memberSummary": "50 Mining Base helyszín · 1 rendszer-szintű API-rekord",
+                "method": "SHIP_MINING",
+                "spawn": 30,
+                "occurrence": 10.3,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 51
+              },
+              {
+                "environment": "SPACE",
+                "rank": 2,
+                "farmLocation": "Lagrange F",
+                "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+                "method": "SHIP_MINING",
+                "spawn": 15,
+                "occurrence": 17.8,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 4
+              },
+              {
+                "environment": "SPACE",
+                "rank": 3,
+                "farmLocation": "Lagrange A",
+                "memberSummary": "HUR-L1 · HUR-L4",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 17.9,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        318,
+                        511
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        511,
+                        614,
+                        783,
+                        896,
+                        919,
+                        953,
+                        1000
+                      ],
+                      "materialIndex": 2
+                    }
+                  ],
+                  "quantizedValues": [
+                    318,
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    511,
+                    614,
+                    783,
+                    896,
+                    919,
+                    953,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 318,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "4285–25 710 (1–6× cluster)",
+                "rawLocationCount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "material": "Agricium (Ore)",
+        "radarSignature": 3885,
+        "radarSignatureDisplay": "3885–19 425 (1–5× cluster)",
+        "systems": [
+          {
+            "system": "Nyx System",
+            "status": "NO_KNOWN_LOCATION",
+            "methods": []
+          },
+          {
+            "system": "Pyro System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "NORMAL",
+                "rank": 1,
+                "farmLocation": "Terminus · Vuur",
+                "memberSummary": "2 azonos teljes rank tuple-jű farmhelycsoport",
+                "method": "SHIP_MINING",
+                "spawn": 7.5,
+                "occurrence": 14.2,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        346,
+                        588
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        588,
+                        667,
+                        796,
+                        852,
+                        943,
+                        971,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    346,
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 346,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3885–19 425 (1–5× cluster)",
+                "rawLocationCount": 2
+              },
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Pyro Lagrange Points",
+                "memberSummary": "PYR1-L1 · PYR1-L2 · PYR1-L3 · PYR1-L4 · PYR1-L5 · PYR2-L1 · PYR2-L2 · PYR2-L3 · PYR2-L4 · PYR2-L5",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 28.5,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        346,
+                        588
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        588,
+                        667,
+                        796,
+                        852,
+                        943,
+                        971,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    346,
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 346,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3885–19 425 (1–5× cluster)",
+                "rawLocationCount": 10
+              }
+            ]
+          },
+          {
+            "system": "Stanton System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "NORMAL",
+                "rank": 1,
+                "farmLocation": "Cellin · Daymar · Yela",
+                "memberSummary": "3 azonos teljes rank tuple-jű farmhelycsoport",
+                "method": "SHIP_MINING",
+                "spawn": 6,
+                "occurrence": 28.5,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        346,
+                        588
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        588,
+                        667,
+                        796,
+                        852,
+                        943,
+                        971,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    346,
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 346,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3885–19 425 (1–5× cluster)",
+                "rawLocationCount": 3
+              },
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Lagrange D",
+                "memberSummary": "ARC-L3 · CRU-L5 · MIC-L4",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 28.5,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        346,
+                        588
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        588,
+                        667,
+                        796,
+                        852,
+                        943,
+                        971,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    346,
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    588,
+                    667,
+                    796,
+                    852,
+                    943,
+                    971,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 346,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3885–19 425 (1–5× cluster)",
+                "rawLocationCount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "material": "Stileron (Ore)",
+        "radarSignature": 3185,
+        "radarSignatureDisplay": "3185–6370 (1–2× cluster)",
+        "systems": [
+          {
+            "system": "Nyx System",
+            "status": "NO_KNOWN_LOCATION",
+            "methods": []
+          },
+          {
+            "system": "Pyro System",
+            "status": "AVAILABLE",
+            "methods": [
+              {
+                "environment": "NORMAL",
+                "rank": 1,
+                "farmLocation": "Bloom · Monox · Pyro I · +2 további",
+                "memberSummary": "5 azonos teljes rank tuple-jű farmhelycsoport",
+                "method": "SHIP_MINING",
+                "spawn": 7.5,
+                "occurrence": 2,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        330,
+                        517
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        517,
+                        681,
+                        747,
+                        874,
+                        947,
+                        972,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    330,
+                    517,
+                    681,
+                    747,
+                    874,
+                    947,
+                    972,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    517,
+                    681,
+                    747,
+                    874,
+                    947,
+                    972,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 330,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3185–6370 (1–2× cluster)",
+                "rawLocationCount": 5
+              },
+              {
+                "environment": "SPACE",
+                "rank": 1,
+                "farmLocation": "Pyro Deep Space Asteroids",
+                "memberSummary": "Akiro Cluster és RMB helyszínek",
+                "method": "SHIP_MINING",
+                "spawn": 10,
+                "occurrence": 2,
+                "quality": {
+                  "ranges": [
+                    {
+                      "min": 245,
+                      "max": 490,
+                      "quantizedValues": [
+                        330,
+                        517
+                      ],
+                      "materialIndex": 0
+                    },
+                    {
+                      "min": 501,
+                      "max": 1000,
+                      "quantizedValues": [
+                        517,
+                        681,
+                        747,
+                        874,
+                        947,
+                        972,
+                        1000
+                      ],
+                      "materialIndex": 1
+                    }
+                  ],
+                  "quantizedValues": [
+                    330,
+                    517,
+                    681,
+                    747,
+                    874,
+                    947,
+                    972,
+                    1000
+                  ],
+                  "highQualityValues": [
+                    517,
+                    681,
+                    747,
+                    874,
+                    947,
+                    972,
+                    1000
+                  ],
+                  "hasHighQuality": true,
+                  "reachableMinimum": 330,
+                  "reachableMaximum": 1000,
+                  "evidence": "API_QUALITY_QUANTIZED_VALUES"
+                },
+                "radarSignature": "3185–6370 (1–2× cluster)",
+                "rawLocationCount": 87
+              }
+            ]
+          },
+          {
+            "system": "Stanton System",
+            "status": "NO_KNOWN_LOCATION",
+            "methods": []
+          }
+        ]
+      }
+    ]
+  },
+  "legacyCacheCompatibility": {
+    "indexProjection": "COMMON_WITH_RADAR_SIGNATURE_PROJECTION",
+    "missingClusterArray": "NULL_SAFE_EMPTY_ARRAY_FALLBACK",
+    "consumerProjection": "MATERIAL_DATABASE_DETAIL_AND_STANDALONE_SHARE_BUILD_MINING_FARM_RECOMMENDATIONS"
+  }
+}

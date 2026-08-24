@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C005",
+  "testedAt": "2026-08-24T20:21:08.9126655+02:00",
+  "runner": "Codex Chrome control",
+  "mode": "REAL_CHROME_LOCALHOST",
+  "url": "http://127.0.0.1:4177/",
+  "appVersion": "V003-dev",
+  "appReady": true,
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 15,
+    "failed": 0,
+    "radarTop3Check": "33 verified record · API_RAW diagnostic · max 3 dense rank tier",
+    "standaloneExport": "PASS · 99 KiB · no external resource"
+  },
+  "consistency": {
+    "aluminumStantonNormalRanks": ["Hurston", "Magda", "Ita"],
+    "aluminumStantonSpaceRanks": ["Aaron Halo", "Lagrange F", "Lagrange A"],
+    "lagrangeFMemberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+    "lagrangeFSpawn": 15,
+    "lagrangeFOccurrence": 17.8,
+    "carinite": "UNKNOWN · Radar Signature: Nincs adat",
+    "radarVerified": 33,
+    "radarUnmapped": 31,
+    "topThreeChanged": false
+  },
+  "userDataFingerprintBeforeProbe": "e6d8dec8",
+  "userDataFingerprintAfterProbe": "e6d8dec8",
+  "userDataFingerprintAfterReload": "e6d8dec8",
+  "userDataChanged": false,
+  "applicationConsoleWarningCount": 0,
+  "applicationConsoleErrorCount": 0,
+  "manualFileGate": {
+    "status": "PASS",
+    "evidenceOwner": "USER",
+    "scope": "Previously reported V003 file:// technical baseline including direct file runtime, IndexedDB, Wiki API, the new location-ranking rule, M3 model and standalone export.",
+    "note": "This evidence was supplied by the user; it was not run by Codex automation. A new post-C005 user retest is required before C006 starts."
+  }
+}

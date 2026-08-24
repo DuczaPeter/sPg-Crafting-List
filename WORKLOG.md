@@ -446,3 +446,24 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Valodi Chrome localhost: 15/15 PASS; Aluminum Stanton 3 NORMAL + 3 SPACE, unmapped `Nincs adat`, vizualis PASS; fingerprint B/C/D `e6d8dec8`; konzol warning/error 0.
 - A felhasznalo korabbi valos Chrome `file://` kapuja tovabbra is MANUAL PASS bizonyitek, nem Codex automation. Stabil V003 release/tag nem keszult; V002 tag/artifact valtozatlan.
 - Riport: `docs/V003_C004_RADAR_TOP3_REPORT.md`. Visszaallas: a C004 commit revertje vagy a fagyasztott V002 tag/release.
+
+### 2026-08-24T20:17:53 - V003-C005
+
+- Cel: V003 C004 consistency closure es final-card roadmap lock
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C005/test-summary.json`
+
+### V003-C005 C004 consistency closure es final-card roadmap lock - 2026-08-24
+
+- Lagrange F verdict: a primary `MineableRock_AsteroidCommon_Aluminum` negy locationje exact UUID+label gate-tel INCLUDED, SPACE dense rank 2; a testver `...Corundum` resource Aluminum mellékanyaga SECONDARY_EXCLUDED. A Top-3 nem valtozott, csak a C004 SCMDB auditmondat javult.
+- Radar reconciliation: 72 raw / 64 user-facing / 33 VERIFIED / 31 UNMAPPED; ujonnan verified rekord 0. Mind a 7 aktiv ROC/FPS material exact Wiki flag+method alapjan mar C004-ben is verified volt.
+- Carinite, Jaclium, Sadaryx es Saldynium: minden mining flag false, method/system/location nincs; Wiki `signature=3000` nem user-facing bizonyitek, ezert jogos `UNKNOWN / Nincs adat`.
+- Forrashierarchia: Radar PNG user-facing canonical; minden mas mining adat Wiki `4.9.0-LIVE.12232306`; SCMDB `4.10.0-ptu.12497254` csak read-only sanity reference.
+- Automatizalt: C001-C005, teljes M1-M6.1 + C04, elo Wiki audit, standalone export es V002-integritas PASS. Standalone artifact 95 529 byte, SHA-256 `8c42dbf9...72d63b8d`.
+- Chrome localhost: 15/15 PASS; Aluminum/Stanton SPACE `Aaron Halo`, `Lagrange F`, `Lagrange A`; Carinite `Nincs adat`; reload fingerprint `e6d8dec8`; konzol warning/error 0.
+- Roadmap: V003-C006 adatkontraktus, C007 card-first UI/szinek, C008 in-app detail/deep link, C009 Advanced/Diagnostics, C010 standalone parity/acceptance.
+- Alkalmazaskod nem valtozott. Korabbi felhasznaloi valos Chrome `file://` kapu MANUAL PASS maradt, nem Codex automation. C006 csak uj felhasznaloi file-ujrateszt es kulon utasitas utan indul.
+- V002 tag/artifact valtozatlan; V003 release/tag nem keszult. Visszaallas: a C005 commit revertje vagy a fagyasztott V002 tag/release.

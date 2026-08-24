@@ -37,6 +37,9 @@
 - V003 materialnev kapu: `tools/validate-v003-c003.ps1`; a celzott canonical naming tesztet, elo commodity-auditot, teljes V003 farm-regressziot es V002-integritast egyutt ellenorzi.
 - V003 materialnev fixture: `tests/fixtures/v003-c003-material-names.json`; exact alias, suffix, invalid rekord es duplicate projection esetek.
 - V003 elo materialnev audit: `tools/audit-v003-material-names.mjs`; a teljes `/commodities` es az alkalmazas `mineable`/`harvestable` mintajat olvassa, az audit JSON-t a C003 artifactba irja.
+- V003-C005 consistency kapu: `tools/validate-v003-c005.ps1`; exact Lagrange F primary/secondary trace, teljes Radar reconciliation, C001-C004/M1-M6.1/C04, standalone es V002-integritas.
+- V003-C005 elo audit: `tools/audit-v003-c005.mjs`; a Wiki `4.9.0-LIVE.12232306` adaton keszit mezoszintu Lagrange F trace-t, 7 ROC/FPS kategoriabizonyitekot, 31 jogos UNMAPPED listat es C004 Top-3 snapshot-egyezest.
+- V003-C005 riport: `docs/V003_C005_CONSISTENCY_REPORT.md`; forrashierarchia, auditjavitas es a V003-C006-C010 final-card roadmap.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.

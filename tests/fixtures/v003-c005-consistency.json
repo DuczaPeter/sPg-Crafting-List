@@ -1,0 +1,36 @@
+{
+  "cycle": "V003-C005",
+  "wikiVersion": "4.9.0-LIVE.12232306",
+  "scmdbReferenceVersion": "4.10.0-ptu.12497254",
+  "sourceHierarchy": {
+    "radarSignature": "Info/Radar Signature.png",
+    "miningGameData": "Star Citizen Wiki API",
+    "comparisonOnly": "SCMDB"
+  },
+  "lagrangeF": {
+    "commodityUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+    "provider": "HPP_Lagrange_F",
+    "primaryResourceKey": "MineableRock_AsteroidCommon_Aluminum",
+    "primaryResourceLabel": "Aluminum",
+    "secondaryResourceKey": "MineableRock_AsteroidCommon_Corundum",
+    "secondaryResourceLabel": "Corundum",
+    "expectedLocations": ["ARC L1", "ARC L2", "ARC L4", "HUR L2"],
+    "expectedPresentationGroup": "Lagrange F",
+    "expectedDenseRank": 2
+  },
+  "provenCategoryMaterials": [
+    { "uuid": "c339897c-d682-48ad-a16f-daf145bc0f4d", "apiName": "Beradom", "canonicalName": "Beradon", "category": "VEHICLE_MINING", "radarSourceRow": "ROC Mineables" },
+    { "uuid": "7310c15d-359c-42b4-b61e-7da3d0da3384", "apiName": "Feynmaline", "canonicalName": "Feynmaline", "category": "VEHICLE_MINING", "radarSourceRow": "ROC Mineables" },
+    { "uuid": "960eda23-d77c-425e-8cbd-89d94ca6e2aa", "apiName": "Glacosite", "canonicalName": "Glacosite", "category": "VEHICLE_MINING", "radarSourceRow": "ROC Mineables" },
+    { "uuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a", "apiName": "Aphorite", "canonicalName": "Aphorite", "category": "FPS_MINING", "radarSourceRow": "FPS Mineables" },
+    { "uuid": "7e86e2f4-6c31-41f8-9438-0fd8ad037426", "apiName": "Dolivine", "canonicalName": "Dolivine", "category": "FPS_MINING", "radarSourceRow": "FPS Mineables" },
+    { "uuid": "3e5fdc37-cb59-4fd3-8168-e3c538ab9722", "apiName": "Hadanite", "canonicalName": "Hadanite", "category": "FPS_MINING", "radarSourceRow": "FPS Mineables" },
+    { "uuid": "f3379bda-0520-4c75-920a-c29a50eb6b50", "apiName": "Janalite", "canonicalName": "Janalite", "category": "FPS_MINING", "radarSourceRow": "FPS Mineables" }
+  ],
+  "rightfullyUnmappedTargets": [
+    { "uuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae", "apiName": "Carinite", "canonicalName": "Carinite" },
+    { "uuid": "2c1e1693-4d19-446c-8224-ebad36feb618", "apiName": "Jaclium (Ore)", "canonicalName": "Jaclium" },
+    { "uuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf", "apiName": "Sadaryx", "canonicalName": "Sadaryx" },
+    { "uuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351", "apiName": "Saldynium (Ore)", "canonicalName": "Saldynium" }
+  ]
+}

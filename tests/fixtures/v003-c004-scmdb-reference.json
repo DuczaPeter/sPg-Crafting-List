@@ -28,7 +28,7 @@
   ],
   "comparisonCases": [
     { "material": "Aluminum", "system": "Stanton System", "environment": "NORMAL", "status": "MATCH", "reason": "Primary surface family is consistent; SCMDB percentages are not ranking inputs." },
-    { "material": "Aluminum", "system": "Stanton System", "environment": "SPACE", "status": "MATCH", "reason": "Aaron Halo and Lagrange families appear in both references; secondary Lagrange F Aluminum is excluded by the Wiki primary gate." },
+    { "material": "Aluminum", "system": "Stanton System", "environment": "SPACE", "status": "MATCH", "reason": "Aaron Halo and Lagrange families appear in both references; the primary Lagrange F Aluminum resource is included at dense rank 2, while sibling Corundum resources that contain Aluminum only as a secondary material are excluded by the Wiki primary gate." },
     { "material": "Aluminum", "system": "Pyro System", "environment": "SPACE", "status": "MATCH", "reason": "Pyro Deep Space Asteroids is provider-backed in Wiki and present in SCMDB." },
     { "material": "Agricium", "system": "Stanton System", "environment": "NORMAL", "status": "MATCH", "reason": "Primary moon families are consistent at a friendly-name level." },
     { "material": "Agricium", "system": "Stanton System", "environment": "SPACE", "status": "MATCH", "reason": "Lagrange D primary family is present in both references." },

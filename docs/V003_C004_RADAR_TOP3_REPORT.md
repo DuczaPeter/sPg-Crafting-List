@@ -65,6 +65,8 @@ Az [SCMDB PTU Resource Guide](https://scmdb.net/?page=mine&channel=ptu) csak rea
 
 Az összevetés eredménye 6 `MATCH`, 1 `EXPLAINED_DIFFERENCE`, 2 `UNVERIFIED`. A `Yela Asteroid Belt` és `Terminus Ring` labelhez nem volt elég exact Wiki provider/parent bizonyíték, ezért nem kerültek automatikusan az alkalmazásba. A `Stileron / Pyro` eltérés megmagyarázott: az SCMDB deposit-group share-t mutat, míg az alkalmazás külön környezetben Wiki spawn → occurrence → Quality szerint rangsorol.
 
+A V003-C005 consistency audit egy pontatlan C004 auditmondatot javított. A Lagrange F primary Aluminum resource (`MineableRock_AsteroidCommon_Aluminum`) helyesen bekerül a Stanton SPACE lista 2. dense-rank tierjébe. Ugyanezeken a locationökön a külön Corundum resource (`MineableRock_AsteroidCommon_Corundum`) Aluminum mellékanyaga secondary, ezért csak ez a testvér resource-rekord kap `SECONDARY_EXCLUDED` döntést. A Top-3 eredmény és az alkalmazáskód nem változott.
+
 ## Érintett függvények
 
 - `resolveRadarSignature()`, `withRadarSignatureProjection()`, `auditRadarSignatures()`;

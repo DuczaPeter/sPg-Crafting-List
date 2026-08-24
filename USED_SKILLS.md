@@ -249,3 +249,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C004 scope es V002 vedelem megtartasara; a dinamikus SCMDB PTU oldal lathato szemantikajanak ellenorzesere; a valodi Chrome 15/15 proba, cache-kompatibilitasi hibak, UI-konzisztencia, reload fingerprint es konzol ellenorzesere.
 - Mely fajlokat vagy donteseket erintett: a V003 mining/radar/Top-3 modell es fogyasztok, Radar Signature kep/fixture, SCMDB referenciafixture, C004 tesztek/audit/validator, riport/artifact es projekt statuszfajlok.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C005 consistency closure es final-card roadmap
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a C004 Lagrange F/Radar konzisztencia audit, a C005 repair-cycle es a valodi Chrome localhost regresszio soran.
+- Mire segitett: a szuk, feature-mentes C005 scope, a V002 vedelem, az exact API-bizonyitek, a teljes cikluskapu, valamint a Chrome 15/15 technikai proba, Aluminum/Carinite UI, reload fingerprint es warning/error konzol ellenorzese.
+- Mely fajlokat vagy donteseket erintett: C004 SCMDB auditindok, C005 audit/fixture/validator/riport/artifact, C006-C010 roadmap es projekt statuszfajlok; alkalmazaskod nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -34,7 +34,22 @@
 - [x] SCMDB read-only masodlagos referenciaaudit: 6 MATCH, 1 EXPLAINED_DIFFERENCE, 2 UNVERIFIED; runtime/ranking fugges nincs.
 - [x] `V003-C004` teljes M1-M6.1 + C04 + C001-C003 regresszio, elo Wiki audit, standalone export es V002-integritas PASS.
 - [x] Valodi Chrome localhost 15/15; Aluminum 3 NORMAL + 3 SPACE tier, unmapped `Nincs adat`, fingerprint `e6d8dec8`, konzol warning/error 0 PASS.
+- [x] `V003-C005`: Lagrange F exact Wiki decision trace; primary Aluminum #2 INCLUDED, sibling Corundum secondary EXCLUDED, Top-3 valtozatlan.
+- [x] Teljes Radar reconciliation: 7/7 aktiv ROC/FPS bizonyitott es mar C004-ben VERIFIED; 31 jogos UNMAPPED, koztuk Carinite/Jaclium/Sadaryx/Saldynium bizonyitek nelkul `Nincs adat`.
+- [x] Wiki/PNG/SCMDB forrashierarchia es a C004 SCMDB auditmondat konzisztenciajavitasanak rogzítese.
+- [x] Korabbi valos Chrome `file://` location-ranking proba `USER MANUAL PASS` bizonyitekkent megorizve; nem Codex automationkent dokumentalva.
+- [x] `V003-C005` teljes C001-C005 + M1-M6.1 + C04 + elo Wiki + standalone + V002-integritas regresszio PASS.
+- [x] Valodi Chrome localhost 15/15; Aluminum/Carinite UI, reload fingerprint `e6d8dec8` es konzol warning/error 0 PASS.
+- [ ] V003-C005 utani felhasznaloi valos Chrome `file://` ujrateszt; C006 csak ennek visszajelzese utan indul.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
+
+### V003-dev final Crafting Card roadmap
+
+- [ ] `V003-C006`: kozos final-card adatkontraktus es deep-link celmodell; blueprint/item nev, Size, Class/Type, Grade/Quality, Crafting Time, requested quantity, max craftable, slot/material mennyisegek, inventory/hiany, Quality rule, Mining+UEX snapshot es curated Radar.
+- [ ] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
+- [ ] `V003-C008`: kattinthato blueprint/material/mining/refinery/radar elemek es ugyanazon egyfajlos HTML-en beluli reszletnezet; teljes Top-3, spawn, occurrence, Quality, provider, forras, refinery es Wiki deep link.
+- [ ] `V003-C009`: default nezet tisztitasa Crafting Card + szukseges user UI szintre; baseline/debug/raw/log es fejlesztoi eszkozok Advanced/Diagnostics ala.
+- [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio
 

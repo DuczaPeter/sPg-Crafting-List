@@ -259,6 +259,24 @@ Elo Wiki radar-lefedettseg, Top-3 es SCMDB-reference audit:
 node .\tools\audit-v003-c004.mjs --output-dir="test-artifacts/V003-C004"
 ```
 
+V003-C005 C004 consistency closure + final-card roadmap teljes kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c005.ps1"
+```
+
+Csak a C005 fixture-, cache-consumer- es roadmap-teszt:
+
+```powershell
+node .\tools\run-v003-c005-tests.mjs
+```
+
+Elo Wiki Lagrange F + Radar reconciliation + Top-3 consistency audit:
+
+```powershell
+node .\tools\audit-v003-c005.mjs --output-dir="test-artifacts/V003-C005"
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -325,4 +343,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-c002-grouping-regression`: a C001 teljes kapuja mellett provider/resource/parent-bizonyitekos Lagrange, Pyro deep-space es Aaron Halo presentation grouping; nyers location lista megorzese; Material Database/standalone kozos modell.
 - `v003-c003-material-naming-regression`: exact UUID-alias, biztonsagos terminalis suffix, invalid rekord rejtese, raw/alias kereses, `refined_version`-bizonyitekos duplicate projection, kozos UI/export consumer es teljes C001/C002/fagyasztott V002 regresszio.
 - `v003-c004-radar-top3-regression`: 33 rekordszamu curated radar registry, 31 explicit `Nincs adat`, Wiki API_RAW diagnosztika, 3 dense rank tier/kornyezet, tie es nem-Ship SPACE eset, SCMDB osszehasonlito audit, kozos UI/export projekcio es teljes C001-C003/V002 regresszio.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`.
+- `v003-c005-consistency-regression`: exact Lagrange F primary/secondary decision trace, 7/7 ROC/FPS category proof, 31 jogos UNMAPPED, valtozatlan C004 Top-3, cache/consumer konzisztencia, C006-C010 roadmap, teljes C001-C004/M1-M6.1/C04 es V002-integritas.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`.

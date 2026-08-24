@@ -1,6 +1,6 @@
 {
   "auditId": "V003-C004-SCMDB",
-  "auditedAt": "2026-08-24T17:35:49.251Z",
+  "auditedAt": "2026-08-24T18:17:47.736Z",
   "sourceUrl": "https://scmdb.net/?page=mine&channel=ptu",
   "observedVersion": "4.10.0-ptu.12497254",
   "observationMethod": "MANUAL_BROWSER_REFERENCE_CAPTURE_PLUS_AUTOMATED_WIKI_PROVIDER_VALIDATION",
@@ -24,7 +24,7 @@
       "system": "Stanton System",
       "environment": "SPACE",
       "status": "MATCH",
-      "reason": "Aaron Halo and Lagrange families appear in both references; secondary Lagrange F Aluminum is excluded by the Wiki primary gate."
+      "reason": "Aaron Halo and Lagrange families appear in both references; the primary Lagrange F Aluminum resource is included at dense rank 2, while sibling Corundum resources that contain Aluminum only as a secondary material are excluded by the Wiki primary gate."
     },
     {
       "material": "Aluminum",

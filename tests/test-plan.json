@@ -155,6 +155,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c004.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c005-consistency-regression",
+      "level": "full-regression",
+      "description": "V003-C005 gate: exact Lagrange F primary/secondary decision trace, full Radar reconciliation, unchanged C004 Top-3 projection, legacy cache and shared consumer checks, C006-C010 roadmap lock, full C001-C004/M1-M6.1/C04 regression, standalone export, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c005.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {
