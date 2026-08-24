@@ -432,3 +432,17 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: 14/14 PASS; Tungsten egy tiszta sor, raw `Agricium (Ore)` es `Beradom` alias kereses PASS; fingerprint `e6d8dec8` reload utan valtozatlan; alkalmazas WARN/ERROR 0.
 - A korabbi valos Chrome `file://` kapu tovabbra is USER MANUAL PASS, nem Codex automation. V002 valtozatlan; stabil V003 release/tag nem keszult.
 - Riport: `docs/V003_MATERIAL_NAMING_REPORT.md`. Visszaallas: a C003 commit revertje vagy a fagyasztott V002 tag/release.
+
+### V003-C004 Radar Signature registry es Top-3 recommendation - 2026-08-24
+
+- Forras: `Info/Radar Signature.png`, SHA-256 `f9c6e362...cabdc6`, 1182x879; a kep megorzott projektforras, runtime fugges nincs.
+- Registry: 26 kozvetlen Ship sor + 7 Wiki kategoriaval bizonyitott ROC/FPS material = 33 verified rekord; 3 kategoriaszabaly. Elo 72 raw / 64 user-facing auditban 33 verified es 31 `Nincs adat`.
+- Mezo-hatar: a Wiki `signature` csak `API_RAW_NOT_USER_FACING` diagnosztika, user-facing fallback nincs.
+- Top-3: C001 primary gate es spawn -> occurrence -> Quality valtozatlan; utanuk rendszerenkent/kornyezetenkent legfeljebb 3 dense rank tier, tie azonos helyezessel, teljes raw trace-szel. Nem-Ship SPACE lista elnyomva.
+- SCMDB: read-only PTU referencia; 6 MATCH, 1 EXPLAINED_DIFFERENCE, 2 UNVERIFIED. Szazalek nem ranking input, runtime dependency nincs; Yela Belt/Terminus Ring bizonyitek hianyaban nem kerult be.
+- Chrome altal talalt javitasok: regi detail cache cluster-listajanak null-safe kezelese; regi index-cache kozos radar-projekcioja, hogy lista/reszlet ne terjen el.
+- Automatizalt: celzott C004, elo Wiki/SCMDB audit, teljes M1-M6.1 + C04 + C001-C003, standalone export es V002-integritas PASS.
+- Standalone Top-3 artifact: 95 529 byte, SHA-256 `8c42dbf9...72d63b8d`; kulso runtime dependency nincs.
+- Valodi Chrome localhost: 15/15 PASS; Aluminum Stanton 3 NORMAL + 3 SPACE, unmapped `Nincs adat`, vizualis PASS; fingerprint B/C/D `e6d8dec8`; konzol warning/error 0.
+- A felhasznalo korabbi valos Chrome `file://` kapuja tovabbra is MANUAL PASS bizonyitek, nem Codex automation. Stabil V003 release/tag nem keszult; V002 tag/artifact valtozatlan.
+- Riport: `docs/V003_C004_RADAR_TOP3_REPORT.md`. Visszaallas: a C004 commit revertje vagy a fagyasztott V002 tag/release.

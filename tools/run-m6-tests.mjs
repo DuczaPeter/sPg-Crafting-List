@@ -70,17 +70,26 @@ const intelligence = {
   mining: {
     status: "AVAILABLE",
     radarSignature: 3185,
+    radarSignatureDisplay: "3185–6370 (1–2× cluster)",
+    radarSignatureSource: "RADAR_SIGNATURE_REFERENCE_IMAGE",
+    radarSignatureStatus: "VERIFIED",
     methods: ["SHIP_MINING"],
     systems: [{
       system: "Pyro",
       status: "AVAILABLE",
       methods: [{
-        category: "NORMAL",
-        recommendationLabel: "Legjobb farmhely",
-        decision: "BEST_NORMAL",
+        category: "SPACE",
+        rankPosition: 1,
+        rankingTier: 1,
+        recommendationLabel: "1. hely · Űrbeli farmhely",
+        decision: "BEST_SPACE",
         method: "SHIP_MINING",
         locationLabel: "Pyro Deep Space Asteroids",
         locationSummary: "Akiro Cluster, RAB és RMB helyszínek",
+        tierDisplayLabel: "Pyro Deep Space Asteroids",
+        tierMemberSummary: "Akiro Cluster, RAB és RMB helyszínek",
+        radarSignature: 3185,
+        radarSignatureDisplay: "3185–6370 (1–2× cluster)",
         locationNames: ["Akiro Cluster", "RAB-TUNG", "RMB-1-01", "RMB-2-01"],
         presentation: {
           schemaVersion: 1,
@@ -97,6 +106,40 @@ const intelligence = {
           reachableMinimum: 588,
           reachableMaximum: 1000
         }
+      }, {
+        category: "SPACE",
+        rankPosition: 2,
+        rankingTier: 2,
+        recommendationLabel: "2. hely · Űrbeli farmhely",
+        decision: "RANKED_SPACE",
+        method: "SHIP_MINING",
+        locationLabel: "Lagrange A",
+        locationSummary: "CRU-L1 · HUR-L1",
+        tierDisplayLabel: "Lagrange A",
+        tierMemberSummary: "CRU-L1 · HUR-L1",
+        radarSignature: 3185,
+        radarSignatureDisplay: "3185–6370 (1–2× cluster)",
+        occurrence: 0.2,
+        spawn: 8,
+        maximumQuality: 929,
+        qualityProfile: { ranges: [{ min: 501, max: 929 }], highQualityValues: [674, 803, 881, 929], reachableMinimum: 674, reachableMaximum: 929 }
+      }, {
+        category: "SPACE",
+        rankPosition: 3,
+        rankingTier: 3,
+        recommendationLabel: "3. hely · Űrbeli farmhely",
+        decision: "RANKED_SPACE",
+        method: "SHIP_MINING",
+        locationLabel: "Lagrange B",
+        locationSummary: "ARC-L5",
+        tierDisplayLabel: "Lagrange B",
+        tierMemberSummary: "ARC-L5",
+        radarSignature: 3185,
+        radarSignatureDisplay: "3185–6370 (1–2× cluster)",
+        occurrence: 0.1,
+        spawn: 7,
+        maximumQuality: 881,
+        qualityProfile: { ranges: [{ min: 501, max: 881 }], highQualityValues: [674, 803, 881], reachableMinimum: 674, reachableMaximum: 881 }
       }]
     }]
   },
@@ -187,12 +230,12 @@ assert.ok(dirtyNameHtml.includes("Agricium"));
 assert.ok(!dirtyNameHtml.includes("Agricium (Ore) (UnrefinedOres)"));
 
 // 5-7. Farm location, radar, default loadout and UEX refinery snapshot are embedded.
-for (const marker of ["Pyro Deep Space Asteroids", "Akiro Cluster, RAB és RMB helyszínek", "3185", "Prospector Helix", "Prospector", "Helix I", "Rieger-C3", "OptiMax", "MIC-L5", "HUR-L1", "+8%"] ) {
+for (const marker of ["Pyro Deep Space Asteroids", "Akiro Cluster, RAB és RMB helyszínek", "1. hely · Űrbeli farmhely", "2. hely · Űrbeli farmhely", "3. hely · Űrbeli farmhely", "Lagrange A", "Lagrange B", "3185–6370 (1–2× cluster)", "Prospector Helix", "Prospector", "Helix I", "Rieger-C3", "OptiMax", "MIC-L5", "HUR-L1", "+8%"] ) {
   assert.ok(exportedHtml.includes(marker), `Az exportból hiányzik: ${marker}`);
 }
 const renderedFarmCard = exportedHtml.match(/<article class="spg-export-location-card">[\s\S]*?<\/article>/)?.[0] || "";
 assert.equal(renderedFarmCard.includes("RMB-1-01"), false, "Az export normál nézetében nem jelenhet meg a technikai RMB névfal.");
-assert.equal(snapshot.summary.locationCount, 1);
+assert.equal(snapshot.summary.locationCount, 3);
 assert.equal(snapshot.summary.selectedLoadoutCount, 1);
 assert.equal(snapshot.summary.refinerySystemCount, 1);
 

@@ -1,0 +1,40 @@
+{
+  "cycle": "V003-C004",
+  "sourceUrl": "https://scmdb.net/?page=mine&channel=ptu",
+  "observedAt": "2026-08-24",
+  "observedVersion": "4.10.0-ptu.12497254",
+  "role": "READ_ONLY_SECONDARY_REFERENCE",
+  "runtimeDependency": false,
+  "percentageSemantics": "Share of the selected resource within its deposit group; not weighted by group probability.",
+  "forbiddenUses": [
+    "RANKING_INPUT",
+    "WIKI_SPAWN_EQUIVALENT",
+    "WIKI_OCCURRENCE_EQUIVALENT",
+    "RUNTIME_FETCH"
+  ],
+  "friendlyLabels": [
+    "Glaciem Ring",
+    "Keeger Belt",
+    "Pyro Deep Space Asteroids",
+    "Aaron Halo",
+    "Lagrange A",
+    "Lagrange B",
+    "Lagrange C",
+    "Lagrange D",
+    "Lagrange E",
+    "Lagrange F",
+    "Yela Asteroid Belt",
+    "Terminus Ring"
+  ],
+  "comparisonCases": [
+    { "material": "Aluminum", "system": "Stanton System", "environment": "NORMAL", "status": "MATCH", "reason": "Primary surface family is consistent; SCMDB percentages are not ranking inputs." },
+    { "material": "Aluminum", "system": "Stanton System", "environment": "SPACE", "status": "MATCH", "reason": "Aaron Halo and Lagrange families appear in both references; secondary Lagrange F Aluminum is excluded by the Wiki primary gate." },
+    { "material": "Aluminum", "system": "Pyro System", "environment": "SPACE", "status": "MATCH", "reason": "Pyro Deep Space Asteroids is provider-backed in Wiki and present in SCMDB." },
+    { "material": "Agricium", "system": "Stanton System", "environment": "NORMAL", "status": "MATCH", "reason": "Primary moon families are consistent at a friendly-name level." },
+    { "material": "Agricium", "system": "Stanton System", "environment": "SPACE", "status": "MATCH", "reason": "Lagrange D primary family is present in both references." },
+    { "material": "Agricium", "system": "Pyro System", "environment": "NORMAL", "status": "MATCH", "reason": "Vuur and Terminus surface records remain separate Wiki-backed groups." },
+    { "material": "Stileron", "system": "Pyro System", "environment": "NORMAL/SPACE", "status": "EXPLAINED_DIFFERENCE", "reason": "SCMDB shows deposit-group shares while the app ranks Wiki spawn, occurrence and Quality separately by environment." },
+    { "material": "Aluminum", "system": "Stanton System", "environment": "SPACE", "label": "Yela Asteroid Belt", "status": "UNVERIFIED", "reason": "No current exact Wiki provider/parent proof was established, so no automatic label was added." },
+    { "material": "Agricium", "system": "Pyro System", "environment": "SPACE", "label": "Terminus Ring", "status": "UNVERIFIED", "reason": "The current Wiki provider identity does not safely prove SCMDB's ring label, so no automatic label was added." }
+  ]
+}

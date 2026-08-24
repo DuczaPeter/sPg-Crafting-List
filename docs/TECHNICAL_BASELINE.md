@@ -64,6 +64,9 @@ Datum: 2026-08-24
 - Standalone: O01-O03 es O05-O06 PASS; O04 `NOT TESTED – ACCEPTED RELEASE WAIVER`.
 - Edge E01-E10: `NOT TESTED – ACCEPTED RELEASE WAIVER`.
 - Vegso `V001-C014` teljes M1-M6.1 + C04 regresszio: PASS.
+- V003-C004: a `Info/Radar Signature.png` SHA-256-ellenorzott forraskepbol 33 verified materialrekord es 3 kategoriaszabaly; 64 user-facing rekordbol 31 explicit `Nincs adat`; Wiki radar csak API_RAW diagnosztika.
+- V003-C004 Top-3: systemszintu NORMAL/SPACE dense rank, legfeljebb 3 tier, teljes tuple-tie azonos helyezessel; C001-C003 rangsor/grouping/naming regresszio PASS.
+- V003-C004 valodi Chrome localhost: 15/15 technikai proba, Aluminum lista/reszlet radar egyezes, 3 NORMAL + 3 SPACE Stanton kartya, `e6d8dec8` fingerprint probe/reload utan valtozatlan, console warning/error 0.
 
 ## Elfogadott, meg nem bizonyitott pontok
 

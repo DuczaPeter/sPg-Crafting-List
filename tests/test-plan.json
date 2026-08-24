@@ -147,6 +147,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c003.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c004-radar-top3-regression",
+      "level": "full-regression",
+      "description": "V003-C004 gate: curated Radar Signature registry with Wiki API_RAW diagnostics, Top-3 dense rank tiers per system/environment, SCMDB read-only comparison audit, shared UI/export projection, full C001-C003/M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c004.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

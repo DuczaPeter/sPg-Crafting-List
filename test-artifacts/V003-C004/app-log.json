@@ -1,0 +1,5 @@
+{
+  "status": "NOT_CAPTURED",
+  "captured": false,
+  "reason": "The base repair-cycle does not capture the complete application log. The real Chrome Technical Baseline, DOM state, User Data fingerprint and browser console were captured separately in browser-summary.json."
+}

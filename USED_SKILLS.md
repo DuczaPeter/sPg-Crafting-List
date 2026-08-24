@@ -241,3 +241,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C003 scope, a V002 stabil allapot vedelme, a repair-cycle es teljes regresszio, valamint a 14/14 technikai proba, raw/alias kereses, duplicate UI, reload-fingerprint es alkalmazas-konzol ellenorzese.
 - Mely fajlokat vagy donteseket erintett: V003 material naming modell es UI/export fogyasztok, naming fixture/audit/validator, C003 riport/artifact es projekt statuszfajlok.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C004 Radar Signature es Top-3 recommendation
+
+- Skillek neve: `uj-projekt`, `browser:control-in-app-browser`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a forraskep-alapu radar registry, SCMDB read-only referenciaaudit, Top-3 dense rank es valodi Chrome localhost regresszio soran.
+- Mire segitett: a C004 scope es V002 vedelem megtartasara; a dinamikus SCMDB PTU oldal lathato szemantikajanak ellenorzesere; a valodi Chrome 15/15 proba, cache-kompatibilitasi hibak, UI-konzisztencia, reload fingerprint es konzol ellenorzesere.
+- Mely fajlokat vagy donteseket erintett: a V003 mining/radar/Top-3 modell es fogyasztok, Radar Signature kep/fixture, SCMDB referenciafixture, C004 tesztek/audit/validator, riport/artifact es projekt statuszfajlok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -1,0 +1,43 @@
+{
+  "cycle": "V003-C004",
+  "source": "Info/Radar Signature.png",
+  "sourceSha256": "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+  "sourceDimensions": { "width": 1182, "height": 879 },
+  "directShipRows": [
+    ["Quantainium", 3170, 2],
+    ["Stileron", 3185, 2],
+    ["Savrilium", 3200, 2],
+    ["Ouratite", 3370, 3],
+    ["Riccite", 3385, 3],
+    ["Lindinium", 3400, 3],
+    ["Beryl", 3540, 4],
+    ["Taranite", 3555, 4],
+    ["Borase", 3570, 4],
+    ["Gold", 3585, 4],
+    ["Bexalite", 3600, 4],
+    ["Laranite", 3825, 5],
+    ["Aslarite", 3840, 5],
+    ["Titanium", 3855, 5],
+    ["Tungsten", 3870, 5],
+    ["Agricium", 3885, 5],
+    ["Torite", 3900, 5],
+    ["Hephaestanite", 4180, 6],
+    ["Tin", 4195, 6],
+    ["Quartz", 4210, 6],
+    ["Corundum", 4225, 6],
+    ["Copper", 4240, 6],
+    ["Silicon", 4255, 6],
+    ["Iron", 4270, 6],
+    ["Aluminum", 4285, 6],
+    ["Ice", 4300, 6]
+  ],
+  "categoryRows": [
+    ["VEHICLE_MINING", "ROC Mineables", 4000, 7],
+    ["FPS_MINING", "FPS Mineables", 3000, 10],
+    ["SALVAGE", "Salvage", 2000, 15]
+  ],
+  "categoryDerivedMaterials": {
+    "VEHICLE_MINING": ["Beradon", "Feynmaline", "Glacosite"],
+    "FPS_MINING": ["Aphorite", "Dolivine", "Hadanite", "Janalite"]
+  }
+}

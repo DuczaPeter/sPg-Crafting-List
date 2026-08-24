@@ -52,8 +52,11 @@ assert.equal(byRawName.get("Stileron (Ore)").commodity.rarity, "legendary");
 
 for (const { recommendation } of projections) {
   for (const system of recommendation.systems) {
-    assert.ok(system.methods.length <= 2, `${system.system}: kettőnél több ajánlás jelent meg.`);
-    assert.equal(new Set(system.methods.map((method) => method.category)).size, system.methods.length, `${system.system}: duplikált normal/space ajánlás.`);
+    for (const category of [model.environments.NORMAL, model.environments.SPACE]) {
+      const tiers = system.methods.filter((method) => method.category === category);
+      assert.ok(tiers.length <= 3, `${system.system}/${category}: háromnál több dense rank tier jelent meg.`);
+      assert.deepEqual(tiers.map((method) => method.rankPosition), tiers.map((_, index) => index + 1), `${system.system}/${category}: hibás dense rank pozíció.`);
+    }
   }
 }
 
@@ -83,7 +86,7 @@ assert.equal(aluminumNyx.status, "AVAILABLE");
 assert.ok(aluminumNyx.methods.some((method) => method.category === model.environments.SPACE && method.locationNames.includes("Keeger Belt")));
 
 function methodFor(rawName, systemName, category) {
-  return byRawName.get(rawName).recommendation.systems.find((system) => system.system === systemName)?.methods.find((method) => method.category === category);
+  return byRawName.get(rawName).recommendation.systems.find((system) => system.system === systemName)?.methods.find((method) => method.category === category && method.rankPosition === 1);
 }
 
 const aluminumPyroSpace = methodFor("Aluminum (Ore)", "Pyro System", model.environments.SPACE);
@@ -112,7 +115,7 @@ const stileronPyro = byRawName.get("Stileron (Ore)").recommendation.systems.find
 assert.equal(stileronPyro.status, "AVAILABLE");
 assert.ok(stileronPyro.methods.some((method) => method.category === model.environments.NORMAL));
 assert.ok(stileronPyro.methods.some((method) => method.category === model.environments.SPACE));
-const stileronPyroSpace = stileronPyro.methods.find((method) => method.category === model.environments.SPACE);
+const stileronPyroSpace = stileronPyro.methods.find((method) => method.category === model.environments.SPACE && method.rankPosition === 1);
 assert.equal(stileronPyroSpace.locationLabel, "Pyro Deep Space Asteroids");
 assert.equal(stileronPyroSpace.locationSummary, "Akiro Cluster és RMB helyszínek");
 assert.equal(stileronPyroSpace.locationNames.length, 87, "A teljes Stileron/Pyro nyers lista nem maradt meg.");

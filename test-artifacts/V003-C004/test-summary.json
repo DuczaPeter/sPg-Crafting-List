@@ -1,0 +1,28 @@
+{
+  "projectVersion": "V003-dev",
+  "cycle": "C004",
+  "cycleId": "V003-C004",
+  "status": "PASS",
+  "statusReason": "Targeted Radar/Top-3 tests, live Wiki and SCMDB comparison audits, full M1-M6.1/C04/C001-C003 regression, standalone export and real Chrome localhost checks passed.",
+  "purpose": "V003 Radar Signature registry, SCMDB reference audit and Top-3 farm recommendations",
+  "testLevel": "full-regression",
+  "testId": "v003-c004-radar-top3-regression",
+  "testExecutable": "powershell.exe",
+  "testArguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c004.ps1"],
+  "testExitCode": 0,
+  "checkpoint": "not-requested",
+  "branch": "develop/V003",
+  "startedAt": "2026-08-24T19:00:00+02:00",
+  "completedAt": "2026-08-24T19:36:52.7103627+02:00",
+  "appLogCaptured": false,
+  "browserConsoleCaptured": true,
+  "browserConsoleWarningCount": 0,
+  "browserConsoleErrorCount": 0,
+  "artifacts": [
+    "radar-signature-audit.json",
+    "scmdb-comparison-audit.json",
+    "top3-live-api.json",
+    "standalone-js-300-top3.html",
+    "browser-summary.json"
+  ]
+}

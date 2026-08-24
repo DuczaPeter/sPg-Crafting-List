@@ -8,7 +8,7 @@
 - [x] Teljes Star Citizen Wiki commodity/location/resource semaaudit hivatalos API-forrassal.
 - [x] Primary resource gate exact target UUID + canonical API resource label egyezessel; fuzzy es `materialIndex === 0` szabaly nelkul.
 - [x] Secondary/by-product resource kizarasa a rangsor elott es reszletes recommendation decision trace.
-- [x] Rendszerenkenti egy legjobb normal es egy legjobb space ajanlas, szigoru All Lagrange osszevonassal.
+- [x] C001 baseline: rendszerenkenti egy legjobb normal es egy legjobb space ajanlas, szigoru All Lagrange osszevonassal; C004 ezt a rangsor modositas nelkul Top-3 dense rank projekciora bovitette.
 - [x] Spawn/group probability → occurrence/relative probability → quantized/range Quality determinisztikus rangsor.
 - [x] Kozos recommendation fuggveny Material Database, Crafting/Combined snapshot es standalone export szamara.
 - [x] Common/uncommon/legendary, secondary trap, Stanton/Pyro/Nyx, normal/space es 5 000 locationos tesztek.
@@ -27,6 +27,13 @@
 - [x] Material Database, loadout, inventory, crafting, Combined, farm, UEX, datalist/select es standalone export kozos materialnev-projekcioja.
 - [x] `V003-C003` celzott 20 eset, elo 206/72 rekordos audit es teljes M1-M6.1 + C04 + C001/C002 regresszio PASS.
 - [x] Valodi Chrome localhost 14/14, raw/alias kereses, duplicate UI, reload fingerprint es alkalmazas-konzol WARN/ERROR 0 PASS.
+- [x] `V003-C004`: `Info/Radar Signature.png` forraskepbol 33 exact materialrekordos, 3 kategoriaszabalyos, verziozott Radar Signature registry.
+- [x] Wiki Radar Signature csak `API_RAW_NOT_USER_FACING` diagnosztika; registry-hianyban explicit `Nincs adat`, találgatott fallback nélkül.
+- [x] Rendszerenkent es `NORMAL`/`SPACE` kornyezetenkent maximum 3 dense rank tier; teljes tuple-tie azonos helyezes, nyers location/decision trace megorizve.
+- [x] Nem-Ship materialnal ertelmetlen SPACE lista elnyomva; Material Database es standalone export azonos Top-3 projekciot hasznal.
+- [x] SCMDB read-only masodlagos referenciaaudit: 6 MATCH, 1 EXPLAINED_DIFFERENCE, 2 UNVERIFIED; runtime/ranking fugges nincs.
+- [x] `V003-C004` teljes M1-M6.1 + C04 + C001-C003 regresszio, elo Wiki audit, standalone export es V002-integritas PASS.
+- [x] Valodi Chrome localhost 15/15; Aluminum 3 NORMAL + 3 SPACE tier, unmapped `Nincs adat`, fingerprint `e6d8dec8`, konzol warning/error 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V002 GitHub- es Discord-dokumentacio

@@ -1,0 +1,43 @@
+{
+  "cycle": "V003-C004",
+  "testedAt": "2026-08-24T19:36:52.7103627+02:00",
+  "runner": "Codex Chrome control",
+  "mode": "REAL_CHROME_LOCALHOST",
+  "url": "http://127.0.0.1:4177/",
+  "appVersion": "V003-dev",
+  "appReady": true,
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 15,
+    "failed": 0,
+    "radarTop3Check": "33 verified record · API_RAW diagnostic · max 3 dense rank tier",
+    "standaloneExport": "PASS · 99 KiB · no external resource"
+  },
+  "radarSignature": {
+    "registryVersion": "V003-C004-1",
+    "verified": 33,
+    "unmapped": 31,
+    "aluminumListAndDetailConsistent": true,
+    "aluminumDisplay": "4285–25710 (1–6× cluster)",
+    "agriciumDisplay": "3885–19425 (1–5× cluster)",
+    "unmappedExample": "Bluemoon Fungus · Nincs adat"
+  },
+  "topThree": {
+    "aluminumStantonNormalRanks": ["Hurston", "Magda", "Ita"],
+    "aluminumStantonSpaceRanks": ["Aaron Halo", "Lagrange F", "Lagrange A"],
+    "nonShipSpaceSuppressed": true,
+    "visualCheck": "PASS"
+  },
+  "userDataFingerprintBeforeProbe": "e6d8dec8",
+  "userDataFingerprintAfterProbe": "e6d8dec8",
+  "userDataFingerprintAfterReload": "e6d8dec8",
+  "userDataChanged": false,
+  "applicationConsoleWarningCount": 0,
+  "applicationConsoleErrorCount": 0,
+  "manualFileGate": {
+    "status": "PASS",
+    "evidenceOwner": "USER",
+    "scope": "Previously reported V003 file:// technical baseline including the location-ranking rule; not a Codex-automated C004 browser run.",
+    "note": "The user reported every Technical Baseline row green, including file runtime, IndexedDB, Wiki API, location ranking, M3 model and standalone export."
+  }
+}

@@ -57,3 +57,13 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A raw/normalizalt location-resource-material adat megmarad, a recommendation kulon, visszakovetheto projekcio.
 - A Material Database, Crafting/Combined snapshot es standalone export egyetlen kozos recommendation fuggvenyt hasznal.
 - Stabil V003 kiadas vagy tag a C001 fejlesztesi korben nem keszulhet.
+
+## 2026-08-24 - V003 Radar Signature mezohatar es Top-3 projekcio
+
+- A user-facing Radar Signature kanonikus forrasa az `Info/Radar Signature.png` alapjan keszitett, beagyazott es verziozott registry; a kep projektbizonyitekkent megmarad, runtime sidecar nem lehet.
+- A Star Citizen Wiki `signature` mezoje csak `API_RAW_NOT_USER_FACING` diagnosztika. Registry-egyezes hianyaban `Nincs adat`; Wiki fallback vagy talalgatas tilos.
+- A C001 primary gate es spawn -> occurrence -> Quality sorrend valtozatlan. A rangsor utan rendszerenkent es NORMAL/SPACE kornyezetenkent maximum harom dense rank tier jelenik meg.
+- Teljes rangtuple-tie azonos helyezest kap; a kovetkezo eltero tuple a kovetkezo egesz rank. A teljes raw location es decision trace megmarad.
+- Ship Mining kaphat kulon NORMAL es SPACE listat; nem-Ship materialnak nem keszul ertelmetlen SPACE ajanlas.
+- Az SCMDB csak read-only masodlagos, emberi naming/grouping sanity reference. Szazaleka nem Wiki spawn/occurrence, nem ranking input, es nincs runtime SCMDB-fugges.
+- Stabil V003 release vagy tag a C004 fejlesztesi korben sem keszulhet kulon felhasznaloi jovahagyas nelkul.

@@ -52,11 +52,18 @@ assert.deepEqual(Array.from(model.classifyMiningCommodity(fixture.commodities.ve
 assert.deepEqual(Array.from(model.classifyMiningCommodity(fixture.commodities.fps).categories), [model.categories.FPS]);
 assert.deepEqual(Array.from(model.classifyMiningCommodity(fixture.commodities.harvestable).categories), [model.categories.HARVESTABLE]);
 
-// 5. Radar Signature remains numeric or null; it is never converted to zero.
+// 5. User-facing Radar Signature comes from the curated registry; Wiki remains API_RAW diagnostics only.
 const shipIndex = model.normalizeMiningCommodityIndex(fixture.commodities.ship, provenance);
 const fpsIndex = model.normalizeMiningCommodityIndex(fixture.commodities.fps, provenance);
-assert.equal(shipIndex.radarSignature, 4000);
-assert.equal(fpsIndex.radarSignature, null);
+const harvestableIndex = model.normalizeMiningCommodityIndex(fixture.commodities.harvestable, provenance);
+assert.equal(shipIndex.radarSignature, 3885);
+assert.equal(shipIndex.radarSignatureApiRaw, 4000);
+assert.equal(shipIndex.radarSignatureStatus, "VERIFIED");
+assert.equal(fpsIndex.radarSignature, 3000);
+assert.equal(fpsIndex.radarSignatureApiRaw, null);
+assert.equal(harvestableIndex.radarSignature, null);
+assert.equal(harvestableIndex.radarSignatureDisplay, "Nincs adat");
+assert.equal(harvestableIndex.radarSignatureApiRaw, 2000, "A Wiki radarértéknek diagnosztikában meg kell maradnia.");
 
 // 6. A real-style commodity keeps every location and every resource; recommendation filtering is a separate projection.
 const ship = model.normalizeMiningCommodity(fixture.commodities.ship, provenance);

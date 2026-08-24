@@ -1,0 +1,940 @@
+{
+  "auditId": "V003-C004-TOP3",
+  "auditedAt": "2026-08-24T17:35:49.252Z",
+  "scVersion": "4.9.0-LIVE.12232306",
+  "ranking": [
+    "PRIMARY_RESOURCE_GATE",
+    "SPAWN_DESC",
+    "OCCURRENCE_DESC",
+    "QUALITY_DESC",
+    "DENSE_RANK_MAX_3_TIERS_PER_SYSTEM_AND_ENVIRONMENT"
+  ],
+  "materials": [
+    {
+      "material": "Aluminum (Ore)",
+      "radarSignature": 4285,
+      "radarSignatureDisplay": "4285–25 710 (1–6× cluster)",
+      "systems": [
+        {
+          "system": "Nyx System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Keeger Belt",
+              "memberSummary": "1 nyertes location",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 20.75,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 1
+            }
+          ]
+        },
+        {
+          "system": "Pyro System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Pyro Deep Space Asteroids",
+              "memberSummary": "86 RMB helyszín",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 14.9,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 86
+            }
+          ]
+        },
+        {
+          "system": "Stanton System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "NORMAL",
+              "rank": 1,
+              "farmLocation": "Hurston",
+              "memberSummary": "1 nyertes location",
+              "method": "SHIP_MINING",
+              "spawn": 6,
+              "occurrence": 44,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 1
+            },
+            {
+              "environment": "NORMAL",
+              "rank": 2,
+              "farmLocation": "Magda",
+              "memberSummary": "1 nyertes location",
+              "method": "SHIP_MINING",
+              "spawn": 6,
+              "occurrence": 34.8,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 1
+            },
+            {
+              "environment": "NORMAL",
+              "rank": 3,
+              "farmLocation": "Ita",
+              "memberSummary": "1 nyertes location",
+              "method": "SHIP_MINING",
+              "spawn": 6,
+              "occurrence": 34.7,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 1
+            },
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Aaron Halo",
+              "memberSummary": "50 Mining Base helyszín · 1 rendszer-szintű API-rekord",
+              "method": "SHIP_MINING",
+              "spawn": 30,
+              "occurrence": 10.3,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 51
+            },
+            {
+              "environment": "SPACE",
+              "rank": 2,
+              "farmLocation": "Lagrange F",
+              "memberSummary": "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2",
+              "method": "SHIP_MINING",
+              "spawn": 15,
+              "occurrence": 17.8,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 4
+            },
+            {
+              "environment": "SPACE",
+              "rank": 3,
+              "farmLocation": "Lagrange A",
+              "memberSummary": "HUR-L1 · HUR-L4",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 17.9,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      318,
+                      511
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      511,
+                      614,
+                      783,
+                      896,
+                      919,
+                      953,
+                      1000
+                    ],
+                    "materialIndex": 2
+                  }
+                ],
+                "quantizedValues": [
+                  318,
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "highQualityValues": [
+                  511,
+                  614,
+                  783,
+                  896,
+                  919,
+                  953,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 318,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "4285–25 710 (1–6× cluster)",
+              "rawLocationCount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "material": "Agricium (Ore)",
+      "radarSignature": 3885,
+      "radarSignatureDisplay": "3885–19 425 (1–5× cluster)",
+      "systems": [
+        {
+          "system": "Nyx System",
+          "status": "NO_KNOWN_LOCATION",
+          "methods": []
+        },
+        {
+          "system": "Pyro System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "NORMAL",
+              "rank": 1,
+              "farmLocation": "Terminus · Vuur",
+              "memberSummary": "2 azonos teljes rank tuple-jű farmhelycsoport",
+              "method": "SHIP_MINING",
+              "spawn": 7.5,
+              "occurrence": 14.2,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      346,
+                      588
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      588,
+                      667,
+                      796,
+                      852,
+                      943,
+                      971,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  346,
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "highQualityValues": [
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 346,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3885–19 425 (1–5× cluster)",
+              "rawLocationCount": 2
+            },
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Pyro Lagrange Points",
+              "memberSummary": "PYR1-L1 · PYR1-L2 · PYR1-L3 · PYR1-L4 · PYR1-L5 · PYR2-L1 · PYR2-L2 · PYR2-L3 · PYR2-L4 · PYR2-L5",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 28.5,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      346,
+                      588
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      588,
+                      667,
+                      796,
+                      852,
+                      943,
+                      971,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  346,
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "highQualityValues": [
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 346,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3885–19 425 (1–5× cluster)",
+              "rawLocationCount": 10
+            }
+          ]
+        },
+        {
+          "system": "Stanton System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "NORMAL",
+              "rank": 1,
+              "farmLocation": "Cellin · Daymar · Yela",
+              "memberSummary": "3 azonos teljes rank tuple-jű farmhelycsoport",
+              "method": "SHIP_MINING",
+              "spawn": 6,
+              "occurrence": 28.5,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      346,
+                      588
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      588,
+                      667,
+                      796,
+                      852,
+                      943,
+                      971,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  346,
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "highQualityValues": [
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 346,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3885–19 425 (1–5× cluster)",
+              "rawLocationCount": 3
+            },
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Lagrange D",
+              "memberSummary": "ARC-L3 · CRU-L5 · MIC-L4",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 28.5,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      346,
+                      588
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      588,
+                      667,
+                      796,
+                      852,
+                      943,
+                      971,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  346,
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "highQualityValues": [
+                  588,
+                  667,
+                  796,
+                  852,
+                  943,
+                  971,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 346,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3885–19 425 (1–5× cluster)",
+              "rawLocationCount": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "material": "Stileron (Ore)",
+      "radarSignature": 3185,
+      "radarSignatureDisplay": "3185–6370 (1–2× cluster)",
+      "systems": [
+        {
+          "system": "Nyx System",
+          "status": "NO_KNOWN_LOCATION",
+          "methods": []
+        },
+        {
+          "system": "Pyro System",
+          "status": "AVAILABLE",
+          "methods": [
+            {
+              "environment": "NORMAL",
+              "rank": 1,
+              "farmLocation": "Bloom · Monox · Pyro I · +2 további",
+              "memberSummary": "5 azonos teljes rank tuple-jű farmhelycsoport",
+              "method": "SHIP_MINING",
+              "spawn": 7.5,
+              "occurrence": 2,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      330,
+                      517
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      517,
+                      681,
+                      747,
+                      874,
+                      947,
+                      972,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  330,
+                  517,
+                  681,
+                  747,
+                  874,
+                  947,
+                  972,
+                  1000
+                ],
+                "highQualityValues": [
+                  517,
+                  681,
+                  747,
+                  874,
+                  947,
+                  972,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 330,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3185–6370 (1–2× cluster)",
+              "rawLocationCount": 5
+            },
+            {
+              "environment": "SPACE",
+              "rank": 1,
+              "farmLocation": "Pyro Deep Space Asteroids",
+              "memberSummary": "Akiro Cluster és RMB helyszínek",
+              "method": "SHIP_MINING",
+              "spawn": 10,
+              "occurrence": 2,
+              "quality": {
+                "ranges": [
+                  {
+                    "min": 245,
+                    "max": 490,
+                    "quantizedValues": [
+                      330,
+                      517
+                    ],
+                    "materialIndex": 0
+                  },
+                  {
+                    "min": 501,
+                    "max": 1000,
+                    "quantizedValues": [
+                      517,
+                      681,
+                      747,
+                      874,
+                      947,
+                      972,
+                      1000
+                    ],
+                    "materialIndex": 1
+                  }
+                ],
+                "quantizedValues": [
+                  330,
+                  517,
+                  681,
+                  747,
+                  874,
+                  947,
+                  972,
+                  1000
+                ],
+                "highQualityValues": [
+                  517,
+                  681,
+                  747,
+                  874,
+                  947,
+                  972,
+                  1000
+                ],
+                "hasHighQuality": true,
+                "reachableMinimum": 330,
+                "reachableMaximum": 1000,
+                "evidence": "API_QUALITY_QUANTIZED_VALUES"
+              },
+              "radarSignature": "3185–6370 (1–2× cluster)",
+              "rawLocationCount": 87
+            }
+          ]
+        },
+        {
+          "system": "Stanton System",
+          "status": "NO_KNOWN_LOCATION",
+          "methods": []
+        }
+      ]
+    }
+  ]
+}

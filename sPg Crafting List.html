@@ -4824,6 +4824,7 @@ code {
       editingBatchId: null,
       miningCommodityIndex: [],
       materialNamingAudit: null,
+      radarSignatureAudit: null,
       miningEquipment: { heads: [], modules: [], gadgets: [] },
       miningVehicles: [],
       miningSystems: [],
@@ -7085,6 +7086,171 @@ code {
       UNKNOWN: "UNKNOWN"
     });
 
+    /* RADAR_SIGNATURE_MODEL_START */
+    var RADAR_SIGNATURE_REGISTRY_VERSION = "V003-C004-1";
+    var RADAR_SIGNATURE_SOURCE_VERSION = "RADAR-REFERENCE-2026-08-24";
+    var RADAR_SIGNATURE_SOURCE_SHA256 = "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6";
+    var RADAR_SIGNATURE_SOURCE = "RADAR_SIGNATURE_REFERENCE_IMAGE";
+    var RADAR_SIGNATURE_STATUS = Object.freeze({ VERIFIED: "VERIFIED", UNMAPPED: "UNMAPPED" });
+
+    function radarSignatureValues(baseRadarSignature, maximumClusterMultiplier) {
+      return Array.from({ length: maximumClusterMultiplier }, function (_, index) {
+        return baseRadarSignature * (index + 1);
+      });
+    }
+
+    function radarSignatureRecord(uuid, canonicalMaterial, miningCategory, baseRadarSignature, maximumClusterMultiplier, sourceRow, derivation) {
+      var clusterSignatures = radarSignatureValues(baseRadarSignature, maximumClusterMultiplier);
+      return Object.freeze({
+        uuid: uuid,
+        canonicalMaterial: canonicalMaterial,
+        miningCategory: miningCategory,
+        baseRadarSignature: baseRadarSignature,
+        clusterRule: "INTEGER_MULTIPLIER_1_TO_" + maximumClusterMultiplier,
+        clusterMultipliers: Object.freeze(clusterSignatures.map(function (_, index) { return index + 1; })),
+        clusterSignatures: Object.freeze(clusterSignatures),
+        displayValue: baseRadarSignature.toLocaleString("hu-HU") + "–" + clusterSignatures[clusterSignatures.length - 1].toLocaleString("hu-HU") + " (1–" + maximumClusterMultiplier + "× cluster)",
+        source: RADAR_SIGNATURE_SOURCE,
+        sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION,
+        sourceSha256: RADAR_SIGNATURE_SOURCE_SHA256,
+        sourceRow: sourceRow,
+        derivation: derivation || "EXACT_MATERIAL_ROW",
+        status: RADAR_SIGNATURE_STATUS.VERIFIED
+      });
+    }
+
+    var RADAR_SIGNATURE_CATEGORY_RULES = Object.freeze([
+      Object.freeze({ miningCategory: M3_MINING_CATEGORIES.VEHICLE, sourceRow: "ROC Mineables", baseRadarSignature: 4000, maximumClusterMultiplier: 7, source: RADAR_SIGNATURE_SOURCE, sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION, status: RADAR_SIGNATURE_STATUS.VERIFIED }),
+      Object.freeze({ miningCategory: M3_MINING_CATEGORIES.FPS, sourceRow: "FPS Mineables", baseRadarSignature: 3000, maximumClusterMultiplier: 10, source: RADAR_SIGNATURE_SOURCE, sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION, status: RADAR_SIGNATURE_STATUS.VERIFIED }),
+      Object.freeze({ miningCategory: "SALVAGE", sourceRow: "Salvage", baseRadarSignature: 2000, maximumClusterMultiplier: 15, source: RADAR_SIGNATURE_SOURCE, sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION, status: RADAR_SIGNATURE_STATUS.VERIFIED })
+    ]);
+
+    var RADAR_SIGNATURE_REGISTRY = Object.freeze([
+      radarSignatureRecord("501d9b2e-136c-483b-a4d9-282fe6a5d37a", "Quantainium", M3_MINING_CATEGORIES.SHIP, 3170, 2, "Quantainium"),
+      radarSignatureRecord("32bafbd4-c52a-476d-b31c-97c4b3102471", "Stileron", M3_MINING_CATEGORIES.SHIP, 3185, 2, "Stileron"),
+      radarSignatureRecord("d76ea7ef-5116-488c-93d3-71e02bada13d", "Savrilium", M3_MINING_CATEGORIES.SHIP, 3200, 2, "Savrilium"),
+      radarSignatureRecord("ca3ae4c1-3483-4985-ba61-50412994dc83", "Ouratite", M3_MINING_CATEGORIES.SHIP, 3370, 3, "Ouratite"),
+      radarSignatureRecord("c3697191-8ad0-43a9-af7a-29c0ad58de34", "Riccite", M3_MINING_CATEGORIES.SHIP, 3385, 3, "Riccite"),
+      radarSignatureRecord("87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f", "Lindinium", M3_MINING_CATEGORIES.SHIP, 3400, 3, "Lindinium"),
+      radarSignatureRecord("eb503701-389a-48a1-af28-eb7374009d5d", "Beryl", M3_MINING_CATEGORIES.SHIP, 3540, 4, "Beryl"),
+      radarSignatureRecord("b6175879-fc61-4600-b4a9-1e15f2c2ddd5", "Taranite", M3_MINING_CATEGORIES.SHIP, 3555, 4, "Taranite"),
+      radarSignatureRecord("728a3d7e-9567-4e1c-87fd-2bd45b458aa6", "Borase", M3_MINING_CATEGORIES.SHIP, 3570, 4, "Borase"),
+      radarSignatureRecord("57aba429-cf97-4fdd-8042-94b1d643f5bd", "Gold", M3_MINING_CATEGORIES.SHIP, 3585, 4, "Gold"),
+      radarSignatureRecord("3848c27d-49cc-4fdb-9a18-e93770bc8bc2", "Bexalite", M3_MINING_CATEGORIES.SHIP, 3600, 4, "Bexalite"),
+      radarSignatureRecord("7b7178c1-b0f0-4760-89de-9a3e3851e7a8", "Laranite", M3_MINING_CATEGORIES.SHIP, 3825, 5, "Laranite"),
+      radarSignatureRecord("f0c1f30b-001c-4a80-ac20-27df27183056", "Aslarite", M3_MINING_CATEGORIES.SHIP, 3840, 5, "Aslarite"),
+      radarSignatureRecord("64978449-1d87-4a16-ba55-4b5f94fee217", "Titanium", M3_MINING_CATEGORIES.SHIP, 3855, 5, "Titanium"),
+      radarSignatureRecord("addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6", "Tungsten", M3_MINING_CATEGORIES.SHIP, 3870, 5, "Tungsten"),
+      radarSignatureRecord("fc1ec740-3047-48d8-81f0-396f4c9a90ef", "Agricium", M3_MINING_CATEGORIES.SHIP, 3885, 5, "Agricium"),
+      radarSignatureRecord("48b9b7ba-cd5e-458b-bb91-9b43eb46c568", "Torite", M3_MINING_CATEGORIES.SHIP, 3900, 5, "Torite"),
+      radarSignatureRecord("cad319d9-e0e5-420d-bbfd-dd62a0362d05", "Hephaestanite", M3_MINING_CATEGORIES.SHIP, 4180, 6, "Hephaestanite"),
+      radarSignatureRecord("551cf88d-c09f-46e3-99b3-66c60bb65af1", "Tin", M3_MINING_CATEGORIES.SHIP, 4195, 6, "Tin"),
+      radarSignatureRecord("8569b931-06bb-4d86-9f24-5e303e2ff3ee", "Quartz", M3_MINING_CATEGORIES.SHIP, 4210, 6, "Quartz"),
+      radarSignatureRecord("4ceb21c5-48f8-418a-8188-0b0196c33505", "Corundum", M3_MINING_CATEGORIES.SHIP, 4225, 6, "Corundum"),
+      radarSignatureRecord("d4ba4af8-80f1-4a8a-b8cd-5ba7e37c005c", "Copper", M3_MINING_CATEGORIES.SHIP, 4240, 6, "Copper"),
+      radarSignatureRecord("d137b905-b3bc-4721-a790-830499263c0c", "Silicon", M3_MINING_CATEGORIES.SHIP, 4255, 6, "Silicon"),
+      radarSignatureRecord("32c57a12-5de5-49b1-827a-9fd80278fbc4", "Iron", M3_MINING_CATEGORIES.SHIP, 4270, 6, "Iron"),
+      radarSignatureRecord("e30bdd32-8fd5-44b8-9994-5fd253a16c37", "Aluminum", M3_MINING_CATEGORIES.SHIP, 4285, 6, "Aluminium"),
+      radarSignatureRecord("d9653427-af7f-4fea-bbd6-ae89393524b7", "Ice", M3_MINING_CATEGORIES.SHIP, 4300, 6, "Ice"),
+      radarSignatureRecord("c339897c-d682-48ad-a16f-daf145bc0f4d", "Beradon", M3_MINING_CATEGORIES.VEHICLE, 4000, 7, "ROC Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("7310c15d-359c-42b4-b61e-7da3d0da3384", "Feynmaline", M3_MINING_CATEGORIES.VEHICLE, 4000, 7, "ROC Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("960eda23-d77c-425e-8cbd-89d94ca6e2aa", "Glacosite", M3_MINING_CATEGORIES.VEHICLE, 4000, 7, "ROC Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("9b47bacf-8efa-42e2-8d84-dee64983a00a", "Aphorite", M3_MINING_CATEGORIES.FPS, 3000, 10, "FPS Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("7e86e2f4-6c31-41f8-9438-0fd8ad037426", "Dolivine", M3_MINING_CATEGORIES.FPS, 3000, 10, "FPS Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("3e5fdc37-cb59-4fd3-8168-e3c538ab9722", "Hadanite", M3_MINING_CATEGORIES.FPS, 3000, 10, "FPS Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY"),
+      radarSignatureRecord("f3379bda-0520-4c75-920a-c29a50eb6b50", "Janalite", M3_MINING_CATEGORIES.FPS, 3000, 10, "FPS Mineables", "VERIFIED_CATEGORY_ROW_WITH_WIKI_MINING_CATEGORY")
+    ]);
+
+    function resolveRadarSignature(input) {
+      var source = input && typeof input === "object" ? input : {};
+      var uuid = materialNameUuid(source);
+      var canonicalMaterial = resolveMaterialDisplayName(source, null);
+      var categories = Array.isArray(source.categories) ? source.categories.slice() : [];
+      var apiRawValue = m3FiniteNumber(source.radarSignatureApiRaw !== undefined ? source.radarSignatureApiRaw : (source.signature !== undefined ? source.signature : source.radarSignature));
+      var record = RADAR_SIGNATURE_REGISTRY.find(function (candidate) { return candidate.uuid === uuid; }) || null;
+      var verified = Boolean(record && canonicalMaterial === record.canonicalMaterial && categories.indexOf(record.miningCategory) !== -1);
+      if (!verified) {
+        return {
+          registryVersion: RADAR_SIGNATURE_REGISTRY_VERSION,
+          materialUuid: uuid || null,
+          canonicalMaterial: canonicalMaterial,
+          miningCategory: categories[0] || M3_MINING_CATEGORIES.UNKNOWN,
+          baseRadarSignature: null,
+          clusterRule: null,
+          clusterMultipliers: [],
+          clusterSignatures: [],
+          displayValue: "Nincs adat",
+          source: "NONE",
+          sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION,
+          status: RADAR_SIGNATURE_STATUS.UNMAPPED,
+          apiRaw: { value: apiRawValue, source: "STAR_CITIZEN_WIKI_API", status: "API_RAW_NOT_USER_FACING" }
+        };
+      }
+      return Object.assign({}, record, {
+        clusterMultipliers: record.clusterMultipliers.slice(),
+        clusterSignatures: record.clusterSignatures.slice(),
+        apiRaw: { value: apiRawValue, source: "STAR_CITIZEN_WIKI_API", status: "API_RAW_NOT_USER_FACING" }
+      });
+    }
+
+    function withRadarSignatureProjection(record, rawRecord) {
+      var resolved = resolveRadarSignature(Object.assign({}, record || {}, rawRecord || {}, {
+        radarSignatureApiRaw: rawRecord && rawRecord.signature !== undefined ? rawRecord.signature : record && record.radarSignatureApiRaw
+      }));
+      return Object.assign({}, record || {}, {
+        radarSignature: resolved.baseRadarSignature,
+        radarSignatureDisplay: resolved.displayValue,
+        radarSignatureClusterRule: resolved.clusterRule,
+        radarSignatureClusterMultipliers: resolved.clusterMultipliers.slice(),
+        radarSignatureClusterSignatures: resolved.clusterSignatures.slice(),
+        radarSignatureSource: resolved.source,
+        radarSignatureSourceVersion: resolved.sourceVersion,
+        radarSignatureStatus: resolved.status,
+        radarSignatureApiRaw: resolved.apiRaw.value,
+        radarSignatureApiSource: resolved.apiRaw.source,
+        radarSignatureApiStatus: resolved.apiRaw.status,
+        radarSignatureRegistryVersion: RADAR_SIGNATURE_REGISTRY_VERSION
+      });
+    }
+
+    function auditRadarSignatures(records) {
+      var rawRecords = Array.isArray(records) ? records : [];
+      var displayRecords = buildMaterialDisplayIndex(rawRecords);
+      var rawResults = rawRecords.map(resolveRadarSignature);
+      var displayResults = displayRecords.map(resolveRadarSignature);
+      var summarize = function (results) {
+        return results.reduce(function (counts, result) {
+          counts[result.status] = (counts[result.status] || 0) + 1;
+          return counts;
+        }, { VERIFIED: 0, UNMAPPED: 0 });
+      };
+      var rawCounts = summarize(rawResults);
+      var displayCounts = summarize(displayResults);
+      return {
+        registryVersion: RADAR_SIGNATURE_REGISTRY_VERSION,
+        source: RADAR_SIGNATURE_SOURCE,
+        sourceVersion: RADAR_SIGNATURE_SOURCE_VERSION,
+        sourceSha256: RADAR_SIGNATURE_SOURCE_SHA256,
+        registryMaterialRecords: RADAR_SIGNATURE_REGISTRY.length,
+        categoryRules: RADAR_SIGNATURE_CATEGORY_RULES.length,
+        rawRecordCount: rawResults.length,
+        rawVerified: rawCounts.VERIFIED,
+        rawUnmapped: rawCounts.UNMAPPED,
+        userFacingRecordCount: displayResults.length,
+        verified: displayCounts.VERIFIED,
+        unmapped: displayCounts.UNMAPPED,
+        unmappedRecords: displayRecords.map(function (record, index) {
+          return displayResults[index].status === RADAR_SIGNATURE_STATUS.UNMAPPED ? {
+            uuid: record.uuid || null,
+            canonicalMaterial: resolveMaterialDisplayName(record, record.rawName || record.name || null),
+            categories: Array.isArray(record.categories) ? record.categories.slice() : [],
+            apiRaw: displayResults[index].apiRaw.value
+          } : null;
+        }).filter(Boolean)
+      };
+    }
+    /* RADAR_SIGNATURE_MODEL_END */
+
     var M3_EQUIPMENT_TYPES = Object.freeze({
       HEAD: "MINING_HEAD",
       MODULE: "MINING_MODULE",
@@ -7164,7 +7330,9 @@ code {
       SECONDARY_EXCLUDED: "SECONDARY_EXCLUDED",
       LOWER_RANKED: "LOWER_RANKED",
       BEST_NORMAL: "BEST_NORMAL",
-      BEST_SPACE: "BEST_SPACE"
+      BEST_SPACE: "BEST_SPACE",
+      RANKED_NORMAL: "RANKED_NORMAL",
+      RANKED_SPACE: "RANKED_SPACE"
     });
 
     var M3_ENVIRONMENTS = Object.freeze({
@@ -7341,7 +7509,7 @@ code {
       });
       var normalized = {
         cacheKey: provenance.gameVersion + "::commodity-detail::" + raw.uuid,
-        recommendationModelVersion: 5,
+        recommendationModelVersion: 6,
         uuid: raw.uuid,
         key: raw.key || null,
         slug: raw.slug || null,
@@ -7351,7 +7519,7 @@ code {
         kind: raw.kind || null,
         categories: classification.categories,
         classificationSource: classification.source,
-        radarSignature: m3FiniteNumber(raw.signature),
+        radarSignatureApiRaw: m3FiniteNumber(raw.signature),
         rarity: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? String(raw.rarity) :
           (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? String(raw.tier) : null),
         raritySourceField: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? "rarity" :
@@ -7369,7 +7537,7 @@ code {
         rawLocationCount: locations.length,
         provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
       };
-      return withResolvedMaterialName(normalized, raw);
+      return withRadarSignatureProjection(withResolvedMaterialName(normalized, raw), raw);
     }
 
     function normalizeMiningCommodityIndex(raw, provenance) {
@@ -7386,7 +7554,7 @@ code {
         kind: raw.kind || null,
         categories: classification.categories,
         classificationSource: classification.source,
-        radarSignature: m3FiniteNumber(raw.signature),
+        radarSignatureApiRaw: m3FiniteNumber(raw.signature),
         rarity: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? String(raw.rarity) :
           (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? String(raw.tier) : null),
         raritySourceField: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? "rarity" :
@@ -7401,7 +7569,7 @@ code {
         } : null,
         provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
       };
-      return withResolvedMaterialName(normalized, raw);
+      return withRadarSignatureProjection(withResolvedMaterialName(normalized, raw), raw);
     }
 
     function m3ConsistentMetric(values) {
@@ -7646,6 +7814,53 @@ code {
       };
     }
 
+    function m3PartitionRankingTiers(candidates) {
+      var tiers = [];
+      (candidates || []).slice().sort(compareMiningLocations).forEach(function (candidate) {
+        var current = tiers[tiers.length - 1];
+        if (!current || !sameMiningRank(candidate, current.best)) {
+          current = { rank: tiers.length + 1, best: candidate, candidates: [] };
+          tiers.push(current);
+        }
+        current.candidates.push(candidate);
+      });
+      return tiers;
+    }
+
+    function m3TierDisplayLabel(presentation) {
+      var groups = presentation && Array.isArray(presentation.groups) ? presentation.groups : [];
+      if (!groups.length) {
+        return "Ismeretlen farmhely";
+      }
+      if (groups.length === 1) {
+        return groups[0].label;
+      }
+      var labels = groups.map(function (group) { return group.label; });
+      return labels.length <= 4
+        ? labels.join(" · ")
+        : labels.slice(0, 3).join(" · ") + " · +" + (labels.length - 3) + " további";
+    }
+
+    function m3TierMemberSummary(presentation) {
+      var groups = presentation && Array.isArray(presentation.groups) ? presentation.groups : [];
+      if (groups.length === 1) {
+        return groups[0].memberSummary;
+      }
+      return groups.length + " azonos teljes rank tuple-jű farmhelycsoport";
+    }
+
+    function m3RecommendationEnvironments(commodity, primaryCandidates) {
+      var categories = Array.isArray(commodity && commodity.categories) ? commodity.categories : [];
+      var hasShipMining = categories.indexOf(M3_MINING_CATEGORIES.SHIP) !== -1 || (primaryCandidates || []).some(function (candidate) {
+        return candidate.miningMethod === M3_MINING_CATEGORIES.SHIP;
+      });
+      return hasShipMining ? [M3_ENVIRONMENTS.NORMAL, M3_ENVIRONMENTS.SPACE] : [M3_ENVIRONMENTS.NORMAL];
+    }
+
+    function m3RecommendationLabel(environment, rank) {
+      return rank + ". hely · " + (environment === M3_ENVIRONMENTS.SPACE ? "Űrbeli farmhely" : "Földi farmhely");
+    }
+
     function buildMiningFarmRecommendations(commodity, systems) {
       var decisions = [];
       var primaryCandidates = [];
@@ -7695,44 +7910,78 @@ code {
       })).filter(Boolean));
       var systemResults = systemNames.map(function (system) {
         var systemCandidates = primaryCandidates.filter(function (candidate) { return candidate.system === system; });
-        var recommendations = [M3_ENVIRONMENTS.NORMAL, M3_ENVIRONMENTS.SPACE].map(function (environment) {
+        var allowedEnvironments = m3RecommendationEnvironments(commodity, systemCandidates);
+        var recommendations = allowedEnvironments.reduce(function (allRecommendations, environment) {
           var environmentCandidates = systemCandidates.filter(function (candidate) { return candidate.environment === environment; }).sort(compareMiningLocations);
           if (!environmentCandidates.length) {
-            return null;
+            return allRecommendations;
           }
-          var best = environmentCandidates[0];
-          var equalBest = environmentCandidates.filter(function (candidate) { return sameMiningRank(candidate, best); });
-          environmentCandidates.forEach(function (candidate) {
-            candidate.finalDecision = equalBest.indexOf(candidate) !== -1
-              ? (environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL)
-              : M3_RECOMMENDATION_DECISIONS.LOWER_RANKED;
-            candidate.decisionDetail = equalBest.indexOf(candidate) !== -1
-              ? "Best resource-specific spawn, occurrence and Quality tuple in this system/category."
-              : "A stronger primary candidate exists in the same system/category.";
+          var allTiers = m3PartitionRankingTiers(environmentCandidates);
+          var visibleTiers = allTiers.slice(0, 3);
+          var tierByCandidateId = new Map();
+          allTiers.forEach(function (tier) {
+            tier.candidates.forEach(function (candidate) { tierByCandidateId.set(candidate.id, tier.rank); });
           });
-          var locationNames = m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationName; }));
-          var presentation = buildMiningRecommendationPresentation(equalBest, environmentCandidates, environment, best);
-          return {
-            category: environment,
-            recommendationLabel: environment === M3_ENVIRONMENTS.SPACE ? "Legjobb űrbeli farmhely" : "Legjobb farmhely",
-            decision: environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL,
-            method: best.miningMethod,
-            occurrence: best.occurrence,
-            spawn: best.spawn,
-            maximumQuality: best.maximumQuality,
-            qualityProfile: best.qualityProfile,
-            resourceKeys: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.resourceKey; })),
-            resourceLabels: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.resourceLabel; })),
-            locationIds: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationId; })),
-            locationNames: locationNames,
-            locationLabel: presentation.groupLabel,
-            locationSummary: presentation.memberSummary,
-            presentation: presentation,
-            allLagrangePoints: presentation.allLagrangePoints,
-            mergedCount: locationNames.length,
-            environmentEvidence: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.environmentEvidence; }))
-          };
-        }).filter(Boolean);
+          environmentCandidates.forEach(function (candidate) {
+            var rank = tierByCandidateId.get(candidate.id);
+            if (rank === 1) {
+              candidate.finalDecision = environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL;
+              candidate.decisionDetail = "Best resource-specific spawn, occurrence and Quality tuple in this system/category.";
+            } else if (rank <= 3) {
+              candidate.finalDecision = environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.RANKED_SPACE : M3_RECOMMENDATION_DECISIONS.RANKED_NORMAL;
+              candidate.decisionDetail = "Visible Top-3 dense rank tier after the unchanged primary, spawn, occurrence and Quality ordering.";
+            } else {
+              candidate.finalDecision = M3_RECOMMENDATION_DECISIONS.LOWER_RANKED;
+              candidate.decisionDetail = "A stronger Top-3 primary candidate tier exists in the same system/category.";
+            }
+            candidate.rankingTier = rank <= 3 ? rank : null;
+          });
+          visibleTiers.forEach(function (tier) {
+            var tierCandidates = tier.candidates;
+            var best = tier.best;
+            var locationNames = m3UniqueSorted(tierCandidates.map(function (candidate) { return candidate.locationName; }));
+            var presentation = buildMiningRecommendationPresentation(tierCandidates, environmentCandidates, environment, best);
+            allRecommendations.push({
+              category: environment,
+              rankPosition: tier.rank,
+              rankingTier: tier.rank,
+              recommendationLabel: m3RecommendationLabel(environment, tier.rank),
+              legacyRecommendationLabel: environment === M3_ENVIRONMENTS.SPACE ? "Legjobb űrbeli farmhely" : "Legjobb farmhely",
+              decision: tier.rank === 1
+                ? (environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL)
+                : (environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.RANKED_SPACE : M3_RECOMMENDATION_DECISIONS.RANKED_NORMAL),
+              method: best.miningMethod,
+              occurrence: best.occurrence,
+              spawn: best.spawn,
+              maximumQuality: best.maximumQuality,
+              qualityProfile: best.qualityProfile,
+              resourceKeys: m3UniqueSorted(tierCandidates.map(function (candidate) { return candidate.resourceKey; })),
+              resourceLabels: m3UniqueSorted(tierCandidates.map(function (candidate) { return candidate.resourceLabel; })),
+              locationIds: m3UniqueSorted(tierCandidates.map(function (candidate) { return candidate.locationId; })),
+              locationNames: locationNames,
+              locationLabel: presentation.groupLabel,
+              locationSummary: presentation.memberSummary,
+              tierDisplayLabel: m3TierDisplayLabel(presentation),
+              tierMemberSummary: m3TierMemberSummary(presentation),
+              presentation: presentation,
+              allLagrangePoints: presentation.allLagrangePoints,
+              mergedCount: locationNames.length,
+              environmentEvidence: m3UniqueSorted(tierCandidates.map(function (candidate) { return candidate.environmentEvidence; })),
+              radarSignature: commodity.radarSignature,
+              radarSignatureDisplay: commodity.radarSignatureDisplay || "Nincs adat",
+              radarSignatureSource: commodity.radarSignatureSource || "NONE",
+              radarSignatureStatus: commodity.radarSignatureStatus || RADAR_SIGNATURE_STATUS.UNMAPPED
+            });
+          });
+          return allRecommendations;
+        }, []);
+        systemCandidates.filter(function (candidate) {
+          return allowedEnvironments.indexOf(candidate.environment) === -1;
+        }).forEach(function (candidate) {
+          candidate.finalDecision = M3_RECOMMENDATION_DECISIONS.LOWER_RANKED;
+          candidate.decisionDetail = "The API record is preserved, but this environment is not a gameplay recommendation category for the material's mining method.";
+          candidate.rankingTier = null;
+        });
         return recommendations.length
           ? { system: system, status: "AVAILABLE", methods: recommendations }
           : { system: system, status: "NO_KNOWN_LOCATION", methods: [] };
@@ -7742,10 +7991,12 @@ code {
         candidate.decisionDetail = "Primary resource retained, but its API location type is not classified as normal or space.";
       });
       return {
-        schemaVersion: 4,
+        schemaVersion: 5,
         commodityUuid: commodity && commodity.uuid || null,
         commodityDisplayName: resolveMaterialDisplayName(commodity, "Ismeretlen material"),
         rankingOrder: ["PRIMARY_RESOURCE_GATE", "GROUP_PROBABILITY_SPAWN_DESC", "RELATIVE_PROBABILITY_OCCURRENCE_DESC", "HIGH_Q_QUANTIZED_VALUES_DESC", "QUALITY_RANGE_DESC"],
+        presentationOrder: ["C002_PROVIDER_RESOURCE_PARENT_GROUPING", "TOP_3_DENSE_RANK_TIERS"],
+        maximumRankingTiersPerEnvironment: 3,
         systems: systemResults,
         decisions: decisions.map(function (candidate) {
           return {
@@ -7771,6 +8022,7 @@ code {
             occurrence: candidate.occurrence,
             qualityProfile: candidate.qualityProfile,
             primaryEvidence: candidate.primaryEvidence,
+            rankingTier: candidate.rankingTier,
             initialDecision: candidate.initialDecision,
             decision: candidate.finalDecision,
             detail: candidate.decisionDetail
@@ -8951,19 +9203,20 @@ code {
       }).map(function (record) {
         var raw = rawCommodityByUuid.get(record.uuid);
         if (!raw) {
-          return withResolvedMaterialName(record);
+          return withRadarSignatureProjection(withResolvedMaterialName(record));
         }
-        return withResolvedMaterialName(Object.assign({}, record, {
+        return withRadarSignatureProjection(withResolvedMaterialName(Object.assign({}, record, {
           key: raw.key || record.key || null,
           apiName: raw.name || record.apiName || null,
           rawName: raw.display_name || raw.name || record.rawName || record.name || "",
           refinedVersion: raw.refined_version ? { uuid: raw.refined_version.uuid || null, name: raw.refined_version.name || null } : null,
           commodityGroups: Array.isArray(raw.commodity_groups) ? raw.commodity_groups.slice() : (record.commodityGroups || [])
-        }), raw);
+        }), raw), raw);
       }).sort(function (a, b) {
         return String(resolveMaterialDisplayName(a, a.rawName || a.name)).localeCompare(String(resolveMaterialDisplayName(b, b.rawName || b.name)), "hu") || a.uuid.localeCompare(b.uuid);
       });
       state.materialNamingAudit = auditMaterialNames(state.miningCommodityIndex);
+      state.radarSignatureAudit = auditRadarSignatures(state.miningCommodityIndex);
       var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
       state.miningEquipment = {
         heads: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }),
@@ -8992,6 +9245,7 @@ code {
         }
       });
       logger.event("INFO", "MATERIAL_NAMING_AUDIT", "A központi materialnév-projekció elkészült.", state.materialNamingAudit);
+      logger.event("INFO", "RADAR_SIGNATURE_AUDIT", "A curated Radar Signature registry lefedettségi auditja elkészült; a Wiki mező csak API_RAW diagnosztika.", state.radarSignatureAudit);
       return records;
     }
 
@@ -9016,6 +9270,10 @@ code {
       document.body.dataset.materialNamingHidden = String(namingAudit.hiddenInvalidRecords);
       document.body.dataset.materialNamingAmbiguous = String(namingAudit.ambiguous);
       document.body.dataset.materialNamingRegistry = namingAudit.registryVersion;
+      var radarAudit = state.radarSignatureAudit || auditRadarSignatures(state.miningCommodityIndex);
+      document.body.dataset.radarSignatureVerified = String(radarAudit.verified);
+      document.body.dataset.radarSignatureUnmapped = String(radarAudit.unmapped);
+      document.body.dataset.radarSignatureRegistry = radarAudit.registryVersion;
       document.body.dataset.miningVehicleCount = String(state.miningVehicles.length);
       document.body.dataset.miningHeadCount = String(state.miningEquipment.heads.length);
       renderMaterialDatabaseResults();
@@ -9069,7 +9327,7 @@ code {
         var categories = document.createElement("span");
         categories.textContent = (record.categories || []).map(m61CategoryLabel).join(" / ") || "UNKNOWN";
         var radar = document.createElement("small");
-        radar.textContent = "Radar Signature: " + m61ApiMetric(record.radarSignature);
+        radar.textContent = "Radar Signature: " + (record.radarSignatureDisplay || "Nincs adat");
         button.append(title, categories, radar);
         button.addEventListener("click", function () {
           selectMiningCommodityForUi(record.uuid, "MATERIAL_DATABASE").catch(function (error) {
@@ -9298,7 +9556,7 @@ code {
       var cached = await database.get("miningNormalizedCache", cacheKey);
       var normalized = cached;
       var origin = "CACHE";
-      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 5 || cached.namingModelVersion !== MATERIAL_NAMING_MODEL_VERSION)) {
+      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 6 || cached.namingModelVersion !== MATERIAL_NAMING_MODEL_VERSION || cached.radarSignatureRegistryVersion !== RADAR_SIGNATURE_REGISTRY_VERSION)) {
         var cachedRaw = await database.get("miningRawCache", version + "::raw::commodity-detail::" + cached.uuid);
         if (cachedRaw && cachedRaw.raw) {
           normalized = normalizeMiningCommodity(cachedRaw.raw, miningProvenance(
@@ -9585,8 +9843,16 @@ code {
           mining: {
             status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
             radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
+            radarSignatureDisplay: detail ? detail.radarSignatureDisplay : commodity.radarSignatureDisplay,
+            radarSignatureClusterRule: detail ? detail.radarSignatureClusterRule : commodity.radarSignatureClusterRule,
+            radarSignatureClusterSignatures: ((detail ? detail.radarSignatureClusterSignatures : commodity.radarSignatureClusterSignatures) || []).slice(),
+            radarSignatureSource: detail ? detail.radarSignatureSource : commodity.radarSignatureSource,
+            radarSignatureSourceVersion: detail ? detail.radarSignatureSourceVersion : commodity.radarSignatureSourceVersion,
+            radarSignatureStatus: detail ? detail.radarSignatureStatus : commodity.radarSignatureStatus,
+            radarSignatureApiRaw: detail ? detail.radarSignatureApiRaw : commodity.radarSignatureApiRaw,
+            radarSignatureApiStatus: detail ? detail.radarSignatureApiStatus : commodity.radarSignatureApiStatus,
             methods: (detail ? detail.categories : (commodity.categories || [])).slice(),
-            recommendationSchemaVersion: farmRecommendation ? farmRecommendation.schemaVersion : 4,
+            recommendationSchemaVersion: farmRecommendation ? farmRecommendation.schemaVersion : 5,
             rankingOrder: farmRecommendation ? farmRecommendation.rankingOrder.slice() : [],
             systems: farmRecommendation ? farmRecommendation.systems : [],
             decisions: farmRecommendation ? farmRecommendation.decisions : [],
@@ -10080,7 +10346,8 @@ code {
       [
         ["Material", resolveMaterialDisplayName(commodity, "Ismeretlen material")],
         ["Mining kategória", commodity.categories.map(m61CategoryLabel).join(" / ") || "UNKNOWN"],
-        ["Radar Signature", m61ApiMetric(commodity.radarSignature)],
+        ["Radar Signature", commodity.radarSignatureDisplay || "Nincs adat"],
+        ["Radar forrás", commodity.radarSignatureStatus === RADAR_SIGNATURE_STATUS.VERIFIED ? commodity.radarSignatureSource + " · " + commodity.radarSignatureSourceVersion : "UNMAPPED · Wiki API csak diagnosztikai API_RAW"],
         ["Rarity", m61ApiMetric(commodity.rarity) + (commodity.rarity && commodity.raritySourceField === "tier" ? " · API tier" : "")],
         ["Instability", m61ApiMetric(commodity.instability)],
         ["Resistance", m61ApiMetric(commodity.resistance)],
@@ -10125,13 +10392,13 @@ code {
             methodName.className = "spg-recipe-slot";
             methodName.textContent = method.recommendationLabel + " · " + method.method;
             var locationName = document.createElement("strong");
-            locationName.textContent = method.locationLabel;
+            locationName.textContent = method.tierDisplayLabel || method.locationLabel;
             var locationSummary = document.createElement("small");
             locationSummary.className = "spg-muted";
-            locationSummary.textContent = method.locationSummary || "";
+            locationSummary.textContent = method.tierMemberSummary || method.locationSummary || "";
             var metrics = document.createElement("div");
             metrics.className = "spg-location-metrics";
-            [["Spawn", formatMiningMetric(method.spawn, "%")], ["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Quality", formatMiningQualityProfile(method.qualityProfile)]].forEach(function (metric) {
+            [["Spawn", formatMiningMetric(method.spawn, "%")], ["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Quality", formatMiningQualityProfile(method.qualityProfile)], ["Radar Signature", method.radarSignatureDisplay || commodity.radarSignatureDisplay || "Nincs adat"]].forEach(function (metric) {
               var metricItem = document.createElement("span");
               metricItem.textContent = metric[0] + ": " + metric[1];
               metrics.append(metricItem);
@@ -10142,6 +10409,7 @@ code {
               commodityUuid: commodity.uuid,
               system: systemResult.system,
               category: method.category,
+              rankingTier: method.rankingTier,
               decision: method.decision,
               method: method.method,
               spawn: method.spawn,
@@ -10160,6 +10428,7 @@ code {
       renderMaterialDatabaseDefaultLoadout(commodity);
       document.body.dataset.selectedMiningCommodity = commodity.uuid;
       document.body.dataset.selectedMiningSignature = commodity.radarSignature === null ? "unknown" : String(commodity.radarSignature);
+      document.body.dataset.selectedMiningSignatureStatus = commodity.radarSignatureStatus || RADAR_SIGNATURE_STATUS.UNMAPPED;
       document.body.dataset.selectedMiningLocationCount = String(commodity.locations.length);
       document.body.dataset.materialDatabaseDetailReady = "true";
       document.body.dataset.materialDatabaseRarity = commodity.rarity || "unknown";
@@ -10738,7 +11007,7 @@ code {
       var mining = snapshot.mining || {};
       var miningMeta = document.createElement("p");
       miningMeta.className = "spg-intelligence-meta";
-      miningMeta.textContent = "Radar: " + (mining.radarSignature === null || mining.radarSignature === undefined ? "nincs adat" : mining.radarSignature) +
+      miningMeta.textContent = "Radar: " + (mining.radarSignatureDisplay || (mining.radarSignature === null || mining.radarSignature === undefined ? "Nincs adat" : mining.radarSignature)) +
         " · módszer: " + (mining.methods || []).join(" / ") +
         " · loadout: " + ((snapshot.loadouts || []).length ? snapshot.loadouts.map(function (loadout) { return loadout.name + (loadout.default ? " (default)" : ""); }).join(", ") : "nincs mentett loadout");
       details.append(miningMeta);
@@ -10748,7 +11017,7 @@ code {
           var row = document.createElement("div");
           row.className = "spg-intelligence-row";
           row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.recommendationLabel || method.category || method.method) + "</strong><span>" +
-            escapeHtml(method.locationLabel) + "</span><small>" + escapeHtml(method.locationSummary || "") + (method.locationSummary ? " · " : "") + "Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
+            escapeHtml(method.tierDisplayLabel || method.locationLabel) + "</span><small>" + escapeHtml(method.tierMemberSummary || method.locationSummary || "") + ((method.tierMemberSummary || method.locationSummary) ? " · " : "") + "Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
             " · Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) + " · " + escapeHtml(formatMiningQualityProfile(method.qualityProfile)) + "</small>";
           details.append(row);
         });
@@ -12430,9 +12699,9 @@ code {
         (system.methods || []).forEach(function (method) {
           farmCards.push([
             '<article class="spg-export-location-card">',
-            '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.recommendationLabel || method.category || "Farmhely"), ': ', m6EscapeHtml(method.locationLabel), '</h4></header>',
-            '<p class="spg-muted">', m6EscapeHtml(method.locationSummary || ""), '</p>',
-            '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
+            '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.recommendationLabel || method.category || "Farmhely"), ': ', m6EscapeHtml(method.tierDisplayLabel || method.locationLabel), '</h4></header>',
+            '<p class="spg-muted">', m6EscapeHtml(method.tierMemberSummary || method.locationSummary || ""), '</p>',
+            '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(mining.radarSignatureDisplay || m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
             '<div class="spg-export-metrics">',
             '<span><small>Módszer</small><strong>', m6EscapeHtml(method.method), '</strong></span>',
             '<span><small>Spawn</small><strong>', m6EscapeHtml(m6FormatMetric(method.spawn, "%")), '</strong></span>',
@@ -12971,6 +13240,30 @@ code {
         return audit.resolvedCanonicalNames + " resolved · " + audit.hiddenInvalidRecords + " hidden · registry " + audit.registryVersion;
       });
 
+      await check("V003 Top-3 + Radar registry", async function () {
+        assert(RADAR_SIGNATURE_REGISTRY.length === 33, "A Radar Signature registry rekordszáma hibás.");
+        var curatedAgricium = resolveRadarSignature({
+          uuid: "fc1ec740-3047-48d8-81f0-396f4c9a90ef",
+          name: "Agricium (Ore)",
+          categories: [M3_MINING_CATEGORIES.SHIP],
+          signature: 4000
+        });
+        var missingRadar = resolveRadarSignature({ uuid: "missing-radar", name: "Missing Radar", categories: [M3_MINING_CATEGORIES.HARVESTABLE], signature: 9999 });
+        assert(curatedAgricium.baseRadarSignature === 3885 && curatedAgricium.apiRaw.value === 4000, "A curated Agricium radarérték vagy az API_RAW diagnosztika hibás.");
+        assert(missingRadar.status === RADAR_SIGNATURE_STATUS.UNMAPPED && missingRadar.displayValue === "Nincs adat" && missingRadar.apiRaw.value === 9999, "A hiányzó radaradat Wiki fallbacket kapott.");
+        var selectedRecommendation = state.selectedMiningCommodity ? buildMiningFarmRecommendations(state.selectedMiningCommodity, state.miningSystems) : null;
+        if (selectedRecommendation) {
+          selectedRecommendation.systems.forEach(function (system) {
+            [M3_ENVIRONMENTS.NORMAL, M3_ENVIRONMENTS.SPACE].forEach(function (environment) {
+              var tiers = system.methods.filter(function (method) { return method.category === environment; });
+              assert(tiers.length <= 3, "Háromnál több ranking tier jelent meg egy rendszer/kategóriában.");
+              assert(tiers.every(function (method, index) { return method.rankPosition === index + 1; }), "A Top-3 dense rank pozíciók hibásak.");
+            });
+          });
+        }
+        return "33 verified record · API_RAW diagnostic · max 3 dense rank tier";
+      });
+
       await check("M4 Combined + backup rollback", async function () {
         var combined = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
         var engineReserved = state.allocationResult.batchUsage.reduce(function (sum, usage) { return sum + usage.reservedUnits; }, 0);
@@ -13159,6 +13452,7 @@ code {
           results: m4Clone(state.combinedMaterials || [])
         },
         materialNaming: m4Clone(state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex)),
+        radarSignature: m4Clone(state.radarSignatureAudit || auditRadarSignatures(state.miningCommodityIndex)),
         miningRecommendation: selectedFarmRecommendation ? {
           schemaVersion: selectedFarmRecommendation.schemaVersion,
           commodityUuid: state.selectedMiningCommodity.uuid,
@@ -13221,7 +13515,7 @@ code {
       }
       var snapshot = await buildDiagnosticStateSnapshot();
       container.replaceChildren();
-      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Materialnév", snapshot.materialNaming.resolvedCanonicalNames + " resolved · " + snapshot.materialNaming.hiddenInvalidRecords + " hidden"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
+      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Materialnév", snapshot.materialNaming.resolvedCanonicalNames + " resolved · " + snapshot.materialNaming.hiddenInvalidRecords + " hidden"], ["Radar registry", snapshot.radarSignature.verified + " verified · " + snapshot.radarSignature.unmapped + " Nincs adat"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
         var item = document.createElement("span");
         var label = document.createElement("small");
         var content = document.createElement("strong");
@@ -13774,7 +14068,15 @@ code {
       buildMaterialDisplayIndex: buildMaterialDisplayIndex,
       auditMaterialNames: auditMaterialNames,
       materialNameAliases: MATERIAL_NAME_ALIASES,
+      radarSignatureRegistry: RADAR_SIGNATURE_REGISTRY,
+      radarSignatureCategoryRules: RADAR_SIGNATURE_CATEGORY_RULES,
+      radarSignatureRegistryVersion: RADAR_SIGNATURE_REGISTRY_VERSION,
+      radarSignatureSourceSha256: RADAR_SIGNATURE_SOURCE_SHA256,
+      resolveRadarSignature: resolveRadarSignature,
+      auditRadarSignatures: auditRadarSignatures,
       compareMiningLocations: compareMiningLocations,
+      sameMiningRank: sameMiningRank,
+      partitionMiningRankingTiers: m3PartitionRankingTiers,
       mergeBestMiningLocationsBySystem: mergeBestMiningLocationsBySystem,
       buildMiningFarmRecommendations: buildMiningFarmRecommendations,
       classifyMiningEnvironment: classifyMiningEnvironment,

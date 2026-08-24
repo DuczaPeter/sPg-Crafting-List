@@ -1,0 +1,282 @@
+{
+  "auditId": "V003-C004-RADAR",
+  "auditedAt": "2026-08-24T17:35:49.250Z",
+  "scVersion": "4.9.0-LIVE.12232306",
+  "sourceImage": {
+    "path": "Info/Radar Signature.png",
+    "sha256": "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+    "dimensions": {
+      "width": 1182,
+      "height": 879
+    }
+  },
+  "fieldPriority": {
+    "userFacing": "CURATED_RADAR_SIGNATURE_REGISTRY",
+    "wiki": "API_RAW_DIAGNOSTIC_ONLY",
+    "missing": "Nincs adat"
+  },
+  "audit": {
+    "registryVersion": "V003-C004-1",
+    "source": "RADAR_SIGNATURE_REFERENCE_IMAGE",
+    "sourceVersion": "RADAR-REFERENCE-2026-08-24",
+    "sourceSha256": "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+    "registryMaterialRecords": 33,
+    "categoryRules": 3,
+    "rawRecordCount": 72,
+    "rawVerified": 33,
+    "rawUnmapped": 39,
+    "userFacingRecordCount": 64,
+    "verified": 33,
+    "unmapped": 31,
+    "unmappedRecords": [
+      {
+        "uuid": "6fc6df10-0267-4097-8233-67983e594669",
+        "canonicalMaterial": "Altruciatoxin",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": null
+      },
+      {
+        "uuid": "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+        "canonicalMaterial": "Amioshi Plague",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+        "canonicalMaterial": "Bluemoon Fungus",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+        "canonicalMaterial": "Carinite",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 3000
+      },
+      {
+        "uuid": "80dd9dd7-1a4e-41b9-9b3b-4f385b87396c",
+        "canonicalMaterial": "Carinite (Pure)",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 3000
+      },
+      {
+        "uuid": "9177e3bb-6714-49f5-8beb-46a981226ff6",
+        "canonicalMaterial": "Comp Board",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": null
+      },
+      {
+        "uuid": "98aa6a70-80e7-41d7-9128-9692053d57a2",
+        "canonicalMaterial": "Construction Materials",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "469a34fe-2e37-4269-82eb-490eaed361a1",
+        "canonicalMaterial": "Decari",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "a0046f6f-ce84-4ca2-b5d1-d6598a9aad39",
+        "canonicalMaterial": "Degnous",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "ba11589f-a278-44e9-9bd9-79552832fc94",
+        "canonicalMaterial": "E'tam",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": null
+      },
+      {
+        "uuid": "def044a7-a56a-4f99-a497-ef6022113922",
+        "canonicalMaterial": "Fotia",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "096618a0-1f7d-48db-9c6a-9ac459386527",
+        "canonicalMaterial": "Fresh Food",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8",
+        "canonicalMaterial": "Golden Medmon",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "293cbddc-9515-456e-8090-bdc94f746619",
+        "canonicalMaterial": "Heart of the Woods",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+        "canonicalMaterial": "Jaclium",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 3000
+      },
+      {
+        "uuid": "ca8dcc9f-35d9-4652-b270-7db91ccd25a8",
+        "canonicalMaterial": "Maze",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": null
+      },
+      {
+        "uuid": "c184c595-78c9-4e19-8e27-5ae16e166f20",
+        "canonicalMaterial": "Neograph",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "d3c3ec68-b4ac-4504-85b3-e860a70eb9a5",
+        "canonicalMaterial": "Neon",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": null
+      },
+      {
+        "uuid": "8ee121cc-aabb-4394-87dd-02552d228d0b",
+        "canonicalMaterial": "Nitrogen",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "7f72bf18-3334-4e60-837d-d51d9fa745cd",
+        "canonicalMaterial": "Organics",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "b442105e-6eeb-46b7-b50b-15cb39918d09",
+        "canonicalMaterial": "Pingala",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+        "canonicalMaterial": "Pitambu",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "70684af3-55f1-43db-8aca-eae33cfac445",
+        "canonicalMaterial": "Prota",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "5cc98bf3-8edd-4184-9e47-2ff40e4c556b",
+        "canonicalMaterial": "Ranta Dung",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "a0e6c4cf-face-4f52-a020-dfa869607901",
+        "canonicalMaterial": "Recycled Material Composite",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "75982fed-2b4b-4433-be1f-5657fb783918",
+        "canonicalMaterial": "Revenant",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+        "canonicalMaterial": "Sadaryx",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 3000
+      },
+      {
+        "uuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+        "canonicalMaterial": "Saldynium",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 3000
+      },
+      {
+        "uuid": "8950d9c5-8a54-4e2c-87a2-c56c1b9edd3c",
+        "canonicalMaterial": "SLAM",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      },
+      {
+        "uuid": "306f93e6-a500-415b-b71b-631e8c93721c",
+        "canonicalMaterial": "Sunset Berry",
+        "categories": [
+          "HARVESTABLE"
+        ],
+        "apiRaw": 2000
+      },
+      {
+        "uuid": "a69c19f9-f33e-4c87-bfd2-09663585d158",
+        "canonicalMaterial": "WiDoW",
+        "categories": [
+          "UNKNOWN"
+        ],
+        "apiRaw": 1700
+      }
+    ]
+  }
+}

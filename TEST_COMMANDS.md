@@ -241,6 +241,24 @@ V003-C003 repair-cycle:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "V003 material canonical naming es display cleanup" -TestId v003-c003-material-naming-regression
 ```
 
+V003-C004 Radar Signature registry + Top-3 teljes kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c004.ps1"
+```
+
+Csak a celzott Radar/Top-3/tie/nem-Ship/consumer teszt:
+
+```powershell
+node .\tools\run-v003-c004-tests.mjs
+```
+
+Elo Wiki radar-lefedettseg, Top-3 es SCMDB-reference audit:
+
+```powershell
+node .\tools\audit-v003-c004.mjs --output-dir="test-artifacts/V003-C004"
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -306,4 +324,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-farm-recommendation-regression`: teljes M1-M6.1 + C04, elo Wiki common/uncommon/legendary location/resource proba, primary/secondary gate, spawn/occurrence/quantized-Quality sorrend es valtozatlan V002 tag/artifact.
 - `v003-c002-grouping-regression`: a C001 teljes kapuja mellett provider/resource/parent-bizonyitekos Lagrange, Pyro deep-space es Aaron Halo presentation grouping; nyers location lista megorzese; Material Database/standalone kozos modell.
 - `v003-c003-material-naming-regression`: exact UUID-alias, biztonsagos terminalis suffix, invalid rekord rejtese, raw/alias kereses, `refined_version`-bizonyitekos duplicate projection, kozos UI/export consumer es teljes C001/C002/fagyasztott V002 regresszio.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`.
+- `v003-c004-radar-top3-regression`: 33 rekordszamu curated radar registry, 31 explicit `Nincs adat`, Wiki API_RAW diagnosztika, 3 dense rank tier/kornyezet, tie es nem-Ship SPACE eset, SCMDB osszehasonlito audit, kozos UI/export projekcio es teljes C001-C003/V002 regresszio.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`.
