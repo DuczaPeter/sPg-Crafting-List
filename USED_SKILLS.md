@@ -161,3 +161,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a tiszta kiindulo munkafa, a `V001-C014` teljes release-regresszio, a fagyasztott stabil bundle, a visszaallithatosag es a stable tag csak PASS utani letrehozasa.
 - Mely fajlokat vagy donteseket erintett: `releases/V001/`, `CHANGELOG.md`, `docs/V1_RELEASE_REPORT.md`, waiver/checklist/baseline, release-validator, statusz/verzio/naplo es C014 artifact.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V002 egyfajlos projektfolytatas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a V002-dev egyetlen HTML-re valo atallitasakor.
+- Mire segitett: az audit-first munkarendre, a haromsoros scope-tervre, a V001 stabil allapot vedelmere, az embedded CSS kapura, a V002-C001 teljes regressziora es a valos file-kapu oszinte nyitva tartasara.
+- Mely fajlokat vagy donteseket erintett: a fo HTML, CSS-ellenorzo es C04/M6/M6.1 tesztek, V002 dokumentacio, statusz/verzio fajlok es a V002-C001 artifact.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## Chrome V002 egyfajlos regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-24`, a V002-dev valos bongeszos kiegeszito ellenorzesekor.
+- Mire segitett: 13/13 localhost technikai proba, API/cache/reload, valtozatlan `e6d8dec8` fingerprint, UEX `24/50/0`, export builder es konzolhiba 0 bizonyitasara. A `file://` URL-policy tiltasa miatt a kezi kapu nem lett PASS-ra atirva es nem tortent megkerules.
+- Mely fajlokat vagy donteseket erintett: `docs/V002_SINGLE_FILE_REPORT.md` es `test-artifacts/V002-C001/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -2,8 +2,6 @@ $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $releaseRoot = Join-Path $projectRoot 'releases\V001'
-$sourceHtmlPath = Join-Path $projectRoot 'sPg Crafting List.html'
-$sourceCssPath = Join-Path $projectRoot 'Info\style.css'
 $releaseHtmlPath = Join-Path $releaseRoot 'sPg Crafting List.html'
 $releaseCssPath = Join-Path $releaseRoot 'Info\style.css'
 
@@ -14,19 +12,9 @@ foreach ($path in @($releaseHtmlPath, $releaseCssPath, (Join-Path $releaseRoot '
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Hianyzo release-fajl: $path" }
 }
 
-$sourceHtml = Get-Content -Raw -Encoding UTF8 -LiteralPath $sourceHtmlPath
 $releaseHtml = Get-Content -Raw -Encoding UTF8 -LiteralPath $releaseHtmlPath
-$expectedReleaseHtml = $sourceHtml.Replace('V001-dev', 'V001')
-if ($expectedReleaseHtml -cne $releaseHtml) { throw 'A stabil HTML nem a kanonikus forras kizarolag verziofeliratban modositott masolata.' }
 if ($releaseHtml -match 'V001-dev') { throw 'A stabil HTML dev verziojelolest tartalmaz.' }
-if (([regex]::Matches($sourceHtml, 'V001-dev')).Count -ne 3) { throw 'A forras verziojeloloinek szama megvaltozott.' }
-
-$sourceCss = Get-Content -Raw -Encoding UTF8 -LiteralPath $sourceCssPath
-$releaseCss = Get-Content -Raw -Encoding UTF8 -LiteralPath $releaseCssPath
-if ($sourceCss -cne $releaseCss) { throw 'A stabil CSS nem byte-azonos a kiadott kozponti CSS-sel.' }
-
-& node (Join-Path $projectRoot 'tools\sync-export-css-snapshot.mjs') --check
-if ($LASTEXITCODE -ne 0) { throw 'Az export CSS snapshot drift-ellenorzese sikertelen.' }
+if (([regex]::Matches($releaseHtml, 'V001')).Count -ne 3) { throw 'A stabil V001 verziojeloloinek szama megvaltozott.' }
 
 $expectedHashes = @{
     'sPg Crafting List.html' = 'c422c4dabb3f60378de4a28c441ee8a79c9e180b8bf5853d46ab02a64a6ec259'
@@ -39,6 +27,5 @@ foreach ($relativePath in $expectedHashes.Keys) {
 
 Write-Output 'V001_RELEASE_VALIDATION_PASS'
 Write-Output 'Automated regression: PASS'
-Write-Output 'Stable HTML transform: PASS'
-Write-Output 'Stable CSS exact copy: PASS'
+Write-Output 'Frozen V001 bundle: PASS'
 Write-Output 'Release SHA-256: PASS'

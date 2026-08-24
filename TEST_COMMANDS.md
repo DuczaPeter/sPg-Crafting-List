@@ -154,17 +154,22 @@ M6.1 repair-cycle futtatas:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "M6.1 V1 UI completeness audit" -TestId m61-ui-regression
 ```
 
-Kozponti CSS export snapshot frissitese es drift-ellenorzese:
+V002 egyetlen embedded alkalmazas-CSS integritasellenorzese:
 
 ```powershell
-node .\tools\sync-export-css-snapshot.mjs
-node .\tools\sync-export-css-snapshot.mjs --check
+node .\tools\verify-embedded-application-css.mjs
 ```
 
 C04 `file://` CSS fallback + teljes M1-M6.1 regresszio:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-c04.ps1"
+```
+
+V002-C001 egyfajlos teljes ciklus:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V002 -Purpose "V002 one-file embedded CSS application" -TestId v002-single-file-regression
 ```
 
 Validalt standalone JS-300 exportartifact kiirasa (a 14 M6 ellenorzes utan byte-egyezes es SHA-256 is keszul):
@@ -199,6 +204,18 @@ A localhost csak fejlesztesi ellenorzeshez hasznalhato, es nem bizonyitja a `fil
 node .\tools\serve-local.mjs
 ```
 
+V002 egyfajlos kezi Chrome `file://` kapu:
+
+1. Hozz letre egy uj, ures mappat, es csak a gyoker `sPg Crafting List.html` fajlt masold bele.
+2. Nyisd meg ezt a masolatot duplakattal aktualis Chrome-ban; a cimnek `file://` protokollunak kell lennie.
+3. PASS: `V002-dev` lathato, a felulet stilusos, es nincs `Info` vagy mas helyi mellekfajl a mappaban.
+4. Kattints `Technikai proba`; PASS: 13/13, benne Wiki API, UEX, IndexedDB es standalone export.
+5. Rogzits User Data fingerprintet, frissitsd az oldalt, majd ellenorizd, hogy a fingerprint es a mentett adatok valtozatlanok.
+6. Keszits standalone exportot; PASS: az export kulon megnyilik, teljes es nem ker helyi CSS-t vagy mas runtime-fajlt.
+7. DevTools Console PASS: alkalmazas warning/error 0. Network PASS: nincs helyi sidecar vagy nem vart kulso UI-eroforras.
+
+Az automatizalasi URL-policy miatti `file://` elutasitas `NOT TESTED`, nem PASS. Reszletek: `docs/V002_SINGLE_FILE_REPORT.md`.
+
 ## Tesztszintek
 
 - Celzott: csak az eppen javitott funkcio.
@@ -227,4 +244,5 @@ node .\tools\serve-local.mjs
 - `m5-regression`: az M1-M4 kapuk mellett 18 kotelezo UEX mapping/ranking/cache/snapshot/diagnosztikai eset, az 5 verziozott canonical alias, fuzzy-elutasitas, 500 soros limitfixture es teljesitmenyproba.
 - `m6-regression`: teljes M1-M5 regresszio, 14 kotelezo teljes standalone export eset, offline eroforrasfuggetlenseg, per-card export, JSON roundtrip, XSS-escape es 120 slotos teljesitmenyfixture. A valos `file://` Chrome/Edge es offline ujranyitas tovabbra is kulon bongeszos release-gate.
 - `m61-ui-regression`: teljes M1-M6 regresszio es 14 kotelezo UI-eset a pontos 8 enabled navigaciora, celpanelekre, Material Database kereses/kategoriak/adatlapra, az M3/M5 projekciok es a `userLoadouts` ujrahasznalatara, valamint responsive CSS-re. A valos kattintas/reload/konzol bizonyitek kulon Chrome-summaryban van.
-- `c04-file-export-regression`: teljes M1-M6.1 regresszio, centralis CSS/snapshot byte- es SHA-egyezes, `file://` CSSOM-kerules, localhost CSSOM-megorzes, tavoli fontimport eltavolitas es standalone CSS keszenlet.
+- `c04-file-export-regression`: teljes M1-M6.1 regresszio, egyetlen embedded CSS-forras, nulla CSSOM/fetch utvonal, ures-mappas sidecar-mentesseg, tavoli fontimport eltavolitas es standalone export keszenlet.
+- `v002-single-file-regression`: a C04 teljes kapuja V002 ciklusazonositoval; bizonyitja, hogy a fo alkalmazas runtime-oldalon egyetlen HTML.

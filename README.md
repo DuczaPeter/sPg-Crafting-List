@@ -2,10 +2,11 @@
 
 Helyben futtathato Star Citizen crafting-, inventory-, Quality-, mining- es loadout-tervezo alkalmazas.
 
-A fo alkalmazas ket futtatasi fajlja:
+A teljes V002 alkalmazas egyetlen futtathato fajl:
 
 - `sPg Crafting List.html`
-- `Info/style.css`
+
+A CSS es JavaScript be van agyazva. Az `Info/` mappa vagy mas helyi mellekfajl nem szukseges a hasznalathoz; a HTML kozvetlenul `file://` modban nyithato meg.
 
 Az exportalt Crafting/Farm Cardok mindig onallo, beagyazott CSS-t tartalmazo HTML-fajlok.
 
@@ -21,6 +22,8 @@ A legutolso mukodo allapot ne vesszen el. Amit nem teszteltunk, azt nem nevezzuk
 
 ## Stabil kiadas
 
-A stabil V001 bundle a `releases/V001/` mappaban talalhato. A `sPg Crafting List.html` es az `Info/style.css` egyutt tartando; az integritasi ertekeket a `SHA256SUMS.txt` tartalmazza.
+A stabil, torteneti V001 ketfajlos bundle a `releases/V001/` mappaban talalhato. A V001 ottani `sPg Crafting List.html` es `Info/style.css` fajlja egyutt tartando; az integritasi ertekeket a `SHA256SUMS.txt` tartalmazza.
 
 A kiadast a `V001` Git tag azonositja. A teljes acceptance es a ket elfogadott manualis release-waiver a `docs/V1_RELEASE_REPORT.md` fajlban olvashato.
+
+A jelenlegi fejlesztesi cel a kulon `develop/V002` agon: `V002-dev` egyfajlos alkalmazas. Ez nem irja felul a V001 stabil kiadast.

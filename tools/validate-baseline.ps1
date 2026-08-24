@@ -5,17 +5,15 @@ $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $htmlPath = Join-Path $projectRoot 'sPg Crafting List.html'
-$cssPath = Join-Path $projectRoot 'Info\style.css'
 $specPath = Join-Path $projectRoot 'docs\PROJECT_SPECIFICATION.md'
 $decisionsPath = Join-Path $projectRoot 'docs\IMPLEMENTATION_DECISIONS.md'
-$cssSnapshotTool = Join-Path $PSScriptRoot 'sync-export-css-snapshot.mjs'
+$embeddedCssVerifier = Join-Path $PSScriptRoot 'verify-embedded-application-css.mjs'
 
 $requiredPaths = @(
     $htmlPath,
-    $cssPath,
     $specPath,
     $decisionsPath,
-    $cssSnapshotTool
+    $embeddedCssVerifier
 )
 
 $missingPaths = @($requiredPaths | Where-Object { -not (Test-Path -LiteralPath $_) })
@@ -32,12 +30,16 @@ if ($scriptStart -lt 0 -or $scriptEnd -le $scriptStart) {
 }
 
 $documentMarkup = $html.Substring(0, $scriptStart)
-if ($documentMarkup -notmatch '<link rel="stylesheet" href="Info/style\.css"') {
-    throw 'A fo HTML nem az Info/style.css kozponti stilusfajlt hasznalja.'
+if ($documentMarkup -match '<link[^>]+rel=["'']stylesheet["'']') {
+    throw 'A V002 fo HTML kulso vagy helyi stylesheet linket tartalmaz.'
 }
 
-if ($documentMarkup -match '<style(?:\s|>)') {
-    throw 'A fo HTML dokumentumreszeben inline CSS talalhato.'
+$cssMatch = [regex]::Match($documentMarkup, '(?s)<style\s+id="spgApplicationStyles"\s+data-source="embedded">(.*?)</style>')
+if (-not $cssMatch.Success -or [string]::IsNullOrWhiteSpace($cssMatch.Groups[1].Value)) {
+    throw 'A V002 fo HTML beagyazott alkalmazas-CSS blokkja hianyzik vagy ures.'
+}
+if ($documentMarkup -match '<script[^>]+src=' -or $documentMarkup -match '<(?:img|source)[^>]+src=["''](?!data:)') {
+    throw 'A V002 fo HTML helyi vagy kulso runtime mellekfajl-fuggest tartalmaz.'
 }
 
 $requiredSymbols = @(
@@ -46,9 +48,9 @@ $requiredSymbols = @(
     'class DiagnosticLogger',
     'function normalizeBlueprint',
     'function buildStandaloneExport',
-    'function readEmbeddedApplicationCssSnapshot',
+    'function readEmbeddedApplicationCss',
     'function runTechnicalProbe',
-    'SPG_APPLICATION_CSS_SNAPSHOT_START',
+    'id="spgApplicationStyles"',
     'window.onerror',
     'unhandledrejection'
 )
@@ -64,11 +66,11 @@ if (-not $node) {
     throw 'A fejlesztesi JavaScript-szintaxisellenorzeshez Node.js szukseges.'
 }
 
-$snapshotOutput = & $node.Source $cssSnapshotTool --check 2>&1
+$embeddedCssOutput = & $node.Source $embeddedCssVerifier 2>&1
 if ($LASTEXITCODE -ne 0) {
-    throw "Az export-CSS snapshot eltér a központi Info/style.css fájltól: $($snapshotOutput -join [Environment]::NewLine)"
+    throw "A beagyazott alkalmazas-CSS ellenorzese sikertelen: $($embeddedCssOutput -join [Environment]::NewLine)"
 }
-$snapshotOutput | Write-Output
+$embeddedCssOutput | Write-Output
 
 $tempJsPath = Join-Path ([System.IO.Path]::GetTempPath()) ("spg-crafting-list-{0}.js" -f ([guid]::NewGuid().ToString('N')))
 try {
@@ -84,14 +86,14 @@ try {
     }
 }
 
-$css = Get-Content -LiteralPath $cssPath -Raw
+$css = $cssMatch.Groups[1].Value
 foreach ($cssSelector in @('.spg-app-shell', '.spg-badge-dynamic', '.spg-export-page')) {
     if ($css -notmatch [regex]::Escape($cssSelector)) {
         throw "Hianyzo CSS baseline selector: $cssSelector"
     }
 }
 
-Write-Output 'Baseline file structure OK'
+Write-Output 'Single-file baseline structure OK'
 Write-Output 'JavaScript syntax OK'
-Write-Output 'Central CSS markers OK'
+Write-Output 'Embedded CSS markers OK'
 Write-Output 'BASELINE_STATIC_PASS'

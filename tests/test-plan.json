@@ -39,7 +39,7 @@
     {
       "id": "baseline-static",
       "level": "targeted",
-      "description": "Validates the two-file application structure, JavaScript syntax, required architecture markers, and central CSS.",
+      "description": "Validates the V002 one-file application structure, inline JavaScript, embedded CSS, required architecture markers, and absence of runtime sidecar dependencies.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-baseline.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
@@ -103,7 +103,15 @@
     {
       "id": "c04-file-export-regression",
       "level": "full-regression",
-      "description": "Runs M1-M6.1, verifies that the generated embedded CSS snapshot is byte-identical to Info/style.css, simulates file:// without reading cssRules, preserves localhost CSSOM, removes remote font dependencies, and validates standalone export CSS readiness.",
+      "description": "Runs M1-M6.1, validates the single embedded application CSS source, simulates file:// and HTTP without CSS network/CSSOM access, copies the HTML alone into an empty directory, removes remote font dependencies, and validates standalone export CSS readiness.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-c04.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v002-single-file-regression",
+      "level": "full-regression",
+      "description": "V002 release-development gate: full M1-M6.1 and C04 regression plus embedded CSS integrity and zero local runtime sidecar dependency.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-c04.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }

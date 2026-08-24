@@ -1,0 +1,42 @@
+{
+  "cycleId": "V002-C001",
+  "browser": "Google Chrome",
+  "testedAt": "2026-08-24",
+  "localhost": {
+    "status": "PASS",
+    "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+    "version": "V002-dev",
+    "appReady": true,
+    "embeddedStyleCount": 1,
+    "stylesheetLinkCount": 0,
+    "externalScriptCount": 0,
+    "navigationCount": 8,
+    "technicalProbe": "13/13 PASS",
+    "userDataFingerprintBefore": "e6d8dec8",
+    "userDataFingerprintAfterReload": "e6d8dec8",
+    "userDataFingerprintAfterUexRefresh": "e6d8dec8",
+    "scDatasetVersion": "4.9.0-LIVE.12232306",
+    "blueprintIndexCount": 1591,
+    "miningCommodityCount": 72,
+    "miningHeadCount": 20,
+    "miningVehicleCount": 14,
+    "uexRecordCount": 215,
+    "uexMapping": {
+      "matched": 24,
+      "unmapped": 50,
+      "ambiguous": 0
+    },
+    "standaloneExportBuilder": "PASS",
+    "standaloneExportBytes": 113373,
+    "downloadEvent": "NOT_CONFIRMED_TIMEOUT",
+    "consoleWarningCount": 0,
+    "consoleErrorCount": 0
+  },
+  "fileProtocol": {
+    "status": "NOT_TESTED_AUTOMATION_BLOCKED",
+    "reason": "The Chrome control URL policy rejected file:// navigation.",
+    "securityBypassUsed": false,
+    "localhostCountedAsFileProof": false,
+    "nextStep": "Manual Chrome file:// gate from an empty folder containing only sPg Crafting List.html."
+  }
+}

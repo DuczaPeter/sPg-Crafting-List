@@ -1,22 +1,22 @@
 ﻿{
     "stableRelease":  "V001",
     "stableFile":  "releases/V001/sPg Crafting List.html",
-    "developmentTarget":  null,
-    "currentCycle":  "C014",
-    "currentCycleId":  "V001-C014",
-    "lastSuccessfulCycle":  "V001-C014",
-    "branch":  "develop/V001",
-    "releaseGate":  "stable-approved-with-waivers",
-    "lastUpdated":  "2026-08-24T11:27:37+02:00",
-    "currentCyclePurpose":  "V1 stable release final regression",
-    "currentCycleStartedAt":  "2026-08-24T11:26:10",
+    "developmentTarget":  "V002-dev",
+    "currentCycle":  "C001",
+    "currentCycleId":  "V002-C001",
+    "lastSuccessfulCycle":  "V002-C001",
+    "branch":  "develop/V002",
+    "releaseGate":  "manual-file-gate-pending",
+    "lastUpdated":  "2026-08-24T12:06:39",
+    "currentCyclePurpose":  "V002 one-file embedded CSS application",
+    "currentCycleStartedAt":  "2026-08-24T12:06:35",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
     "currentCycleStatusReason":  "Selected test command exited with code 0.",
     "releaseTag":  "V001",
     "releaseApproval":  "V1 STABLE RELEASE – APPROVED WITH ACCEPTED MANUAL TEST WAIVERS",
     "acceptedManualTestWaivers":  [
-        "O04 NOT TESTED - Windows-level offline hard-disconnect reopening",
-        "E01-E10 NOT TESTED - Microsoft Edge manual acceptance"
-    ]
+                                      "O04 NOT TESTED - Windows-level offline hard-disconnect reopening",
+                                      "E01-E10 NOT TESTED - Microsoft Edge manual acceptance"
+                                  ]
 }

@@ -4,7 +4,7 @@
 
 - Nev: `sPg Crafting List`
 - Rovid cel: `Star Citizen crafting-, inventory-, Quality-, mining- es loadout-tervezo helyi webalkalmazas elkeszitese.`
-- Projekt tipus: `ketfajlos helyi webalkalmazas: fo HTML + kozponti kulso CSS`
+- Projekt tipus: `egyfajlos helyi webalkalmazas: teljes CSS es JavaScript a fo HTML-ben`
 - Letrehozott opcionalis modulok: `versioning, repair-cycle`
 - Elsodleges specifikacio: `docs/PROJECT_SPECIFICATION.md`
 - Vegleges dontesek: `docs/IMPLEMENTATION_DECISIONS.md`

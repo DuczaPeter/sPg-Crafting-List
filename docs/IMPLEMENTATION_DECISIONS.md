@@ -35,3 +35,13 @@ Datum: 2026-08-22
 4. `Info/` referencia HTML es CSS a megjeleneshez
 
 Ellentmondas eseten a felhasznalo kesobbi explicit dontese az iranyado.
+
+## 2026-08-24 - V002 egyfajlos feluliras
+
+A kesobbi explicit felhasznaloi dontes a 2-3. pont futtatasi szerkezetet V002-tol felulirja:
+
+- A teljes alkalmazas egyetlen `sPg Crafting List.html` fajl.
+- A CSS es JavaScript kozvetlenul ebben a HTML-ben van; `Info/style.css` vagy mas helyi mellekfajl nem szukseges a futashoz.
+- Az alkalmazas build folyamat nelkul, kozvetlen `file://` modban hasznalhato.
+- Az alkalmazas es a standalone kartyaexport ugyanazt az egyetlen embedded CSS-forrast hasznalja; kulon CSS snapshot/drift par nincs.
+- A V001 stabil tag es ketfajlos release bundle torteneti allapotkent valtozatlan marad.

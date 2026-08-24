@@ -3,11 +3,12 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const html = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
-const css = fs.readFileSync(path.join(projectDirectory, "Info", "style.css"), "utf8");
+const css = extractEmbeddedApplicationCss(html);
 
 function block(name) {
   const match = html.match(new RegExp(`/\\* ${name}_START \\*/([\\s\\S]*?)/\\* ${name}_END \\*/`));

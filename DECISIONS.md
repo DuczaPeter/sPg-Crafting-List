@@ -31,3 +31,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - O04 Windows-szintu offline hard-disconnect ujranyitas: `NOT TESTED – ACCEPTED RELEASE WAIVER`.
 - Edge E01-E10 kezi acceptance: `NOT TESTED – ACCEPTED RELEASE WAIVER`.
 - A waiverek nem valtoztatjak PASS-ra a kihagyott teszteket, de a felhasznalo kifejezett dontese alapjan nem blokkoljak a V001 stabil kiadasat.
+
+## 2026-08-24 - V002 egyetlen futtathato HTML
+
+- A V002 fo alkalmazas egyetlen `sPg Crafting List.html`; teljes CSS es JavaScript beagyazva.
+- `Info/style.css` es semmilyen mas helyi mellekfajl nem lehet runtime-fuggoseg.
+- Az export ugyanazt az embedded CSS-forrast olvassa, ezert kulon base64 snapshot, CSSOM/fetch fallback es ketforrasos driftellenorzes nem marad.
+- A gyoker `Info/` referenciaanyag megmaradhat a repositoryban, de a felhasznalonak nem kell atadni.
+- A V001 tag, release commit es `releases/V001/` tartalma valtozatlan.

@@ -5,11 +5,12 @@ import path from "node:path";
 import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const htmlSource = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
-const cssSource = fs.readFileSync(path.join(projectDirectory, "Info", "style.css"), "utf8");
+const cssSource = extractEmbeddedApplicationCss(htmlSource);
 const block = (name) => {
   const match = htmlSource.match(new RegExp(`/\\* ${name}_START \\*/([\\s\\S]*?)/\\* ${name}_END \\*/`));
   assert.ok(match, `A ${name} modellblokk hiányzik.`);

@@ -275,3 +275,41 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Dokumentacio: `CHANGELOG.md`, `docs/V1_RELEASE_REPORT.md`, `releases/V001/RELEASE.md`, `SHA256SUMS.txt`, valamint frissitett statusz/verzio/checklist/baseline.
 - Vegso statusz: `V1 STABLE RELEASE – APPROVED WITH ACCEPTED MANUAL TEST WAIVERS`; release tag: `V001`.
 - Tavoli push, publikacio vagy main merge nem tortent. Visszaallas: `V001` tag vagy a fagyasztott `releases/V001/` bundle.
+
+### V002 egyfajlos audit es implementacio - 2026-08-24
+
+- Uj branch: `develop/V002`; celverzio: `V002-dev`. A `V001` tag es `releases/V001/` tartalma valtozatlan.
+- Audit: a linkelt CSS mellett base64 snapshot, CSSOM/fetch/IndexedDB fallback es fajlfuggo baseline/M6/M6.1/C04 tesztek is azonositasra kerultek.
+- Implementacio: egyetlen `#spgApplicationStyles` style blokk a fo HTML-ben; az export ezt olvassa. Kulso fontimport, stylesheet link es duplikalt snapshot nincs.
+- Tesztek: az embedded CSS verifier, M6/M6.1 es C04 a HTML-bol olvas; az ures ideiglenes mappaban csak a HTML marad, helyi sidecar 0.
+- Elozetes teljes M1-M6.1 + C04 futas PASS. A kovetkezo kapu a `V002-C001` ciklus, majd valos Chrome `file://` proba.
+- Audit/terv: `docs/V002_SINGLE_FILE_AUDIT.md`.
+
+### 2026-08-24T12:05:50 - V002-C015
+
+- Cel: V002 one-file embedded CSS application
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V002-C015/test-summary.json`
+
+### 2026-08-24T12:06:39 - V002-C001
+
+- Cel: V002 one-file embedded CSS application
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V002-C001/test-summary.json`
+
+### V002-C001 egyfajlos regresszio es Chrome-atadas - 2026-08-24
+
+- Ciklusszam javitas: az elso futas tevesen a V001 `C014` ciklust folytatta `V002-C015` azonosittal. A `tools/new-cycle.ps1` most csak azonos celverzio ciklusat novelheti; a V002 kanonikus elso ciklusa helyesen `V002-C001`. A C015 PASS summary megorzesre kerult, de nem ez az aktualis ciklus.
+- Automatizalt: a `V002-C001` teljes M1-M6.1 + C04 egyfajlos regresszio PASS; embedded CSS 80 548 byte, SHA-256 `14a84519...c00b2`; sidecar igeny 0.
+- Chrome localhost: V002-dev, 8 navigacio, 13/13 technikai proba, SC `4.9.0-LIVE.12232306`, 1591 blueprint, mining 72/20/14, UEX 215 es mapping 24/50/0 PASS.
+- Perzisztencia: reload es UEX refresh elott/utan a User Data fingerprint `e6d8dec8`; konzol warning/error 0.
+- Export: a builder 113 373 byte-os standalone tartalmat keszitett; a bongeszo download event idotullepes miatt nincs kulon PASS-nak jelolve, az M6/C04 tartalomteszt PASS.
+- `file://`: a Chrome-vezerlo URL-policy elutasitotta a navigaciot. Nem tortent megkerules, es a localhost nem lett file-bizonyitekkent elszamolva; a kapu `NOT TESTED`, kezi ellenorzes szukseges.
+- Dokumentacio: `docs/V002_SINGLE_FILE_REPORT.md`, `test-artifacts/V002-C001/browser-manual-summary.json` es frissitett projektvezerlo fajlok.
+- V001: tag `b22dbc3c2ef0765e30aa3806537854298c873dff`, a `releases/V001/` diffje ures. Stabil V002 release/tag nem keszult.

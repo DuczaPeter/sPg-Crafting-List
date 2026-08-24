@@ -337,7 +337,10 @@ if ([string]::IsNullOrWhiteSpace([string]$previousSuccessfulCycle)) {
 }
 
 $currentCycle = 'C000'
-if ($versionState.PSObject.Properties.Name -contains 'currentCycle' -and $versionState.currentCycle -match '^C(\d+)$') {
+$currentDevelopmentTarget = [string](Get-JsonPropertyValue -Object $versionState -Name 'developmentTarget' -Default '')
+$currentCycleId = [string](Get-JsonPropertyValue -Object $versionState -Name 'currentCycleId' -Default '')
+$sameTargetVersion = ($currentDevelopmentTarget -eq "$TargetVersion-dev") -and $currentCycleId.StartsWith("$TargetVersion-", [StringComparison]::OrdinalIgnoreCase)
+if ($sameTargetVersion -and $versionState.PSObject.Properties.Name -contains 'currentCycle' -and $versionState.currentCycle -match '^C(\d+)$') {
     $currentCycle = $versionState.currentCycle
 }
 $cycleNumber = [int]($currentCycle -replace '^C', '') + 1

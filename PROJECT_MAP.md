@@ -3,7 +3,7 @@
 ## Fo belepesi pontok
 
 - Fo programfajl: `sPg Crafting List.html`
-- Kozponti vizualis fajl: `Info/style.css`
+- Kozponti vizualis forras: a fo HTML `#spgApplicationStyles` embedded `<style>` blokkja
 - Indito mod: `sPg Crafting List.html` kozvetlen megnyitasa Windows 11 alatt aktualis Chrome vagy Edge bongeszoben
 - Minimalis fallback: csak dokumentalt localhost inditas, ha a valos `file://` teszt ezt indokolja
 - Teszt vagy ellenorzes inditasa: `lasd TEST_COMMANDS.md`
@@ -13,7 +13,7 @@
 ## Fo mappak
 
 - `src/`: kesobbi fejlesztesi segedforrasok, ha szukseges; a kanonikus fo alkalmazas a projekt gyokereben marad.
-- `Info/`: kotelezo referencia HTML es a fo alkalmazas altal hasznalt `style.css`.
+- `Info/`: torteneti V001 es vizualis referenciaanyag; a V002 runtime nem hasznalja.
 - `releases/`: ellenorzott stabil kiadasok es onallo exportmintak.
 - `tests/`: tesztek, ismert bemenetek, regresszio es `test-plan.json`.
 - `tests/browser-diagnostics/`: opcionlis browser diagnostics mintak es tesztadatok.
@@ -30,7 +30,7 @@
 - M5 UEX refinery regresszio: `tools/validate-m5.ps1`, amely az M1-M4 kapukat es a `tools/run-m5-tests.mjs` 18 kotelezo mapping/ranking/cache/snapshot esetet futtatja.
 - M6 standalone export regresszio: `tools/validate-m6.ps1`, amely az M1-M5 kapukat es a `tools/run-m6-tests.mjs` 14 exportesetet futtatja.
 - M6.1 UI Completeness regresszio: `tools/validate-m61.ps1`, amely a teljes M1-M6 kaput es a `tools/run-m61-ui-tests.mjs` 14 navigacios/Material Database/Mining Loadouts/responsive esetet futtatja.
-- C04 file export CSS regresszio: `tools/validate-c04.ps1`; a `tools/sync-export-css-snapshot.mjs` a centralis CSS-bol general es driftet ellenoriz, a `tools/run-c04-file-export-tests.mjs` pedig file/HTTP utvonalat tesztel.
+- C04 single-file CSS/export regresszio: `tools/validate-c04.ps1`; a `tools/verify-embedded-application-css.mjs` az egyetlen CSS-forrast, a `tools/run-c04-file-export-tests.mjs` pedig file/HTTP es ures-mappas sidecar-mentesseget tesztel.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -40,7 +40,9 @@
 - `docs/PROJECT_SPECIFICATION.md`: teljes, 82 pontos V1.0 funkcionalis specifikacio.
 - `docs/IMPLEMENTATION_DECISIONS.md`: lezart nev-, futtatasi-, prioritas-, keszlet- es rangsorolasi dontesek.
 - `Info/Star_Citizen_alapanyag_farm_kartyak_BP_API_C788_P6_P8_Killshot_bovitve.html`: vizualis es export referencia.
-- `Info/style.css`: kozponti alkalmazas-CSS.
+- `Info/style.css`: torteneti V001/reference CSS; V002-ben nem runtime-forras.
+- `docs/V002_SINGLE_FILE_AUDIT.md`: a kulso CSS-fugges auditja, az egyforrasos embedded architektura es ellenorzesi terv.
+- `docs/V002_SINGLE_FILE_REPORT.md`: a V002-C001 regresszio, Chrome localhost bizonyitek, a nyitott kezi file-kapu es a V001 vedelme.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -68,6 +70,8 @@
 - `test-artifacts/V001-C012/`: a C04 CSS fallback teljes regresszio es localhost Chrome bizonyitekai; a valos file C04 ujrateszt `NOT_TESTED`.
 - `test-artifacts/V001-C013/`: a vegso M1-M6.1/C04 regresszio, pre-release evidence JSON es az automatikusan generalt, hash-ellenorzott JS-300 standalone export.
 - `test-artifacts/V001-C014/`: a stabil V001 kiadas elotti utolso teljes M1-M6.1/C04 regresszio bizonyiteka.
+- `test-artifacts/V002-C001/`: a V002 egyfajlos teljes regresszio es Chrome localhost/manual-gate summary bizonyiteka.
+- `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 
 ## Iranyito fajlok

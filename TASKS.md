@@ -2,6 +2,19 @@
 
 ## Aktualis
 
+### V002-dev egyfajlos alkalmazas
+
+- [x] Kulso `Info/style.css` runtime-fugges auditja es biztonsagos migracios terv.
+- [x] Teljes CSS beagyazasa a `sPg Crafting List.html` fajlba.
+- [x] Kulso stylesheet link, duplikalt base64 snapshot, CSSOM/fetch/cache CSS fallback es Google Fonts import eltavolitasa.
+- [x] A standalone export atallitasa ugyanarra az egyetlen embedded CSS-forrasra.
+- [x] Baseline, M6, M6.1 es C04 tesztek atallitasa HTML-bol olvasott CSS-re.
+- [x] Ures ideiglenes mappaban csak az egyetlen HTML-lel vegzett sidecar-regresszio PASS.
+- [x] `V002-C001` teljes regresszios ciklus PASS.
+- [x] Valos Chrome localhost kiegeszito proba: 13/13 technikai proba, API/cache/reload/fingerprint es console error 0 PASS.
+- [ ] Valos Chrome `file://` proba ures mappabol: az automatizalas URL-policy miatt `NOT TESTED`; kezi kapu szukseges.
+- [x] V002 fejlesztesi riport es atadas; stabil V002 release most nem keszul.
+
 - [x] Projekt celja es projekt tipusa pontosan rogzitve a `CODEX_START_HERE.md` fajlban.
 - [x] Fo belepesi fajl vagy inditasi struktura azonositva a `PROJECT_MAP.md` fajlban.
 - [x] Projektstruktura-ellenorzes kitoltve a `TEST_COMMANDS.md` fajlban.
@@ -67,5 +80,5 @@
 
 ## Blokkolo problema
 
-- Nincs. O04 es E01-E10 tovabbra is `NOT TESTED`, de a felhasznalo ezek kockazatat kifejezett release-waiverrel elfogadta.
+- A V002 automatizalt regresszio es Chrome localhost proba PASS, de a valos Chrome `file://` egyfajlos kapu az automatizalasi URL-policy miatt nem futott. A stabil V001 ettol fuggetlenul valtozatlan es visszaallithato.
 

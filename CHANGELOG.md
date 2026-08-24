@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## V002-dev - Unreleased
+
+- A teljes alkalmazas CSS-e a `sPg Crafting List.html` fajlba kerult.
+- Megszunt a runtime `Info/style.css`, CSSOM/fetch/cache fallback es duplikalt base64 CSS snapshot.
+- Az alkalmazas es a standalone export ugyanazt az egyetlen embedded CSS-forrast hasznalja.
+- A Google Fonts import megszunt; helyi rendszerfont fallback maradt.
+- A V001 stabil release es tag valtozatlan.
+
 ## V001 - 2026-08-24
 
 Elso stabil kiadas.
