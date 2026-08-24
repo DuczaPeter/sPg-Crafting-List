@@ -41,4 +41,4 @@ A V001 futasideju CSS-fuggesei:
 
 ## Megvalositasi eredmeny
 
-Az audit szerinti egyforrasos embedded architektura megvalosult. A `V002-C001` teljes regresszio PASS, a Chrome localhost kiegeszito proba 13/13 PASS es nulla konzolhiba. A valos Chrome `file://` navigaciot az automatizalasi URL-policy blokkolta, ezert ez a pont kezi kapukent `NOT TESTED` maradt; reszletes atadas: `docs/V002_SINGLE_FILE_REPORT.md`.
+Az audit szerinti egyforrasos embedded architektura megvalosult. A `V002-C001` teljes regresszio PASS, a Chrome localhost kiegeszito proba 13/13 PASS es nulla konzolhiba. A felhasznalo az onallo HTML-t a Downloads mappabol valos Chrome `file://` modban is ellenorizte: 13 PASS / 0 FAIL, standalone export PASS, kulso stylesheet/resource nincs, diagnosztikai hiba 0. Reszletes atadas: `docs/V002_SINGLE_FILE_REPORT.md`.

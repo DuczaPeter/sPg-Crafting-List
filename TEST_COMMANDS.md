@@ -214,7 +214,7 @@ V002 egyfajlos kezi Chrome `file://` kapu:
 6. Keszits standalone exportot; PASS: az export kulon megnyilik, teljes es nem ker helyi CSS-t vagy mas runtime-fajlt.
 7. DevTools Console PASS: alkalmazas warning/error 0. Network PASS: nincs helyi sidecar vagy nem vart kulso UI-eroforras.
 
-Az automatizalasi URL-policy miatti `file://` elutasitas `NOT TESTED`, nem PASS. Reszletek: `docs/V002_SINGLE_FILE_REPORT.md`.
+A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS / 0 FAIL, standalone export PASS, `externalStylesheet: false`, `externalResource: false`, diagnostic errors 0. Reszletek: `docs/V002_SINGLE_FILE_REPORT.md`.
 
 ## Tesztszintek
 

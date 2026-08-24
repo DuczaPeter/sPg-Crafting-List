@@ -53,22 +53,26 @@ Localhost Chrome eredmeny: `PASS`.
 - Standalone export builder: PASS, 113 373 byte.
 - Chrome konzol warning/error: 0.
 
-A bongeszos automatizalas download eventje idotullepessel zart, ezert a tenyleges fajlletoltesi esemeny nincs kulon PASS-nak jelolve. A builder es a generalt tartalom automatizalt M6/C04 ellenorzese PASS.
+A bongeszos automatizalas download eventje idotullepessel zart. Ezt a kesobbi valos `file://` kezi proba lezarta: a standalone HTML export tenylegesen PASS.
 
-## Nyitott kezi kapu
+## Valos Chrome file:// kezi kapu
 
-Valos Chrome `file://`: `NOT TESTED / AUTOMATION BLOCKED`.
+Valos Chrome `file://`: `PASS`.
 
-A Chrome-vezerlo biztonsagi URL-szabalya elutasitotta a `file://` navigaciot. Nem tortent security flag, nyers CDP, alternativ automatizalas vagy mas megkerules. A localhost eredmeny nem lett `file://` bizonyitekkent elszamolva.
+A Chrome-vezerlo biztonsagi URL-szabalya korabban elutasitotta az automatizalt `file://` navigaciot, ezert az automatizalas nem lett bizonyitekkent elszamolva. A felhasznalo ezutan normal Chrome-ban, security bypass nelkul kezzel futtatta le a kaput.
 
-Kezi ellenorzes:
+Kezi bizonyitek:
 
-1. Masold csak az `sPg Crafting List.html` fajlt egy uj, ures mappaba.
-2. Nyisd meg duplakattal aktualis Chrome-ban, es ellenorizd, hogy a cim `file://` protokollu.
-3. Ellenorizd a `V002-dev` verziojelzest es futtasd a `Technikai proba` gombot; az elvart eredmeny 13/13 PASS.
-4. Frissitsd az oldalt, es ellenorizd az IndexedDB/User Data megmaradasat.
-5. Frissits Wiki es UEX adatot, majd keszits standalone exportot.
-6. PASS csak akkor, ha a Network nezetben nincs helyi sidecar vagy nem vart kulso UI-eroforras, es a Console alkalmazas warning/error szama 0.
+- Az `sPg Crafting List.html` onallo fajlkent a Downloads mappabol, kozvetlen `file://` modban megnyilt.
+- Alkalmazasverzio: `V002-dev · schema 6`.
+- Technical Baseline: `13 PASS / 0 FAIL`.
+- IndexedDB roundtrip, Star Citizen Wiki API es M2 allocation: PASS.
+- M3 Mining modell, M4 Combined + backup rollback es M5 UEX: PASS.
+- M6.1 UI completeness: 8/8 PASS.
+- Standalone HTML export: PASS.
+- `externalStylesheet: false`.
+- `externalResource: false`.
+- Diagnostic errors: 0.
 
 ## Verzios vedelmek
 
@@ -78,4 +82,4 @@ Kezi ellenorzes:
 
 ## Vegso fejlesztesi statusz
 
-`V002-dev SINGLE-FILE IMPLEMENTATION – AUTOMATED PASS, CHROME LOCALHOST PASS, REAL CHROME file:// MANUAL GATE NOT TESTED.`
+`V002-dev SINGLE-FILE IMPLEMENTATION – AUTOMATED PASS, CHROME LOCALHOST PASS, REAL CHROME file:// MANUAL GATE PASS.`

@@ -6,6 +6,7 @@
 - Megszunt a runtime `Info/style.css`, CSSOM/fetch/cache fallback es duplikalt base64 CSS snapshot.
 - Az alkalmazas es a standalone export ugyanazt az egyetlen embedded CSS-forrast hasznalja.
 - A Google Fonts import megszunt; helyi rendszerfont fallback maradt.
+- A valos Chrome `file://` kezi gate onallo Downloads-peldannyal 13 PASS / 0 FAIL eredmennyel lezart.
 - A V001 stabil release es tag valtozatlan.
 
 ## V001 - 2026-08-24

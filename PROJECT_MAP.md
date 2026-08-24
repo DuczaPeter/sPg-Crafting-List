@@ -42,7 +42,7 @@
 - `Info/Star_Citizen_alapanyag_farm_kartyak_BP_API_C788_P6_P8_Killshot_bovitve.html`: vizualis es export referencia.
 - `Info/style.css`: torteneti V001/reference CSS; V002-ben nem runtime-forras.
 - `docs/V002_SINGLE_FILE_AUDIT.md`: a kulso CSS-fugges auditja, az egyforrasos embedded architektura es ellenorzesi terv.
-- `docs/V002_SINGLE_FILE_REPORT.md`: a V002-C001 regresszio, Chrome localhost bizonyitek, a nyitott kezi file-kapu es a V001 vedelme.
+- `docs/V002_SINGLE_FILE_REPORT.md`: a V002-C001 regresszio, Chrome localhost es valos `file://` kezi PASS bizonyitek, valamint a V001 vedelme.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.

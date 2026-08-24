@@ -33,10 +33,30 @@
     "consoleErrorCount": 0
   },
   "fileProtocol": {
-    "status": "NOT_TESTED_AUTOMATION_BLOCKED",
-    "reason": "The Chrome control URL policy rejected file:// navigation.",
+    "status": "PASS",
+    "evidenceSource": "USER_MANUAL_ACCEPTANCE",
+    "location": "Windows Downloads folder",
+    "protocol": "file:",
+    "version": "V002-dev",
+    "schemaVersion": 6,
+    "technicalBaseline": {
+      "passed": 13,
+      "failed": 0
+    },
+    "indexedDbRoundtrip": "PASS",
+    "starCitizenWikiApi": "PASS",
+    "m2Allocation": "PASS",
+    "m3MiningModel": "PASS",
+    "m4CombinedBackupRollback": "PASS",
+    "m5Uex": "PASS",
+    "m61UiCompleteness": "8/8 PASS",
+    "standaloneHtmlExport": "PASS",
+    "externalStylesheet": false,
+    "externalResource": false,
+    "diagnosticErrorCount": 0,
+    "automationHistory": "The Chrome control URL policy rejected automated file:// navigation; the user then completed the gate manually in normal Chrome.",
     "securityBypassUsed": false,
     "localhostCountedAsFileProof": false,
-    "nextStep": "Manual Chrome file:// gate from an empty folder containing only sPg Crafting List.html."
+    "nextStep": null
   }
 }

@@ -4,9 +4,9 @@ Idorendi munkanaplo. Uj bejegyzest mindig a friss bejegyzesek resz vegere adj ho
 
 ## Aktualis osszefoglalo
 
-- Jelenlegi allapot: az M4 Combined Materials, teljes User Data backup/import preview, schema migracio, snapshot/rollback es M1-M4 diagnosztika elkeszult.
-- Utolso ismert jo allapot: `develop/V001`; `V001-C007` es helyi bongeszos 11/11 kapu PASS, a kozvetlen `file://`, offline export-ujranyitas es Edge kapu meg nyitott.
-- Kovetkezo ajanlott lepes: felhasznaloi jovahagyassal M5; a UEX refinery kulon kesobbi V1 milestone.
+- Jelenlegi allapot: `V002-dev` egyfajlos implementacio, teljes automatizalt regresszio, Chrome localhost es valos Chrome `file://` kezi gate PASS.
+- Utolso ismert jo allapot: `develop/V002`, commit `81e0a81`; a V001 tag es fagyasztott release valtozatlan.
+- Kovetkezo ajanlott lepes: csak kulon felhasznaloi engedellyel stabil V002 release-zaras; uj funkcio nincs folyamatban.
 - Archivalt regi naplo: nincs.
 
 ## Friss bejegyzesek
@@ -313,3 +313,12 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - `file://`: a Chrome-vezerlo URL-policy elutasitotta a navigaciot. Nem tortent megkerules, es a localhost nem lett file-bizonyitekkent elszamolva; a kapu `NOT TESTED`, kezi ellenorzes szukseges.
 - Dokumentacio: `docs/V002_SINGLE_FILE_REPORT.md`, `test-artifacts/V002-C001/browser-manual-summary.json` es frissitett projektvezerlo fajlok.
 - V001: tag `b22dbc3c2ef0765e30aa3806537854298c873dff`, a `releases/V001/` diffje ures. Stabil V002 release/tag nem keszult.
+
+### V002 valos Chrome file:// kezi gate PASS - 2026-08-24
+
+- Felhasznaloi ellenorzes: az onallo `sPg Crafting List.html` a Downloads mappabol kozvetlen `file://` modban megnyilt; verzio `V002-dev · schema 6`.
+- Technical Baseline: 13 PASS / 0 FAIL; IndexedDB roundtrip, Wiki API, M2 allocation, M3 Mining, M4 Combined/backup rollback, M5 UEX es M6.1 8/8 PASS.
+- Standalone HTML export PASS; `externalStylesheet: false`, `externalResource: false`, diagnostic errors 0.
+- A korabbi `NOT TESTED / AUTOMATION BLOCKED` V002 file-gate status bizonyitek alapjan PASS-ra valtozott. Az automatizalasi blokkolas torteneti megjegyzeskent megmaradt.
+- Zaras utani ellenorzes: teljes aktualis M1-M6.1 + C04 regresszio PASS; V001 fagyasztott bundle es SHA-256 validacio PASS.
+- Alkalmazasfunkcio nem valtozott; a V001 tag es fagyasztott release erintetlen. Stabil V002 release/tag ebben a korben nem keszul.

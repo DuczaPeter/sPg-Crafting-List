@@ -177,3 +177,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: 13/13 localhost technikai proba, API/cache/reload, valtozatlan `e6d8dec8` fingerprint, UEX `24/50/0`, export builder es konzolhiba 0 bizonyitasara. A `file://` URL-policy tiltasa miatt a kezi kapu nem lett PASS-ra atirva es nem tortent megkerules.
 - Mely fajlokat vagy donteseket erintett: `docs/V002_SINGLE_FILE_REPORT.md` es `test-artifacts/V002-C001/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V002 file gate dokumentacios zaras
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a felhasznalo altal lefuttatott valos Chrome `file://` kapu rogzitesekor.
+- Mire segitett: a dokumentacios scope elkulonitesere, a korabbi `NOT TESTED` allapot bizonyitek-alapu PASS-ra modositasara, a V001 vedelmere es a stabil V002 release visszatartasara.
+- Mely fajlokat vagy donteseket erintett: V002 riport, statusz, feladatlista, verzioallapot, munkanaplo es V002-C001 browser-summary.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

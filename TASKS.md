@@ -12,7 +12,7 @@
 - [x] Ures ideiglenes mappaban csak az egyetlen HTML-lel vegzett sidecar-regresszio PASS.
 - [x] `V002-C001` teljes regresszios ciklus PASS.
 - [x] Valos Chrome localhost kiegeszito proba: 13/13 technikai proba, API/cache/reload/fingerprint es console error 0 PASS.
-- [ ] Valos Chrome `file://` proba ures mappabol: az automatizalas URL-policy miatt `NOT TESTED`; kezi kapu szukseges.
+- [x] Valos Chrome `file://` proba onallo Downloads-peldannyal: V002-dev schema 6, 13 PASS / 0 FAIL, export PASS, external stylesheet/resource false es diagnostic errors 0.
 - [x] V002 fejlesztesi riport es atadas; stabil V002 release most nem keszul.
 
 - [x] Projekt celja es projekt tipusa pontosan rogzitve a `CODEX_START_HERE.md` fajlban.
@@ -80,5 +80,5 @@
 
 ## Blokkolo problema
 
-- A V002 automatizalt regresszio es Chrome localhost proba PASS, de a valos Chrome `file://` egyfajlos kapu az automatizalasi URL-policy miatt nem futott. A stabil V001 ettol fuggetlenul valtozatlan es visszaallithato.
+- Nincs nyitott V002-dev fejlesztesi gate. A stabil V001 valtozatlan es visszaallithato; stabil V002 release/tag csak kulon felhasznaloi engedellyel keszulhet.
 
