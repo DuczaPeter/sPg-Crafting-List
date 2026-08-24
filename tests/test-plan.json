@@ -123,6 +123,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v002-release.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-farm-recommendation-regression",
+      "level": "full-regression",
+      "description": "V003-dev gate: full M1-M6.1 and C04 regression, live Wiki commodity/location/resource proof, primary-resource filtering, deterministic spawn/occurrence/quantized-Quality ranking, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-farm.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

@@ -73,7 +73,22 @@ const intelligence = {
     systems: [{
       system: "Pyro",
       status: "AVAILABLE",
-      methods: [{ method: "SHIP_MINING", locationLabel: "Pyro II – Monox", occurrence: 0.3, spawn: 10, maximumQuality: 1000 }]
+      methods: [{
+        category: "NORMAL",
+        recommendationLabel: "Legjobb farmhely",
+        decision: "BEST_NORMAL",
+        method: "SHIP_MINING",
+        locationLabel: "Pyro II – Monox",
+        occurrence: 0.3,
+        spawn: 10,
+        maximumQuality: 1000,
+        qualityProfile: {
+          ranges: [{ min: 501, max: 1000 }],
+          highQualityValues: [588, 667, 796, 852, 943, 971, 1000],
+          reachableMinimum: 588,
+          reachableMaximum: 1000
+        }
+      }]
     }]
   },
   loadouts: [{

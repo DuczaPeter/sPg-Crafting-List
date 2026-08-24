@@ -19,7 +19,7 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Tamogatott kornyezet: Windows 11, aktualis Chrome es Edge; a `file://` mod valos tesztje kotelezo.
 - Crafting Card keszletprioritas: a felhasznalo altal rendezheto kartya-sorrend, felulrol lefele.
 - V1 keszletkezeles: tervezes es foglalas, vegleges inventory-levonas nelkul.
-- Location rangsor: occurrence csokkeno, spawn csokkeno, maximum Quality csokkeno; teljes egyezeskor UI-osszevonas.
+- V1/V002 torteneti location rangsor: occurrence csokkeno, spawn csokkeno, maximum Quality csokkeno; a kesobbi V003 dontes ezt felulirja.
 - A 82 pontos specifikacio teljes V1.0 celallapot, belso milestone-okkal, funkcioelhagyas nelkul.
 - A reszletes dontesforras: `docs/IMPLEMENTATION_DECISIONS.md`.
 
@@ -46,3 +46,14 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Stabil V002-ben nincs `Info` mappa, kulon CSS/JavaScript, build-kovetelmeny vagy mas helyi sidecar.
 - A stabil HTML a tesztelt V002-dev forrastol csak a harom `V002-dev -> V002` futasideju verziojelolesben terhet el.
 - A `V002` tag csak teljes regresszio, valos Chrome `file://`, single-file gate, elo Wiki/UEX es valtozatlan V001 ellenorzes utan keszulhet.
+
+## 2026-08-24 - V003 farm recommendation szemantika
+
+- A V002 `occurrence -> spawn -> maximum Quality` location-rangsorat a V003 felulirja.
+- Primary/relevant resource csak exact target commodity UUID es canonical API `resource.label` egyezes eseten; az `is_current` es a `materialIndex` erre nem alkalmas.
+- Secondary/by-product resource a ranking elott `SECONDARY_EXCLUDED`.
+- Rangsor rendszerenkent es normal/space kategoriankent: group probability/spawn, relative probability/occurrence, Q500+ quantized Quality ertekek, majd Quality range.
+- Quality-valoszinuseg nem becsulheto, ha azt az API nem adja; kitalalt szazalek tilos.
+- A raw/normalizalt location-resource-material adat megmarad, a recommendation kulon, visszakovetheto projekcio.
+- A Material Database, Crafting/Combined snapshot es standalone export egyetlen kozos recommendation fuggvenyt hasznal.
+- Stabil V003 kiadas vagy tag a C001 fejlesztesi korben nem keszulhet.

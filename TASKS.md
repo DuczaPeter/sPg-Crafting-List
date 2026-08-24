@@ -2,6 +2,21 @@
 
 ## Aktualis
 
+### V003-dev farm recommendation
+
+- [x] Kulon `develop/V003` branch a kozos main alapjan; V001/V002 fagyasztva.
+- [x] Teljes Star Citizen Wiki commodity/location/resource semaaudit hivatalos API-forrassal.
+- [x] Primary resource gate exact target UUID + canonical API resource label egyezessel; fuzzy es `materialIndex === 0` szabaly nelkul.
+- [x] Secondary/by-product resource kizarasa a rangsor elott es reszletes recommendation decision trace.
+- [x] Rendszerenkenti egy legjobb normal es egy legjobb space ajanlas, szigoru All Lagrange osszevonassal.
+- [x] Spawn/group probability → occurrence/relative probability → quantized/range Quality determinisztikus rangsor.
+- [x] Kozos recommendation fuggveny Material Database, Crafting/Combined snapshot es standalone export szamara.
+- [x] Common/uncommon/legendary, secondary trap, Stanton/Pyro/Nyx, normal/space es 5 000 locationos tesztek.
+- [x] `V003-C001` teljes M1-M6.1 + C04 + elo Wiki API + V002-integritas regresszio PASS.
+- [x] Valodi Chrome localhost 13/13, reload fingerprint es konzolhiba 0 PASS.
+- [ ] Valodi Chrome `file://` kezi kapu; az automatizalas URL-policy miatt blokkolt, nem PASS.
+- [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
+
 ### V002 GitHub- es Discord-dokumentacio
 
 - [x] Teljes angol V002 GitHub README a stabil single-file mukodesrol es a bizonyitott funkciokrol.
@@ -97,5 +112,5 @@
 
 ## Blokkolo problema
 
-- Nincs. A V002 stabil single-file release lezart; a V001 valtozatlan es visszaallithato.
+- A V003 `file://` Chrome-kaput az automatizalasi URL-policy blokkolja, ezert kezi ellenorzes kell. A V002 stabil single-file release lezart; a V001/V002 valtozatlan es visszaallithato.
 

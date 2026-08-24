@@ -25,13 +25,15 @@
 - Baseline validalas: `tools/validate-baseline.ps1`.
 - M1 modell- es cache-regresszio: `tools/validate-m1.ps1`, amely a `tools/run-m1-tests.mjs` fixture-tesztet is futtatja.
 - M2 inventory- es allocation-regresszio: `tools/validate-m2.ps1`, amely az M1 kaput es a `tools/run-m2-tests.mjs` fixture/performance tesztet is futtatja.
-- M3 mining-regresszio: `tools/validate-m3.ps1`, amely az M1/M2 kapukat es a `tools/run-m3-tests.mjs` 17 fixture/performance esetet is futtatja.
+- M3 mining-regresszio: `tools/validate-m3.ps1`, amely az M1/M2 kapukat es a `tools/run-m3-tests.mjs` 24 V003 primary/secondary/ranking/loadout fixture/performance esetet is futtatja.
 - M4 Combined Materials-, backup- es diagnosztikai regresszio: `tools/validate-m4.ps1`, amely az M1-M3 kapukat es a `tools/run-m4-tests.mjs` 12 kotelezo esetet is futtatja.
 - M5 UEX refinery regresszio: `tools/validate-m5.ps1`, amely az M1-M4 kapukat es a `tools/run-m5-tests.mjs` 18 kotelezo mapping/ranking/cache/snapshot esetet futtatja.
 - M6 standalone export regresszio: `tools/validate-m6.ps1`, amely az M1-M5 kapukat es a `tools/run-m6-tests.mjs` 14 exportesetet futtatja.
 - M6.1 UI Completeness regresszio: `tools/validate-m61.ps1`, amely a teljes M1-M6 kaput es a `tools/run-m61-ui-tests.mjs` 14 navigacios/Material Database/Mining Loadouts/responsive esetet futtatja.
 - C04 single-file CSS/export regresszio: `tools/validate-c04.ps1`; a `tools/verify-embedded-application-css.mjs` az egyetlen CSS-forrast, a `tools/run-c04-file-export-tests.mjs` pedig file/HTTP es ures-mappas sidecar-mentesseget tesztel.
 - V002 stabil release kapu: `tools/validate-v002-release.ps1`; a teljes regresszio mellett az egyetlen release HTML-t, checksumot, elo Wiki/UEX API-t es V001-integritast ellenorzi.
+- V003 farm recommendation kapu: `tools/validate-v003-farm.ps1`; a teljes regresszio mellett elo Wiki common/uncommon/legendary resource-probat es V002-integritast ellenoriz.
+- V003 elo farmhely API-proba: `tools/probe-v003-farm-api.mjs`, csak olvaso Aluminum/Agricium/Stileron bizonyitekkal.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -45,6 +47,7 @@
 - `docs/V002_SINGLE_FILE_AUDIT.md`: a kulso CSS-fugges auditja, az egyforrasos embedded architektura es ellenorzesi terv.
 - `docs/V002_SINGLE_FILE_REPORT.md`: a V002-C001 regresszio, Chrome localhost es valos `file://` kezi PASS bizonyitek, valamint a V001 vedelme.
 - `docs/V002_RELEASE_REPORT.md`: a stabil V002 approval, V002-C002 regresszio, single-file artifact, hash, API-probak es Git tag release-riportja.
+- `docs/V003_FARM_RECOMMENDATION_REPORT.md`: a primary/secondary API-audit, uj rangsor, space/normal besorolas, tesztek es nyitott `file://` kapu.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -74,6 +77,7 @@
 - `test-artifacts/V001-C014/`: a stabil V001 kiadas elotti utolso teljes M1-M6.1/C04 regresszio bizonyiteka.
 - `test-artifacts/V002-C001/`: a V002 egyfajlos teljes regresszio es Chrome localhost/manual-gate summary bizonyiteka.
 - `test-artifacts/V002-C002/`: a stabil V002 kiadas elotti teljes regresszio es release evidence.
+- `test-artifacts/V003-C001/`: a V003 farm recommendation teljes regresszio, standalone artifact es Chrome localhost/file-gate summary bizonyiteka.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

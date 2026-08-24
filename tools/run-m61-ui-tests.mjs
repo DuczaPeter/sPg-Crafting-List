@@ -71,7 +71,7 @@ for (const marker of ["materialDatabaseSearch", "materialDatabaseCategory", "mat
 }
 
 // 9. Detail view shows API metrics and reuses the existing ranking projections.
-for (const marker of ["Radar Signature", "Rarity", "Instability", "Resistance", "mergeBestMiningLocationsBySystem(commodity.locations", "state.uexRefineryRecommendations.get(commodity.uuid)"]) {
+for (const marker of ["Radar Signature", "Rarity", "Instability", "Resistance", "buildMiningFarmRecommendations(commodity", "state.uexRefineryRecommendations.get(commodity.uuid)"]) {
   assert.ok(html.includes(marker), `Material részletmarker hiányzik: ${marker}`);
 }
 assert.equal(m61.metric(null), "Nincs adat");

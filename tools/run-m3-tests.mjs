@@ -17,11 +17,16 @@ vm.runInContext(`${match[1]}
 globalThis.__M3__ = {
   categories: M3_MINING_CATEGORIES,
   equipmentTypes: M3_EQUIPMENT_TYPES,
+  decisions: M3_RECOMMENDATION_DECISIONS,
+  environments: M3_ENVIRONMENTS,
   classifyMiningCommodity,
   normalizeMiningCommodity,
   normalizeMiningCommodityIndex,
   compareMiningLocations,
   mergeBestMiningLocationsBySystem,
+  buildMiningFarmRecommendations,
+  classifyMiningEnvironment,
+  canonicalDepositName: m3CanonicalDepositName,
   normalizeMiningEquipmentIndex,
   normalizeMiningHeadDetail,
   normalizeMiningVehicleDetail,
@@ -53,40 +58,94 @@ const fpsIndex = model.normalizeMiningCommodityIndex(fixture.commodities.fps, pr
 assert.equal(shipIndex.radarSignature, 4000);
 assert.equal(fpsIndex.radarSignature, null);
 
-// 6. A real-style commodity keeps separate systems and every raw location as a normalized record.
+// 6. A real-style commodity keeps every location and every resource; recommendation filtering is a separate projection.
 const ship = model.normalizeMiningCommodity(fixture.commodities.ship, provenance);
 assert.deepEqual(Array.from(ship.systems), ["Pyro System", "Stanton System"]);
-assert.equal(ship.locations.length, 3);
-assert.equal(ship.locations[0].qualityRanges.length, 2);
-assert.equal(ship.locations[0].maximumQuality, 875, "A material maximuma nem lehet a location más anyagból származó Q1000 értéke.");
+assert.equal(ship.locations.length, 5);
+assert.equal(ship.locations[0].resources.length, 1);
+assert.equal(ship.locations[0].resources[0].materials.length, 3);
+assert.equal(ship.locations[0].resources[0].targetMaterials.length, 2);
+assert.equal(ship.locations[0].resources[0].targetQuality.reachableMaximum, 1000, "Más material Q1000 értéke nem kerülhet a target Quality profilba.");
+assert.equal(ship.locations.find(location => location.name === "Akiro Cluster").resources[0].targetMaterials[0].materialIndex, 2, "A primary felismerés nem támaszkodhat materialIndex === 0 szabályra.");
 
-// 7. occurrence → spawn → maximum Quality, without a synthetic score.
+// 7. Primary gate first; an extreme secondary spawn/occurrence/Q result cannot enter the ranking.
+const recommendation = model.buildMiningFarmRecommendations(ship, fixture.knownSystems);
+const secondaryDecision = recommendation.decisions.find(decision => decision.locationName === "Aberdeen");
+assert.equal(secondaryDecision.primaryEvidence, "API_RESOURCE_LABEL_DIFFERS");
+assert.equal(secondaryDecision.decision, model.decisions.SECONDARY_EXCLUDED);
+assert.equal(secondaryDecision.qualityProfile.reachableMaximum, 1000, "A magas maximum-Q secondary csapdának explicitnek kell maradnia.");
+const stanton = recommendation.systems.find(result => result.system === "Stanton System");
+assert.equal(stanton.methods.find(method => method.category === model.environments.NORMAL).locationLabel, "Arial");
+assert.equal(stanton.methods.find(method => method.category === model.environments.SPACE).locationLabel, "ARC L3");
+assert.equal(recommendation.systems.find(result => result.system === "Nyx System").status, "NO_KNOWN_LOCATION");
+assert.deepEqual(Array.from(recommendation.rankingOrder), [
+  "PRIMARY_RESOURCE_GATE",
+  "GROUP_PROBABILITY_SPAWN_DESC",
+  "RELATIVE_PROBABILITY_OCCURRENCE_DESC",
+  "HIGH_Q_QUANTIZED_VALUES_DESC",
+  "QUALITY_RANGE_DESC"
+]);
+
+// 8. The target resource's spawn precedes occurrence; Quality only breaks an exact probability tie.
+const quality = values => ({ hasHighQuality: true, highQualityValues: values, reachableMaximum: values.at(-1), reachableMinimum: values[0], ranges: [] });
 const ranked = [
-  { id: "quality", name: "Quality", occurrence: 20, spawn: 40, maximumQuality: 950, miningMethod: "SHIP_MINING" },
-  { id: "spawn", name: "Spawn", occurrence: 20, spawn: 50, maximumQuality: 500, miningMethod: "SHIP_MINING" },
-  { id: "occurrence", name: "Occurrence", occurrence: 30, spawn: 1, maximumQuality: 100, miningMethod: "SHIP_MINING" }
+  { id: "occurrence", locationName: "Occurrence", environment: "NORMAL", miningMethod: "SHIP_MINING", spawn: 10, occurrence: 99, qualityProfile: quality([600, 1000]) },
+  { id: "spawn", locationName: "Spawn", environment: "NORMAL", miningMethod: "SHIP_MINING", spawn: 20, occurrence: 1, qualityProfile: quality([500]) },
+  { id: "quality-low", locationName: "Quality Low", environment: "NORMAL", miningMethod: "SHIP_MINING", spawn: 15, occurrence: 20, qualityProfile: quality([600, 900]) },
+  { id: "quality-high", locationName: "Quality High", environment: "NORMAL", miningMethod: "SHIP_MINING", spawn: 15, occurrence: 20, qualityProfile: quality([600, 950]) }
 ].sort(model.compareMiningLocations);
-assert.deepEqual(Array.from(ranked, item => item.id), ["occurrence", "spawn", "quality"]);
+assert.deepEqual(Array.from(ranked, item => item.id), ["spawn", "quality-high", "quality-low", "occurrence"]);
 
-// 8. Fully identical location results merge, while raw records remain separate.
-const systemRanking = model.mergeBestMiningLocationsBySystem(ship.locations, fixture.knownSystems);
-const stanton = systemRanking.find(result => result.system === "Stanton System");
-assert.equal(stanton.methods[0].locationLabel, "Arial / Ita");
-assert.equal(stanton.methods[0].mergedCount, 2);
-assert.equal(ship.locations.length, 3);
-assert.equal(systemRanking.find(result => result.system === "Nyx System").status, "NO_KNOWN_LOCATION");
-
-// 9. Partly different Lagrange results must never become All Lagrange Points.
-const lagrange = [
-  { id: "l1", name: "ARC-L1", system: "Stanton", miningMethod: "SHIP_MINING", occurrence: 30, spawn: 20, maximumQuality: 900 },
-  { id: "l2", name: "ARC-L2", system: "Stanton", miningMethod: "SHIP_MINING", occurrence: 30, spawn: 20, maximumQuality: 900 },
-  { id: "l3", name: "ARC-L3", system: "Stanton", miningMethod: "SHIP_MINING", occurrence: 29, spawn: 20, maximumQuality: 900 }
+// 9. Normal and space results are independent, and strict All Lagrange Points needs every relevant LP to tie.
+function primaryLocation(uuid, name, spawn, occurrence) {
+  return {
+    uuid,
+    name,
+    system: "Stanton System",
+    type: "Asteroid",
+    parent_name: "Stanton",
+    parent_type: "Star",
+    resources: [{
+      key: "MineableRock_AsteroidUncommon_Agricium",
+      label: "Agricium",
+      group_name: "SpaceShip_Mineables",
+      materials: [{
+        key: "Ore_Agricium",
+        name: "Agricium (Ore)",
+        uuid: fixture.commodities.ship.uuid,
+        is_current: true,
+        group_probability_percent: spawn,
+        relative_probability_percent: occurrence,
+        quality_min: 501,
+        quality_max: 1000,
+        quality_quantized_values: [588, 796, 1000]
+      }]
+    }]
+  };
+}
+const lagrangeRaw = clone(fixture.commodities.ship);
+lagrangeRaw.locations = [
+  primaryLocation("arc-l1", "ARC L1", 20, 30),
+  primaryLocation("arc-l2", "ARC L2", 20, 30),
+  primaryLocation("arc-l3", "ARC L3", 19, 30)
 ];
-const partialLagrange = model.mergeBestMiningLocationsBySystem(lagrange, ["Stanton"])[0].methods[0];
-assert.equal(partialLagrange.allLagrangePoints, false);
-assert.equal(partialLagrange.locationLabel, "ARC-L1 / ARC-L2");
-const allLagrange = model.mergeBestMiningLocationsBySystem(lagrange.slice(0, 2), ["Stanton"])[0].methods[0];
-assert.equal(allLagrange.allLagrangePoints, true);
+let lagrangeRecommendation = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(lagrangeRaw, provenance), ["Stanton System"]);
+let bestSpace = lagrangeRecommendation.systems.find(system => system.system === "Stanton System").methods[0];
+assert.equal(bestSpace.allLagrangePoints, false);
+assert.equal(bestSpace.locationLabel, "ARC L1 / ARC L2");
+lagrangeRaw.locations = lagrangeRaw.locations.slice(0, 2);
+lagrangeRecommendation = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(lagrangeRaw, provenance), ["Stanton System"]);
+bestSpace = lagrangeRecommendation.systems.find(system => system.system === "Stanton System").methods[0];
+assert.equal(bestSpace.allLagrangePoints, true);
+assert.equal(bestSpace.locationLabel, "All Lagrange Points");
+
+// 10. Actual-schema common/uncommon/legendary fixtures cover Nyx, Stanton, Pyro, surface and space.
+const common = model.normalizeMiningCommodity(fixture.recommendationCommodities.common, provenance);
+const legendary = model.normalizeMiningCommodity(fixture.recommendationCommodities.legendary, provenance);
+assert.equal(model.buildMiningFarmRecommendations(common, fixture.knownSystems).systems.find(system => system.system === "Nyx System").methods[0].locationLabel, "Keeger Belt");
+const legendaryPyro = model.buildMiningFarmRecommendations(legendary, fixture.knownSystems).systems.find(system => system.system === "Pyro System");
+assert.equal(legendaryPyro.methods.find(method => method.category === model.environments.NORMAL).locationLabel, "Pyro IV");
+assert.equal(legendaryPyro.methods.find(method => method.category === model.environments.SPACE).locationLabel, "Akiro Cluster");
 
 // 10–11. Head module dropdown count comes from the current item detail.
 assert.equal(model.normalizeMiningHeadDetail(fixture.heads.oneSlot, provenance).moduleSlotCount, 1);
@@ -137,24 +196,44 @@ model.normalizeMiningVehicleDetail(fixture.mole, provenance);
 assert.equal(JSON.stringify({ loadouts: clone(loadouts), missing: clone(missingLoadout) }), userSnapshot);
 assert.match(html, /miningLoadoutFingerprintPreserved/, "Az M3 loadout fingerprint guard hiányzik a Game Data syncből.");
 
-const performanceLocations = Array.from({ length: 5000 }, (_, index) => ({
-  id: `perf-${index}`,
-  name: `Location ${index}`,
-  system: ["Stanton", "Pyro", "Nyx"][index % 3],
-  miningMethod: ["SHIP_MINING", "VEHICLE_MINING"][index % 2],
-  occurrence: index % 101,
-  spawn: index % 71,
-  maximumQuality: 500 + (index % 501)
-}));
+const performanceCommodityRaw = {
+  uuid: "performance-commodity",
+  key: "Ore_Performance",
+  name: "Performance (Ore)",
+  kind: "mineable",
+  has_ship_mineables: true,
+  systems: ["Stanton", "Pyro", "Nyx"],
+  locations: Array.from({ length: 5000 }, (_, index) => ({
+    uuid: `perf-${index}`,
+    name: `Location ${index}`,
+    system: ["Stanton", "Pyro", "Nyx"][index % 3],
+    type: index % 2 ? "Moon" : "Asteroid",
+    resources: [{
+      key: `MineableRock_${index % 2 ? "Surface" : "Asteroid"}Common_Performance`,
+      label: "Performance",
+      group_name: "SpaceShip_Mineables",
+      materials: [{
+        uuid: "performance-commodity",
+        is_current: true,
+        group_probability_percent: index % 71,
+        relative_probability_percent: index % 101,
+        quality_min: 500,
+        quality_max: 500 + (index % 501),
+        quality_quantized_values: [500 + (index % 501)]
+      }]
+    }]
+  }))
+};
 const performanceStarted = performance.now();
-const performanceRanking = model.mergeBestMiningLocationsBySystem(performanceLocations, ["Stanton", "Pyro", "Nyx"]);
+const performanceCommodity = model.normalizeMiningCommodity(performanceCommodityRaw, provenance);
+const performanceRanking = model.buildMiningFarmRecommendations(performanceCommodity, ["Stanton", "Pyro", "Nyx"]).systems;
 const performanceDurationMs = performance.now() - performanceStarted;
 assert.equal(performanceRanking.length, 3);
 assert.ok(performanceDurationMs < 500, `Az M3 location ranking túl lassú: ${performanceDurationMs.toFixed(1)} ms`);
 
 console.log("M3_MINING_TEST_PASS");
 console.log(JSON.stringify({
-  mandatoryCases: 17,
-  realFixtures: ["Agricium (Ore)", "Beradom", "Aphorite", "Bluemoon Fungus", "Arbor MH1", "Helix II", "MOLE"],
+  mandatoryCases: 24,
+  realFixtures: ["Aluminum (Ore)", "Agricium (Ore)", "Stileron (Ore)", "Beradom", "Aphorite", "Bluemoon Fungus", "Arbor MH1", "Helix II", "MOLE"],
   performance: { locations: 5000, durationMs: Number(performanceDurationMs.toFixed(2)) }
 }, null, 2));

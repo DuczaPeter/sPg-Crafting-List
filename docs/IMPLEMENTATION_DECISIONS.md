@@ -11,7 +11,7 @@ Datum: 2026-08-22
 5. A `file://` mod tenyleges tesztje kotelezo; csak igazolt szukseg eseten kell minimalis localhost fallback dokumentacio.
 6. A Crafting Cardok keszletfoglalasi prioritasa a felhasznalo altal rendezheto sorrend, felulrol lefele.
 7. V1-ben a keszletkezeles tervezesi jellegu, nincs automatikus vegleges levonas.
-8. Location rangsor: occurrence csokkeno, spawn csokkeno, maximum Quality csokkeno; teljes egyezeskor a UI osszevonhat, a raw rekordok megmaradnak.
+8. A V1/V002 location rangsor occurrence → spawn → maximum Quality volt. Ezt a V003-dev API-audit alapjan felulirja: primary resource gate → group probability/spawn → relative probability/occurrence → quantized/range Quality; a raw rekordok megmaradnak, a recommendation kulon projekcio.
 9. A hatterszinkron csak a megnyitott alkalmazasban futhat.
 10. A teljes 82 pontos specifikacio a V1.0 celallapot; belso milestone-ok nem hagyhatnak el kovetelmenyt.
 

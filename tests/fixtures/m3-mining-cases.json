@@ -16,47 +16,96 @@
       "systems": ["Pyro System", "Stanton System"],
       "locations": [
         {
-          "uuid": "loc-stanton-1",
+          "uuid": "loc-stanton-arial",
           "name": "Arial",
           "system": "Stanton System",
           "type": "Moon",
-          "relative_probability_percent": 30,
-          "group_probability_percent": 20,
+          "parent_name": "Hurston",
+          "parent_type": "Planet",
+          "relative_probability_percent": 99,
+          "group_probability_percent": 99,
           "quality_max": 1000,
           "resources": [{
-            "key": "Ship_Agricium",
+            "key": "MineableRock_SurfaceUncommon_Agricium",
+            "label": "Agricium",
             "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "provider_names": ["HPP_Stanton1a"],
             "materials": [
-              {"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 400, "quality_max": 700},
-              {"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 701, "quality_max": 875},
-              {"uuid": "decoy-current-material", "is_current": true, "quality_min": 900, "quality_max": 999}
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 20, "relative_probability_percent": 30, "quality_min": 245, "quality_max": 490, "quality_quantized_values": [346, 490]},
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 20, "relative_probability_percent": 30, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [588, 667, 796, 852, 943, 971, 1000]},
+              {"key": "Ore_Titanium", "name": "Titanium (Ore)", "uuid": "decoy-material", "is_current": false, "group_probability_percent": 20, "relative_probability_percent": 30, "quality_min": 900, "quality_max": 1000, "quality_quantized_values": [950, 1000]}
             ]
           }]
         },
         {
-          "uuid": "loc-stanton-2",
-          "name": "Ita",
+          "uuid": "loc-stanton-aberdeen-secondary",
+          "name": "Aberdeen",
           "system": "Stanton System",
           "type": "Moon",
-          "relative_probability_percent": 30,
-          "group_probability_percent": 20,
+          "parent_name": "Hurston",
+          "parent_type": "Planet",
           "resources": [{
-            "key": "Ship_Agricium_2",
+            "key": "MineableRock_SurfaceUncommon_Titanium",
+            "label": "Titanium",
             "group_name": "SpaceShip_Mineables",
-            "materials": [{"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 400, "quality_max": 875}]
+            "resource_kind": "mineable",
+            "materials": [
+              {"key": "Ore_Titanium", "name": "Titanium (Ore)", "uuid": "titanium-primary", "is_current": false, "group_probability_percent": 95, "relative_probability_percent": 95, "quality_min": 245, "quality_max": 1000, "quality_quantized_values": [1000]},
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 95, "relative_probability_percent": 95, "quality_min": 395, "quality_max": 1000, "quality_quantized_values": [588, 796, 1000]}
+            ]
           }]
         },
         {
-          "uuid": "loc-pyro-1",
+          "uuid": "loc-stanton-arc-l3",
+          "name": "ARC L3",
+          "system": "Stanton System",
+          "type": "Asteroid",
+          "parent_name": "Stanton",
+          "parent_type": "Star",
+          "resources": [{
+            "key": "MineableRock_AsteroidUncommon_Agricium",
+            "label": "Agricium",
+            "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "materials": [
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 10, "relative_probability_percent": 28.5, "quality_min": 245, "quality_max": 490, "quality_quantized_values": [346, 490]},
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 10, "relative_probability_percent": 28.5, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [588, 667, 796, 852, 943, 971, 1000]}
+            ]
+          }]
+        },
+        {
+          "uuid": "loc-pyro-fuego",
           "name": "Fuego",
           "system": "Pyro System",
           "type": "Moon",
-          "relative_probability_percent": 28.5,
-          "group_probability_percent": 7.5,
+          "parent_name": "Pyro V",
+          "parent_type": "Planet",
           "resources": [{
-            "key": "Ship_Agricium_3",
+            "key": "MineableRock_SurfaceUncommon_Agricium",
+            "label": "Agricium",
             "group_name": "SpaceShip_Mineables",
-            "materials": [{"uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "quality_min": 395, "quality_max": 789}]
+            "resource_kind": "mineable",
+            "materials": [{"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 7.5, "relative_probability_percent": 28.5, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [588, 667, 796, 852, 943, 971, 1000]}]
+          }]
+        },
+        {
+          "uuid": "loc-pyro-akiro",
+          "name": "Akiro Cluster",
+          "system": "Pyro System",
+          "type": "Asteroid_ValidQT",
+          "parent_name": "Pyro",
+          "parent_type": "Star",
+          "resources": [{
+            "key": "MineableRock_AsteroidUncommon_Agricium",
+            "label": "Agricium",
+            "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "materials": [
+              {"key": "Ore_Copper", "name": "Copper (Ore)", "uuid": "akiro-decoy-1", "is_current": false, "group_probability_percent": 10, "relative_probability_percent": 20, "quality_min": 245, "quality_max": 490, "quality_quantized_values": [400]},
+              {"key": "Ore_Iron", "name": "Iron (Ore)", "uuid": "akiro-decoy-2", "is_current": false, "group_probability_percent": 10, "relative_probability_percent": 20, "quality_min": 395, "quality_max": 789, "quality_quantized_values": [600, 780]},
+              {"key": "Ore_Agricium", "name": "Agricium (Ore)", "uuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef", "is_current": true, "group_probability_percent": 10, "relative_probability_percent": 20, "quality_min": 501, "quality_max": 943, "quality_quantized_values": [588, 667, 796, 852, 943]}
+            ]
           }]
         }
       ]
@@ -93,6 +142,80 @@
       "has_ground_vehicle_mineables": false,
       "has_fps_mineables": false,
       "has_harvestables": true
+    }
+  },
+  "recommendationCommodities": {
+    "common": {
+      "uuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+      "key": "Ore_Aluminum",
+      "name": "Aluminum (Ore)",
+      "tier": "common",
+      "kind": "mineable",
+      "methods": ["Ship"],
+      "has_ship_mineables": true,
+      "systems": ["Nyx System", "Stanton System"],
+      "locations": [
+        {
+          "uuid": "aluminum-nyx-keeger",
+          "name": "Keeger Belt",
+          "system": "Nyx System",
+          "type": "Asteroid",
+          "parent_name": "Nyx",
+          "parent_type": "Star",
+          "resources": [{
+            "key": "MineableRock_AsteroidCommon_Aluminum",
+            "label": "Aluminum",
+            "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "materials": [
+              {"key": "Ore_Aluminum", "name": "Aluminum (Ore)", "uuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37", "is_current": true, "group_probability_percent": 10, "relative_probability_percent": 20.75, "quality_min": 245, "quality_max": 490, "quality_quantized_values": [314, 525]},
+              {"key": "Ore_Aluminum", "name": "Aluminum (Ore)", "uuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37", "is_current": true, "group_probability_percent": 10, "relative_probability_percent": 20.75, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [525, 653, 788, 868, 918, 960, 1000]}
+            ]
+          }]
+        }
+      ]
+    },
+    "legendary": {
+      "uuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "key": "Ore_Stileron",
+      "name": "Stileron (Ore)",
+      "tier": "legendary",
+      "kind": "mineable",
+      "methods": ["Ship"],
+      "has_ship_mineables": true,
+      "systems": ["Pyro System"],
+      "locations": [
+        {
+          "uuid": "stileron-pyro-iv",
+          "name": "Pyro IV",
+          "system": "Pyro System",
+          "type": "Planet",
+          "parent_name": "Pyro V",
+          "parent_type": "Planet",
+          "resources": [{
+            "key": "MineableRock_SurfaceLegendary_Stileron",
+            "label": "Stileron",
+            "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "materials": [{"key": "Ore_Stileron", "name": "Stileron (Ore)", "uuid": "32bafbd4-c52a-476d-b31c-97c4b3102471", "is_current": true, "group_probability_percent": 2, "relative_probability_percent": 2, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [517, 674, 803, 881, 929, 965, 1000]}]
+          }]
+        },
+        {
+          "uuid": "stileron-akiro",
+          "name": "Akiro Cluster",
+          "system": "Pyro System",
+          "type": "Asteroid_ValidQT",
+          "parent_name": "Pyro",
+          "parent_type": "Star",
+          "resources": [{
+            "key": "MineableRock_AsteroidLegendary_Stileron",
+            "label": "Stileron",
+            "group_name": "SpaceShip_Mineables",
+            "resource_kind": "mineable",
+            "materials": [{"key": "Ore_Stileron", "name": "Stileron (Ore)", "uuid": "32bafbd4-c52a-476d-b31c-97c4b3102471", "is_current": true, "group_probability_percent": 1, "relative_probability_percent": 2, "quality_min": 501, "quality_max": 1000, "quality_quantized_values": [517, 674, 803, 881, 929, 965, 1000]}]
+          }]
+        }
+      ]
     }
   },
   "heads": {

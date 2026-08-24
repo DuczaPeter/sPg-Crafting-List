@@ -209,3 +209,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a stabil V001/V002 vedelmere, backup branchekre, force nelkuli ancestry- es fast-forward kapura, a `DuczaPeter` account/HTTPS hitelesitesere es az API-bol visszaolvasott valos asset URL hasznalatara.
 - Mely fajlokat vagy donteseket erintett: ket helyi backup branch, `codex/integrate-github-main-v002`, tavoli `main`, tavoli `V002` tag/Release, `README.md`, `README_HU.md` es a projekt statusznaploja.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003 farm recommendation projektfolytatas
+
+- Skill neve: `uj-projekt`.
+- Mikor hasznaltuk: `2026-08-24`, a V003-dev primary/secondary mining recommendation javitasakor.
+- Mire segitett: audit-first munkarend, haromsoros scope-terv, kulon `develop/V003` branch, `V003-C001` ciklus, teljes regresszio es a V001/V002 stabil allapot vedelme.
+- Mely fajlokat vagy donteseket erintett: V003 mining modell/UI/export, fixture/probe/validator, auditriport, tesztterv es projekt statuszfajlok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## Chrome V003 kiegeszito regresszio
+
+- Skill neve: `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a V003-dev valodi Chrome ellenorzesekor.
+- Mire segitett: localhost 13/13 technikai proba, valtozatlan `e6d8dec8` fingerprint, ures warning/error konzol es Material Database vizualis ellenorzes. A `file://` URL-policy blokkolast nem kerulte meg, ezert a file kapu nyitva maradt.
+- Mely fajlokat vagy donteseket erintett: `docs/V003_FARM_RECOMMENDATION_REPORT.md` es `test-artifacts/V003-C001/browser-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

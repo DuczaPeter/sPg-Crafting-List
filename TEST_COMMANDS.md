@@ -193,6 +193,24 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v002-r
 
 A V002 release-kapu a teljes M1-M6.1 + C04 regresszio mellett pontosan egy futtathato HTML-t, nulla helyi sidecart, checksumot, elo Wiki/UEX API-t, manualis Chrome-bizonyitekot es valtozatlan V001 bundle-t kovetel.
 
+V003 farm recommendation teljes regresszio, elo API-proba es fagyasztott V002-integritas:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-farm.ps1"
+```
+
+Csak az elo Star Citizen Wiki common/uncommon/legendary farm-ajanlo proba:
+
+```powershell
+node .\tools\probe-v003-farm-api.mjs
+```
+
+V003 repair-cycle:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "V003 farm recommendation primary filter es quality ranking" -TestId v003-farm-recommendation-regression
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -248,10 +266,12 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `browser-diagnostics-sample`: opcionlis minta; csak browser-diagnostics modul es projektlokalis Playwright mellett fut.
 - `m1-regression`: baseline szintaxis, JS-300, vegyes unit, duplicate-material, UNKNOWN capability es provenance regresszio.
 - `m2-regression`: az M1 kapu mellett 8 kotelezo allocation eset, JS-300/Hofstede szabalyok, determinisztikus kartya-prioritas, input-valtozatlansag es 1000 batch/100 kartya teljesitmenyfixture.
-- `m3-regression`: az M1/M2 kapuk mellett 17 kotelezo mining/location/loadout eset, eltunt equipment es User Data hatar, valamint 5000 locationos teljesitmenyfixture.
+- `m3-regression`: az M1/M2 kapuk mellett 24 kotelezo V003 primary/secondary, spawn/occurrence/Quality, space/normal, loadout, eltunt equipment es User Data eset, valamint 5000 locationos teljesitmenyfixture.
 - `m4-regression`: az M1-M3 kapuk mellett 12 kotelezo Combined Materials/backup/diagnosztikai eset, schema 1 migracio, bitazonos roundtrip, rollback es 1000 kartya/3000 slot/5000 batch teljesitmenyfixture.
 - `m5-regression`: az M1-M4 kapuk mellett 18 kotelezo UEX mapping/ranking/cache/snapshot/diagnosztikai eset, az 5 verziozott canonical alias, fuzzy-elutasitas, 500 soros limitfixture es teljesitmenyproba.
 - `m6-regression`: teljes M1-M5 regresszio, 14 kotelezo teljes standalone export eset, offline eroforrasfuggetlenseg, per-card export, JSON roundtrip, XSS-escape es 120 slotos teljesitmenyfixture. A valos `file://` Chrome/Edge es offline ujranyitas tovabbra is kulon bongeszos release-gate.
 - `m61-ui-regression`: teljes M1-M6 regresszio es 14 kotelezo UI-eset a pontos 8 enabled navigaciora, celpanelekre, Material Database kereses/kategoriak/adatlapra, az M3/M5 projekciok es a `userLoadouts` ujrahasznalatara, valamint responsive CSS-re. A valos kattintas/reload/konzol bizonyitek kulon Chrome-summaryban van.
 - `c04-file-export-regression`: teljes M1-M6.1 regresszio, egyetlen embedded CSS-forras, nulla CSSOM/fetch utvonal, ures-mappas sidecar-mentesseg, tavoli fontimport eltavolitas es standalone export keszenlet.
 - `v002-single-file-regression`: a C04 teljes kapuja V002 ciklusazonositoval; bizonyitja, hogy a fo alkalmazas runtime-oldalon egyetlen HTML.
+- `v003-farm-recommendation-regression`: teljes M1-M6.1 + C04, elo Wiki common/uncommon/legendary location/resource proba, primary/secondary gate, spawn/occurrence/quantized-Quality sorrend es valtozatlan V002 tag/artifact.
+- V003 artifact: `test-artifacts/V003-C001/`.

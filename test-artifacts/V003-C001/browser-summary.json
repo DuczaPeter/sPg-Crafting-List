@@ -1,0 +1,25 @@
+{
+  "cycleId": "V003-C001",
+  "applicationVersion": "V003-dev",
+  "chromeLocalhost": {
+    "status": "PASS",
+    "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+    "technicalProbe": {
+      "passed": 13,
+      "failed": 0
+    },
+    "userDataFingerprintBefore": "e6d8dec8",
+    "userDataFingerprintAfterReload": "e6d8dec8",
+    "userDataFingerprintUnchanged": true,
+    "externalStylesheet": false,
+    "externalRuntimeResourceCount": 0,
+    "consoleWarningErrorCount": 0,
+    "materialDatabaseVisualCheck": "PASS"
+  },
+  "chromeFile": {
+    "status": "BLOCKED_BY_AUTOMATION_URL_POLICY",
+    "passed": false,
+    "securityBypassUsed": false,
+    "manualRetestRequired": true
+  }
+}

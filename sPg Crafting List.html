@@ -4353,7 +4353,7 @@ code {
       </article>
       <article class="spg-status-card">
         <span>Alkalmazás</span>
-        <strong id="applicationStatus">V002-dev</strong>
+        <strong id="applicationStatus">V003-dev</strong>
       </article>
     </section>
 
@@ -4746,7 +4746,7 @@ code {
 
     <footer class="spg-app-footer">
       <span>Adatforrás: Star Citizen Wiki API · UEX Corp API</span>
-      <span id="footerRuntime">V002-dev</span>
+      <span id="footerRuntime">V003-dev</span>
     </footer>
   </div>
 
@@ -4756,7 +4756,7 @@ code {
   (function () {
     var APP = Object.freeze({
       name: "sPg Crafting List",
-      version: "V002-dev",
+      version: "V003-dev",
       schemaVersion: 6,
       cacheSchemaVersion: 4,
       dbName: "spg-crafting-list",
@@ -6841,50 +6841,133 @@ code {
       return M3_MINING_CATEGORIES.UNKNOWN;
     }
 
-    function matchingCommodityMaterials(location, commodityUuid) {
-      var candidates = [];
-      (location && Array.isArray(location.resources) ? location.resources : []).forEach(function (resource, resourceIndex) {
-        (Array.isArray(resource.materials) ? resource.materials : []).forEach(function (material, materialIndex) {
-          if (!material) {
-            return;
-          }
-          candidates.push({
-            resource: resource,
-            resourceIndex: resourceIndex,
-            material: material,
-            materialIndex: materialIndex
-          });
-        });
+    var M3_RECOMMENDATION_DECISIONS = Object.freeze({
+      INCLUDED: "INCLUDED",
+      SECONDARY_EXCLUDED: "SECONDARY_EXCLUDED",
+      LOWER_RANKED: "LOWER_RANKED",
+      BEST_NORMAL: "BEST_NORMAL",
+      BEST_SPACE: "BEST_SPACE"
+    });
+
+    var M3_ENVIRONMENTS = Object.freeze({
+      NORMAL: "NORMAL",
+      SPACE: "SPACE",
+      UNKNOWN: "UNKNOWN"
+    });
+
+    function m3CanonicalDepositName(value) {
+      return String(value || "").toLowerCase()
+        .replace(/\((?:ore|raw|r)\)/g, "")
+        .replace(/\b(?:ore|raw)\b/g, "")
+        .replace(/[^a-z0-9]+/g, "");
+    }
+
+    function normalizeMiningMaterial(material, materialIndex) {
+      return {
+        materialIndex: materialIndex,
+        key: material && material.key || null,
+        name: material && material.name || null,
+        uuid: material && material.uuid || null,
+        isCurrent: Boolean(material && material.is_current === true),
+        qualityMin: m3FiniteNumber(material && material.quality_min),
+        qualityMax: m3FiniteNumber(material && material.quality_max),
+        qualityMean: m3FiniteNumber(material && material.quality_mean),
+        qualityStddev: m3FiniteNumber(material && material.quality_stddev),
+        minPercentage: m3FiniteNumber(material && material.min_percentage),
+        maxPercentage: m3FiniteNumber(material && material.max_percentage),
+        groupProbability: m3Percentage(material && material.group_probability_percent, material && material.group_probability),
+        relativeProbability: m3Percentage(material && material.relative_probability_percent, material && material.relative_probability),
+        quantizedValues: Array.isArray(material && material.quality_quantized_values)
+          ? material.quality_quantized_values.map(m3FiniteNumber).filter(function (value) { return value !== null; })
+          : []
+      };
+    }
+
+    function m3QualityProfile(materials) {
+      var ranges = (materials || []).map(function (material) {
+        return {
+          min: material.qualityMin,
+          max: material.qualityMax,
+          quantizedValues: material.quantizedValues.slice(),
+          materialIndex: material.materialIndex
+        };
       });
-      var exactMatches = candidates.filter(function (candidate) {
-        return candidate.material.uuid === commodityUuid;
+      var quantizedValues = Array.from(new Set(ranges.reduce(function (values, range) {
+        return values.concat(range.quantizedValues);
+      }, []).filter(function (value) { return Number.isFinite(value); }))).sort(function (a, b) { return a - b; });
+      var rangeMaximums = ranges.map(function (range) { return range.max; }).filter(function (value) { return value !== null; });
+      var rangeMinimums = ranges.map(function (range) { return range.min; }).filter(function (value) { return value !== null; });
+      var reachableMaximum = quantizedValues.length
+        ? quantizedValues[quantizedValues.length - 1]
+        : (rangeMaximums.length ? Math.max.apply(Math, rangeMaximums) : null);
+      var highQualityValues = quantizedValues.filter(function (value) { return value >= 500; });
+      return {
+        ranges: ranges,
+        quantizedValues: quantizedValues,
+        highQualityValues: highQualityValues,
+        hasHighQuality: highQualityValues.length > 0 || (reachableMaximum !== null && reachableMaximum >= 500),
+        reachableMinimum: quantizedValues.length
+          ? quantizedValues[0]
+          : (rangeMinimums.length ? Math.min.apply(Math, rangeMinimums) : null),
+        reachableMaximum: reachableMaximum,
+        evidence: quantizedValues.length ? "API_QUALITY_QUANTIZED_VALUES" : "API_QUALITY_RANGE"
+      };
+    }
+
+    function normalizeMiningResource(resource, commodity, resourceIndex) {
+      var materials = (resource && Array.isArray(resource.materials) ? resource.materials : []).map(function (material, materialIndex) {
+        return normalizeMiningMaterial(material, materialIndex);
       });
-      return exactMatches.length ? exactMatches : candidates.filter(function (candidate) {
-        return candidate.material.is_current === true;
-      });
+      var targetMaterials = materials.filter(function (material) { return material.uuid === commodity.uuid; });
+      var labelCanonical = m3CanonicalDepositName(resource && resource.label);
+      var commodityCanonical = m3CanonicalDepositName(commodity.name || commodity.display_name || commodity.key);
+      var primaryLabelMatch = Boolean(targetMaterials.length && labelCanonical && labelCanonical === commodityCanonical);
+      return {
+        resourceIndex: resourceIndex,
+        key: resource && resource.key || null,
+        resourceUuid: resource && resource.resource_uuid || null,
+        label: resource && resource.label || null,
+        signature: m3FiniteNumber(resource && resource.signature),
+        groupName: resource && resource.group_name || null,
+        resourceKind: resource && resource.resource_kind || null,
+        providerNames: Array.isArray(resource && resource.provider_names) ? resource.provider_names.slice() : [],
+        qualityMin: m3FiniteNumber(resource && resource.quality_min),
+        qualityMax: m3FiniteNumber(resource && resource.quality_max),
+        relativeProbabilityMin: m3Percentage(resource && resource.relative_probability_min_percent, resource && resource.relative_probability_min),
+        relativeProbabilityMax: m3Percentage(resource && resource.relative_probability_max_percent, resource && resource.relative_probability_max),
+        areaExceptions: Array.isArray(resource && resource.area_exceptions) ? resource.area_exceptions.map(function (area) { return Object.assign({}, area); }) : [],
+        clustering: resource && resource.clustering ? Object.assign({}, resource.clustering) : null,
+        harvestableSetup: resource && resource.harvestable_setup ? Object.assign({}, resource.harvestable_setup) : null,
+        materials: materials,
+        targetMaterials: targetMaterials,
+        targetQuality: m3QualityProfile(targetMaterials),
+        miningMethod: miningCategoryFromResource(resource),
+        isPrimaryTarget: primaryLabelMatch,
+        primaryEvidence: primaryLabelMatch ? "API_RESOURCE_LABEL_MATCH" : (targetMaterials.length ? "API_RESOURCE_LABEL_DIFFERS" : "NO_TARGET_UUID")
+      };
+    }
+
+    function classifyMiningEnvironment(location, targetResource) {
+      var type = String(location && location.type || "").trim().toLowerCase();
+      if (type === "asteroid" || type === "asteroid_validqt") {
+        return { category: M3_ENVIRONMENTS.SPACE, evidence: "API_LOCATION_TYPE_" + type.toUpperCase() };
+      }
+      if (type === "star" && /(?:^|_)asteroid/i.test(String(targetResource && targetResource.key || ""))) {
+        return { category: M3_ENVIRONMENTS.SPACE, evidence: "API_LOCATION_STAR_WITH_ASTEROID_RESOURCE" };
+      }
+      if (type === "moon" || type === "planet" || type === "outpost") {
+        return { category: M3_ENVIRONMENTS.NORMAL, evidence: "API_LOCATION_TYPE_" + type.toUpperCase() };
+      }
+      return { category: M3_ENVIRONMENTS.UNKNOWN, evidence: "UNCLASSIFIED_API_LOCATION_TYPE" };
     }
 
     function normalizeMiningLocation(location, commodity, provenance, index) {
-      var matches = matchingCommodityMaterials(location, commodity.uuid);
-      var qualityRanges = matches.map(function (match) {
-        return {
-          min: m3FiniteNumber(match.material.quality_min),
-          max: m3FiniteNumber(match.material.quality_max),
-          quantizedValues: Array.isArray(match.material.quality_quantized_values)
-            ? match.material.quality_quantized_values.slice()
-            : [],
-          resourceIndex: match.resourceIndex,
-          materialIndex: match.materialIndex,
-          resourceKey: match.resource.key || null,
-          materialUuid: match.material.uuid || null
-        };
+      var resources = (location && Array.isArray(location.resources) ? location.resources : []).map(function (resource, resourceIndex) {
+        return normalizeMiningResource(resource, commodity, resourceIndex);
       });
-      var maximumQualityValues = qualityRanges.map(function (range) { return range.max; }).filter(function (value) {
-        return value !== null;
-      });
-      var resourceCategories = matches.map(function (match) {
-        return miningCategoryFromResource(match.resource);
-      }).filter(function (category) {
+      var targetResources = resources.filter(function (resource) { return resource.targetMaterials.length > 0; });
+      var targetMaterials = targetResources.reduce(function (materials, resource) { return materials.concat(resource.targetMaterials); }, []);
+      var resourceCategories = targetResources.map(function (resource) { return resource.miningMethod; }).filter(function (category) {
         return category !== M3_MINING_CATEGORIES.UNKNOWN;
       });
       var distinctResourceCategories = Array.from(new Set(resourceCategories));
@@ -6903,12 +6986,18 @@ code {
         system: location.system || "UNKNOWN",
         type: location.type || null,
         parentName: location.parent_name || null,
+        parentType: location.parent_type || null,
+        parentUuid: location.parent_uuid || null,
+        areas: Array.isArray(location.areas) ? location.areas.map(function (area) { return Object.assign({}, area); }) : [],
         miningMethod: miningMethod,
-        occurrence: m3Percentage(location.relative_probability_percent, location.relative_probability),
-        spawn: m3Percentage(location.group_probability_percent, location.group_probability),
-        maximumQuality: maximumQualityValues.length ? Math.max.apply(Math, maximumQualityValues) : null,
-        qualityRanges: qualityRanges,
-        resourceCount: Array.isArray(location.resources) ? location.resources.length : 0,
+        apiLocationOccurrence: m3Percentage(location.relative_probability_percent, location.relative_probability),
+        apiLocationSpawn: m3Percentage(location.group_probability_percent, location.group_probability),
+        apiLocationQualityMin: m3FiniteNumber(location.quality_min),
+        apiLocationQualityMax: m3FiniteNumber(location.quality_max),
+        qualityRanges: m3QualityProfile(targetMaterials).ranges,
+        maximumQuality: m3QualityProfile(targetMaterials).reachableMaximum,
+        resources: resources,
+        resourceCount: resources.length,
         source: location.link || provenance.source,
         provenance: Object.assign({}, provenance, {
           rawCommodityUuid: commodity.uuid,
@@ -6928,6 +7017,7 @@ code {
       });
       return {
         cacheKey: provenance.gameVersion + "::commodity-detail::" + raw.uuid,
+        recommendationModelVersion: 3,
         uuid: raw.uuid,
         key: raw.key || null,
         slug: raw.slug || null,
@@ -6978,70 +7068,198 @@ code {
       };
     }
 
-    function compareMiningLocations(a, b) {
-      function sortable(value) {
-        return value === null || value === undefined || !Number.isFinite(Number(value)) ? -Infinity : Number(value);
+    function m3ConsistentMetric(values) {
+      var distinct = Array.from(new Set((values || []).filter(function (value) {
+        return value !== null && value !== undefined && Number.isFinite(Number(value));
+      }).map(Number)));
+      return distinct.length === 1 ? distinct[0] : null;
+    }
+
+    function m3CompareNumberDescending(a, b) {
+      var left = a === null || a === undefined || !Number.isFinite(Number(a)) ? -Infinity : Number(a);
+      var right = b === null || b === undefined || !Number.isFinite(Number(b)) ? -Infinity : Number(b);
+      if (left === right) {
+        return 0;
       }
-      return sortable(b.occurrence) - sortable(a.occurrence) ||
-        sortable(b.spawn) - sortable(a.spawn) ||
-        sortable(b.maximumQuality) - sortable(a.maximumQuality) ||
-        String(a.name).localeCompare(String(b.name), "hu") ||
+      if (left === -Infinity) {
+        return 1;
+      }
+      if (right === -Infinity) {
+        return -1;
+      }
+      return right - left;
+    }
+
+    function m3CompareQualityProfiles(a, b) {
+      var left = a || m3QualityProfile([]);
+      var right = b || m3QualityProfile([]);
+      if (left.hasHighQuality !== right.hasHighQuality) {
+        return right.hasHighQuality ? 1 : -1;
+      }
+      var leftValues = left.highQualityValues.slice().sort(function (x, y) { return y - x; });
+      var rightValues = right.highQualityValues.slice().sort(function (x, y) { return y - x; });
+      var length = Math.max(leftValues.length, rightValues.length);
+      for (var index = 0; index < length; index += 1) {
+        var difference = m3CompareNumberDescending(leftValues[index], rightValues[index]);
+        if (difference !== 0) {
+          return difference;
+        }
+      }
+      return m3CompareNumberDescending(left.reachableMaximum, right.reachableMaximum) ||
+        m3CompareNumberDescending(left.reachableMinimum, right.reachableMinimum);
+    }
+
+    function compareMiningLocations(a, b) {
+      return m3CompareNumberDescending(a.spawn, b.spawn) ||
+        m3CompareNumberDescending(a.occurrence, b.occurrence) ||
+        m3CompareQualityProfiles(a.qualityProfile, b.qualityProfile) ||
+        String(a.locationName || a.name).localeCompare(String(b.locationName || b.name), "hu") ||
         String(a.id).localeCompare(String(b.id));
     }
 
     function sameMiningRank(a, b) {
       return a.miningMethod === b.miningMethod &&
-        a.occurrence === b.occurrence &&
+        a.environment === b.environment &&
         a.spawn === b.spawn &&
-        a.maximumQuality === b.maximumQuality;
+        a.occurrence === b.occurrence &&
+        m3CompareQualityProfiles(a.qualityProfile, b.qualityProfile) === 0;
     }
 
     function isLagrangeMiningLocation(location) {
-      return /(?:^|[\s-])L[1-5]$/i.test(String(location && location.name || "").trim());
+      return /(?:^|[\s-])L[1-5]$/i.test(String(location && (location.locationName || location.name) || "").trim());
+    }
+
+    function m3UniqueSorted(values) {
+      return Array.from(new Set(values || [])).sort(function (a, b) { return String(a).localeCompare(String(b), "hu"); });
+    }
+
+    function buildMiningFarmRecommendations(commodity, systems) {
+      var decisions = [];
+      var primaryCandidates = [];
+      (commodity && Array.isArray(commodity.locations) ? commodity.locations : []).forEach(function (location) {
+        (location.resources || []).forEach(function (resource) {
+          if (!resource.targetMaterials.length) {
+            return;
+          }
+          var environment = classifyMiningEnvironment(location, resource);
+          var candidate = {
+            id: location.id + "::resource::" + resource.resourceIndex,
+            locationId: location.id,
+            rawLocationUuid: location.rawLocationUuid,
+            locationName: location.name,
+            system: location.system,
+            locationType: location.type,
+            parentName: location.parentName,
+            parentType: location.parentType,
+            resourceIndex: resource.resourceIndex,
+            resourceKey: resource.key,
+            resourceLabel: resource.label,
+            miningMethod: resource.miningMethod === M3_MINING_CATEGORIES.UNKNOWN ? location.miningMethod : resource.miningMethod,
+            environment: environment.category,
+            environmentEvidence: environment.evidence,
+            spawn: m3ConsistentMetric(resource.targetMaterials.map(function (material) { return material.groupProbability; })),
+            occurrence: m3ConsistentMetric(resource.targetMaterials.map(function (material) { return material.relativeProbability; })),
+            qualityProfile: resource.targetQuality,
+            maximumQuality: resource.targetQuality.reachableMaximum,
+            primaryEvidence: resource.primaryEvidence,
+            initialDecision: resource.isPrimaryTarget ? M3_RECOMMENDATION_DECISIONS.INCLUDED : M3_RECOMMENDATION_DECISIONS.SECONDARY_EXCLUDED,
+            finalDecision: resource.isPrimaryTarget ? M3_RECOMMENDATION_DECISIONS.INCLUDED : M3_RECOMMENDATION_DECISIONS.SECONDARY_EXCLUDED,
+            decisionDetail: resource.isPrimaryTarget ? "Exact target UUID and canonical API resource label match." : "Target UUID is present, but the API resource label identifies another deposit."
+          };
+          decisions.push(candidate);
+          if (resource.isPrimaryTarget) {
+            primaryCandidates.push(candidate);
+          }
+        });
+      });
+      var systemNames = m3UniqueSorted((systems || []).concat(commodity && commodity.systems || []).concat(primaryCandidates.map(function (candidate) {
+        return candidate.system;
+      })).filter(Boolean));
+      var systemResults = systemNames.map(function (system) {
+        var systemCandidates = primaryCandidates.filter(function (candidate) { return candidate.system === system; });
+        var recommendations = [M3_ENVIRONMENTS.NORMAL, M3_ENVIRONMENTS.SPACE].map(function (environment) {
+          var environmentCandidates = systemCandidates.filter(function (candidate) { return candidate.environment === environment; }).sort(compareMiningLocations);
+          if (!environmentCandidates.length) {
+            return null;
+          }
+          var best = environmentCandidates[0];
+          var equalBest = environmentCandidates.filter(function (candidate) { return sameMiningRank(candidate, best); });
+          environmentCandidates.forEach(function (candidate) {
+            candidate.finalDecision = equalBest.indexOf(candidate) !== -1
+              ? (environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL)
+              : M3_RECOMMENDATION_DECISIONS.LOWER_RANKED;
+            candidate.decisionDetail = equalBest.indexOf(candidate) !== -1
+              ? "Best resource-specific spawn, occurrence and Quality tuple in this system/category."
+              : "A stronger primary candidate exists in the same system/category.";
+          });
+          var relevantLagrangeCandidates = environmentCandidates.filter(isLagrangeMiningLocation);
+          var relevantLagrangeNames = m3UniqueSorted(relevantLagrangeCandidates.map(function (candidate) { return candidate.locationName; }));
+          var allLagrangePoints = environment === M3_ENVIRONMENTS.SPACE && relevantLagrangeNames.length > 1 && relevantLagrangeCandidates.every(function (candidate) {
+            return sameMiningRank(candidate, best);
+          });
+          var locationNames = m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationName; }));
+          var labelParts = allLagrangePoints
+            ? ["All Lagrange Points"].concat(locationNames.filter(function (name) {
+              return !isLagrangeMiningLocation({ locationName: name });
+            }))
+            : locationNames;
+          return {
+            category: environment,
+            recommendationLabel: environment === M3_ENVIRONMENTS.SPACE ? "Legjobb űrbeli farmhely" : "Legjobb farmhely",
+            decision: environment === M3_ENVIRONMENTS.SPACE ? M3_RECOMMENDATION_DECISIONS.BEST_SPACE : M3_RECOMMENDATION_DECISIONS.BEST_NORMAL,
+            method: best.miningMethod,
+            occurrence: best.occurrence,
+            spawn: best.spawn,
+            maximumQuality: best.maximumQuality,
+            qualityProfile: best.qualityProfile,
+            resourceKeys: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.resourceKey; })),
+            resourceLabels: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.resourceLabel; })),
+            locationIds: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationId; })),
+            locationNames: locationNames,
+            locationLabel: labelParts.join(" / "),
+            allLagrangePoints: allLagrangePoints,
+            mergedCount: locationNames.length,
+            environmentEvidence: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.environmentEvidence; }))
+          };
+        }).filter(Boolean);
+        return recommendations.length
+          ? { system: system, status: "AVAILABLE", methods: recommendations }
+          : { system: system, status: "NO_KNOWN_LOCATION", methods: [] };
+      });
+      primaryCandidates.filter(function (candidate) { return candidate.environment === M3_ENVIRONMENTS.UNKNOWN; }).forEach(function (candidate) {
+        candidate.finalDecision = M3_RECOMMENDATION_DECISIONS.LOWER_RANKED;
+        candidate.decisionDetail = "Primary resource retained, but its API location type is not classified as normal or space.";
+      });
+      return {
+        schemaVersion: 3,
+        rankingOrder: ["PRIMARY_RESOURCE_GATE", "GROUP_PROBABILITY_SPAWN_DESC", "RELATIVE_PROBABILITY_OCCURRENCE_DESC", "HIGH_Q_QUANTIZED_VALUES_DESC", "QUALITY_RANGE_DESC"],
+        systems: systemResults,
+        decisions: decisions.map(function (candidate) {
+          return {
+            id: candidate.id,
+            locationId: candidate.locationId,
+            locationName: candidate.locationName,
+            system: candidate.system,
+            resourceIndex: candidate.resourceIndex,
+            resourceKey: candidate.resourceKey,
+            resourceLabel: candidate.resourceLabel,
+            miningMethod: candidate.miningMethod,
+            environment: candidate.environment,
+            environmentEvidence: candidate.environmentEvidence,
+            spawn: candidate.spawn,
+            occurrence: candidate.occurrence,
+            qualityProfile: candidate.qualityProfile,
+            primaryEvidence: candidate.primaryEvidence,
+            initialDecision: candidate.initialDecision,
+            decision: candidate.finalDecision,
+            detail: candidate.decisionDetail
+          };
+        })
+      };
     }
 
     function mergeBestMiningLocationsBySystem(locations, systems) {
-      var systemNames = Array.from(new Set((systems || []).concat((locations || []).map(function (location) {
-        return location.system;
-      })).filter(Boolean))).sort(function (a, b) {
-        return String(a).localeCompare(String(b), "hu");
-      });
-      return systemNames.map(function (system) {
-        var systemLocations = (locations || []).filter(function (location) { return location.system === system; });
-        var methods = Array.from(new Set(systemLocations.map(function (location) { return location.miningMethod; }))).sort();
-        if (!methods.length) {
-          return { system: system, status: "NO_KNOWN_LOCATION", methods: [] };
-        }
-        return {
-          system: system,
-          status: "AVAILABLE",
-          methods: methods.map(function (method) {
-            var methodLocations = systemLocations.filter(function (location) { return location.miningMethod === method; }).sort(compareMiningLocations);
-            var best = methodLocations[0];
-            var equalBest = methodLocations.filter(function (location) { return sameMiningRank(location, best); });
-            var relevantLagrangeLocations = methodLocations.filter(isLagrangeMiningLocation);
-            var allLagrangePoints = relevantLagrangeLocations.length > 1 && relevantLagrangeLocations.every(function (location) {
-              return sameMiningRank(location, best);
-            });
-            var labelParts = allLagrangePoints
-              ? ["All Lagrange Points"].concat(equalBest.filter(function (location) {
-                return !isLagrangeMiningLocation(location);
-              }).map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); }))
-              : equalBest.map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); });
-            return {
-              method: method,
-              occurrence: best.occurrence,
-              spawn: best.spawn,
-              maximumQuality: best.maximumQuality,
-              locationIds: equalBest.map(function (location) { return location.id; }),
-              locationNames: equalBest.map(function (location) { return location.name; }).sort(function (a, b) { return a.localeCompare(b, "hu"); }),
-              locationLabel: labelParts.join(" / "),
-              allLagrangePoints: allLagrangePoints,
-              mergedCount: equalBest.length
-            };
-          })
-        };
-      });
+      return buildMiningFarmRecommendations({ locations: locations || [], systems: systems || [] }, systems).systems;
     }
 
     function miningEquipmentTypeFromClassification(raw) {
@@ -8057,19 +8275,7 @@ code {
     /* M5_UEX_REFINERY_MODEL_END */
 
     function compareLocations(a, b) {
-      function sortable(value) {
-        var number = Number(value);
-        return Number.isFinite(number) ? number : -Infinity;
-      }
-      var occurrenceDifference = sortable(b.occurrence) - sortable(a.occurrence);
-      if (occurrenceDifference !== 0) {
-        return occurrenceDifference;
-      }
-      var spawnDifference = sortable(b.spawn) - sortable(a.spawn);
-      if (spawnDifference !== 0) {
-        return spawnDifference;
-      }
-      return sortable(b.maxQuality) - sortable(a.maxQuality);
+      return compareMiningLocations(a, b);
     }
 
     var logger = new DiagnosticLogger();
@@ -8535,7 +8741,7 @@ code {
       var cached = await database.get("miningNormalizedCache", cacheKey);
       var normalized = cached;
       var origin = "CACHE";
-      if (cached && !Object.prototype.hasOwnProperty.call(cached, "raritySourceField")) {
+      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 3)) {
         var cachedRaw = await database.get("miningRawCache", version + "::raw::commodity-detail::" + cached.uuid);
         if (cachedRaw && cachedRaw.raw) {
           normalized = normalizeMiningCommodity(cachedRaw.raw, miningProvenance(
@@ -8545,7 +8751,7 @@ code {
           ));
           normalized.recordType = "COMMODITY_DETAIL";
           await database.putMiningDetail(cachedRaw, normalized);
-          origin = "CACHE_MIGRATION_M61";
+          origin = "CACHE_MIGRATION_V003";
         } else {
           normalized = null;
         }
@@ -8583,11 +8789,23 @@ code {
             rawLocationUuid: location.rawLocationUuid,
             name: location.name,
             system: location.system,
+            type: location.type,
+            parentType: location.parentType,
             method: location.miningMethod,
-            occurrence: location.occurrence,
-            spawn: location.spawn,
-            maximumQuality: location.maximumQuality,
-            qualityRanges: location.qualityRanges
+            apiLocationOccurrence: location.apiLocationOccurrence,
+            apiLocationSpawn: location.apiLocationSpawn,
+            resources: location.resources.map(function (resource) {
+              return {
+                resourceIndex: resource.resourceIndex,
+                key: resource.key,
+                label: resource.label,
+                miningMethod: resource.miningMethod,
+                targetMaterialCount: resource.targetMaterials.length,
+                isPrimaryTarget: resource.isPrimaryTarget,
+                primaryEvidence: resource.primaryEvidence,
+                targetQuality: resource.targetQuality
+              };
+            })
           };
         }),
         origin: origin
@@ -8774,6 +8992,7 @@ code {
       var intelligence = new Map();
       m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null).forEach(function (commodity) {
         var detail = detailsByUuid.get(commodity.uuid) || null;
+        var farmRecommendation = detail ? buildMiningFarmRecommendations(detail, state.miningSystems) : null;
         var refinery = state.uexRefineryRecommendations.get(commodity.uuid) || {
           wikiCommodityUuid: commodity.uuid,
           wikiCommodityName: commodity.name,
@@ -8793,7 +9012,10 @@ code {
             status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
             radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
             methods: (detail ? detail.categories : (commodity.categories || [])).slice(),
-            systems: detail ? mergeBestMiningLocationsBySystem(detail.locations, state.miningSystems) : [],
+            recommendationSchemaVersion: farmRecommendation ? farmRecommendation.schemaVersion : 3,
+            rankingOrder: farmRecommendation ? farmRecommendation.rankingOrder.slice() : [],
+            systems: farmRecommendation ? farmRecommendation.systems : [],
+            decisions: farmRecommendation ? farmRecommendation.decisions : [],
             locationRecordCount: detail ? detail.locations.length : 0,
             source: detail ? m4Clone(detail.provenance) : m4Clone(commodity.provenance)
           },
@@ -9163,6 +9385,19 @@ code {
       return value === null || value === undefined ? "Nincs adat" : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
     }
 
+    function formatMiningQualityProfile(profile) {
+      var quality = profile || {};
+      var ranges = Array.isArray(quality.ranges) ? quality.ranges : [];
+      var minimums = ranges.map(function (range) { return range.min; }).filter(function (value) { return value !== null; });
+      var maximums = ranges.map(function (range) { return range.max; }).filter(function (value) { return value !== null; });
+      var rangeLabel = minimums.length && maximums.length
+        ? "Q" + Math.min.apply(Math, minimums) + "–Q" + Math.max.apply(Math, maximums)
+        : "nincs range";
+      var highValues = Array.isArray(quality.highQualityValues) ? quality.highQualityValues : [];
+      return rangeLabel + " · magas-Q szint: " + highValues.length +
+        (quality.reachableMaximum === null || quality.reachableMaximum === undefined ? "" : " · elérhető csúcs Q" + quality.reachableMaximum);
+    }
+
     function renderMaterialDatabaseRefinery(commodity) {
       var container = document.getElementById("materialDatabaseRefinery");
       container.replaceChildren();
@@ -9282,7 +9517,17 @@ code {
         item.append(label, value);
         summary.append(item);
       });
-      var results = mergeBestMiningLocationsBySystem(commodity.locations, state.miningSystems);
+      var recommendation = buildMiningFarmRecommendations(commodity, state.miningSystems);
+      var results = recommendation.systems;
+      logger.event("INFO", "MINING_FARM_RECOMMENDATION_PROJECTED", "A primary resource kapu és a rendszerenkénti farm ajánló elkészült.", {
+        commodityUuid: commodity.uuid,
+        rankingOrder: recommendation.rankingOrder,
+        decisionCounts: recommendation.decisions.reduce(function (counts, decision) {
+          counts[decision.decision] = (counts[decision.decision] || 0) + 1;
+          return counts;
+        }, {}),
+        decisions: recommendation.decisions
+      });
       results.forEach(function (systemResult) {
         var card = document.createElement("article");
         card.className = "spg-system-card";
@@ -9300,12 +9545,12 @@ code {
             row.className = "spg-location-result";
             var methodName = document.createElement("span");
             methodName.className = "spg-recipe-slot";
-            methodName.textContent = method.method;
+            methodName.textContent = method.recommendationLabel + " · " + method.method;
             var locationName = document.createElement("strong");
             locationName.textContent = method.locationLabel;
             var metrics = document.createElement("div");
             metrics.className = "spg-location-metrics";
-            [["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Spawn", formatMiningMetric(method.spawn, "%")], ["Maximum Quality", formatMiningMetric(method.maximumQuality, "")]].forEach(function (metric) {
+            [["Spawn", formatMiningMetric(method.spawn, "%")], ["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Quality", formatMiningQualityProfile(method.qualityProfile)]].forEach(function (metric) {
               var metricItem = document.createElement("span");
               metricItem.textContent = metric[0] + ": " + metric[1];
               metrics.append(metricItem);
@@ -9315,10 +9560,13 @@ code {
             logger.event("INFO", "MINING_LOCATION_RANKED", "Rendszerenkénti legjobb mining location kiszámítva.", {
               commodityUuid: commodity.uuid,
               system: systemResult.system,
+              category: method.category,
+              decision: method.decision,
               method: method.method,
-              occurrence: method.occurrence,
               spawn: method.spawn,
-              maximumQuality: method.maximumQuality,
+              occurrence: method.occurrence,
+              qualityProfile: method.qualityProfile,
+              resourceKeys: method.resourceKeys,
               mergedLocations: method.locationNames,
               allLagrangePoints: method.allLagrangePoints
             });
@@ -9335,6 +9583,10 @@ code {
       document.body.dataset.materialDatabaseRarity = commodity.rarity || "unknown";
       document.body.dataset.materialDatabaseInstability = commodity.instability === null ? "unknown" : String(commodity.instability);
       document.body.dataset.materialDatabaseResistance = commodity.resistance === null ? "unknown" : String(commodity.resistance);
+      document.body.dataset.miningRecommendationDecisionCount = String(recommendation.decisions.length);
+      document.body.dataset.miningRecommendationSecondaryExcluded = String(recommendation.decisions.filter(function (decision) {
+        return decision.decision === M3_RECOMMENDATION_DECISIONS.SECONDARY_EXCLUDED;
+      }).length);
     }
 
     function visibleBlueprintIndex() {
@@ -9913,9 +10165,9 @@ code {
         system.methods.forEach(function (method) {
           var row = document.createElement("div");
           row.className = "spg-intelligence-row";
-          row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.method) + "</strong><span>" +
-            escapeHtml(method.locationLabel) + "</span><small>Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) +
-            " · Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) + " · Max Q " + escapeHtml(formatMiningMetric(method.maximumQuality, "")) + "</small>";
+          row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.recommendationLabel || method.category || method.method) + "</strong><span>" +
+            escapeHtml(method.locationLabel) + "</span><small>Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
+            " · Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) + " · " + escapeHtml(formatMiningQualityProfile(method.qualityProfile)) + "</small>";
           details.append(row);
         });
       });
@@ -11436,6 +11688,19 @@ code {
         : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
     }
 
+    function m6FormatQualityProfile(profile) {
+      var quality = profile || {};
+      var ranges = Array.isArray(quality.ranges) ? quality.ranges : [];
+      var minimums = ranges.map(function (range) { return range.min; }).filter(function (value) { return value !== null; });
+      var maximums = ranges.map(function (range) { return range.max; }).filter(function (value) { return value !== null; });
+      var range = minimums.length && maximums.length
+        ? "Q" + Math.min.apply(Math, minimums) + "–Q" + Math.max.apply(Math, maximums)
+        : "nincs range";
+      var highCount = Array.isArray(quality.highQualityValues) ? quality.highQualityValues.length : 0;
+      return range + " · " + highCount + " magas-Q szint" +
+        (quality.reachableMaximum === null || quality.reachableMaximum === undefined ? "" : " · csúcs Q" + quality.reachableMaximum);
+    }
+
     function m6FormatCraftTime(seconds) {
       if (!Number.isFinite(Number(seconds))) {
         return "Nincs API-adat";
@@ -11576,13 +11841,13 @@ code {
         (system.methods || []).forEach(function (method) {
           farmCards.push([
             '<article class="spg-export-location-card">',
-            '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.locationLabel), '</h4></header>',
+            '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.recommendationLabel || method.category || "Farmhely"), ': ', m6EscapeHtml(method.locationLabel), '</h4></header>',
             '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
             '<div class="spg-export-metrics">',
             '<span><small>Módszer</small><strong>', m6EscapeHtml(method.method), '</strong></span>',
-            '<span><small>Occurrence</small><strong>', m6EscapeHtml(m6FormatMetric(method.occurrence, "%")), '</strong></span>',
             '<span><small>Spawn</small><strong>', m6EscapeHtml(m6FormatMetric(method.spawn, "%")), '</strong></span>',
-            '<span><small>Max Q</small><strong>', m6EscapeHtml(m6FormatMetric(method.maximumQuality, "")), '</strong></span>',
+            '<span><small>Occurrence</small><strong>', m6EscapeHtml(m6FormatMetric(method.occurrence, "%")), '</strong></span>',
+            '<span><small>Quality</small><strong>', m6EscapeHtml(m6FormatQualityProfile(method.qualityProfile)), '</strong></span>',
             '</div></article>'
           ].join(""));
         });
@@ -12040,12 +12305,12 @@ code {
 
       await check("Location rendezési szabály", async function () {
         var sample = [
-          { name: "B", occurrence: 20, spawn: 40, maxQuality: 900 },
-          { name: "A", occurrence: 30, spawn: 10, maxQuality: 500 },
-          { name: "C", occurrence: 20, spawn: 40, maxQuality: 950 }
+          { id: "B", locationName: "B", environment: "NORMAL", miningMethod: "SHIP_MINING", occurrence: 20, spawn: 40, qualityProfile: { hasHighQuality: true, highQualityValues: [600, 900], reachableMinimum: 600, reachableMaximum: 900 } },
+          { id: "A", locationName: "A", environment: "NORMAL", miningMethod: "SHIP_MINING", occurrence: 1, spawn: 50, qualityProfile: { hasHighQuality: true, highQualityValues: [500], reachableMinimum: 500, reachableMaximum: 500 } },
+          { id: "C", locationName: "C", environment: "NORMAL", miningMethod: "SHIP_MINING", occurrence: 20, spawn: 40, qualityProfile: { hasHighQuality: true, highQualityValues: [600, 950], reachableMinimum: 600, reachableMaximum: 950 } }
         ].sort(compareLocations);
-        assert(sample.map(function (item) { return item.name; }).join("") === "ACB", "A location rendezési sorrend hibás.");
-        return "occurrence → spawn → max Quality";
+        assert(sample.map(function (item) { return item.locationName; }).join("") === "ACB", "A location rendezési sorrend hibás.");
+        return "primary gate → spawn → occurrence → quantized Quality";
       });
 
       await check("M3 Mining modell", async function () {
@@ -12056,6 +12321,33 @@ code {
           has_harvestables: false
         });
         assert(classification.categories.length === 1 && classification.categories[0] === M3_MINING_CATEGORIES.SHIP, "A mining kategória felismerése hibás.");
+        var probeCommodity = normalizeMiningCommodity({
+          uuid: "probe-agricium",
+          key: "Ore_Agricium",
+          name: "Agricium (Ore)",
+          has_ship_mineables: true,
+          systems: ["Stanton System"],
+          locations: [{
+            uuid: "probe-location",
+            name: "Arial",
+            system: "Stanton System",
+            type: "Moon",
+            resources: [{
+              key: "MineableRock_SurfaceUncommon_Agricium",
+              label: "Agricium",
+              group_name: "SpaceShip_Mineables",
+              materials: [{ uuid: "probe-agricium", is_current: true, group_probability_percent: 10, relative_probability_percent: 20, quality_min: 501, quality_max: 1000, quality_quantized_values: [588, 796, 1000] }]
+            }, {
+              key: "MineableRock_SurfaceUncommon_Titanium",
+              label: "Titanium",
+              group_name: "SpaceShip_Mineables",
+              materials: [{ uuid: "probe-agricium", is_current: true, group_probability_percent: 99, relative_probability_percent: 99, quality_min: 501, quality_max: 1000, quality_quantized_values: [1000] }]
+            }]
+          }]
+        }, miningProvenance("probe", "probe", nowIso()));
+        var farmProbe = buildMiningFarmRecommendations(probeCommodity, ["Stanton System"]);
+        assert(farmProbe.systems[0].methods[0].locationLabel === "Arial", "A primary farmhely nem lett kiválasztva.");
+        assert(farmProbe.decisions.some(function (decision) { return decision.decision === M3_RECOMMENDATION_DECISIONS.SECONDARY_EXCLUDED; }), "A magas spawn/Q secondary resource nem lett kizárva.");
         var head = normalizeMiningHeadDetail({
           uuid: "probe-head",
           name: "Probe Head",
@@ -12064,7 +12356,7 @@ code {
         }, miningProvenance("probe", "probe", nowIso()));
         assert(head.moduleSlotCount === 3, "A module-slotszám normalizálása hibás.");
         assert(resizeMiningStations([], 5, makeId).length === 5, "A dinamikus station-kezelés hibás.");
-        return "SHIP_MINING · 3 module slot · 5 dinamikus station";
+        return "primary gate + secondary kizárás · SHIP_MINING · 3 module slot · 5 dinamikus station";
       });
 
       await check("M4 Combined + backup rollback", async function () {
@@ -12181,6 +12473,9 @@ code {
         });
         return counts;
       }, { warnings: 0, errors: 0 });
+      var selectedFarmRecommendation = state.selectedMiningCommodity
+        ? buildMiningFarmRecommendations(state.selectedMiningCommodity, state.miningSystems)
+        : null;
       return {
         activeScVersion: state.gameVersion ? state.gameVersion.code : null,
         gameDataCache: {
@@ -12251,6 +12546,18 @@ code {
           missingMaterialCount: (state.combinedMaterials || []).filter(function (group) { return group.missingUnits > 0; }).length,
           results: m4Clone(state.combinedMaterials || [])
         },
+        miningRecommendation: selectedFarmRecommendation ? {
+          schemaVersion: selectedFarmRecommendation.schemaVersion,
+          commodityUuid: state.selectedMiningCommodity.uuid,
+          commodityName: state.selectedMiningCommodity.name,
+          rankingOrder: selectedFarmRecommendation.rankingOrder.slice(),
+          systems: m4Clone(selectedFarmRecommendation.systems),
+          decisionCounts: selectedFarmRecommendation.decisions.reduce(function (counts, decision) {
+            counts[decision.decision] = (counts[decision.decision] || 0) + 1;
+            return counts;
+          }, {}),
+          decisions: m4Clone(selectedFarmRecommendation.decisions)
+        } : null,
         uexRefinery: {
           endpoint: APP.uexRefineryEndpoint,
           authentication: "NONE",
@@ -12851,6 +13158,9 @@ code {
       normalizeMiningCommodity: normalizeMiningCommodity,
       compareMiningLocations: compareMiningLocations,
       mergeBestMiningLocationsBySystem: mergeBestMiningLocationsBySystem,
+      buildMiningFarmRecommendations: buildMiningFarmRecommendations,
+      classifyMiningEnvironment: classifyMiningEnvironment,
+      canonicalMiningDepositName: m3CanonicalDepositName,
       normalizeMiningHeadDetail: normalizeMiningHeadDetail,
       normalizeMiningVehicleDetail: normalizeMiningVehicleDetail,
       resizeMiningModules: resizeMiningModules,

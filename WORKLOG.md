@@ -365,3 +365,25 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Visszatoltes: HTTP 200, 489 492 byte, SHA-256 `de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357` PASS.
 - Ellenorzes: V002 release validator, single-file gate, elo Wiki/UEX, Markdown-linkek, vedett fajl-diff es ancestry kapuk PASS; V001 es a stabil V002 HTML valtozatlan.
 - Visszaallas: a README dokumentacios commit `git revert <commit>` paranccsal visszafordithato; az integration elotti helyi/tavoli allapot a ket helyi backup branchrol elerheto.
+
+### 2026-08-24T15:31:57 - V003-C001
+
+- Cel: V003 farm recommendation primary filter es quality ranking
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C001/test-summary.json`
+
+### V003 farm recommendation audit es implementacio - 2026-08-24
+
+- Branch/cel: `develop/V003`, `V003-dev`; stabil V003 release/tag nem keszult, V001/V002 fagyasztva maradt.
+- Elo API + hivatalos forraskod audit: 40 mineable commodity, 2 505 location, 3 246 resource, 4 641 target-material; az `is_current` es `materialIndex` nem primary-jelzo.
+- Javitas: exact target UUID + canonical resource-label primary gate, secondary kizaras, group probability/spawn → relative probability/occurrence → quantized/range Quality rangsor.
+- Projekcio: rendszerenkent legfeljebb egy normal es egy space ajanlas, teljes decision trace; Material Database, Crafting/Combined es standalone export kozos fuggvenyt hasznal.
+- Automatizalt: `V003-C001` teljes regresszio es elo Aluminum/Agricium/Stileron API-proba PASS; M3 24 eset, 5 000 location kb. 131 ms.
+- Chrome localhost: 13/13 PASS, fingerprint `e6d8dec8` reload utan is valtozatlan, warning/error 0, Material Database vizualisan PASS.
+- Chrome `file://`: automatizalasi URL-policy miatt BLOCKED, nem lett PASS; kezi kapu nyitva.
+- Standalone artifact: 92 386 byte, SHA-256 `3d118c1e...92592ce`; external runtime dependency nincs.
+- V002: tag commit `b326aaff...150e35`, release HTML SHA-256 `de2d59b4...9f2357`; valtozatlan.
+- Riport: `docs/V003_FARM_RECOMMENDATION_REPORT.md`. Visszaallas: a V003 fejlesztesi commit revertje vagy a fagyasztott V002 tag/release.
