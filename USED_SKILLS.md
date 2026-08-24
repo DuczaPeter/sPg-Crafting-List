@@ -193,3 +193,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a V002-C002 teljes release-ciklus, a verzio-only stabil artifact, a V001 vedelme, az egyfajlos release-validacio es a tag csak minden PASS utani letrehozasa.
 - Mely fajlokat vagy donteseket erintett: `releases/V002/`, V002 release-validator/probe, `docs/V002_RELEASE_REPORT.md`, statusz/verzio/changelog/task/worklog es C002 artifact.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V002 GitHub- es Discord-dokumentacio
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a stabil V002 felhasznaloi es GitHub-dokumentaciojanak frissitesekor.
+- Mire segitett: a fagyasztott tag es release vedelmere, a celzott funkcionalis auditra, a dokumentacio-only scope megtartasara es a kulon dokumentacios commitra.
+- Mely fajlokat vagy donteseket erintett: `README.md`, `README_HU.md`, `DISCORD_POST_HU.md`, valamint a projektterkep, statusz, feladatlista es munkanaplo.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

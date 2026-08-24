@@ -343,3 +343,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - V001: tag `b22dbc3c2ef0765e30aa3806537854298c873dff` es fagyasztott bundle valtozatlan.
 - Dokumentacio: `docs/V002_RELEASE_REPORT.md`, `releases/V002/RELEASE.md`, `SHA256SUMS.txt`; validator `tools/validate-v002-release.ps1`.
 - Tavoli push, publikacio vagy main merge nem tortent. Visszaallas: `V002` tag vagy az egyetlen release HTML; V001 kulon tovabbra is elerheto.
+
+### V002 GitHub- es Discord-dokumentacio - 2026-08-24
+
+- A `README.md` a stabil V002 teljes angol GitHub-dokumentacioja lett; a `README_HU.md` ennek termeszetesen megfogalmazott, azonos lefedettsegu magyar valtozata.
+- A `DISCORD_POST_HU.md` rovid, kozvetlen magyar inditasi es funkcio-osszefoglalo, bemasolhato Discordra.
+- A leirasok a stabil V002 HTML nyolc modulja, a V002 release-riport es a bizonyitott release-adatok alapjan keszultek; bizonytalan vagy uj funkcio nem kerult bele.
+- Ellenorzes: helyi Markdown linkek PASS; a harom publikus dokumentumban regi ketfajlos telepitesi szoveg, `V001` es `Info/style.css` nincs; `git diff --check` PASS.
+- Release-integritas: a teljes V002 validator M1-M6.1 + C04, single-file kapu es elo Wiki/UEX probe PASS; a `V002` annotalt tag tovabbra is `b326aaff5838aafd5b1f13b16982c29a0e150e35`, a release HTML SHA-256 tovabbra is `de2d59b4...f2357`.
+- Alkalmazaskod, `VERSION.json`, V002 tag es `releases/V002/` artifact nem valtozott. Tavoli push, uj release, tag vagy verzioemeles nem tortent.
+- Modositott dokumentacio: `README.md`, `README_HU.md`, `DISCORD_POST_HU.md`, `PROJECT_MAP.md`, `STATUS.md`, `TASKS.md`, `USED_SKILLS.md`, `WORKLOG.md`.
+- Nyitott ellenorzes nincs. Visszaallas: a kulon dokumentacios commit `git revert <commit>` paranccsal visszafordithato a stabil release erintese nelkul.

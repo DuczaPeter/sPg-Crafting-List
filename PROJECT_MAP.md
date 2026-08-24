@@ -80,6 +80,9 @@
 
 ## Iranyito fajlok
 
+- `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.
+- `README_HU.md`: a stabil V002 teljes magyar GitHub-dokumentacioja.
+- `DISCORD_POST_HU.md`: rovid, Discordra bemasolhato magyar hasznalati leiras.
 - `CODEX_START_HERE.md`: rovid inditasi lap.
 - `STATUS.md`: aktualis valos allapot.
 - `TASKS.md`: aktualis feladatlista.

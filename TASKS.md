@@ -2,6 +2,13 @@
 
 ## Aktualis
 
+### V002 GitHub- es Discord-dokumentacio
+
+- [x] Teljes angol V002 GitHub README a stabil single-file mukodesrol es a bizonyitott funkciokrol.
+- [x] Termeszetes magyar V002 README az angol dokumentacioval azonos tartalmi lefedettseggel.
+- [x] Tomor, kozvetlen magyar Discord hasznalati leiras.
+- [x] Dokumentacios linkek, regi ketfajlos telepitesi szovegek, Git diff es V002 tag/artifact integritas ellenorzese.
+
 ### V002 stabil egyfajlos alkalmazas
 
 - [x] Kulso `Info/style.css` runtime-fugges auditja es biztonsagos migracios terv.

@@ -13,10 +13,10 @@
 - Aktualis branch: `develop/V002`
 - Utolso ellenorzesi szint: `PASS`
 - Kovetkezo kotelezo teszt: `uj fejlesztes elott uj celverzio es ciklus kijelolese`
-- Aktualis feladat: `V002 stabil egyfajlos release lezart`
+- Aktualis feladat: `V002 angol/magyar GitHub-dokumentacio es magyar Discord hasznalati leiras elkeszitve`
 - Blokkolo problema: `nincs`
-- Kovetkezo lepes: `nincs; tavoli push vagy uj fejlesztes csak kulon feladatban`
-- Utolso frissites: `2026-08-24T12:43:36+02:00`
+- Kovetkezo lepes: `nincs; tavoli push, uj release vagy uj fejlesztes csak kulon feladatban`
+- Utolso frissites: `2026-08-24T13:15:19+02:00`
 
 ## Ellenorzesi igazsag
 
