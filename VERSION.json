@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C006",
-    "currentCycleId":  "V003-C006",
-    "lastSuccessfulCycle":  "V003-C006",
+    "currentCycle":  "C007",
+    "currentCycleId":  "V003-C007",
+    "lastSuccessfulCycle":  "V003-C007",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-24T21:09:34",
-    "currentCyclePurpose":  "Final Crafting Card Layout + complete material snapshot hydration",
-    "currentCycleStartedAt":  "2026-08-24T21:09:26",
+    "lastUpdated":  "2026-08-24T22:30:00",
+    "currentCyclePurpose":  "Radar Signature Material Color System",
+    "currentCycleStartedAt":  "2026-08-24T22:00:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C006 final card, complete material hydration, offline cache fixtures, C001-C005 plus M1-M6.1+C04, standalone, Chrome localhost reload/export/console and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C006 FINAL CRAFTING CARD + COMPLETE MATERIAL SNAPSHOT HYDRATION – AUTOMATED AND CHROME LOCALHOST PASS; USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C007 33-record canonical image color audit, shared resolver/UI/export, C001-C006 plus M1-M6.1+C04, standalone, Chrome localhost reload/console and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C007 RADAR SIGNATURE MATERIAL COLOR SYSTEM – AUTOMATED AND CHROME LOCALHOST PASS; C006 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C006",
-                                "chromeLocalhostTechnicalProbe":  "C006 fresh-origin JS-300 hydration, reload, export and console PASS",
+                                "cycle":  "V003-C007",
+                                "chromeLocalhostTechnicalProbe":  "C007 material color UI, Technical Probe, reload, export and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
-                                "userDataFingerprintBefore":  "39341365",
-                                "userDataFingerprintAfterReload":  "39341365",
+                                "userDataFingerprintBefore":  "52f14d76",
+                                "userDataFingerprintAfterReload":  "52f14d76",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "V003-C007_NOT_STARTED"
+                                                           "nextCycle":  "V003-C008_NOT_STARTED"
                                                        },
                                 "finalCraftingCard":  {
                                                            "viewModel":  "buildFinalCraftingCardViewModel",
@@ -87,6 +87,22 @@
                                                        "unmapped":  31,
                                                        "wikiApiRawUserFacing":  false,
                                                        "sourceImageSha256":  "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6"
+                                                   },
+                                "materialColor":  {
+                                                       "registry":  "V003-C007-1",
+                                                       "sourceImageSha256":  "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+                                                       "verified":  33,
+                                                       "unmapped":  31,
+                                                       "sourcePixelChecks":  33,
+                                                       "resolver":  "resolveMaterialColor",
+                                                       "sharedConsumers":  [
+                                                                               "Crafting Card",
+                                                                               "My Materials",
+                                                                               "Combined Materials",
+                                                                               "Material Database",
+                                                                               "Standalone export"
+                                                                           ],
+                                                       "runtimeImageDependency":  0
                                                    },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,

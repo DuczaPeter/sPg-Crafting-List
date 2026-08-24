@@ -23,6 +23,7 @@ const context = vm.createContext({
 });
 vm.runInContext(`${block("M1_PURE_MODEL")}
 ${block("MATERIAL_NAMING_MODEL")}
+${block("MATERIAL_COLOR_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
 globalThis.__M6__ = {
   normalizeBlueprint,

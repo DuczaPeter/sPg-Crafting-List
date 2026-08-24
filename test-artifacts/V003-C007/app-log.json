@@ -1,0 +1,5 @@
+{
+  "status": "NOT_CAPTURED",
+  "captured": false,
+  "reason": "Base repair-cycle does not capture application logs. The Chrome localhost UI and browser console were checked separately."
+}

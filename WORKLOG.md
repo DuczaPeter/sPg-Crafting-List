@@ -487,3 +487,25 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - A Chrome-bol letoltott `sPg Crafting List - JS-300 (2).html`: 448 917 byte, SHA-256 `a834c84801639057b9a7f3e6a14f8a5a881bd45562d411159c1d5a6ef52542fb`; embedded CSS, ervenyes snapshot JSON, 3 material, 6 location, 4 refinery system es 0 kulso network/runtime resource.
 - Automatizalt C006 + C001-C005 + teljes M1-M6.1 + C04 + elo Wiki audit + standalone + fagyasztott V002 integritas PASS. A felhasznalo korabbi valos Chrome `file://` C005 kapuja MANUAL PASS bizonyitek, nem Codex automation.
 - V002 tag/artifact valtozatlan; V003 stabil release/tag es C007 nem keszult. Visszaallas: a C006 commit revertje vagy a fagyasztott V002 tag/release.
+
+### 2026-08-24T22:30:00 - V003-C007
+
+- Cel: Radar Signature Material Color System.
+- Tesztszint: full-regression.
+- Eredmeny: PASS.
+- Artifact: `test-artifacts/V003-C007/test-summary.json`.
+
+### V003-C007 Radar Signature Material Color System - 2026-08-24
+
+- Scope: csak a canonical forraskepbol bizonyitott material-identitas; C006 hydration/view-model/allocation, C001-C005 ranking/grouping/Top-3/naming/Radar/UEX valtozatlan.
+- Kepaudit: `Info/Radar Signature.png`, `1182x879`, SHA-256 `f9c6e362...cabdc6`; a Node pixeldekoder 33/33 registry mintapixelt ellenorzott.
+- Registry: `V003-C007-1`, 33 exact Wiki UUID-s `VERIFIED_COLOR`; 31 user-facing `UNMAPPED_COLOR` neutralis fallback. Source hue a foreground/border, a background ugyanennek 16%-os UI tintje.
+- Resolver: `resolveMaterialColor()` exact Wiki UUID, majd egyedi exact canonical nev; fuzzy/rarity/Quality/signature/SCMDB/mining category/random/hash kovetkeztetes nincs.
+- Fogyasztok: Crafting Card token es Radar accent, My Materials, Combined Materials, Material Database, standalone export; kozos CSS-valtozok es C006 data-hook kompatibilitas.
+- JS-300: Stileron `#ffaa33`, Beryl `#3399ff`, Savrilium `#ffaa33`; quantity 2, max 3, HP_MIN_500/FIXED, Radar/Mining/UEX valtozatlan automatizalt fixture-ben.
+- Automatizalt kapu: C007 audit/tesztek, C001-C006, M1-M6.1, C04, standalone es V002-integritas PASS. Artifact: `test-artifacts/V003-C007/`.
+- Chrome localhost: Technical Probe PASS; 33/31 registry audit, 47 rendered verified es 31 neutralis unmapped elem; My Materials/Combined/Material Database/Crafting vizualis PASS; fingerprint `52f14d76 -> 52f14d76`; konzol warning/error 0.
+- Standalone: automatizalt artifact 108220 byte, SHA `4967a01c...b831fb`, kulso runtime resource 0. A valodi Chrome download szinregistry/snapshot/resource ellenorzese PASS; a Codex browser URL policy a letoltott `file://` navigaciot blokkolta, megkerules nem tortent.
+- Kezi bizonyitek: a felhasznalo C006 valodi Chrome `file://` Crafting Card, quantity recalc, material hydration es standalone export probat PASS-kent jelentette; nem Codex automation.
+- V002: tag commit `b326aaff...150e35`, stabil HTML SHA `de2d59b4...9f2357`; valtozatlan. V003 tag/release es C008 nem keszult.
+- Visszaallas: a C007 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.

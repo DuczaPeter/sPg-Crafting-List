@@ -265,3 +265,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C006 scope es fagyasztott V002 vedelmere, a celzott offline-cache fixture-re, a teljes regresszios kapura, valamint a friss origines JS-300 hydration, reload fingerprint, tenyleges download es konzol ellenorzesere.
 - Mely fajlokat vagy donteseket erintett: a V003 final-card UI/view-model/hydration/export kod, C006 teszt/validator/artifact/riport es projekt statuszfajlok; V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C007 Radar Signature Material Color System
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a canonical kep-pixelaudit, a centralizalt color registry/resolver, a teljes repair-cycle es a Chrome localhost vizualis/reload/export/konzol ellenorzes soran.
+- Mire segitett: a szuk C007 scope, a fagyasztott V002 vedelme, a haromsoros terv es teljes regresszios kapu, valamint a valodi Chrome renderelt szinek, technical probe, fingerprint es konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 material color modell/CSS/fogyasztok/export, C007 audit/teszt/validator/riport/artifact es projekt statuszfajlok; V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -1,0 +1,633 @@
+V003_C007_COLOR_IMAGE_AUDIT_PASS
+{
+  "registryVersion": "V003-C007-1",
+  "verifiedColorRecords": 33,
+  "sourcePixelChecksPassed": 33,
+  "sourceImageSha256": "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+  "artifact": "test-artifacts/V003-C007/material-color-audit.json"
+}
+V003_C007_MATERIAL_COLOR_TEST_PASS
+{
+  "registryVersion": "V003-C007-1",
+  "registryRecords": 33,
+  "shipMaterialChecks": 14,
+  "rocChecks": 3,
+  "fpsChecks": 4,
+  "unmappedFallback": "PASS",
+  "js300": [
+    {
+      "material": "Stileron",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)"
+    },
+    {
+      "material": "Beryl",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)"
+    },
+    {
+      "material": "Savrilium",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)"
+    }
+  ],
+  "requestedQuantity": 2,
+  "maxCraftable": 3,
+  "standaloneBytes": 105913,
+  "externalRuntimeResources": 0
+}
+V003_C006_FINAL_CARD_TEST_PASS
+{
+  "mandatoryCases": 12,
+  "output": "JS-300",
+  "requestedQuantity": 2,
+  "maxCraftable": 3,
+  "materialSnapshots": [
+    {
+      "material": "Stileron",
+      "radar": "3185–6370 (1–2× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "MAPPING_UNRESOLVED"
+    },
+    {
+      "material": "Beryl",
+      "radar": "3540–14160 (1–4× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "AVAILABLE"
+    },
+    {
+      "material": "Savrilium",
+      "radar": "3200–6400 (1–2× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "AVAILABLE"
+    }
+  ],
+  "standaloneBytes": 107303,
+  "externalRuntimeResources": 0
+}
+V003_C005_CONSISTENCY_TEST_PASS
+{
+  "radarRegistryRecords": 33,
+  "provenRocFpsRecords": 7,
+  "newlyVerifiedFromPreviouslyUnmapped": 0,
+  "targetedRightfullyUnmapped": 4,
+  "lagrangeFScmdbReasonCorrected": true,
+  "legacyCacheGuards": "PASS",
+  "roadmapCycles": [
+    "V003-C006",
+    "V003-C007",
+    "V003-C008",
+    "V003-C009",
+    "V003-C010"
+  ]
+}
+V003_C005_LIVE_AUDIT_PASS
+{
+  "scVersion": "4.9.0-LIVE.12232306",
+  "lagrangeF": {
+    "primaryIncluded": 4,
+    "secondaryExcluded": 4,
+    "denseRank": 2
+  },
+  "radar": {
+    "raw": 72,
+    "userFacing": 64,
+    "verified": 33,
+    "unmapped": 31,
+    "newlyVerified": 0
+  },
+  "provenRocFps": 7,
+  "targetedRightfullyUnmapped": [
+    "Carinite",
+    "Jaclium",
+    "Sadaryx",
+    "Saldynium"
+  ],
+  "topThreeChanged": false,
+  "outputDirectory": "test-artifacts\\V003-C005"
+}
+V003_C004_RADAR_TOP3_TEST_PASS
+{
+  "registryVersion": "V003-C004-1",
+  "verifiedMaterialRecords": 33,
+  "directShipRows": 26,
+  "categoryDerivedRecords": 7,
+  "topThree": {
+    "normalTiers": 3,
+    "spaceTiers": 3,
+    "tiedWinnerLocations": 2
+  },
+  "nonShipSpaceSuppressed": true,
+  "scmdbComparison": {
+    "MATCH": 6,
+    "EXPLAINED_DIFFERENCE": 1,
+    "UNVERIFIED": 2
+  }
+}
+V003_C004_LIVE_AUDIT_PASS
+{
+  "scVersion": "4.9.0-LIVE.12232306",
+  "activeRawRecords": 72,
+  "userFacingRecords": 64,
+  "verified": 33,
+  "unmapped": 31,
+  "registryMaterialRecords": 33,
+  "categoryRules": 3,
+  "scmdbComparison": {
+    "MATCH": 6,
+    "EXPLAINED_DIFFERENCE": 1,
+    "UNVERIFIED": 2
+  },
+  "aluminumStanton": {
+    "normalTiers": 3,
+    "spaceTiers": 3
+  },
+  "outputDirectory": "test-artifacts\\V003-C004"
+}
+V003_C003_MATERIAL_NAMING_TEST_PASS
+{
+  "mandatoryCases": 20,
+  "registryVersion": "4.9.0-LIVE.12232306",
+  "explicitMappingRecords": 11,
+  "fixtureAudit": {
+    "modelVersion": 1,
+    "registryVersion": "V003-C003-1",
+    "totalRawMaterialRecords": 16,
+    "resolvedCanonicalNames": 14,
+    "explicitAliasMatches": 3,
+    "suffixNormalized": 5,
+    "apiExact": 6,
+    "unmapped": 2,
+    "ambiguous": 0,
+    "hiddenInvalidRecords": 2,
+    "userFacingRecords": 13,
+    "explicitMappingRecordCount": 11,
+    "unresolvedRecords": [
+      {
+        "uuid": "unknown-fixture",
+        "category": null,
+        "rawName": "UNKNOWN",
+        "nameStatus": "UNMAPPED",
+        "diagnosticStatus": "UNMAPPED_NAME"
+      },
+      {
+        "uuid": "272539c8-e211-4c82-8bd0-6ecaabbc9c10",
+        "category": null,
+        "rawName": "(Organic)",
+        "nameStatus": "UNMAPPED",
+        "diagnosticStatus": "TECHNICAL_FRAGMENT_ONLY"
+      }
+    ],
+    "duplicateCanonical": [
+      {
+        "canonicalName": "Fixture Crystal",
+        "recordCount": 2,
+        "relatedPairs": 0,
+        "decision": "SEPARATE_UNPROVEN",
+        "records": [
+          {
+            "uuid": "duplicate-a",
+            "rawName": "Fixture Crystal (Mineral)",
+            "apiName": "Fixture Crystal",
+            "kind": null,
+            "categories": [
+              "FPS_MINING"
+            ],
+            "refinedVersionUuid": null
+          },
+          {
+            "uuid": "duplicate-b",
+            "rawName": "Fixture Crystal (Organic)",
+            "apiName": "Fixture Crystal",
+            "kind": null,
+            "categories": [
+              "HARVESTABLE"
+            ],
+            "refinedVersionUuid": null
+          }
+        ]
+      },
+      {
+        "canonicalName": "Tungsten",
+        "recordCount": 2,
+        "relatedPairs": 1,
+        "decision": "RELATED_TECHNICAL_RECORDS",
+        "records": [
+          {
+            "uuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+            "rawName": "Tungsten (Ore) (UnrefinedOres)",
+            "apiName": "Tungsten (Ore)",
+            "kind": "mineable",
+            "categories": [
+              "SHIP_MINING"
+            ],
+            "refinedVersionUuid": "60f116f4-c02a-45b2-9ded-333747795124"
+          },
+          {
+            "uuid": "60f116f4-c02a-45b2-9ded-333747795124",
+            "rawName": "Tungsten (Metal)",
+            "apiName": "Tungsten",
+            "kind": "harvestable",
+            "categories": [
+              "UNKNOWN"
+            ],
+            "refinedVersionUuid": null
+          }
+        ]
+      }
+    ]
+  }
+}
+V003_C003_LIVE_MATERIAL_AUDIT_PASS
+{
+  "scVersion": "4.9.0-LIVE.12232306",
+  "fullRecords": 206,
+  "activeRecords": 72,
+  "resolved": 71,
+  "explicitAliasMatches": 11,
+  "suffixNormalized": 25,
+  "apiExact": 35,
+  "unmapped": 1,
+  "ambiguous": 0,
+  "hiddenInvalidRecords": 1,
+  "userFacingRecords": 64,
+  "duplicateCanonicalGroups": 7,
+  "output": "C:\\Users\\ganos\\OneDrive\\Munka\\Codex\\sPg Crafring List\\test-artifacts\\V003-C003\\material-name-audit.json"
+}
+EMBEDDED_APPLICATION_CSS_PASS 7245030ccf122fdb60b6d14e90721efb776b37896c183806012ec966211fa774 84814 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+M1_MODEL_TEST_PASS
+{
+  "js300": {
+    "slots": 3,
+    "dynamic": 1,
+    "fixed": 2
+  },
+  "hofstede": {
+    "units": [
+      "SCU",
+      "ITEM",
+      "SCU"
+    ]
+  },
+  "duplicateMaterial": {
+    "sourceOccurrences": 1,
+    "normalizedSlots": 2
+  },
+  "unknownCapability": "UNKNOWN"
+}
+M1_VALIDATION_PASS
+M2_ALLOCATION_TEST_PASS
+{
+  "mandatoryCases": 8,
+  "js300Rules": [
+    "HP_MIN_500",
+    "FIXED",
+    "FIXED"
+  ],
+  "hofstedeRules": [
+    "HP_MIN_500",
+    "HIGHEST_Q",
+    "HIGHEST_Q"
+  ],
+  "deterministicPriority": true,
+  "performance": {
+    "batches": 1000,
+    "cards": 100,
+    "requirements": 300,
+    "durationMs": 710.85
+  }
+}
+M2_VALIDATION_PASS
+M3_MINING_TEST_PASS
+{
+  "mandatoryCases": 33,
+  "realFixtures": [
+    "Aluminum (Ore)",
+    "Agricium (Ore)",
+    "Stileron (Ore)",
+    "Beradom",
+    "Aphorite",
+    "Bluemoon Fungus",
+    "Arbor MH1",
+    "Helix II",
+    "MOLE"
+  ],
+  "performance": {
+    "locations": 5000,
+    "durationMs": 161.68
+  }
+}
+M3_VALIDATION_PASS
+M4_COMBINED_BACKUP_TEST_PASS
+{
+  "mandatoryCases": 12,
+  "backupSchemaVersion": 2,
+  "roundtripFingerprint": "6d8701dc",
+  "performance": {
+    "cards": 1000,
+    "recipeSlots": 3000,
+    "batches": 5000,
+    "materials": 100,
+    "durationMs": 157.64
+  }
+}
+M4_VALIDATION_PASS
+M5_UEX_REFINERY_TEST_PASS
+{
+  "mandatoryCases": 18,
+  "mappingSummary": {
+    "total": 3,
+    "MATCHED": 1,
+    "UNMAPPED": 1,
+    "AMBIGUOUS": 1,
+    "USER_OVERRIDE": 0,
+    "INVALID_OVERRIDE": 0
+  },
+  "verifiedAliasSummary": {
+    "total": 5,
+    "MATCHED": 5,
+    "UNMAPPED": 0,
+    "AMBIGUOUS": 0,
+    "USER_OVERRIDE": 0,
+    "INVALID_OVERRIDE": 0
+  },
+  "verifiedAliasOrigins": [
+    {
+      "wiki": "Construction Rubble",
+      "uex": "Construction Material Rubble",
+      "canonical": "CONSTRUCTION:RUBBLE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Construction Salvage",
+      "uex": "Construction Material Salvage",
+      "canonical": "CONSTRUCTION:SALVAGE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Hephaestanite (R) (Raw_Minerals)",
+      "uex": "Hephaestanite (Raw)",
+      "canonical": "RAW:HEPHAESTANITE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Raw Ice (Organic)",
+      "uex": "Ice (Raw)",
+      "canonical": "RAW:ICE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Raw Silicon (Nonmetal)",
+      "uex": "Silicon (Raw)",
+      "canonical": "RAW:SILICON",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    }
+  ],
+  "systems": [
+    {
+      "name": "Nyx",
+      "best": -2,
+      "ties": 1
+    },
+    {
+      "name": "Pyro",
+      "best": 0,
+      "ties": 1
+    },
+    {
+      "name": "Stanton",
+      "best": 7,
+      "ties": 2
+    }
+  ],
+  "performance": {
+    "records": 500,
+    "commodities": 20,
+    "durationMs": 11.02
+  }
+}
+M5_VALIDATION_PASS
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 108222,
+  "automatedExportArtifact": null,
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 21.68
+  }
+}
+M6_VALIDATION_PASS
+M61_UI_COMPLETENESS_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "navigation": [
+    "Crafting List",
+    "Blueprint Browser",
+    "My Materials",
+    "Material Database",
+    "Mining Loadouts",
+    "UEX Refinery",
+    "Combined Materials",
+    "Data / Settings"
+  ],
+  "materialCategories": [
+    "All",
+    "Ship Mining",
+    "Vehicle Mining",
+    "FPS Mining",
+    "Harvestable"
+  ],
+  "usesExistingMiningRanking": true,
+  "usesExistingRefineryRanking": true,
+  "usesExistingLoadoutStore": true
+}
+M61_VALIDATION_PASS
+EMBEDDED_APPLICATION_CSS_PASS 7245030ccf122fdb60b6d14e90721efb776b37896c183806012ec966211fa774 84814 bytes
+C04_SINGLE_FILE_CSS_TEST_PASS
+{
+  "source": "embedded-style",
+  "sha256": "7245030ccf122fdb60b6d14e90721efb776b37896c183806012ec966211fa774",
+  "bytes": 84814,
+  "fileProtocolCssNetworkReads": 0,
+  "httpProtocolCssNetworkReads": 0,
+  "localSidecarFilesRequired": 0,
+  "duplicateCssSnapshot": false,
+  "externalFontDependencyRemoved": true
+}
+C04_VALIDATION_PASS
+V003_FARM_LIVE_API_PROBE_PASS
+{
+  "version": "4.9.0-LIVE.12232306",
+  "materials": [
+    {
+      "name": "Aluminum (Ore)",
+      "tier": "common",
+      "rawLocations": 154,
+      "primary": 154,
+      "secondaryExcluded": 99,
+      "best": 139
+    },
+    {
+      "name": "Agricium (Ore)",
+      "tier": "uncommon",
+      "rawLocations": 91,
+      "primary": 18,
+      "secondaryExcluded": 130,
+      "best": 18
+    },
+    {
+      "name": "Stileron (Ore)",
+      "tier": "legendary",
+      "rawLocations": 92,
+      "primary": 92,
+      "secondaryExcluded": 0,
+      "best": 92
+    }
+  ],
+  "systems": [
+    "Nyx System",
+    "Pyro System",
+    "Stanton System"
+  ],
+  "highSpawnSecondaryExcluded": true,
+  "grouping": {
+    "aluminumPyro": {
+      "label": "Pyro Deep Space Asteroids",
+      "summary": "86 RMB helyszín",
+      "rawCount": 86
+    },
+    "aluminumStanton": {
+      "label": "Aaron Halo",
+      "summary": "50 Mining Base helyszín · 1 rendszer-szintű API-rekord",
+      "rawCount": 51
+    },
+    "agriciumStanton": {
+      "label": "Lagrange D",
+      "summary": "ARC-L3 · CRU-L5 · MIC-L4"
+    },
+    "agriciumPyroNormal": {
+      "label": "2 azonos rangú farmhely",
+      "groupCount": 2
+    },
+    "stileronPyro": {
+      "label": "Pyro Deep Space Asteroids",
+      "summary": "Akiro Cluster és RMB helyszínek",
+      "rawCount": 87
+    }
+  },
+  "recommendationFunction": "buildMiningFarmRecommendations"
+}
+V003_FARM_VALIDATION_PASS
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357
+V003_C003_VALIDATION_PASS
+BRANCH=develop/V003
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 108222,
+  "automatedExportArtifact": {
+    "path": "test-artifacts\\V003-C004\\standalone-js-300-top3.html",
+    "bytes": 108220,
+    "sha256": "4967a01c6a0eedfd7eaa405973ac080b762e5dde59c91bedaa6f9016b9b831fb"
+  },
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 20.23
+  }
+}
+V003_C004_VALIDATION_PASS
+BRANCH=develop/V003
+RADAR_SOURCE_SHA256=f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 108222,
+  "automatedExportArtifact": {
+    "path": "test-artifacts\\V003-C005\\standalone-js-300-consistency.html",
+    "bytes": 108220,
+    "sha256": "4967a01c6a0eedfd7eaa405973ac080b762e5dde59c91bedaa6f9016b9b831fb"
+  },
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 20.2
+  }
+}
+V003_C005_VALIDATION_PASS
+BRANCH=develop/V003
+RADAR_SOURCE_SHA256=f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 108222,
+  "automatedExportArtifact": {
+    "path": "test-artifacts\\V003-C006\\standalone-js-300-final-card.html",
+    "bytes": 108220,
+    "sha256": "4967a01c6a0eedfd7eaa405973ac080b762e5dde59c91bedaa6f9016b9b831fb"
+  },
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 20.79
+  }
+}
+V003_C006_VALIDATION_PASS
+BRANCH=develop/V003
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 108222,
+  "automatedExportArtifact": {
+    "path": "test-artifacts\\V003-C007\\standalone-js-300-material-colors.html",
+    "bytes": 108220,
+    "sha256": "4967a01c6a0eedfd7eaa405973ac080b762e5dde59c91bedaa6f9016b9b831fb"
+  },
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 24.2
+  }
+}
+V003_C007_VALIDATION_PASS
+BRANCH=develop/V003
+MATERIAL_COLOR_REGISTRY=V003-C007-1
+VERIFIED_COLOR_RECORDS=33
+RADAR_IMAGE_SHA256=f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6
+V002_TAG_COMMIT=b326aaff5838aafd5b1f13b16982c29a0e150e35
+V002_HTML_SHA256=de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357

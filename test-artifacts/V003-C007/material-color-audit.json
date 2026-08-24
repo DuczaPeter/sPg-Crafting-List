@@ -1,0 +1,478 @@
+{
+  "cycle": "V003-C007",
+  "registryVersion": "V003-C007-1",
+  "sourceVersion": "RADAR-REFERENCE-2026-08-24",
+  "sourceImage": "Info/Radar Signature.png",
+  "sourceImageSha256": "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+  "sourceImageDimensions": {
+    "width": 1182,
+    "height": 879
+  },
+  "verifiedColorRecords": 33,
+  "sourcePixelChecksPassed": 33,
+  "backgroundRule": "UI_TINT_FROM_VERIFIED_ACCENT_16_PERCENT",
+  "records": [
+    {
+      "canonicalName": "Quantainium",
+      "wikiUuid": "501d9b2e-136c-483b-a4d9-282fe6a5d37a",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)",
+      "border": "#ffaa33",
+      "sourceRow": "Quantainium",
+      "sourceCoordinates": {
+        "sampleX": 357,
+        "sampleY": 26
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Stileron",
+      "wikiUuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)",
+      "border": "#ffaa33",
+      "sourceRow": "Stileron",
+      "sourceCoordinates": {
+        "sampleX": 319,
+        "sampleY": 54
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Savrilium",
+      "wikiUuid": "d76ea7ef-5116-488c-93d3-71e02bada13d",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)",
+      "border": "#ffaa33",
+      "sourceRow": "Savrilium",
+      "sourceCoordinates": {
+        "sampleX": 359,
+        "sampleY": 82
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Ouratite",
+      "wikiUuid": "ca3ae4c1-3483-4985-ba61-50412994dc83",
+      "foreground": "#cc66ff",
+      "background": "rgba(204, 102, 255, 0.16)",
+      "border": "#cc66ff",
+      "sourceRow": "Ouratite",
+      "sourceCoordinates": {
+        "sampleX": 436,
+        "sampleY": 110
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Riccite",
+      "wikiUuid": "c3697191-8ad0-43a9-af7a-29c0ad58de34",
+      "foreground": "#cc66ff",
+      "background": "rgba(204, 102, 255, 0.16)",
+      "border": "#cc66ff",
+      "sourceRow": "Riccite",
+      "sourceCoordinates": {
+        "sampleX": 371,
+        "sampleY": 138
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Lindinium",
+      "wikiUuid": "87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f",
+      "foreground": "#cc66ff",
+      "background": "rgba(204, 102, 255, 0.16)",
+      "border": "#cc66ff",
+      "sourceRow": "Lindinium",
+      "sourceCoordinates": {
+        "sampleX": 450,
+        "sampleY": 168
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Beryl",
+      "wikiUuid": "eb503701-389a-48a1-af28-eb7374009d5d",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)",
+      "border": "#3399ff",
+      "sourceRow": "Beryl",
+      "sourceCoordinates": {
+        "sampleX": 365,
+        "sampleY": 196
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Taranite",
+      "wikiUuid": "b6175879-fc61-4600-b4a9-1e15f2c2ddd5",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)",
+      "border": "#3399ff",
+      "sourceRow": "Taranite",
+      "sourceCoordinates": {
+        "sampleX": 242,
+        "sampleY": 224
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Borase",
+      "wikiUuid": "728a3d7e-9567-4e1c-87fd-2bd45b458aa6",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)",
+      "border": "#3399ff",
+      "sourceRow": "Borase",
+      "sourceCoordinates": {
+        "sampleX": 361,
+        "sampleY": 252
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Gold",
+      "wikiUuid": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)",
+      "border": "#3399ff",
+      "sourceRow": "Gold",
+      "sourceCoordinates": {
+        "sampleX": 237,
+        "sampleY": 280
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Bexalite",
+      "wikiUuid": "3848c27d-49cc-4fdb-9a18-e93770bc8bc2",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)",
+      "border": "#3399ff",
+      "sourceRow": "Bexalite",
+      "sourceCoordinates": {
+        "sampleX": 362,
+        "sampleY": 308
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Laranite",
+      "wikiUuid": "7b7178c1-b0f0-4760-89de-9a3e3851e7a8",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Laranite",
+      "sourceCoordinates": {
+        "sampleX": 257,
+        "sampleY": 336
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Aslarite",
+      "wikiUuid": "f0c1f30b-001c-4a80-ac20-27df27183056",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Aslarite",
+      "sourceCoordinates": {
+        "sampleX": 788,
+        "sampleY": 362
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Titanium",
+      "wikiUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Titanium",
+      "sourceCoordinates": {
+        "sampleX": 258,
+        "sampleY": 392
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Tungsten",
+      "wikiUuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Tungsten",
+      "sourceCoordinates": {
+        "sampleX": 537,
+        "sampleY": 418
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Agricium",
+      "wikiUuid": "fc1ec740-3047-48d8-81f0-396f4c9a90ef",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Agricium",
+      "sourceCoordinates": {
+        "sampleX": 253,
+        "sampleY": 448
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Torite",
+      "wikiUuid": "48b9b7ba-cd5e-458b-bb91-9b43eb46c568",
+      "foreground": "#33ccaa",
+      "background": "rgba(51, 204, 170, 0.16)",
+      "border": "#33ccaa",
+      "sourceRow": "Torite",
+      "sourceCoordinates": {
+        "sampleX": 405,
+        "sampleY": 474
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Hephaestanite",
+      "wikiUuid": "cad319d9-e0e5-420d-bbfd-dd62a0362d05",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Hephaestanite",
+      "sourceCoordinates": {
+        "sampleX": 263,
+        "sampleY": 504
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Tin",
+      "wikiUuid": "551cf88d-c09f-46e3-99b3-66c60bb65af1",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Tin",
+      "sourceCoordinates": {
+        "sampleX": 265,
+        "sampleY": 532
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Quartz",
+      "wikiUuid": "8569b931-06bb-4d86-9f24-5e303e2ff3ee",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Quartz",
+      "sourceCoordinates": {
+        "sampleX": 276,
+        "sampleY": 560
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Corundum",
+      "wikiUuid": "4ceb21c5-48f8-418a-8188-0b0196c33505",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Corundum",
+      "sourceCoordinates": {
+        "sampleX": 416,
+        "sampleY": 588
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Copper",
+      "wikiUuid": "d4ba4af8-80f1-4a8a-b8cd-5ba7e37c005c",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Copper",
+      "sourceCoordinates": {
+        "sampleX": 411,
+        "sampleY": 616
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Silicon",
+      "wikiUuid": "d137b905-b3bc-4721-a790-830499263c0c",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Silicon",
+      "sourceCoordinates": {
+        "sampleX": 418,
+        "sampleY": 644
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Iron",
+      "wikiUuid": "32c57a12-5de5-49b1-827a-9fd80278fbc4",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Iron",
+      "sourceCoordinates": {
+        "sampleX": 419,
+        "sampleY": 672
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Aluminum",
+      "wikiUuid": "e30bdd32-8fd5-44b8-9994-5fd253a16c37",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Aluminium",
+      "sourceCoordinates": {
+        "sampleX": 538,
+        "sampleY": 700
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Ice",
+      "wikiUuid": "d9653427-af7f-4fea-bbd6-ae89393524b7",
+      "foreground": "#8899aa",
+      "background": "rgba(136, 153, 170, 0.16)",
+      "border": "#8899aa",
+      "sourceRow": "Ice",
+      "sourceCoordinates": {
+        "sampleX": 538,
+        "sampleY": 728
+      },
+      "evidence": "EXACT_MATERIAL_ROW_PIXEL",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Beradon",
+      "wikiUuid": "c339897c-d682-48ad-a16f-daf145bc0f4d",
+      "foreground": "#66ddaa",
+      "background": "rgba(102, 221, 170, 0.16)",
+      "border": "#66ddaa",
+      "sourceRow": "ROC Mineables",
+      "sourceCoordinates": {
+        "sampleX": 263,
+        "sampleY": 769
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Feynmaline",
+      "wikiUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "foreground": "#66ddaa",
+      "background": "rgba(102, 221, 170, 0.16)",
+      "border": "#66ddaa",
+      "sourceRow": "ROC Mineables",
+      "sourceCoordinates": {
+        "sampleX": 263,
+        "sampleY": 769
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Glacosite",
+      "wikiUuid": "960eda23-d77c-425e-8cbd-89d94ca6e2aa",
+      "foreground": "#66ddaa",
+      "background": "rgba(102, 221, 170, 0.16)",
+      "border": "#66ddaa",
+      "sourceRow": "ROC Mineables",
+      "sourceCoordinates": {
+        "sampleX": 263,
+        "sampleY": 769
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Aphorite",
+      "wikiUuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a",
+      "foreground": "#77bbdd",
+      "background": "rgba(119, 187, 221, 0.16)",
+      "border": "#77bbdd",
+      "sourceRow": "FPS Mineables",
+      "sourceCoordinates": {
+        "sampleX": 224,
+        "sampleY": 797
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Dolivine",
+      "wikiUuid": "7e86e2f4-6c31-41f8-9438-0fd8ad037426",
+      "foreground": "#77bbdd",
+      "background": "rgba(119, 187, 221, 0.16)",
+      "border": "#77bbdd",
+      "sourceRow": "FPS Mineables",
+      "sourceCoordinates": {
+        "sampleX": 224,
+        "sampleY": 797
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Hadanite",
+      "wikiUuid": "3e5fdc37-cb59-4fd3-8168-e3c538ab9722",
+      "foreground": "#77bbdd",
+      "background": "rgba(119, 187, 221, 0.16)",
+      "border": "#77bbdd",
+      "sourceRow": "FPS Mineables",
+      "sourceCoordinates": {
+        "sampleX": 224,
+        "sampleY": 797
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    },
+    {
+      "canonicalName": "Janalite",
+      "wikiUuid": "f3379bda-0520-4c75-920a-c29a50eb6b50",
+      "foreground": "#77bbdd",
+      "background": "rgba(119, 187, 221, 0.16)",
+      "border": "#77bbdd",
+      "sourceRow": "FPS Mineables",
+      "sourceCoordinates": {
+        "sampleX": 224,
+        "sampleY": 797
+      },
+      "evidence": "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID",
+      "status": "VERIFIED_COLOR"
+    }
+  ]
+}

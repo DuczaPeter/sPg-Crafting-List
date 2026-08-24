@@ -24,6 +24,7 @@ const context = vm.createContext({
 vm.runInContext(`${block("M1_PURE_MODEL")}
 ${block("M2_ALLOCATION_ENGINE")}
 ${block("MATERIAL_NAMING_MODEL")}
+${block("MATERIAL_COLOR_MODEL")}
 ${block("C006_HYDRATION_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
 globalThis.__C006__ = {

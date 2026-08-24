@@ -295,6 +295,24 @@ C006 repair-cycle a teszttervbol:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "Final Crafting Card Layout + complete material snapshot hydration" -TestId v003-c006-final-card-regression
 ```
 
+V003-C007 Radar Signature Material Color System teljes kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c007.ps1"
+```
+
+Csak a C007 canonical kep-pixelaudit:
+
+```powershell
+node .\tools\audit-v003-c007-colors.mjs
+```
+
+Csak a C007 registry/resolver/consumer/JS-300/standalone teszt:
+
+```powershell
+node .\tools\run-v003-c007-tests.mjs
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -363,4 +381,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-c004-radar-top3-regression`: 33 rekordszamu curated radar registry, 31 explicit `Nincs adat`, Wiki API_RAW diagnosztika, 3 dense rank tier/kornyezet, tie es nem-Ship SPACE eset, SCMDB osszehasonlito audit, kozos UI/export projekcio es teljes C001-C003/V002 regresszio.
 - `v003-c005-consistency-regression`: exact Lagrange F primary/secondary decision trace, 7/7 ROC/FPS category proof, 31 jogos UNMAPPED, valtozatlan C004 Top-3, cache/consumer konzisztencia, C006-C010 roadmap, teljes C001-C004/M1-M6.1/C04 es V002-integritas.
 - `v003-c006-final-card-regression`: JS-300 final card header es slotprojekcio, quantity/max, HP_MIN_500/FIXED/shortage, cache/offline hydration, harom teljes Radar/Mining/UEX snapshot, kozos standalone view-model, C001-C005/M1-M6.1/C04 es V002-integritas.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`.
+- `v003-c007-material-color-regression`: 33 exact Wiki UUID-s source-pixelaudit, 31 neutralis `UNMAPPED_COLOR`, kozos Crafting/My Materials/Combined/Material Database/export resolver, JS-300 exact szinek, standalone, C001-C006/M1-M6.1/C04 es V002-integritas.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`, `test-artifacts/V003-C007/`.

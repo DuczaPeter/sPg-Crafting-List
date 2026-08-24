@@ -171,6 +171,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c006.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c007-material-color-regression",
+      "level": "full-regression",
+      "description": "V003-C007 gate: canonical Radar Signature image pixel/SHA audit, exact Wiki UUID material color registry, neutral UNMAPPED_COLOR fallback, shared Crafting/My Materials/Combined/Material Database/export resolver, complete C001-C006 plus M1-M6.1/C04 regression, standalone export, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c007.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

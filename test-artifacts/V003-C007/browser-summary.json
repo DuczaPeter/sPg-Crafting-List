@@ -1,0 +1,47 @@
+{
+  "cycle": "V003-C007",
+  "browser": "Google Chrome",
+  "protocol": "http:",
+  "origin": "http://127.0.0.1:4187",
+  "automation": "Codex Chrome control",
+  "appReady": true,
+  "technicalProbe": "PASS",
+  "colorRegistry": "V003-C007-1",
+  "registryVerified": 33,
+  "registryUnmapped": 31,
+  "verifiedColorElementsInRenderedFixture": 47,
+  "unmappedColorElementsInRenderedFixture": 31,
+  "cardCount": 1,
+  "materialBatchGroups": 3,
+  "js300Colors": {
+    "Stileron": { "foreground": "rgb(255, 170, 51)", "background": "rgba(255, 170, 51, 0.16)", "status": "VERIFIED_COLOR" },
+    "Beryl": { "foreground": "rgb(51, 153, 255)", "background": "rgba(51, 153, 255, 0.16)", "status": "VERIFIED_COLOR" },
+    "Savrilium": { "foreground": "rgb(255, 170, 51)", "background": "rgba(255, 170, 51, 0.16)", "status": "VERIFIED_COLOR" }
+  },
+  "fingerprintBeforeReload": "52f14d76",
+  "fingerprintAfterReload": "52f14d76",
+  "userDataLoss": false,
+  "consoleWarningErrorCount": 0,
+  "downloadedStandalone": {
+    "fileName": "sPg Crafting List - JS-300 (4).html",
+    "bytes": 455943,
+    "sha256": "c64a1b5db48d4715ec1fe8f8479d834d722c92cc7d0255b9960110e93344961d",
+    "requirements": 3,
+    "colorRegistry": "V003-C007-1",
+    "allMaterialColorsVerified": true,
+    "snapshotJsonValid": true,
+    "externalRuntimeResources": 0,
+    "status": "PASS"
+  },
+  "automatedFileNavigation": {
+    "status": "BLOCKED_BY_BROWSER_URL_POLICY",
+    "workaroundAttempted": false,
+    "releaseGateClaimed": false
+  },
+  "userManualFileGate": {
+    "status": "PASS",
+    "scope": "V003-C006 final Crafting Card, quantity recalculation, material hydration and standalone export",
+    "evidenceSource": "USER_MANUAL_NOT_CODEX_AUTOMATION"
+  },
+  "status": "PASS"
+}

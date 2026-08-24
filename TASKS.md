@@ -47,12 +47,19 @@
 - [x] Offline cached/uncached, JS-300 fresh-cache, quantity, max craftable, HP_MIN_500, FIXED, enough/partial/missing, reload es standalone C006 fixture PASS.
 - [x] Valodi Chrome localhost friss originen Material Database elozetes megnyitasa nelkul Stileron/Beryl/Savrilium hydration PASS; reload fingerprint `39341365`, konzol WARN/ERROR 0.
 - [x] Valodi Chrome-bol letoltott JS-300 standalone export: 448 917 byte, harom teljes material snapshot, embedded CSS, ervenyes snapshot JSON, kulso runtime/network resource 0, PASS.
+- [x] `V003-C007`: `Info/Radar Signature.png` SHA- es 33/33 mintapixel-auditbol felepitett, exact Wiki UUID-s, verziozott `MATERIAL_COLOR_REGISTRY`.
+- [x] Kozos `resolveMaterialColor()` exact UUID -> egyedi exact canonical nev sorrenddel; 31 `UNMAPPED_COLOR` neutralis fallback, fuzzy/rarity/Quality/signature/SCMDB/hash kovetkeztetes nelkul.
+- [x] Crafting Card, Radar panel, My Materials, Combined Materials, Material Database es standalone export azonos color resolvert es generic CSS valtozokat hasznal.
+- [x] JS-300: Stileron `#ffaa33`, Beryl `#3399ff`, Savrilium `#ffaa33`; quantity 2, max craftable 3, Radar/Mining/UEX es allocation valtozatlan automatizalt fixture-ben.
+- [x] `V003-C007` teljes C001-C006 + M1-M6.1 + C04, color audit, standalone es V002-integritas regresszio PASS.
+- [x] Valodi Chrome localhost color/UI/reload/technical probe PASS; fingerprint `52f14d76`, konzol warning/error 0. A letoltott export statikusan ervenyes, kulso runtime resource 0.
+- [x] A korabbi C006 valodi Chrome `file://` Crafting Card/quantity/hydration/export eredmeny USER MANUAL PASS-kent rogzitve; nem Codex automation.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
 
 - [x] `V003-C006`: kozos final-card adatkontraktus, card-first layout es elokeszitett detail hookok; blueprint/item nev, Size, Class/Type, Grade, Crafting Time, requested quantity, max craftable, slot/material mennyisegek, inventory/hiany/maradek, Quality rule, Mining+UEX snapshot es curated Radar.
-- [ ] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
+- [x] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
 - [ ] `V003-C008`: kattinthato blueprint/material/mining/refinery/radar elemek es ugyanazon egyfajlos HTML-en beluli reszletnezet; teljes Top-3, spawn, occurrence, Quality, provider, forras, refinery es Wiki deep link.
 - [ ] `V003-C009`: default nezet tisztitasa Crafting Card + szukseges user UI szintre; baseline/debug/raw/log es fejlesztoi eszkozok Advanced/Diagnostics ala.
 - [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.

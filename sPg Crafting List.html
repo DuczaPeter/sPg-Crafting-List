@@ -3209,8 +3209,40 @@ code {
 }
 
 .spg-material-token-accent-pending {
-  --spg-material-accent: transparent;
+  --spg-material-foreground: #b7c2cc;
+  --spg-material-accent: rgba(144, 164, 174, 0.32);
   --spg-material-background: rgba(144, 164, 174, 0.1);
+}
+
+.spg-material-color-token {
+  color: var(--spg-material-foreground, #b7c2cc);
+  border: 1px solid var(--spg-material-accent, rgba(144, 164, 174, 0.32));
+  border-radius: 999px;
+  background: var(--spg-material-background, rgba(144, 164, 174, 0.1));
+  box-shadow: inset 0 0 0 1px rgba(2, 12, 20, 0.38);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.92), 0 0 5px rgba(0, 0, 0, 0.72);
+}
+
+.spg-material-token.spg-material-color-token {
+  padding: 4px 8px;
+}
+
+.spg-material-token.spg-material-color-token:hover,
+.spg-material-token.spg-material-color-token:focus-visible {
+  color: var(--spg-material-foreground, #b7c2cc);
+}
+
+.spg-material-color-label {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 2px 7px;
+  overflow-wrap: anywhere;
+}
+
+.spg-material-color-radar {
+  border-color: color-mix(in srgb, var(--spg-material-accent, rgba(24, 218, 255, 0.14)) 72%, transparent);
+  box-shadow: inset 3px 0 0 var(--spg-material-accent, transparent);
 }
 
 .spg-requirement-quantity-grid {
@@ -4986,6 +5018,7 @@ code {
       miningCommodityIndex: [],
       materialNamingAudit: null,
       radarSignatureAudit: null,
+      materialColorAudit: null,
       miningEquipment: { heads: [], modules: [], gadgets: [] },
       miningVehicles: [],
       miningSystems: [],
@@ -7414,6 +7447,169 @@ code {
     }
     /* RADAR_SIGNATURE_MODEL_END */
 
+    /* MATERIAL_COLOR_MODEL_START */
+    var MATERIAL_COLOR_REGISTRY_VERSION = "V003-C007-1";
+    var MATERIAL_COLOR_SOURCE_VERSION = "RADAR-REFERENCE-2026-08-24";
+    var MATERIAL_COLOR_SOURCE_IMAGE = "Info/Radar Signature.png";
+    var MATERIAL_COLOR_SOURCE_SHA256 = "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6";
+    var MATERIAL_COLOR_STATUS = Object.freeze({ VERIFIED: "VERIFIED_COLOR", UNMAPPED: "UNMAPPED_COLOR" });
+    var MATERIAL_COLOR_NEUTRAL = Object.freeze({
+      foreground: "#b7c2cc",
+      background: "rgba(144, 164, 174, 0.10)",
+      border: "rgba(144, 164, 174, 0.32)",
+      accent: "rgba(144, 164, 174, 0.32)"
+    });
+
+    function materialColorRecord(uuid, canonicalName, sourceRow, foreground, sampleX, sampleY, evidence) {
+      var rgb = foreground.slice(1).match(/.{2}/g).map(function (hex) { return parseInt(hex, 16); });
+      return Object.freeze({
+        uuid: uuid,
+        canonicalName: canonicalName,
+        foreground: foreground,
+        background: "rgba(" + rgb.join(", ") + ", 0.16)",
+        border: foreground,
+        accent: foreground,
+        backgroundDerivation: "UI_TINT_FROM_VERIFIED_ACCENT_16_PERCENT",
+        source: "CANONICAL_RADAR_SIGNATURE_IMAGE",
+        sourceImage: MATERIAL_COLOR_SOURCE_IMAGE,
+        sourceImageSha256: MATERIAL_COLOR_SOURCE_SHA256,
+        sourceVersion: MATERIAL_COLOR_SOURCE_VERSION,
+        sourceRow: sourceRow,
+        sourceCoordinates: Object.freeze({ sampleX: sampleX, sampleY: sampleY }),
+        evidence: evidence || "EXACT_MATERIAL_ROW_PIXEL",
+        status: MATERIAL_COLOR_STATUS.VERIFIED
+      });
+    }
+
+    var MATERIAL_COLOR_REGISTRY = Object.freeze([
+      materialColorRecord("501d9b2e-136c-483b-a4d9-282fe6a5d37a", "Quantainium", "Quantainium", "#ffaa33", 357, 26),
+      materialColorRecord("32bafbd4-c52a-476d-b31c-97c4b3102471", "Stileron", "Stileron", "#ffaa33", 319, 54),
+      materialColorRecord("d76ea7ef-5116-488c-93d3-71e02bada13d", "Savrilium", "Savrilium", "#ffaa33", 359, 82),
+      materialColorRecord("ca3ae4c1-3483-4985-ba61-50412994dc83", "Ouratite", "Ouratite", "#cc66ff", 436, 110),
+      materialColorRecord("c3697191-8ad0-43a9-af7a-29c0ad58de34", "Riccite", "Riccite", "#cc66ff", 371, 138),
+      materialColorRecord("87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f", "Lindinium", "Lindinium", "#cc66ff", 450, 168),
+      materialColorRecord("eb503701-389a-48a1-af28-eb7374009d5d", "Beryl", "Beryl", "#3399ff", 365, 196),
+      materialColorRecord("b6175879-fc61-4600-b4a9-1e15f2c2ddd5", "Taranite", "Taranite", "#3399ff", 242, 224),
+      materialColorRecord("728a3d7e-9567-4e1c-87fd-2bd45b458aa6", "Borase", "Borase", "#3399ff", 361, 252),
+      materialColorRecord("57aba429-cf97-4fdd-8042-94b1d643f5bd", "Gold", "Gold", "#3399ff", 237, 280),
+      materialColorRecord("3848c27d-49cc-4fdb-9a18-e93770bc8bc2", "Bexalite", "Bexalite", "#3399ff", 362, 308),
+      materialColorRecord("7b7178c1-b0f0-4760-89de-9a3e3851e7a8", "Laranite", "Laranite", "#33ccaa", 257, 336),
+      materialColorRecord("f0c1f30b-001c-4a80-ac20-27df27183056", "Aslarite", "Aslarite", "#33ccaa", 788, 362),
+      materialColorRecord("64978449-1d87-4a16-ba55-4b5f94fee217", "Titanium", "Titanium", "#33ccaa", 258, 392),
+      materialColorRecord("addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6", "Tungsten", "Tungsten", "#33ccaa", 537, 418),
+      materialColorRecord("fc1ec740-3047-48d8-81f0-396f4c9a90ef", "Agricium", "Agricium", "#33ccaa", 253, 448),
+      materialColorRecord("48b9b7ba-cd5e-458b-bb91-9b43eb46c568", "Torite", "Torite", "#33ccaa", 405, 474),
+      materialColorRecord("cad319d9-e0e5-420d-bbfd-dd62a0362d05", "Hephaestanite", "Hephaestanite", "#8899aa", 263, 504),
+      materialColorRecord("551cf88d-c09f-46e3-99b3-66c60bb65af1", "Tin", "Tin", "#8899aa", 265, 532),
+      materialColorRecord("8569b931-06bb-4d86-9f24-5e303e2ff3ee", "Quartz", "Quartz", "#8899aa", 276, 560),
+      materialColorRecord("4ceb21c5-48f8-418a-8188-0b0196c33505", "Corundum", "Corundum", "#8899aa", 416, 588),
+      materialColorRecord("d4ba4af8-80f1-4a8a-b8cd-5ba7e37c005c", "Copper", "Copper", "#8899aa", 411, 616),
+      materialColorRecord("d137b905-b3bc-4721-a790-830499263c0c", "Silicon", "Silicon", "#8899aa", 418, 644),
+      materialColorRecord("32c57a12-5de5-49b1-827a-9fd80278fbc4", "Iron", "Iron", "#8899aa", 419, 672),
+      materialColorRecord("e30bdd32-8fd5-44b8-9994-5fd253a16c37", "Aluminum", "Aluminium", "#8899aa", 538, 700),
+      materialColorRecord("d9653427-af7f-4fea-bbd6-ae89393524b7", "Ice", "Ice", "#8899aa", 538, 728),
+      materialColorRecord("c339897c-d682-48ad-a16f-daf145bc0f4d", "Beradon", "ROC Mineables", "#66ddaa", 263, 769, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("7310c15d-359c-42b4-b61e-7da3d0da3384", "Feynmaline", "ROC Mineables", "#66ddaa", 263, 769, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("960eda23-d77c-425e-8cbd-89d94ca6e2aa", "Glacosite", "ROC Mineables", "#66ddaa", 263, 769, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("9b47bacf-8efa-42e2-8d84-dee64983a00a", "Aphorite", "FPS Mineables", "#77bbdd", 224, 797, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("7e86e2f4-6c31-41f8-9438-0fd8ad037426", "Dolivine", "FPS Mineables", "#77bbdd", 224, 797, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("3e5fdc37-cb59-4fd3-8168-e3c538ab9722", "Hadanite", "FPS Mineables", "#77bbdd", 224, 797, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID"),
+      materialColorRecord("f3379bda-0520-4c75-920a-c29a50eb6b50", "Janalite", "FPS Mineables", "#77bbdd", 224, 797, "VERIFIED_CATEGORY_ROW_WITH_EXACT_WIKI_UUID")
+    ]);
+
+    function normalizeMaterialColorUuid(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function normalizeMaterialColorName(value) {
+      return String(value || "").trim().toLocaleLowerCase("en-US");
+    }
+
+    function resolveMaterialColor(inputUuid, inputName) {
+      var source = inputUuid && typeof inputUuid === "object" ? inputUuid : {};
+      var uuid = normalizeMaterialColorUuid(source.commodityUuid || source.wikiUuid || source.uuid || inputUuid);
+      var name = normalizeMaterialColorName(inputName || source.canonicalName || source.materialName || source.commodityName || source.name);
+      var record = MATERIAL_COLOR_REGISTRY.find(function (candidate) {
+        return normalizeMaterialColorUuid(candidate.uuid) === uuid;
+      }) || null;
+      var matchOrigin = record ? "EXACT_WIKI_UUID" : null;
+      if (!record && name) {
+        var nameMatches = MATERIAL_COLOR_REGISTRY.filter(function (candidate) {
+          return normalizeMaterialColorName(candidate.canonicalName) === name;
+        });
+        if (nameMatches.length === 1) {
+          record = nameMatches[0];
+          matchOrigin = "EXACT_CANONICAL_NAME";
+        }
+      }
+      if (!record) {
+        return Object.assign({
+          registryVersion: MATERIAL_COLOR_REGISTRY_VERSION,
+          uuid: uuid || null,
+          canonicalName: inputName || source.canonicalName || source.materialName || source.commodityName || source.name || null,
+          source: "NONE",
+          sourceImage: MATERIAL_COLOR_SOURCE_IMAGE,
+          sourceImageSha256: MATERIAL_COLOR_SOURCE_SHA256,
+          sourceVersion: MATERIAL_COLOR_SOURCE_VERSION,
+          sourceRow: null,
+          sourceCoordinates: null,
+          matchOrigin: "NONE",
+          status: MATERIAL_COLOR_STATUS.UNMAPPED
+        }, MATERIAL_COLOR_NEUTRAL);
+      }
+      return Object.assign({}, record, {
+        sourceCoordinates: Object.assign({}, record.sourceCoordinates),
+        registryVersion: MATERIAL_COLOR_REGISTRY_VERSION,
+        matchOrigin: matchOrigin
+      });
+    }
+
+    function materialColorInlineStyle(color) {
+      var resolved = color || resolveMaterialColor(null, null);
+      return "--spg-material-foreground:" + resolved.foreground + ";--spg-material-background:" + resolved.background + ";--spg-material-accent:" + resolved.accent + ";";
+    }
+
+    function applyMaterialColor(element, inputUuid, inputName, options) {
+      if (!element) { return resolveMaterialColor(inputUuid, inputName); }
+      var resolved = resolveMaterialColor(inputUuid, inputName);
+      element.classList.add("spg-material-color-token");
+      if (options && options.label === true) { element.classList.add("spg-material-color-label"); }
+      if (options && options.radar === true) { element.classList.add("spg-material-color-radar"); }
+      element.style.setProperty("--spg-material-foreground", resolved.foreground);
+      element.style.setProperty("--spg-material-background", resolved.background);
+      element.style.setProperty("--spg-material-accent", resolved.accent);
+      element.dataset.materialColorStatus = resolved.status;
+      element.dataset.materialColorRegistry = resolved.registryVersion;
+      element.dataset.materialColorMatch = resolved.matchOrigin;
+      if (!element.dataset.materialUuid) {
+        element.dataset.materialUuid = typeof inputUuid === "string" ? inputUuid : (inputUuid && (inputUuid.commodityUuid || inputUuid.wikiUuid || inputUuid.uuid) || "");
+      }
+      if (!element.dataset.materialName) {
+        element.dataset.materialName = inputName || resolved.canonicalName || "";
+      }
+      return resolved;
+    }
+
+    function auditMaterialColors(records) {
+      var results = (Array.isArray(records) ? records : []).map(function (record) {
+        return resolveMaterialColor(record, record && (record.canonicalName || record.materialName || record.commodityName || record.name));
+      });
+      var unmappedRecords = results.filter(function (result) { return result.status === MATERIAL_COLOR_STATUS.UNMAPPED; }).map(function (result) {
+        return { uuid: result.uuid, canonicalName: result.canonicalName, status: result.status };
+      });
+      return {
+        registryVersion: MATERIAL_COLOR_REGISTRY_VERSION,
+        sourceImage: MATERIAL_COLOR_SOURCE_IMAGE,
+        sourceImageSha256: MATERIAL_COLOR_SOURCE_SHA256,
+        registryRecords: MATERIAL_COLOR_REGISTRY.length,
+        userFacingRecords: results.length,
+        verified: results.length - unmappedRecords.length,
+        unmapped: unmappedRecords.length,
+        unmappedRecords: unmappedRecords
+      };
+    }
+    /* MATERIAL_COLOR_MODEL_END */
+
     var M3_EQUIPMENT_TYPES = Object.freeze({
       HEAD: "MINING_HEAD",
       MODULE: "MINING_MODULE",
@@ -9380,6 +9576,7 @@ code {
       });
       state.materialNamingAudit = auditMaterialNames(state.miningCommodityIndex);
       state.radarSignatureAudit = auditRadarSignatures(state.miningCommodityIndex);
+      state.materialColorAudit = auditMaterialColors(buildMaterialDisplayIndex(state.miningCommodityIndex));
       var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
       state.miningEquipment = {
         heads: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }),
@@ -9409,6 +9606,7 @@ code {
       });
       logger.event("INFO", "MATERIAL_NAMING_AUDIT", "A központi materialnév-projekció elkészült.", state.materialNamingAudit);
       logger.event("INFO", "RADAR_SIGNATURE_AUDIT", "A curated Radar Signature registry lefedettségi auditja elkészült; a Wiki mező csak API_RAW diagnosztika.", state.radarSignatureAudit);
+      logger.event("INFO", "MATERIAL_COLOR_AUDIT", "A canonical Radar Signature képből ellenőrzött materialszín-registry lefedettségi auditja elkészült.", state.materialColorAudit);
       return records;
     }
 
@@ -9437,6 +9635,10 @@ code {
       document.body.dataset.radarSignatureVerified = String(radarAudit.verified);
       document.body.dataset.radarSignatureUnmapped = String(radarAudit.unmapped);
       document.body.dataset.radarSignatureRegistry = radarAudit.registryVersion;
+      var colorAudit = state.materialColorAudit || auditMaterialColors(buildMaterialDisplayIndex(state.miningCommodityIndex));
+      document.body.dataset.materialColorVerified = String(colorAudit.verified);
+      document.body.dataset.materialColorUnmapped = String(colorAudit.unmapped);
+      document.body.dataset.materialColorRegistry = colorAudit.registryVersion;
       document.body.dataset.miningVehicleCount = String(state.miningVehicles.length);
       document.body.dataset.miningHeadCount = String(state.miningEquipment.heads.length);
       renderMaterialDatabaseResults();
@@ -9486,7 +9688,9 @@ code {
         button.dataset.materialUuid = record.uuid;
         button.classList.toggle("active", Boolean(state.selectedMiningCommodity && state.selectedMiningCommodity.uuid === record.uuid));
         var title = document.createElement("strong");
-        title.textContent = resolveMaterialDisplayName(record, "Ismeretlen material");
+        var materialName = resolveMaterialDisplayName(record, "Ismeretlen material");
+        title.textContent = materialName;
+        applyMaterialColor(title, record.uuid, materialName, { label: true });
         var categories = document.createElement("span");
         categories.textContent = (record.categories || []).map(m61CategoryLabel).join(" / ") || "UNKNOWN";
         var radar = document.createElement("small");
@@ -10626,6 +10830,9 @@ code {
         label.textContent = row[0];
         var value = document.createElement("strong");
         value.textContent = String(row[1]);
+        if (row[0] === "Material") {
+          applyMaterialColor(value, commodity.uuid, value.textContent, { label: true });
+        }
         item.append(label, value);
         summary.append(item);
       });
@@ -11287,6 +11494,7 @@ code {
       var radarCard = document.createElement("section");
       radarCard.className = "spg-intelligence-card spg-radar-snapshot";
       radarCard.dataset.detailKind = "radar";
+      applyMaterialColor(radarCard, commodityUuid, materialName, { radar: true });
       radarCard.append(createPreparedDetailButton("Radar Signature", "radar", commodityUuid, "spg-intelligence-trigger"));
       var radarValue = document.createElement("strong");
       radarValue.textContent = mining.radarSignatureDisplay || (mining.radarSignature === null || mining.radarSignature === undefined ? "Nincs adat" : String(mining.radarSignature));
@@ -11395,6 +11603,7 @@ code {
         var name = document.createElement("h3");
         var uuid = document.createElement("small");
         name.textContent = resolveMaterialDisplayName({ uuid: group.materialUuid, materialName: group.materialName }, "Ismeretlen material");
+        applyMaterialColor(name, group.materialUuid, name.textContent, { label: true });
         uuid.textContent = group.materialUuid;
         title.append(name, uuid);
         var status = document.createElement("span");
@@ -11503,6 +11712,7 @@ code {
         var title = document.createElement("div");
         var name = document.createElement("strong");
         name.textContent = resolveMaterialDisplayName({ uuid: group.materialUuid, materialName: group.materialName }, "Ismeretlen material");
+        applyMaterialColor(name, group.materialUuid, name.textContent, { label: true });
         var uuid = document.createElement("small");
         uuid.textContent = group.materialUuid;
         title.append(name, uuid);
@@ -11592,6 +11802,7 @@ code {
       var material = createPreparedDetailButton(materialName, "material", view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, "spg-material-token spg-material-token-accent-pending");
       material.dataset.materialUuid = requirement.ingredientUuid || "";
       material.dataset.materialName = materialName;
+      applyMaterialColor(material, view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, materialName);
       title.append(slot, material);
       var slotStrategies = card.slotStrategies || {};
       var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
@@ -12941,6 +13152,7 @@ code {
           rawName: requirement.materialName
         }, "Ismeretlen material");
         var allocation = resultBySlot.get(requirement.id) || {};
+        var materialColor = resolveMaterialColor(allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, materialDisplayName);
         var trace = traceBySlot.get(requirement.id) || null;
         var intelligence = allocation.materialIntelligence || null;
         var mining = intelligence && intelligence.mining ? intelligence.mining : null;
@@ -12976,6 +13188,7 @@ code {
           materialUuid: requirement.ingredientUuid,
           commodityUuid: allocation.commodityUuid || requirement.commodityUuid || null,
           materialName: materialDisplayName,
+          materialColor: materialColor,
           unit: requirement.unit,
           perCraftUnits: requirement.requiredQuantityUnits,
           requiredUnits: requiredUnits,
@@ -13010,7 +13223,8 @@ code {
           materialToken: {
             uuid: requirement.ingredientUuid,
             name: materialDisplayName,
-            accentClass: "spg-material-token-accent-pending"
+            accentClass: "spg-material-token-accent-pending",
+            color: materialColor
           },
           interactions: {
             material: { kind: "material", id: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid },
@@ -13088,6 +13302,7 @@ code {
 
     function m6RenderFarmAndRefinery(requirement) {
       var mining = requirement.mining || {};
+      var materialColor = requirement.materialColor || resolveMaterialColor(requirement.commodityUuid || requirement.materialUuid, requirement.materialName);
       var farmCards = [];
       (mining.systems || []).forEach(function (system) {
         if (system.status !== "AVAILABLE") { return; }
@@ -13096,7 +13311,7 @@ code {
             '<article class="spg-export-location-card">',
             '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.recommendationLabel || method.category || "Farmhely"), ': ', m6EscapeHtml(method.tierDisplayLabel || method.locationLabel), '</h4></header>',
             '<p class="spg-muted">', m6EscapeHtml(method.tierMemberSummary || method.locationSummary || ""), '</p>',
-            '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(mining.radarSignatureDisplay || m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
+            '<div class="spg-export-radar spg-material-color-radar" data-material-color-status="', m6EscapeHtml(materialColor.status), '" style="', m6EscapeHtml(materialColorInlineStyle(materialColor)), '"><span>Radar Signature</span><strong>', m6EscapeHtml(mining.radarSignatureDisplay || m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
             '<div class="spg-export-metrics">',
             '<span><small>Módszer</small><strong>', m6EscapeHtml(formatMiningMethodLabel(method.method)), '</strong></span>',
             '<span><small>Spawn</small><strong>', m6EscapeHtml(m6FormatMetric(method.spawn, "%")), '</strong></span>',
@@ -13136,6 +13351,7 @@ code {
     }
 
     function m6RenderRequirement(requirement) {
+      var materialColor = requirement.materialColor || resolveMaterialColor(requirement.commodityUuid || requirement.materialUuid, requirement.materialName);
       var batches = requirement.allocatedBatches.length ? requirement.allocatedBatches.map(function (batch) {
         return '<li><strong>' + m6EscapeHtml(batch.quality === null || batch.quality === undefined ? "Q?" : "Q" + batch.quality) + '</strong><span>' +
           m6EscapeHtml(m6FormatUnits(requirement.unit, batch.allocatedUnits)) + '</span></li>';
@@ -13145,7 +13361,7 @@ code {
       }).join("") : '<span class="spg-export-stat-chip">Nincs API stat-adat</span>';
       return [
         '<article class="spg-export-ingredient-card" data-status="', m6EscapeHtml(requirement.status), '" data-bottleneck="', requirement.bottleneck ? "true" : "false", '">',
-        '<header><div><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span><button type="button" class="spg-material-token spg-material-token-accent-pending" data-detail-kind="material" data-detail-id="', m6EscapeHtml(requirement.commodityUuid || requirement.materialUuid), '" data-material-uuid="', m6EscapeHtml(requirement.materialUuid), '" data-material-name="', m6EscapeHtml(requirement.materialName), '">', m6EscapeHtml(requirement.materialName), '</button></div>',
+        '<header><div><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span><button type="button" class="spg-material-token spg-material-token-accent-pending spg-material-color-token" data-detail-kind="material" data-detail-id="', m6EscapeHtml(requirement.commodityUuid || requirement.materialUuid), '" data-material-uuid="', m6EscapeHtml(requirement.materialUuid), '" data-material-name="', m6EscapeHtml(requirement.materialName), '" data-material-color-status="', m6EscapeHtml(materialColor.status), '" data-material-color-registry="', m6EscapeHtml(materialColor.registryVersion), '" data-material-color-match="', m6EscapeHtml(materialColor.matchOrigin), '" style="', m6EscapeHtml(materialColorInlineStyle(materialColor)), '">', m6EscapeHtml(requirement.materialName), '</button></div>',
         '<span class="spg-export-status ', requirement.status === "SATISFIED" ? "is-pass" : "is-fail", '">', requirement.status === "SATISFIED" ? "Fedezve" : "Hiány", '</span></header>',
         '<div class="spg-export-stats">', stats, '</div>',
         '<div class="spg-export-quantity-grid">',

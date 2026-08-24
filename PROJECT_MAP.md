@@ -43,6 +43,9 @@
 - V003-C006 final-card kapu: `tools/validate-v003-c006.ps1`; C006 adatmodell/hydration/standalone teszt, teljes C001-C005 + M1-M6.1 + C04, elo Wiki audit es V002-integritas.
 - V003-C006 celzott teszt: `tools/run-v003-c006-tests.mjs`; JS-300 vegso view-model, quantity/max/allocation, cached/uncached offline hydration, teljes material snapshot es kozos standalone render.
 - V003-C006 riport: `docs/V003_C006_FINAL_CARD_REPORT.md`; layout, hydration, offline viselkedes, export, Chrome es V002-integritas bizonyitek.
+- V003-C007 color kapu: `tools/validate-v003-c007.ps1`; canonical kep-pixelaudit, celzott color/resolver/export teszt, teljes C001-C006 + M1-M6.1 + C04 es V002-integritas.
+- V003-C007 celzott teszt/audit: `tools/run-v003-c007-tests.mjs` es `tools/audit-v003-c007-colors.mjs`; exact Wiki UUID registry, 33 source pixel, neutral fallback, UI/export consumer es JS-300 bizonyitek.
+- V003-C007 riport: `docs/V003_C007_COLOR_AUDIT.md`; forraskep, registry, exact szinek, unmapped lista, fogyasztok, export es Chrome bizonyitek.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -95,6 +98,7 @@
 - `test-artifacts/V003-C004/`: Radar Signature/SCMDB/Top-3 elo auditok, standalone export, teljes PASS summary es valodi Chrome localhost bizonyitek.
 - `test-artifacts/V003-C005/`: a consistency closure elo auditja, standalone exportja es teljes PASS summaryja.
 - `test-artifacts/V003-C006/`: a final Crafting Card teljes regresszios summaryja, Chrome evidence es standalone artifactja.
+- `test-artifacts/V003-C007/`: material color pixelaudit, teljes regresszios summary, Chrome evidence es standalone artifact.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

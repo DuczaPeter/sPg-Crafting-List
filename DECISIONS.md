@@ -90,3 +90,13 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Stileron UEX eredmenye exact `Nincs biztonságos UEX refinery adat`; fuzzy parositas tovabbra is tilos.
 - A final cardon a material tokenek neutralis, jovobeli accent hookot es stabil UUID/nev data-attributumot kapnak. Uj materialszin vagy C008 reszletnezet nem resze a C006-nak.
 - Stabil V003 release/tag tovabbra sem engedelyezett.
+
+## 2026-08-24 - V003-C007 material color registry
+
+- A materialszin kanonikus forrasa az `Info/Radar Signature.png` SHA-ellenorzott kep es az abbol pixelenkent auditalt, beagyazott `MATERIAL_COLOR_REGISTRY`; a PNG runtime sidecar nem lehet.
+- A registry exact Wiki commodity UUID-t, canonical nevet, source sort/koordinatat, foregroundot, backgroundot, border/accentet, forrasverziot es `VERIFIED_COLOR` statuszt tarol.
+- A kepen bizonyitott hue a foreground es border. A chip background ugyanennek a hue-nak determinisztikus 16%-os UI tintje; nem uj szemantikai szin es nem modositja az identity hue-t.
+- Resolver sorrend: exact Wiki UUID, majd egyetlen exact canonical nev a legacy ingredient/cache rekordokhoz. Fuzzy, rarity, Quality, Wiki signature, SCMDB, mining-category, random vagy hash szinkovetkeztetes tilos.
+- Bizonyitek nelkul `UNMAPPED_COLOR` neutralis fallback jar; a status diagnosztikaban megmarad, de a normal UI nem ir ki kulon UNKNOWN COLOR szoveget.
+- Crafting Card, Radar accent, My Materials, Combined Materials, Material Database es standalone export ugyanazt a resolvert es generic CSS-valtozokat hasznalja.
+- Stabil V003 release/tag es V003-C008 tovabbra sincs engedelyezve.
