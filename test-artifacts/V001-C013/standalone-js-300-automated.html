@@ -1,0 +1,4304 @@
+<!doctype html><html lang="hu"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="sPg Crafting List"><title>sPg Crafting List – JS-300</title><style>500;700;800&family=Roboto:wght@300;400;500;700;900&display=swap");
+
+:root {
+  color-scheme: dark;
+  --assignment-accent: #14d9ff;
+  --assignment-accent-dark: #00acc4;
+  --assignment-success: #4caf50;
+  --assignment-warning: #ffc107;
+  --assignment-danger: #f44336;
+  --text-primary: #e3eaf2;
+  --text-secondary: #90a4ae;
+  --text-muted: #b0bec5;
+  --page-bg: #1a2636;
+  --page-bg-alt: #0f1720;
+  --sc-primary: #ffb300;
+  --sc-primary-700: #c88700;
+  --bg: var(--page-bg-alt);
+  --surface: #162338;
+  --surface-soft: #1a2636;
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --line: rgba(24, 218, 255, 0.5);
+  --line-soft: rgba(24, 218, 255, 0.28);
+  --accent: var(--sc-primary);
+  --accent-strong: #fff0c2;
+  --danger: var(--assignment-danger);
+  --warning: var(--assignment-warning);
+  --good: var(--assignment-success);
+  --shadow: 0 0 0 1px rgba(24, 218, 255, 0.16) inset, 0 14px 34px rgba(0, 0, 0, 0.36), 0 0 24px rgba(24, 218, 255, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  background-color: var(--page-bg-alt);
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(0, 188, 212, 0.12), transparent 26%),
+    radial-gradient(circle at 80% 0%, rgba(255, 179, 0, 0.08), transparent 18%),
+    linear-gradient(180deg, rgba(15, 23, 32, 0.96) 0%, rgba(26, 38, 54, 0.98) 42%, #0f1720 100%);
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 1px solid rgba(24, 218, 255, 0.53);
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.96));
+  color: var(--ink);
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:hover {
+  border-color: rgba(24, 218, 255, 0.82);
+  box-shadow: 0 0 0 1px rgba(24, 218, 255, 0.18), 0 0 18px rgba(24, 218, 255, 0.16);
+}
+
+button.primary {
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.26), rgba(200, 135, 0, 0.14));
+  color: #fff0c2;
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+button.primary:hover {
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.34), rgba(200, 135, 0, 0.18));
+  border-color: rgba(255, 179, 0, 0.92);
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(24, 218, 255, 0.53);
+  border-radius: 12px;
+  padding: 0 12px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.96));
+  color: var(--ink);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--assignment-accent);
+  box-shadow: 0 0 0 3px rgba(24, 218, 255, 0.26), 0 0 20px rgba(24, 218, 255, 0.23);
+}
+
+option {
+  background-color: #0f1720;
+  color: var(--ink);
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  color: var(--ink);
+}
+
+.check-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.auth-view {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 48px;
+  align-items: center;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.brand-block h1 {
+  margin: 0;
+  font-size: 54px;
+  line-height: 1;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 18px rgba(24, 218, 255, 0.14);
+}
+
+.brand-block p:last-child {
+  max-width: 580px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.98));
+  border: 2px solid rgba(0, 188, 212, 0.68);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.auth-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.auth-tabs button.active {
+  color: #fff0c2;
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.26), rgba(200, 135, 0, 0.14));
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.main-view {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.topbar h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  position: relative;
+}
+
+.data-source-label {
+  border: 1px solid rgba(24, 218, 255, 0.42);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(16, 28, 44, 0.86);
+  color: var(--accent-strong);
+  font-size: 12px;
+}
+
+.user-profile-button {
+  min-height: 34px;
+  padding: 0 4px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink);
+  cursor: default;
+}
+
+.user-profile-button:hover {
+  border-color: transparent;
+}
+
+.user-profile-button.is-admin {
+  padding: 0 10px;
+  border-color: rgba(24, 218, 255, 0.42);
+  background: rgba(16, 28, 44, 0.86);
+  color: var(--accent-strong);
+  cursor: pointer;
+}
+
+.user-profile-button.is-admin:hover {
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+.notification-shell {
+  position: relative;
+}
+
+.notification-button {
+  position: relative;
+  min-height: 34px;
+  padding-right: 12px;
+}
+
+.notification-button.has-unread {
+  color: #fff0c2;
+  border-color: rgba(255, 179, 0, 0.72);
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.22), rgba(15, 23, 32, 0.96));
+}
+
+.notification-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(255, 179, 0, 0.22);
+  border: 1px solid rgba(255, 179, 0, 0.78);
+  color: #fff0c2;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.notification-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  width: min(440px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.48);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(15, 23, 32, 0.98), rgba(26, 38, 54, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.notification-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.notification-panel-head strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.notification-panel-head div,
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.notification-panel button {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 8px;
+  max-height: 430px;
+  overflow: auto;
+}
+
+.notification-card {
+  display: grid;
+  gap: 8px;
+  padding: 11px;
+  border: 1px solid rgba(24, 218, 255, 0.26);
+  border-radius: 12px;
+  background: rgba(9, 16, 25, 0.42);
+}
+
+.notification-card.unread {
+  border-color: rgba(255, 179, 0, 0.6);
+  background: rgba(255, 179, 0, 0.08);
+}
+
+.notification-card strong {
+  color: #eef7ff;
+}
+
+.notification-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.notification-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #d8e8fb;
+  font-size: 12px;
+}
+
+.notification-empty {
+  padding: 14px;
+  border: 1px dashed rgba(24, 218, 255, 0.3);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.tabs button.active {
+  color: #fff0c2;
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.26), rgba(200, 135, 0, 0.14));
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+.toolbar,
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ore-market-picker {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ore-filter-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.ore-filter-head h3 {
+  margin: 0 0 5px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.ore-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ore-quality-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ore-quality-row button {
+  min-width: 62px;
+  padding: 8px 10px;
+  font-weight: 800;
+}
+
+.ore-quality-row button.active {
+  color: #fff0c2;
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.28), rgba(200, 135, 0, 0.14));
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+.ore-material-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.ore-material-card {
+  display: grid;
+  gap: 3px;
+  min-height: 72px;
+  padding: 10px 8px;
+  text-align: left;
+  background: rgba(16, 28, 44, 0.86);
+  border-radius: 10px;
+}
+
+.ore-material-card strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.05;
+}
+
+.ore-material-card span {
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.ore-material-card.gold {
+  border-color: rgba(255, 179, 0, 0.86);
+  background: linear-gradient(180deg, rgba(77, 55, 11, 0.92), rgba(33, 32, 25, 0.96));
+}
+
+.ore-material-card.gold span {
+  color: #ffbf2f;
+}
+
+.ore-material-card.purple {
+  border-color: rgba(205, 109, 255, 0.82);
+  background: linear-gradient(180deg, rgba(62, 33, 84, 0.9), rgba(24, 28, 43, 0.96));
+}
+
+.ore-material-card.purple span {
+  color: #d46dff;
+}
+
+.ore-material-card.blue {
+  border-color: rgba(66, 169, 255, 0.82);
+  background: linear-gradient(180deg, rgba(22, 63, 101, 0.9), rgba(17, 33, 52, 0.96));
+}
+
+.ore-material-card.blue span {
+  color: #4db7ff;
+}
+
+.ore-material-card.green {
+  border-color: rgba(14, 212, 156, 0.82);
+  background: linear-gradient(180deg, rgba(13, 78, 57, 0.9), rgba(14, 42, 38, 0.96));
+}
+
+.ore-material-card.green span {
+  color: #19dfaa;
+}
+
+.ore-material-card.gray {
+  border-color: rgba(168, 187, 203, 0.62);
+  background: linear-gradient(180deg, rgba(38, 51, 66, 0.92), rgba(20, 30, 42, 0.96));
+}
+
+.ore-material-card.gray span {
+  color: #b7c8d8;
+}
+
+.ore-material-card.all {
+  border-color: rgba(24, 218, 255, 0.82);
+  background: linear-gradient(180deg, rgba(16, 73, 90, 0.86), rgba(15, 31, 45, 0.96));
+}
+
+.ore-material-card.all span {
+  color: var(--accent-strong);
+}
+
+.ore-material-card.active {
+  border-color: rgba(255, 240, 194, 0.96);
+  box-shadow: 0 0 0 1px rgba(255, 240, 194, 0.34) inset, 0 0 18px rgba(24, 218, 255, 0.2);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.inventory-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sell-planner-head,
+.sell-planner-panel-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.sell-planner-head {
+  margin-bottom: 14px;
+}
+
+.sell-planner-head h3,
+.sell-planner-panel-head h3 {
+  margin: 0 0 5px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.sell-planner-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.74fr) minmax(0, 1.45fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.sell-planner-stock-panel {
+  box-shadow: none;
+}
+
+.sell-planner-stock-list,
+.sell-planner-results,
+.sell-planner-result-side,
+.sell-line-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sell-planner-select-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sell-planner-select-actions button {
+  min-height: 34px;
+  padding: 6px 10px;
+}
+
+.sell-stock-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 72px minmax(120px, auto);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 10px;
+  background: rgba(9, 16, 25, 0.38);
+  cursor: pointer;
+}
+
+.sell-stock-row.selected {
+  border-color: rgba(44, 225, 148, 0.42);
+  background: rgba(23, 77, 61, 0.32);
+}
+
+.sell-stock-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-strong);
+}
+
+.sell-stock-row strong {
+  overflow: hidden;
+  color: #eef7ff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sell-stock-row span {
+  color: #d8e8fb;
+  font-weight: 800;
+  text-align: right;
+}
+
+.sell-planner-summary {
+  box-shadow: none;
+}
+
+.sell-planner-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sell-planner-summary-grid div {
+  display: grid;
+  gap: 3px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 10px;
+  background: rgba(9, 16, 25, 0.38);
+}
+
+.sell-planner-summary-grid span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sell-planner-summary-grid strong {
+  color: #fff0c2;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 18px;
+}
+
+.sell-location-card {
+  overflow: hidden;
+  border: 1px solid rgba(24, 218, 255, 0.52);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.9), rgba(15, 23, 32, 0.96));
+}
+
+.sell-location-card summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, auto);
+  gap: 12px;
+  align-items: center;
+  padding: 13px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sell-location-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.sell-location-card summary strong {
+  display: block;
+  overflow: hidden;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sell-location-score {
+  display: grid;
+  gap: 3px;
+  text-align: right;
+}
+
+.sell-location-score span {
+  color: var(--accent-strong);
+  font-weight: 900;
+}
+
+.sell-location-score strong {
+  color: #fff0c2;
+}
+
+.sell-location-materials {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+.sell-location-card > p,
+.sell-location-card .sell-line-list {
+  margin: 0 14px 14px;
+}
+
+.sell-line-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, auto);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.24);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.62);
+}
+
+.sell-line-row strong {
+  color: #eef7ff;
+}
+
+.sell-line-row > div:last-child {
+  text-align: right;
+}
+
+.sell-planner-missing {
+  border-color: rgba(255, 179, 0, 0.42);
+  box-shadow: none;
+}
+
+.sell-planner-missing p,
+.empty-panel {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.empty-panel {
+  padding: 14px;
+  border: 1px dashed rgba(24, 218, 255, 0.32);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.good-text {
+  color: #a5e6b0;
+}
+
+.blueprint-toolbar {
+  grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 0.8fr) minmax(180px, 0.8fr);
+}
+
+.blueprint-mode-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.blueprint-mode-row button.active {
+  color: #fff0c2;
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.26), rgba(200, 135, 0, 0.14));
+  border-color: rgba(255, 179, 0, 0.78);
+}
+
+.blueprint-user-import-panel {
+  margin-bottom: 12px;
+}
+
+.blueprint-import-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(150px, 220px);
+  gap: 12px;
+  align-items: end;
+}
+
+.blueprint-source-field {
+  display: grid;
+  gap: 6px;
+}
+
+.blueprint-source-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 42px;
+  padding: 6px;
+  border: 1px solid rgba(24, 218, 255, 0.53);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.96));
+}
+
+.blueprint-source-label {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blueprint-source-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.blueprint-import-progress {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.blueprint-import-progress progress {
+  width: 100%;
+  height: 12px;
+}
+
+.blueprint-import-progress span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(3, 8, 14, 0.72);
+}
+
+.modal-window {
+  width: min(980px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.98), rgba(15, 23, 32, 0.99));
+  border: 1px solid rgba(24, 218, 255, 0.75);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.52), 0 0 26px rgba(24, 218, 255, 0.16);
+}
+
+.mining-scan-modal {
+  width: min(1280px, calc(100vw - 48px));
+  max-height: min(900px, calc(100vh - 48px));
+}
+
+.mining-scan-modal-body {
+  max-height: calc(100vh - 112px);
+  overflow: auto;
+  padding: 16px;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-head h3 {
+  margin: 0;
+}
+
+.blueprint-import-modal .admin-import-result {
+  max-height: calc(100vh - 150px);
+  margin-top: 0;
+  overflow: auto;
+  padding: 16px;
+}
+
+.blueprint-filter-board {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.95fr) minmax(240px, 0.95fr) minmax(360px, 1.9fr);
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px;
+  background: rgba(3, 17, 26, 0.9);
+  border: 1px solid rgba(24, 218, 255, 0.42);
+  border-radius: 14px;
+  color: #ecfbff;
+}
+
+.filter-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-section,
+.filter-panel {
+  border: 1px solid rgba(24, 218, 255, 0.34);
+  border-radius: 12px;
+  background: rgba(6, 23, 34, 0.86);
+  padding: 0;
+  min-height: 210px;
+}
+
+.filter-section summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  color: #eafaff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.filter-panel {
+  padding-top: 12px;
+}
+
+.filter-section summary::after,
+.filter-subsection summary::after {
+  content: "⌄";
+  float: right;
+  color: #81c8e7;
+}
+
+.filter-chip-row,
+.filter-subgrid,
+.filter-nested-block {
+  padding: 0 12px 12px;
+}
+
+.filter-nested-block h4 {
+  margin: 0 0 8px;
+  padding-top: 10px;
+  border-top: 1px solid #17384d;
+  color: #eafaff;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filter-nested-block h4:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.filter-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #eafaff;
+  background: rgba(7, 29, 43, 0.92);
+  border-color: rgba(24, 218, 255, 0.34);
+  font-weight: 700;
+}
+
+.filter-chip.active {
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.26), rgba(200, 135, 0, 0.14));
+  border-color: rgba(255, 179, 0, 0.78);
+  color: #fff0c2;
+}
+
+.filter-subsection {
+  margin-top: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.24);
+  border-radius: 10px;
+  background: rgba(4, 19, 29, 0.82);
+}
+
+.filter-subsection summary {
+  padding: 10px;
+  color: #eafaff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.blueprint-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.blueprint-side {
+  display: grid;
+  gap: 10px;
+}
+
+.blueprint-list {
+  display: grid;
+  gap: 8px;
+  max-height: 56vh;
+  overflow: auto;
+}
+
+.blueprint-mining-debug {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  box-shadow: none;
+}
+
+.debug-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.debug-head strong {
+  font-size: 13px;
+}
+
+.debug-head button {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.blueprint-mining-debug pre {
+  max-height: 230px;
+  margin: 0;
+  overflow: auto;
+  padding: 9px;
+  background: rgba(6, 23, 34, 0.9);
+  border: 1px solid rgba(24, 218, 255, 0.32);
+  border-radius: 6px;
+  color: #d9f6ff;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.blueprint-card {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  height: auto;
+  min-height: 96px;
+  padding: 12px;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.92), rgba(15, 23, 32, 0.96));
+  border-color: rgba(24, 218, 255, 0.34);
+}
+
+.blueprint-card.active {
+  border-color: rgba(255, 179, 0, 0.82);
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.16), rgba(24, 218, 255, 0.08));
+  box-shadow: 0 0 0 1px rgba(255, 179, 0, 0.18) inset, 0 0 18px rgba(255, 179, 0, 0.14);
+}
+
+.blueprint-card strong {
+  font-size: 15px;
+}
+
+.blueprint-card span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.wishlist-chip {
+  width: fit-content;
+  padding: 3px 7px;
+  color: #fff0c2 !important;
+  background: rgba(255, 179, 0, 0.12);
+  border: 1px solid rgba(255, 179, 0, 0.34);
+  border-radius: 999px;
+  font-size: 11px !important;
+  font-weight: 800;
+}
+
+.blueprint-detail {
+  box-shadow: none;
+}
+
+.blueprint-detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.blueprint-detail-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.blueprint-detail h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.external-link {
+  color: var(--accent-strong);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.blueprint-price-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.3);
+  border-radius: 14px;
+}
+
+.blueprint-price-panel strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #eef7ff;
+}
+
+.blueprint-price-panel.complete {
+  border-color: rgba(255, 179, 0, 0.36);
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.1), rgba(16, 28, 44, 0.72));
+}
+
+.blueprint-price-panel.incomplete {
+  border-color: rgba(255, 193, 7, 0.28);
+}
+
+.blueprint-total-price {
+  flex: 0 0 auto;
+  color: #fff0c2;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.blueprint-total-price-list {
+  display: grid;
+  gap: 5px;
+  min-width: 210px;
+}
+
+.blueprint-total-price-list span {
+  display: grid;
+  grid-template-columns: 64px minmax(120px, auto);
+  gap: 12px;
+  align-items: baseline;
+  padding: 5px 8px;
+  background: rgba(15, 23, 32, 0.54);
+  border: 1px solid rgba(255, 179, 0, 0.18);
+  border-radius: 9px;
+}
+
+.blueprint-total-price-list em {
+  color: #d8e8fb;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.blueprint-total-price-list strong {
+  color: #fff0c2;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.blueprint-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 12px;
+}
+
+.blueprint-table th,
+.blueprint-table td {
+  border-bottom: 1px solid rgba(24, 218, 255, 0.24);
+  padding: 12px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.blueprint-table th {
+  color: #9cc5df;
+  background: rgba(9, 16, 25, 0.38);
+  border-top: 1px solid rgba(24, 218, 255, 0.18);
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.blueprint-table .meta {
+  display: block;
+  margin-top: 2px;
+  color: #8da8bf;
+  font-size: 12px;
+}
+
+.blueprint-table td:first-child > strong {
+  display: block;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.blueprint-table th:first-child,
+.blueprint-table td:first-child {
+  width: auto;
+}
+
+.blueprint-table th:nth-child(2),
+.blueprint-table td:nth-child(2) {
+  width: 96px;
+}
+
+.blueprint-table th:nth-child(3),
+.blueprint-table td:nth-child(3) {
+  width: 116px;
+}
+
+.blueprint-table th:nth-child(4),
+.blueprint-table td:nth-child(4) {
+  width: 86px;
+}
+
+.blueprint-qty-cell,
+.blueprint-status-cell {
+  min-width: 0;
+  vertical-align: middle !important;
+}
+
+.blueprint-qty-cell {
+  text-align: center;
+}
+
+.blueprint-status-cell {
+  text-align: center;
+}
+
+.blueprint-qty-cell .quantity-badge,
+.blueprint-status-cell .blueprint-status-pill {
+  transform: translateY(10px);
+}
+
+.blueprint-status-pill {
+  display: inline-flex;
+  min-width: 54px;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 7px;
+  background: rgba(15, 23, 32, 0.62);
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.blueprint-status-pill.ok {
+  border-color: rgba(44, 225, 148, 0.34);
+  background: rgba(30, 86, 65, 0.34);
+}
+
+.blueprint-status-pill.warning {
+  border-color: rgba(255, 179, 0, 0.46);
+  background: rgba(91, 69, 18, 0.32);
+}
+
+.quantity-badge {
+  display: inline-grid;
+  min-width: 72px;
+  gap: 1px;
+  justify-items: center;
+  padding: 5px 8px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 7px;
+  background: rgba(15, 23, 32, 0.56);
+}
+
+.quantity-badge.single {
+  min-height: 30px;
+  align-items: center;
+}
+
+.quantity-badge.zero {
+  border-color: rgba(141, 168, 191, 0.18);
+  background: rgba(9, 16, 25, 0.42);
+}
+
+.quantity-badge.empty {
+  min-height: 30px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.quantity-badge span {
+  display: grid;
+  grid-template-columns: minmax(36px, max-content) max-content;
+  gap: 5px;
+  align-items: baseline;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.quantity-badge strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.quantity-badge.zero strong,
+.quantity-badge.zero em {
+  color: #8da8bf;
+}
+
+.quantity-badge em {
+  color: #d8e8fb;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.wishlist-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.wishlist-head h3,
+.wishlist-card h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.wishlist-list {
+  display: grid;
+  gap: 14px;
+}
+
+.wishlist-card {
+  box-shadow: none;
+}
+
+.wishlist-card.collapsed {
+  min-height: 76px;
+  padding: 12px 16px;
+}
+
+.wishlist-card.expanded {
+  padding: 16px;
+}
+
+.wishlist-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.wishlist-card.expanded .wishlist-card-head {
+  margin-bottom: 12px;
+}
+
+.wishlist-card-head .meta {
+  margin: 0;
+}
+
+.wishlist-card.collapsed h3 {
+  margin-bottom: 7px;
+}
+
+.wishlist-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.wishlist-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.wishlist-summary span {
+  padding: 6px 9px;
+  color: var(--muted);
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.wishlist-summary strong {
+  color: #eef7ff;
+}
+
+.wishlist-empty {
+  display: grid;
+  gap: 5px;
+}
+
+.wishlist-table {
+  margin-bottom: 0;
+}
+
+.blueprint-owners-modal {
+  max-width: 560px;
+}
+
+.blueprint-owners-body {
+  display: grid;
+  gap: 12px;
+}
+
+.blueprint-owner-list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.blueprint-owner-list li {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 10px;
+}
+
+.blueprint-owner-list strong {
+  color: #eef7ff;
+}
+
+.blueprint-coverage-list {
+  display: grid;
+  gap: 5px;
+  margin-top: 9px;
+  max-width: 620px;
+}
+
+.blueprint-coverage-item {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(130px, 0.9fr) minmax(180px, 1.4fr);
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  background: rgba(15, 23, 32, 0.54);
+  border: 1px solid rgba(24, 218, 255, 0.24);
+  border-left: 3px solid rgba(24, 218, 255, 0.42);
+  border-radius: 9px;
+  color: #b9d6e7;
+  font-size: 12px;
+}
+
+.blueprint-coverage-item.selected {
+  background: rgba(17, 47, 45, 0.45);
+  border-color: rgba(44, 225, 148, 0.28);
+  border-left-color: rgba(44, 225, 148, 0.64);
+  color: #d8e8fb;
+}
+
+.blueprint-coverage-item strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 12px;
+}
+
+.blueprint-coverage-item span:last-child {
+  grid-column: 1 / -1;
+  color: #8da8bf;
+}
+
+.blueprint-coverage-empty {
+  margin-top: 8px;
+  max-width: 360px;
+  padding: 6px 8px;
+  color: #8da8bf;
+  font-size: 12px;
+  background: rgba(15, 23, 32, 0.34);
+  border: 1px solid rgba(24, 218, 255, 0.14);
+  border-radius: 8px;
+}
+
+.mining-locator-frame {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mining-suggestion {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.38);
+  border-radius: 14px;
+}
+
+.mining-suggestion-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.mining-suggestion-head span {
+  color: var(--muted);
+}
+
+.mining-alias-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mining-radar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  background: rgba(15, 23, 32, 0.58);
+  border: 1px solid rgba(24, 218, 255, 0.24);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mining-radar-title {
+  color: #d8e8fb;
+  font-weight: 800;
+}
+
+.mining-radar-desc {
+  color: var(--muted);
+}
+
+.mining-radar-values {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.mining-radar-values b {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 7px;
+  border: 1px solid rgba(24, 218, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(24, 218, 255, 0.08);
+  color: var(--assignment-accent);
+  font-weight: 800;
+}
+
+.mining-radar.radar-purple .mining-radar-values b {
+  border-color: rgba(190, 120, 255, 0.48);
+  background: rgba(190, 120, 255, 0.1);
+  color: #d8b6ff;
+}
+
+.mining-radar.radar-green .mining-radar-values b {
+  border-color: rgba(124, 255, 207, 0.42);
+  background: rgba(124, 255, 207, 0.08);
+  color: #9fffe3;
+}
+
+.mining-radar.radar-gray .mining-radar-values b {
+  border-color: rgba(176, 190, 197, 0.42);
+  background: rgba(176, 190, 197, 0.08);
+  color: #dce8f8;
+}
+
+.mining-location-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mining-location-list li {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(76px, auto) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(15, 23, 32, 0.64);
+  border: 1px solid rgba(24, 218, 255, 0.24);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mining-system-row {
+  grid-template-columns: minmax(230px, 1fr) minmax(120px, auto) !important;
+  padding: 5px 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.18) !important;
+  border-radius: 0 !important;
+}
+
+.mining-system-row:last-child {
+  border-bottom: 0 !important;
+}
+
+.mining-system-locations {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.mining-system-scores {
+  color: var(--assignment-accent);
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mining-score {
+  color: var(--assignment-accent);
+  font-size: 16px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.mining-location-list small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+}
+
+.inventory-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.35fr) minmax(90px, 0.62fr) minmax(160px, 1fr) minmax(130px, 0.8fr) minmax(118px, 0.74fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.92), rgba(15, 23, 32, 0.96));
+  border: 1px solid rgba(24, 218, 255, 0.34);
+  border-radius: 14px;
+}
+
+.inventory-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.inventory-material-cell {
+  display: grid;
+  gap: 2px;
+}
+
+.inventory-quality {
+  margin-top: 5px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.inventory-value {
+  color: #eef7ff;
+  font-weight: 800;
+}
+
+.inventory-quantity-badge {
+  display: inline-grid;
+  gap: 2px;
+  min-width: 92px;
+}
+
+.inventory-quantity-badge span {
+  display: grid;
+  grid-template-columns: minmax(42px, max-content) max-content;
+  gap: 6px;
+  align-items: baseline;
+  justify-content: start;
+  white-space: nowrap;
+}
+
+.inventory-quantity-badge strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.inventory-quantity-badge em {
+  color: #d8e8fb;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.inventory-price-cell {
+  justify-self: end;
+}
+
+.inventory-price-help {
+  align-self: end;
+  margin: 0;
+  padding: 9px 0;
+}
+
+.mining-scan-head,
+.seller-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.seller-head {
+  margin-bottom: 14px;
+}
+
+.seller-inventory-filter {
+  margin-top: 0;
+}
+
+.seller-inventory-empty {
+  display: grid;
+  gap: 5px;
+}
+
+.mining-scan-head h3,
+.seller-head h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.mining-scan-form,
+.mining-scan-import,
+.mining-scan-summary {
+  margin-top: 14px;
+}
+
+.mining-scan-import-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.mining-scan-import-head h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.mining-scan-import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mining-scan-import-result {
+  margin-top: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(9, 16, 25, 0.38);
+}
+
+.mining-scan-import-result summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  color: #d8e8fb;
+  font-weight: 800;
+}
+
+.mining-scan-import-result pre {
+  max-height: 220px;
+  margin: 0;
+  overflow: auto;
+  padding: 10px;
+  border-top: 1px solid rgba(24, 218, 255, 0.14);
+  color: #b9d6e7;
+  font-size: 12px;
+  font-family: "Roboto Mono", Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+.mining-scan-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(24, 218, 255, 0.14);
+}
+
+.mining-scan-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.mining-scan-summary-grid div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(15, 23, 32, 0.5);
+}
+
+.mining-scan-summary-grid span {
+  color: #8da8bf;
+  font-size: 11px;
+}
+
+.mining-scan-summary-grid strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.mining-scan-list {
+  margin-top: 14px;
+}
+
+.mining-scan-card {
+  grid-template-columns: minmax(180px, 1.1fr) minmax(96px, 0.55fr) minmax(190px, 1fr) minmax(130px, 0.7fr) minmax(130px, 0.7fr) auto;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.price-stack {
+  display: inline-grid;
+  min-width: 118px;
+  margin-top: 3px;
+  padding: 6px 8px;
+  gap: 0;
+  line-height: 1.2;
+  background: rgba(255, 179, 0, 0.08);
+  border: 1px solid rgba(255, 179, 0, 0.22);
+  border-radius: 10px;
+}
+
+.price-stack span {
+  display: grid;
+  grid-template-columns: minmax(54px, max-content) max-content;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  padding: 3px 0;
+  white-space: nowrap;
+}
+
+.price-stack span + span {
+  border-top: 1px solid rgba(255, 179, 0, 0.16);
+}
+
+.price-stack.price-review {
+  min-width: 138px;
+  background: rgba(255, 179, 0, 0.05);
+}
+
+.price-stack.price-review span {
+  grid-template-columns: 1fr;
+  gap: 2px;
+  white-space: normal;
+}
+
+.price-stack.price-review strong {
+  text-align: left;
+}
+
+.price-stack strong {
+  color: #fff0c2;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.price-stack em {
+  color: #d8e8fb;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.danger {
+  color: var(--danger);
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.ok {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.success {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.consumption-rows {
+  display: grid;
+  gap: 10px;
+}
+
+.consumption-row,
+.actions-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 120px auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.consumption-row-detail {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.consumption-row-detail span {
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 999px;
+  padding: 5px 9px;
+}
+
+.result-panel {
+  margin-top: 14px;
+  box-shadow: none;
+}
+
+.event-log {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.event-item {
+  background: rgba(16, 28, 44, 0.72);
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.debug-log-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.debug-log-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.debug-log-head h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.debug-log-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.debug-log-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.debug-log-summary span {
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(9, 16, 25, 0.38);
+  color: #b9d8ea;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+
+.app-debug-log {
+  min-height: 440px;
+  max-height: calc(100vh - 260px);
+  margin: 0;
+  overflow: auto;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 12px;
+  background: rgba(3, 8, 14, 0.58);
+  color: #d8e8fb;
+  padding: 12px;
+  font-family: Consolas, "Roboto Mono", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.admin-import-panel {
+  margin-top: 14px;
+}
+
+.admin-sync-panel {
+  margin-top: 14px;
+}
+
+.admin-sync-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-sync-pill {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(15, 23, 32, 0.62);
+  color: #d8e8fb;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.admin-sync-pill.ok {
+  border-color: rgba(44, 225, 148, 0.42);
+  background: rgba(30, 86, 65, 0.36);
+  color: #d7ffef;
+}
+
+.admin-sync-pill.warning {
+  border-color: rgba(255, 179, 0, 0.5);
+  background: rgba(91, 69, 18, 0.34);
+  color: #fff0c2;
+}
+
+.admin-sync-pill.danger {
+  border-color: rgba(255, 95, 95, 0.54);
+  background: rgba(101, 28, 34, 0.38);
+  color: #ffd0d0;
+}
+
+.admin-sync-summary {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(90px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-sync-summary div {
+  display: grid;
+  gap: 4px;
+  padding: 9px 10px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(15, 23, 32, 0.5);
+}
+
+.admin-sync-summary span {
+  color: #8da8bf;
+  font-size: 11px;
+}
+
+.admin-sync-summary strong {
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 13px;
+}
+
+.admin-sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-sync-report {
+  max-height: 280px;
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(9, 16, 25, 0.58);
+  color: #d8e8fb;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.admin-sync-debug {
+  margin-top: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(9, 16, 25, 0.38);
+}
+
+.admin-sync-debug summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  color: #d8e8fb;
+  font-weight: 800;
+}
+
+.admin-sync-debug pre {
+  max-height: 220px;
+  margin: 0;
+  overflow: auto;
+  padding: 10px;
+  border-top: 1px solid rgba(24, 218, 255, 0.14);
+  color: #b9d6e7;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.admin-import-result {
+  margin-top: 14px;
+}
+
+.admin-import-summary h4 {
+  margin: 10px 0 6px;
+}
+
+.admin-import-summary ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.admin-import-summary li {
+  margin: 3px 0;
+}
+
+.admin-import-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.admin-user-panel {
+  box-shadow: none;
+}
+
+.admin-user-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.admin-user-head h3 {
+  margin: 0 0 6px;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.admin-user-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.admin-user-list {
+  display: grid;
+  gap: 8px;
+  max-height: 58vh;
+  margin-top: 10px;
+  overflow: auto;
+}
+
+.admin-user-card {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  height: auto;
+  padding: 10px 12px;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.92), rgba(15, 23, 32, 0.96));
+  border-color: rgba(24, 218, 255, 0.34);
+}
+
+.admin-user-card.active {
+  border-color: rgba(255, 179, 0, 0.82);
+  background: linear-gradient(180deg, rgba(255, 179, 0, 0.16), rgba(24, 218, 255, 0.08));
+  box-shadow: 0 0 0 1px rgba(255, 179, 0, 0.18) inset, 0 0 18px rgba(255, 179, 0, 0.14);
+}
+
+.admin-user-card span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-user-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-user-form .admin-user-actions,
+.admin-user-form .meta {
+  grid-column: 1 / -1;
+}
+
+.admin-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.98), rgba(15, 23, 32, 0.99));
+  color: #eef7ff;
+  padding: 12px 14px;
+  border: 1px solid rgba(24, 218, 255, 0.5);
+  border-radius: 12px;
+  max-width: 320px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 22px rgba(24, 218, 255, 0.19);
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 820px) {
+  .auth-view {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .brand-block h1 {
+    font-size: 40px;
+  }
+
+  .topbar,
+  .user-box,
+  .ore-filter-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .notification-shell,
+  .notification-button {
+    width: 100%;
+  }
+
+  .notification-panel {
+    left: 0;
+    right: auto;
+    width: calc(100vw - 48px);
+  }
+
+  .toolbar,
+  .blueprint-toolbar,
+  .blueprint-filter-board,
+  .filter-subgrid,
+  .blueprint-layout,
+  .sell-planner-layout,
+  .sell-planner-summary-grid,
+  .sell-stock-row,
+  .sell-location-card summary,
+  .sell-line-row,
+  .wishlist-card-head,
+  .wishlist-head,
+  .blueprint-import-grid,
+  .blueprint-source-picker,
+  .blueprint-import-progress,
+  .admin-user-layout,
+  .admin-user-form,
+  .form-grid,
+  .inventory-card,
+  .consumption-row,
+  .actions-row {
+    grid-template-columns: 1fr;
+  }
+
+  .wishlist-card-head,
+  .wishlist-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .mining-scan-modal {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .mining-scan-modal-body {
+    max-height: calc(100vh - 88px);
+    padding: 12px;
+  }
+
+  .seller-head,
+  .sell-planner-head,
+  .sell-planner-panel-head,
+  .mining-scan-head,
+  .mining-scan-import-head,
+  .debug-log-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .blueprint-mode-row,
+  .blueprint-source-actions,
+  .ore-quality-row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .blueprint-coverage-item {
+    grid-template-columns: 1fr;
+  }
+
+  .mining-location-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .mining-system-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mining-system-scores {
+    text-align: left;
+    white-space: normal;
+  }
+
+  .blueprint-coverage-item span:last-child {
+    grid-column: auto;
+  }
+
+  .admin-import-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===========================================================================
+   sPg Crafting List application shell
+   The existing stylesheet remains the central visual source for the app.
+   ========================================================================== */
+
+.spg-app-shell {
+  width: min(1480px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 0 32px;
+}
+
+.spg-app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(24, 218, 255, 0.09), transparent 48%),
+    linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.spg-app-header h1,
+.spg-section-heading h2,
+.spg-export-header h1 {
+  margin: 0;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.spg-app-header h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.08;
+}
+
+.spg-app-lead {
+  max-width: 720px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.spg-header-actions,
+.spg-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.spg-banner {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.spg-banner-warning {
+  border-color: rgba(255, 193, 7, 0.72);
+  color: #ffe8a0;
+  background: rgba(255, 193, 7, 0.1);
+}
+
+.spg-status-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.spg-status-card {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(15, 23, 32, 0.78);
+}
+
+.spg-status-card span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.spg-status-card strong {
+  display: block;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+.spg-module-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(15, 23, 32, 0.72);
+}
+
+.spg-module-nav button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.spg-module-nav button.active {
+  color: var(--accent-strong);
+  border-color: rgba(255, 179, 0, 0.78);
+  background: rgba(255, 179, 0, 0.12);
+}
+
+.spg-module-nav button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.spg-main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: 16px;
+}
+
+.spg-main-layout .panel {
+  min-width: 0;
+}
+
+.spg-baseline-panel {
+  grid-row: span 2;
+}
+
+.spg-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.spg-section-heading h2 {
+  font-size: 23px;
+}
+
+.spg-section-heading .eyebrow {
+  margin-bottom: 4px;
+}
+
+.spg-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(15, 23, 32, 0.68);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spg-badge-pass,
+.spg-badge-dynamic {
+  color: #b9f6ca;
+  border-color: rgba(76, 175, 80, 0.72);
+  background: rgba(76, 175, 80, 0.12);
+}
+
+.spg-badge-fail {
+  color: #ffcdd2;
+  border-color: rgba(244, 67, 54, 0.75);
+  background: rgba(244, 67, 54, 0.12);
+}
+
+.spg-badge-fixed {
+  color: #ffe8a0;
+  border-color: rgba(255, 193, 7, 0.72);
+  background: rgba(255, 193, 7, 0.1);
+}
+
+.spg-badge-unknown {
+  color: #d9c8ff;
+  border-color: rgba(156, 113, 255, 0.65);
+  background: rgba(156, 113, 255, 0.1);
+}
+
+.spg-badge-pending,
+.spg-badge-neutral {
+  color: var(--muted);
+}
+
+.spg-check-list {
+  display: grid;
+  gap: 9px;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spg-check-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.54);
+}
+
+.spg-check-list li[data-status="PASS"] {
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.spg-check-list li[data-status="FAIL"] {
+  border-color: rgba(244, 67, 54, 0.62);
+}
+
+.spg-check-marker {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--muted);
+  background: rgba(144, 164, 174, 0.14);
+  font-weight: 900;
+}
+
+.spg-check-list li[data-status="PASS"] .spg-check-marker {
+  color: #b9f6ca;
+  background: rgba(76, 175, 80, 0.16);
+}
+
+.spg-check-list li[data-status="FAIL"] .spg-check-marker {
+  color: #ffcdd2;
+  background: rgba(244, 67, 54, 0.16);
+}
+
+.spg-check-list strong,
+.spg-check-list small {
+  display: block;
+}
+
+.spg-check-list small {
+  margin-top: 3px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.spg-action-row {
+  margin-top: 16px;
+}
+
+.spg-action-notice {
+  min-height: 22px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.spg-action-notice[data-tone="success"] {
+  color: #b9f6ca;
+}
+
+.spg-action-notice[data-tone="warning"] {
+  color: #ffe8a0;
+}
+
+.spg-action-notice[data-tone="error"] {
+  color: #ffcdd2;
+}
+
+.spg-muted {
+  color: var(--muted);
+}
+
+.spg-requirement-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.spg-requirement-card {
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--assignment-accent);
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-requirement-heading,
+.spg-requirement-details {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spg-requirement-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.spg-recipe-slot {
+  color: var(--assignment-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.spg-requirement-details {
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-roadmap-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+}
+
+.spg-roadmap-list strong {
+  color: var(--accent-strong);
+}
+
+.spg-app-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 12px 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-clipboard-fallback {
+  position: fixed;
+  left: -10000px;
+  top: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.spg-browser-panel {
+  grid-column: 1 / -1;
+}
+
+.spg-browser-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.4fr) minmax(190px, 0.8fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.spg-browser-toolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.spg-browser-toolbar input,
+.spg-browser-toolbar select,
+.spg-browser-toolbar button {
+  min-height: 42px;
+}
+
+.spg-browser-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.spg-browser-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-browser-results {
+  display: grid;
+  gap: 7px;
+  max-height: 420px;
+  padding-right: 5px;
+  overflow: auto;
+}
+
+.spg-blueprint-result {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 58px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.spg-blueprint-result strong {
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spg-blueprint-result span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-browser-detail {
+  min-height: 160px;
+  padding: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(15, 23, 32, 0.54);
+}
+
+.spg-browser-detail h3 {
+  margin: 3px 0 14px;
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.spg-browser-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.spg-browser-detail-grid div {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(24, 218, 255, 0.2);
+  border-radius: 9px;
+  background: rgba(5, 18, 28, 0.52);
+}
+
+.spg-browser-detail-grid span,
+.spg-browser-detail-grid strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.spg-browser-detail-grid span {
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.spg-browser-detail-grid strong {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+code {
+  color: #9cecff;
+}
+
+/* M2 inventory, Crafting Cards and deterministic allocation UI. */
+
+.spg-m2-panel {
+  grid-column: 1 / -1;
+  scroll-margin-top: 18px;
+}
+
+.spg-m2-heading-actions,
+.spg-material-group-heading,
+.spg-crafting-card-heading,
+.spg-card-requirement-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.spg-m2-heading-actions {
+  margin: 12px 0 16px;
+}
+
+.spg-m2-heading-actions p {
+  margin: 0;
+}
+
+.spg-batch-form {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 0.6fr 0.75fr 0.65fr;
+  gap: 12px;
+  align-items: end;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.48);
+}
+
+.spg-batch-note-field,
+.spg-batch-form-actions {
+  grid-column: span 2;
+}
+
+.spg-batch-form-actions,
+.spg-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.spg-batch-form-actions button,
+.spg-inline-actions button {
+  min-height: 34px;
+  padding: 0 11px;
+  font-size: 12px;
+}
+
+.spg-material-summary,
+.spg-allocation-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-material-summary > div,
+.spg-allocation-summary > div {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-material-summary span,
+.spg-allocation-summary span,
+.spg-card-maximum span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.spg-material-list,
+.spg-crafting-card-list,
+.spg-card-requirements {
+  display: grid;
+  gap: 12px;
+}
+
+.spg-material-group,
+.spg-crafting-card,
+.spg-card-requirement {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-material-group,
+.spg-crafting-card {
+  padding: 14px;
+}
+
+.spg-material-group-heading {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.16);
+}
+
+.spg-material-group-heading > div,
+.spg-crafting-card-heading > div,
+.spg-card-requirement-heading > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.spg-material-group-heading small,
+.spg-crafting-card-heading small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.spg-material-group-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.spg-batch-row {
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 1.3fr) minmax(130px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.1);
+}
+
+.spg-batch-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.spg-batch-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-crafting-card[data-satisfied="true"] {
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.spg-crafting-card[data-satisfied="false"] {
+  border-color: rgba(244, 67, 54, 0.48);
+}
+
+.spg-crafting-card-heading h3 {
+  margin: 0;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: 18px;
+}
+
+.spg-card-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(180px, 0.7fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin: 14px 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.72);
+}
+
+.spg-card-controls input {
+  max-width: 160px;
+}
+
+.spg-card-maximum {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-card-maximum strong {
+  font-size: 18px;
+}
+
+.spg-card-requirement {
+  padding: 12px;
+}
+
+.spg-card-requirement[data-status="SATISFIED"] {
+  border-left: 4px solid var(--good);
+}
+
+.spg-card-requirement:not([data-status="SATISFIED"]) {
+  border-left: 4px solid var(--danger);
+}
+
+.spg-strategy-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(120px, 180px);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.spg-quality-notice,
+.spg-allocated-batches,
+.spg-bottleneck {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-bottleneck {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.spg-allocation-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.spg-allocation-values span {
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: rgba(15, 23, 32, 0.72);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-allocation-log {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-allocation-log summary {
+  cursor: pointer;
+  color: #9cecff;
+}
+
+.spg-allocation-log ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+/* M3 Mining Game Data, location ranking and loadout editor. */
+
+.spg-m3-panel {
+  grid-column: 1 / -1;
+}
+
+.spg-mining-toolbar,
+.spg-material-database-toolbar,
+.spg-loadout-toolbar,
+.spg-loadout-basics {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.spg-mining-toolbar label,
+.spg-material-database-toolbar label,
+.spg-loadout-toolbar label,
+.spg-loadout-basics label,
+.spg-mining-station label,
+.spg-mining-modules label,
+.spg-gadget-row label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.spg-mining-toolbar label > span,
+.spg-material-database-toolbar label > span,
+.spg-loadout-toolbar label > span,
+.spg-loadout-basics label > span,
+.spg-mining-station label > span,
+.spg-mining-modules label > span,
+.spg-gadget-row label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spg-material-database-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.55fr) auto;
+}
+
+.spg-loadout-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto;
+}
+
+.spg-material-database-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.38fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.spg-material-database-results {
+  display: grid;
+  gap: 7px;
+  max-height: 720px;
+  padding-right: 5px;
+  overflow: auto;
+}
+
+.spg-material-database-result {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 66px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.spg-material-database-result.active {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+  background: rgba(24, 218, 255, 0.09);
+}
+
+.spg-material-database-result strong,
+.spg-material-database-result span,
+.spg-material-database-result small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spg-material-database-result span,
+.spg-material-database-result small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-material-database-detail {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(8, 15, 23, 0.58);
+}
+
+.spg-material-database-section {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-material-database-section h3 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.spg-material-default-loadout {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-material-default-loadout-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.55);
+}
+
+.spg-material-default-loadout-heading span,
+.spg-material-default-loadout-equipment span,
+.spg-material-database-refinery small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-material-default-loadout-equipment {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.spg-material-default-loadout-equipment article {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-mining-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-mining-summary > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-mining-summary span,
+.spg-location-metrics {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-mining-summary strong {
+  overflow-wrap: anywhere;
+}
+
+.spg-system-ranking {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.spg-system-card,
+.spg-mining-station {
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background: rgba(15, 23, 32, 0.68);
+}
+
+.spg-system-card {
+  padding: 14px;
+}
+
+.spg-refinery-system-card {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-refinery-system-card small {
+  color: var(--muted);
+}
+
+.spg-system-card h3,
+.spg-mining-station h4,
+.spg-gadget-heading h4 {
+  margin: 0;
+}
+
+.spg-location-result {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-location-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.spg-mining-loadout-heading,
+.spg-gadget-heading,
+.spg-mining-station-heading,
+.spg-loadout-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spg-mining-loadout-heading {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.spg-loadout-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(8, 15, 23, 0.62);
+}
+
+.spg-loadout-form[hidden] {
+  display: none;
+}
+
+.spg-loadout-basics {
+  grid-template-columns: minmax(180px, 1.2fr) minmax(180px, 1fr) minmax(170px, 0.8fr) auto;
+}
+
+.spg-mining-stations,
+.spg-mining-gadgets {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-mining-stations {
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+}
+
+.spg-mining-station {
+  display: grid;
+  gap: 11px;
+  padding: 13px;
+}
+
+.spg-mining-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.spg-gadget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.spg-missing-equipment,
+.spg-missing-card {
+  border-color: var(--warning) !important;
+}
+
+.spg-missing-card {
+  box-shadow: inset 3px 0 0 var(--warning);
+}
+
+/* M4 Combined Materials, backup preview and diagnostic summary. */
+
+.spg-m4-panel {
+  grid-column: 1 / -1;
+  scroll-margin-top: 18px;
+}
+
+.spg-combined-summary,
+.spg-combined-totals,
+.spg-diagnostics-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-combined-summary > div,
+.spg-combined-totals > span,
+.spg-diagnostics-summary > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(24, 218, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-combined-summary span,
+.spg-combined-totals small,
+.spg-diagnostics-summary small {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.spg-combined-list,
+.spg-combined-usage-list,
+.spg-backup-preview-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-combined-material,
+.spg-backup-export-card,
+.spg-backup-import-card,
+.spg-diagnostics-card,
+.spg-backup-preview-grid article {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(5, 18, 28, 0.46);
+}
+
+.spg-combined-material {
+  padding: 14px;
+}
+
+.spg-combined-material[data-missing="true"] {
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+
+.spg-combined-heading,
+.spg-backup-preview-heading,
+.spg-diagnostics-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.spg-combined-heading > div,
+.spg-backup-preview-heading {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.spg-combined-heading small,
+.spg-backup-preview-heading small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.spg-combined-meta {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-combined-details summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 700;
+}
+
+.spg-combined-usage-list {
+  margin-top: 10px;
+}
+
+.spg-combined-usage {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) minmax(150px, 0.75fr) minmax(260px, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.16);
+  border-radius: 10px;
+}
+
+.spg-combined-usage > span,
+.spg-combined-usage > small {
+  color: var(--muted);
+}
+
+.spg-backup-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.spg-backup-export-card,
+.spg-backup-import-card,
+.spg-diagnostics-card {
+  padding: 14px;
+}
+
+.spg-backup-import-card,
+.spg-backup-import-card label {
+  display: grid;
+  gap: 9px;
+}
+
+.spg-backup-import-card label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.spg-backup-preview {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+}
+
+.spg-backup-preview-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.spg-backup-preview-grid article {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+
+.spg-backup-preview-grid small {
+  color: var(--muted);
+}
+
+.spg-diagnostics-card {
+  align-items: center;
+}
+
+.spg-diagnostics-summary {
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  margin: 0;
+}
+
+.spg-diagnostics-summary strong {
+  overflow-wrap: anywhere;
+}
+
+/* Standalone card export. These rules are embedded from this central CSS. */
+
+.spg-export-page {
+  width: min(1000px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0;
+}
+
+.spg-export-header,
+.spg-export-requirement,
+.spg-export-meta {
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(15, 23, 32, 0.82);
+}
+
+.spg-export-header {
+  margin-bottom: 14px;
+  padding: 20px;
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+
+.spg-export-header h1 {
+  font-size: clamp(26px, 5vw, 40px);
+}
+
+.spg-export-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-export-requirement {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 14px;
+}
+
+.spg-export-requirement > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.spg-export-values {
+  display: grid;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+/* M6 full standalone Crafting/Farm Card, adapted from the Info reference farm-card UI. */
+
+.spg-export-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: end;
+  margin-bottom: 14px;
+  padding: 22px;
+  border: 2px solid rgba(0, 188, 212, 0.68);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.96), rgba(15, 23, 32, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.spg-export-hero h1 {
+  margin: 3px 0 8px;
+  color: #eef7ff;
+  font-size: clamp(26px, 5vw, 44px);
+  line-height: 1.05;
+}
+
+.spg-export-hero p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+.spg-export-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  width: fit-content;
+  padding: 5px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.spg-export-status.is-pass {
+  border-color: rgba(76, 175, 80, 0.62);
+  background: rgba(76, 175, 80, 0.12);
+  color: #baf5c3;
+}
+
+.spg-export-status.is-fail {
+  border-color: rgba(255, 179, 0, 0.64);
+  background: rgba(255, 179, 0, 0.11);
+  color: #fff0c2;
+}
+
+.spg-export-overview,
+.spg-export-quantity-grid,
+.spg-export-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.spg-export-overview {
+  margin-bottom: 20px;
+}
+
+.spg-export-overview > span,
+.spg-export-quantity-grid > span,
+.spg-export-metrics > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.68);
+}
+
+.spg-export-overview small,
+.spg-export-quantity-grid small,
+.spg-export-metrics small,
+.spg-export-refinery-card small,
+.spg-export-loadout small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.spg-export-overview strong,
+.spg-export-quantity-grid strong,
+.spg-export-metrics strong {
+  overflow-wrap: anywhere;
+  color: #eef7ff;
+}
+
+.spg-export-section {
+  margin-top: 22px;
+}
+
+.spg-export-section-title {
+  margin-bottom: 12px;
+}
+
+.spg-export-section-title h2 {
+  margin: 2px 0 0;
+  color: #eef7ff;
+}
+
+.spg-export-ingredient-grid,
+.spg-export-location-grid,
+.spg-export-refinery-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.spg-export-ingredient-card {
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid rgba(24, 218, 255, 0.46);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(26, 38, 54, 0.94), rgba(15, 23, 32, 0.98));
+  box-shadow: var(--shadow);
+}
+
+.spg-export-ingredient-card[data-bottleneck="true"] {
+  border-color: rgba(255, 179, 0, 0.72);
+}
+
+.spg-export-ingredient-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.spg-export-ingredient-card h3,
+.spg-export-location-card h4,
+.spg-export-refinery-card h4,
+.spg-export-loadout h4 {
+  margin: 4px 0;
+  color: #eef7ff;
+}
+
+.spg-export-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.spg-export-stat-chip,
+.spg-export-system-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid rgba(24, 218, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(24, 218, 255, 0.08);
+  color: #9cecff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.spg-export-quality,
+.spg-export-bottleneck {
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: rgba(255, 179, 0, 0.07);
+  color: #d8e8fb;
+  font-size: 12px;
+}
+
+.spg-export-bottleneck {
+  border-left-color: var(--danger);
+  background: rgba(244, 67, 54, 0.08);
+}
+
+.spg-export-batches,
+.spg-export-farm,
+.spg-export-refinery,
+.spg-export-loadout-wrap {
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 11px;
+  background: rgba(5, 18, 28, 0.42);
+}
+
+.spg-export-batches > summary,
+.spg-export-farm > summary,
+.spg-export-refinery > summary,
+.spg-export-loadout-wrap > summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 800;
+}
+
+.spg-export-batches ul,
+.spg-export-loadout ul {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.spg-export-batches li,
+.spg-export-loadout li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 9px;
+}
+
+.spg-export-batches li small,
+.spg-export-loadout li small {
+  grid-column: 1 / -1;
+}
+
+.spg-export-location-grid,
+.spg-export-refinery-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 10px;
+}
+
+.spg-export-location-card,
+.spg-export-refinery-card,
+.spg-export-loadout {
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.32);
+  border-radius: 12px;
+  background: rgba(9, 16, 25, 0.56);
+}
+
+.spg-export-location-card > header {
+  min-height: 76px;
+}
+
+.spg-export-radar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 9px 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(255, 179, 0, 0.46);
+  border-radius: 9px;
+  background: rgba(255, 179, 0, 0.07);
+}
+
+.spg-export-radar span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-export-radar strong,
+.spg-export-bonus {
+  color: #ffbf2f;
+}
+
+.spg-export-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spg-export-refinery-card {
+  position: relative;
+  padding-right: 72px;
+  border-left: 3px solid rgba(255, 179, 0, 0.72);
+}
+
+.spg-export-bonus {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  font-size: 18px;
+}
+
+.spg-export-empty,
+.spg-export-warning {
+  padding: 12px;
+  border: 1px dashed var(--line-soft);
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+.spg-export-warning {
+  margin: 14px 0;
+  border-color: rgba(255, 179, 0, 0.48);
+  background: rgba(255, 179, 0, 0.06);
+}
+
+.spg-export-warning h2 {
+  margin-top: 0;
+  font-size: 17px;
+}
+
+#spg-export-snapshot {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #0f1720;
+    background-image: none;
+  }
+
+  .spg-export-page {
+    width: 100%;
+    padding: 0;
+  }
+
+  .spg-export-ingredient-card,
+  .spg-export-location-card,
+  .spg-export-refinery-card {
+    break-inside: avoid;
+  }
+}
+
+/* M5 UEX Refinery cache, mapping and shared card snapshot. */
+
+.spg-m5-panel {
+  grid-column: 1 / -1;
+}
+
+.spg-refinery-toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.spg-refinery-toolbar label {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-refinery-toolbar label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.spg-refinery-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.spg-refinery-summary > div {
+  display: grid;
+  gap: 5px;
+  padding: 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-refinery-summary span,
+.spg-refinery-terminal-list small,
+.spg-material-intelligence small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-refinery-system-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spg-refinery-system-heading > strong {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.spg-refinery-terminal-list,
+.spg-refinery-terminal-list > div {
+  display: grid;
+  gap: 5px;
+}
+
+.spg-refinery-terminal-list {
+  margin-top: 10px;
+}
+
+.spg-refinery-terminal-list > div {
+  padding-top: 9px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-material-intelligence {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.42);
+}
+
+.spg-material-intelligence > summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-weight: 700;
+}
+
+.spg-intelligence-meta {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spg-intelligence-row {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+}
+
+.spg-intelligence-refinery {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.spg-export-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin-top: 14px;
+  padding: 14px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 1120px) {
+  .spg-status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-baseline-panel {
+    grid-row: auto;
+  }
+
+  .spg-browser-panel {
+    grid-column: auto;
+  }
+
+  .spg-batch-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-batch-note-field,
+  .spg-batch-form-actions {
+    grid-column: auto;
+  }
+
+  .spg-mining-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-material-database-layout {
+    grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+  }
+
+  .spg-refinery-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .spg-loadout-basics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spg-backup-preview-grid,
+  .spg-diagnostics-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .spg-app-shell {
+    width: min(100% - 20px, 1480px);
+    padding-top: 10px;
+  }
+
+  .spg-app-header,
+  .spg-section-heading,
+  .spg-requirement-heading,
+  .spg-app-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-header-actions button,
+  .spg-action-row button {
+    flex: 1 1 100%;
+  }
+
+  .spg-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spg-browser-toolbar,
+  .spg-browser-layout,
+  .spg-browser-detail-grid,
+  .spg-batch-form,
+  .spg-material-summary,
+  .spg-allocation-summary,
+  .spg-card-controls,
+  .spg-allocation-values,
+  .spg-strategy-row {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-mining-toolbar,
+  .spg-material-database-toolbar,
+  .spg-refinery-toolbar,
+  .spg-loadout-toolbar,
+  .spg-loadout-basics,
+  .spg-mining-summary,
+  .spg-refinery-summary,
+  .spg-system-ranking,
+  .spg-gadget-row {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-material-database-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-material-database-results {
+    max-height: 340px;
+  }
+
+  .spg-material-default-loadout-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-combined-summary,
+  .spg-combined-totals,
+  .spg-combined-usage,
+  .spg-backup-actions,
+  .spg-backup-preview-grid,
+  .spg-diagnostics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-mining-loadout-heading,
+  .spg-gadget-heading,
+  .spg-mining-station-heading,
+  .spg-loadout-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-combined-heading,
+  .spg-backup-preview-heading,
+  .spg-diagnostics-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-m2-heading-actions,
+  .spg-material-group-heading,
+  .spg-crafting-card-heading,
+  .spg-card-requirement-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-material-group-heading > span {
+    text-align: left;
+  }
+
+  .spg-batch-row {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .spg-batch-note,
+  .spg-batch-row .spg-inline-actions {
+    grid-column: 1 / -1;
+  }
+
+  .spg-requirement-details {
+    display: grid;
+  }
+
+  .spg-export-requirement,
+  .spg-export-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-export-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .spg-export-overview,
+  .spg-export-quantity-grid,
+  .spg-export-metrics,
+  .spg-export-location-grid,
+  .spg-export-refinery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-export-ingredient-card > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-export-values {
+    text-align: left;
+  }
+}
+
+body{font-family:Arial,Helvetica,sans-serif;}</style></head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="card-js300"><main class="spg-export-page"><header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><h1>JS-300</h1><p>Power Plant · Blueprint szükséges / nincs alapértelmezett elérhetőség</p></div><span class="spg-export-status is-fail">Hiány van</span></header><section class="spg-export-overview"><span><small>Prioritás</small><strong>1</strong></span><span><small>Gyártani kívánt</small><strong>2 db</strong></span><span><small>Maximum készletből</small><strong>3 db</strong></span><span><small>Craft time</small><strong>15 perc 0 mp</strong></span><span><small>SC Data Version</small><strong>4.9.0-LIVE.12232306</strong></span><span><small>Recipe Slot</small><strong>3</strong></span></section><section class="spg-export-warning"><h2>Hiányzó / ellenőrizendő adatok</h2><ul><li>Beryl: nincs biztonságosan kapcsolható mining commodity</li><li>Savrilium: nincs biztonságosan kapcsolható mining commodity</li></ul></section><section class="spg-export-section"><div class="spg-export-section-title"><p class="eyebrow">Recipe Slot szintű terv</p><h2>Ingredients</h2></div><div class="spg-export-ingredient-grid"><article class="spg-export-ingredient-card" data-status="SATISFIED" data-bottleneck="false"><header><div><span class="spg-recipe-slot">Shell</span><h3>Stileron</h3></div><span class="spg-export-status is-pass">SATISFIED</span></header><div class="spg-export-stats"><span class="spg-export-stat-chip">Integrity</span></div><div class="spg-export-quantity-grid"><span><small>1 darabhoz</small><strong>0,35 SCU</strong></span><span><small>Teljes szükséglet</small><strong>0,7 SCU</strong></span><span><small>Készlet a slotnál</small><strong>1,05 SCU</strong></span><span><small>Lefoglalt</small><strong>0,7 SCU</strong></span><span><small>Mennyiséghiány</small><strong>0 SCU</strong></span><span><small>Quality-hiány</small><strong>0 SCU</strong></span></div><p class="spg-export-quality"><strong>DYNAMIC</strong> · Q500+ elég · legalacsonyabb megfelelő Q először</p><details class="spg-export-batches" open><summary>Felhasznált Quality batch-ek</summary><ul><li><strong>Q517</strong><span>0,7 SCU</span><small>LOWEST_Q_AT_OR_ABOVE_500</small></li></ul></details><details class="spg-export-farm" open><summary>Mining / Farm helyek · Stileron</summary><div class="spg-export-location-grid"><article class="spg-export-location-card"><header><span class="spg-export-system-pill">Pyro</span><h4>Pyro II – Monox</h4></header><div class="spg-export-radar"><span>Radar Signature</span><strong>3185</strong></div><div class="spg-export-metrics"><span><small>Módszer</small><strong>SHIP_MINING</strong></span><span><small>Occurrence</small><strong>0,3%</strong></span><span><small>Spawn</small><strong>10%</strong></span><span><small>Max Q</small><strong>1000</strong></span></div></article></div></details><details class="spg-export-refinery" open><summary>UEX refinery ajánló · Stileron</summary><div class="spg-export-refinery-grid"><article class="spg-export-refinery-card"><span class="spg-export-system-pill">Stanton</span><h4>MIC-L5 / HUR-L1</h4><strong class="spg-export-bonus">+8%</strong><small>UEX value_month · 2 azonos legjobb</small></article></div></details><details class="spg-export-loadout-wrap" open><summary>Mining loadout · Stileron</summary><article class="spg-export-loadout"><div><span class="eyebrow">Aktív loadout</span><h4>Prospector Helix</h4></div><p><strong>Vehicle:</strong> Prospector</p><ul><li><strong>1. station:</strong> Helix I<small>Rieger-C3</small></li></ul><p><strong>Gadget:</strong> OptiMax</p></article></details></article><article class="spg-export-ingredient-card" data-status="SATISFIED" data-bottleneck="false"><header><div><span class="spg-recipe-slot">Voltage Regulator</span><h3>Beryl</h3></div><span class="spg-export-status is-pass">SATISFIED</span></header><div class="spg-export-stats"><span class="spg-export-stat-chip">Power Pips</span></div><div class="spg-export-quantity-grid"><span><small>1 darabhoz</small><strong>0,14 SCU</strong></span><span><small>Teljes szükséglet</small><strong>0,28 SCU</strong></span><span><small>Készlet a slotnál</small><strong>0,42 SCU</strong></span><span><small>Lefoglalt</small><strong>0,28 SCU</strong></span><span><small>Mennyiséghiány</small><strong>0 SCU</strong></span><span><small>Quality-hiány</small><strong>0 SCU</strong></span></div><p class="spg-export-quality"><strong>FIXED</strong> · FIXED · nincs Quality-stratégia</p><details class="spg-export-batches" open><summary>Felhasznált Quality batch-ek</summary><ul><li>Nincs lefoglalt batch.</li></ul></details><details class="spg-export-farm" open><summary>Mining / Farm helyek · Beryl</summary><div class="spg-export-location-grid"><div class="spg-export-empty">Nincs cache-elt, rangsorolt mining location.</div></div></details><details class="spg-export-refinery" open><summary>UEX refinery ajánló · Beryl</summary><div class="spg-export-refinery-grid"><div class="spg-export-empty">Nincs biztonságos UEX refinery mapping.</div></div></details><details class="spg-export-loadout-wrap" open><summary>Mining loadout · Beryl</summary><div class="spg-export-empty">Nincs ehhez az anyaghoz mentett mining loadout.</div></details></article><article class="spg-export-ingredient-card" data-status="QUALITY_UNKNOWN" data-bottleneck="true"><header><div><span class="spg-recipe-slot">Stator Cores</span><h3>Savrilium</h3></div><span class="spg-export-status is-fail">QUALITY_UNKNOWN</span></header><div class="spg-export-stats"><span class="spg-export-stat-chip">Power Pips</span></div><div class="spg-export-quantity-grid"><span><small>1 darabhoz</small><strong>0,24 SCU</strong></span><span><small>Teljes szükséglet</small><strong>0,48 SCU</strong></span><span><small>Készlet a slotnál</small><strong>0,72 SCU</strong></span><span><small>Lefoglalt</small><strong>0 SCU</strong></span><span><small>Mennyiséghiány</small><strong>0 SCU</strong></span><span><small>Quality-hiány</small><strong>0,48 SCU</strong></span></div><p class="spg-export-quality"><strong>FIXED</strong> · UNKNOWN · nincs találgatás</p><p class="spg-export-bottleneck">Szűk keresztmetszet: ez a Recipe Slot korlátozza a gyártható mennyiséget.</p><details class="spg-export-batches" open><summary>Felhasznált Quality batch-ek</summary><ul><li>Nincs lefoglalt batch.</li></ul></details><details class="spg-export-farm" open><summary>Mining / Farm helyek · Savrilium</summary><div class="spg-export-location-grid"><div class="spg-export-empty">Nincs cache-elt, rangsorolt mining location.</div></div></details><details class="spg-export-refinery" open><summary>UEX refinery ajánló · Savrilium</summary><div class="spg-export-refinery-grid"><div class="spg-export-empty">Nincs biztonságos UEX refinery mapping.</div></div></details><details class="spg-export-loadout-wrap" open><summary>Mining loadout · Savrilium</summary><div class="spg-export-empty">Nincs ehhez az anyaghoz mentett mining loadout.</div></details></article></div></section><footer class="spg-export-meta"><span><strong>Generated by:</strong> sPg Crafting List</span><span><strong>SC Data Version:</strong> 4.9.0-LIVE.12232306</span><span><strong>Generated:</strong> 2026-08-22T14:00:00.000Z</span><span><strong>Data Source:</strong> Star Citizen Wiki API + UEX</span><span><strong>Blueprint UUID:</strong> 9585b0dc-b660-4e2a-9136-0092af1e72c1</span><span><strong>Export schema:</strong> 1</span></footer><script type="application/json" id="spg-export-snapshot">{"exportSchemaVersion":1,"kind":"SPG_STANDALONE_CRAFTING_FARM_CARD","generatedBy":"sPg Crafting List","generatedAt":"2026-08-22T14:00:00.000Z","scDataVersion":"4.9.0-LIVE.12232306","dataSources":["Star Citizen Wiki API","UEX"],"card":{"id":"card-js300","priority":1,"blueprintUuid":"9585b0dc-b660-4e2a-9136-0092af1e72c1","outputName":"JS-300","outputType":"Power Plant","blueprintAvailability":"Blueprint szükséges / nincs alapértelmezett elérhetőség","craftTimeSeconds":900,"requestedQuantity":2,"maxCraftable":3,"satisfied":false,"bottleneckSlotIds":["9585b0dc-b660-4e2a-9136-0092af1e72c1:aspect:2"]},"requirements":[{"recipeSlotId":"9585b0dc-b660-4e2a-9136-0092af1e72c1:aspect:0","recipeSlotName":"Shell","materialUuid":"8cd317a3-df9b-4315-8ac3-0f1fca42dfd4","commodityUuid":"32bafbd4-c52a-476d-b31c-97c4b3102471","materialName":"Stileron","unit":"SCU","perCraftUnits":3500,"requiredUnits":7000,"availableUnitsAtSlot":10500,"allocatedUnits":7000,"missingAmountUnits":0,"missingQualityUnits":0,"status":"SATISFIED","bottleneck":false,"qualityCapability":"DYNAMIC","rule":"HP_MIN_500","targetQuality":null,"affectedStats":["Integrity"],"allocatedBatches":[{"batchId":"batch-q517","quality":517,"allocatedUnits":7000,"reason":"LOWEST_Q_AT_OR_ABOVE_500"}],"mining":{"status":"AVAILABLE","radarSignature":3185,"methods":["SHIP_MINING"],"systems":[{"system":"Pyro","status":"AVAILABLE","methods":[{"method":"SHIP_MINING","locationLabel":"Pyro II – Monox","occurrence":0.3,"spawn":10,"maximumQuality":1000}]}]},"refinery":{"status":"AVAILABLE","systems":[{"starSystemName":"Stanton","rankingValue":8,"tieCount":2,"terminals":[{"terminalName":"MIC-L5"},{"terminalName":"HUR-L1"}]}]},"selectedLoadout":{"id":"loadout-1","name":"Prospector Helix","default":true,"vehicle":{"uuid":"vehicle-1","name":"Prospector"},"stations":[{"id":"station-1","head":{"uuid":"head-1","name":"Helix I"},"modules":[{"id":"module-1","uuid":"module-1","name":"Rieger-C3"}]}],"gadgets":[{"id":"gadget-1","uuid":"gadget-1","name":"OptiMax"}]},"refinerySnapshotFingerprint":"refinery-fingerprint"},{"recipeSlotId":"9585b0dc-b660-4e2a-9136-0092af1e72c1:aspect:1","recipeSlotName":"Voltage Regulator","materialUuid":"93c8b7df-d6ac-4b4f-a115-b0e3afc238b8","commodityUuid":"eb503701-389a-48a1-af28-eb7374009d5d","materialName":"Beryl","unit":"SCU","perCraftUnits":1400,"requiredUnits":2800,"availableUnitsAtSlot":4200,"allocatedUnits":2800,"missingAmountUnits":0,"missingQualityUnits":0,"status":"SATISFIED","bottleneck":false,"qualityCapability":"FIXED","rule":"FIXED","targetQuality":null,"affectedStats":["Power Pips"],"allocatedBatches":[],"mining":null,"refinery":null,"selectedLoadout":null,"refinerySnapshotFingerprint":null},{"recipeSlotId":"9585b0dc-b660-4e2a-9136-0092af1e72c1:aspect:2","recipeSlotName":"Stator Cores","materialUuid":"4a47cad8-0271-4048-b19b-d9b52521fc20","commodityUuid":"d76ea7ef-5116-488c-93d3-71e02bada13d","materialName":"Savrilium","unit":"SCU","perCraftUnits":2400,"requiredUnits":4800,"availableUnitsAtSlot":7200,"allocatedUnits":0,"missingAmountUnits":0,"missingQualityUnits":4800,"status":"QUALITY_UNKNOWN","bottleneck":true,"qualityCapability":"FIXED","rule":"UNKNOWN","targetQuality":null,"affectedStats":["Power Pips"],"allocatedBatches":[],"mining":null,"refinery":null,"selectedLoadout":null,"refinerySnapshotFingerprint":null}],"summary":{"ingredientCount":3,"locationCount":1,"selectedLoadoutCount":1,"refinerySystemCount":1,"missingData":["Beryl: nincs biztonságosan kapcsolható mining commodity","Savrilium: nincs biztonságosan kapcsolható mining commodity"]}}</script></main></body></html>

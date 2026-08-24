@@ -10,7 +10,7 @@ Az M6 jelenleg release candidate. Stabil V1 csak akkor készülhet, ha az össze
 
 Az `M6.1 UI Completeness Audit` a `V001-C011` ciklusban PASS: a felso navigacio pontosan nyolc enabled celt tartalmaz, a `Material Database` es a `Mining Loadouts` hasznalhato, a teljes M1-M6 + M6.1 regresszio es a Chrome localhost 13/13 proba zold. Ezert a korabban szunetelt kezi acceptance most ujra folytathato. Az M6.1 localhost bizonyitek nem helyettesiti az alabbi `file://`, offline es Edge kapukat.
 
-2026-08-24-i kezi eredmeny: C01-C03 PASS, C04 FAIL volt a `file://` CSSOM `SecurityError` miatt. A `V001-C012` javitas a kozponti CSS-bol generalt, automatikusan drift-ellenorzott export snapshotot vezetett be; a teljes regresszio es localhost Chrome 13/13 PASS. A kovetkezo kezi lepes **kizarolag C04 ujrateszt**. C05 csak C04 PASS utan kezdheto.
+2026-08-24-i vegso kezi eredmeny: Chrome C01-C17 PASS. A `V001-C012` C04 javitas normal `file://` modban is igazolt. A standalone O01-O03 es O05-O06 PASS, O04 `NOT TESTED`, mert a felhasznalo nem kert Windows-szintu halozatlekapcsolast. Edge E01-E10 `NOT TESTED`, mert a felhasznalo nem kert kulon Edge acceptance-et. A teljes manual release-gate ezert nem teljes PASS.
 
 ## Tesztelendő fájlok
 
@@ -35,22 +35,24 @@ Nyisd meg a fő HTML-t a Windows Intézőből a `Megnyitás ezzel > Google Chrom
 - [x] **C01 – Valódi file mód:** a címsor `file:///` URL-t mutat, a felső `Futtatási mód` mező pedig `file://` értékű. Localhost használata `FAIL`. *(Felhasználói eredmény: PASS.)*
 - [x] **C02 – CSS:** nyomj `F12`-t, töröld a `Network` listát, majd nyomj `Ctrl+R`-t. Sötét, cián keretes SPG felület jelenjen meg, az `Info/style.css` pedig helyi fájlként, piros hiba nélkül töltődjön be. Formázatlan fehér oldal `FAIL`. *(Felhasználói eredmény: PASS.)*
 - [x] **C03 – JavaScript indulás:** a fejléc, a modulnavigáció és az SC-verzió megjelenik; a `Console` panelen nincs piros, az alkalmazásból származó JavaScript hiba. *(Felhasználói eredmény: PASS.)*
-- [ ] **C04 – Technikai próba – ÚJRATESZT:** kattints a `Technikai próba` gombra. `PASS`, ha mind a 13 sor zöld, koztuk az `M6.1 V1 UI completeness` es a `Standalone HTML export`, a badge `Minden próba sikeres`, a `Futtatási mód` sor pedig `Közvetlen file:// futás`. Nem jelenhet meg `CSS_CSSOM_READ_FAILED`, `CSS_EMBEDDED_SNAPSHOT_FAILED`, `EXPORT_FAILED` vagy `TECHNICAL_CHECK_FAILED`.
-- [ ] **C05 – Wiki API:** ugyanebben a próbában a `Star Citizen Wiki API` sor PASS és JS-300 receptet jelez. Ezután kattints az `Adatok frissítése` gombra. `PASS`, ha a `Wiki API` állapot `Elérhető`, és nincs fetch/CORS hiba.
-- [ ] **C06 – UEX API:** nyisd meg az `UEX Refinery` lapot, kattints az `UEX adatok kézi frissítése` gombra, majd válaszd a `Beryl` commodityt. `PASS`, ha aktív cache/mapping összegzés és rendszerenkénti refinery ajánlás jelenik meg. A jelenlegi SC-verziónál az elvárt mapping `24 MATCHED / 50 UNMAPPED / 0 AMBIGUOUS`.
-- [ ] **C07 – Blueprint Browser:** nyisd meg a `Blueprint Browser` lapot, keress rá: `JS-300`, majd kattints a találatra. `PASS`, ha a részletes recept 3 külön Recipe Slotot mutat: `Shell`, `Voltage Regulator`, `Stator Cores`.
-- [ ] **C08 – Crafting Card:** kattints a `Megnyitott blueprint hozzáadása` gombra, majd nyisd meg a `Crafting List` lapot. `PASS`, ha megjelenik a JS-300 kártya, módosítható a `Gyártani kívánt mennyiség`, és látható az `Export HTML` gomb.
-- [ ] **C09 – My Materials és Quality batch:** nyisd meg a `My Materials` lapot, és add hozzá ezt a tesztbatch-et: név `Stileron`; UUID `8cd317a3-df9b-4315-8ac3-0f1fca42dfd4`; Quality `517`; mennyiség `1`; unit `SCU`; megjegyzés `V1-GATE-CHROME`. `PASS`, ha külön Q517 batchként megjelenik.
-- [ ] **C10 – Allocation újraszámolás:** térj vissza a `Crafting List` lapra. `PASS`, ha a JS-300 `Shell / Stileron` sorában Q517 batch-foglalás jelenik meg, a `Lefoglalt` érték `0,35 SCU`, és az inventory mennyisége nem csökken véglegesen.
-- [ ] **C11 – Material Database és refinery adatok:** nyisd meg a `Material Database` lapot. Keress `Agricium` névre, ellenőrizd az egytalálatos keresést, majd próbáld ki az `All / Ship Mining / Vehicle Mining / FPS Mining / Harvestable` szűrőket. Válaszd ki az Agriciumot. `PASS`, ha látható a mining mód, Radar Signature, API-adat esetén rarity/instability/resistance, rendszerenkénti occurrence/spawn/max Quality location, UEX refinery és Default Loadout vagy pontos `Nincs adat`/`UNKNOWN` állapot. A JS-300 kártya adatpillanatképe továbbra is jelenjen meg.
-- [ ] **C12 – Mining Loadouts:** nyisd meg a külön `Mining Loadouts` felső navigációt, válaszd a `Beryl` commodityt, kattints az `Új loadout ehhez a materialhoz` gombra, add meg a `V1-GATE-CHROME` nevet, válassz egy elérhető mining vehicle-t és headet, majd mentsd, és állítsd Default Loadoutnak. `PASS`, ha a mentett loadout kiválasztható, defaultként jelölt, és a Material Database Beryl adatlapján is megjelenik.
-- [ ] **C13 – Combined Materials:** nyisd meg a `Combined Materials` lapot. `PASS`, ha a JS-300 három materialja külön megjelenik, a Recipe Slot részletek megmaradnak, és a Stileron lefoglalása megegyezik a Crafting Card értékével.
-- [ ] **C14 – Log másolása:** nyisd meg a `Data / Settings` lapot, kattints a `Log másolása` gombra, majd illeszd be ideiglenesen egy üres szövegfájlba. `PASS`, ha az M1–M6 diagnosztikai szöveg beilleszthető, és tartalmaz `User Data fingerprint`, `UEX`, `allocation`, `Combined Materials` és `standaloneExport` adatot.
-- [ ] **C15 – IndexedDB újratöltés:** a `Data / Settings` lapon jegyezd fel a `User Data fingerprint` értéket (`Chrome B`), majd nyomj `Ctrl+R`-t. `PASS`, ha a JS-300 kártya, a Q517 batch és a `V1-GATE-CHROME` loadout megmarad, és újra a `Data / Settings` lapra lépve ugyanaz a fingerprint látható (`Chrome C = Chrome B`).
-- [ ] **C16 – Game Data nem ír User Data-t:** kattints az `Adatok frissítése` gombra, várd meg a sikeres lezárást, majd újra olvasd le a fingerprintet (`Chrome D`). `PASS`, ha `Chrome D = Chrome C`, és minden tesztadat megmaradt.
-- [ ] **C17 – Konzol:** töröld a Console korábbi tartalmát, nyomj `Ctrl+R`-t, és járd végig egyszer a fenti lapokat. `PASS`, ha nincs új, az alkalmazásból származó piros JavaScript hiba.
+- [x] **C04 – Technikai próba – ÚJRATESZT:** kattints a `Technikai próba` gombra. `PASS`, ha mind a 13 sor zöld, koztuk az `M6.1 V1 UI completeness` es a `Standalone HTML export`, a badge `Minden próba sikeres`, a `Futtatási mód` sor pedig `Közvetlen file:// futás`. Nem jelenhet meg `CSS_CSSOM_READ_FAILED`, `CSS_EMBEDDED_SNAPSHOT_FAILED`, `EXPORT_FAILED` vagy `TECHNICAL_CHECK_FAILED`.
+- [x] **C05 – Wiki API:** ugyanebben a próbában a `Star Citizen Wiki API` sor PASS és JS-300 receptet jelez. Ezután kattints az `Adatok frissítése` gombra. `PASS`, ha a `Wiki API` állapot `Elérhető`, és nincs fetch/CORS hiba.
+- [x] **C06 – UEX API:** nyisd meg az `UEX Refinery` lapot, kattints az `UEX adatok kézi frissítése` gombra, majd válaszd a `Beryl` commodityt. `PASS`, ha aktív cache/mapping összegzés és rendszerenkénti refinery ajánlás jelenik meg. A jelenlegi SC-verziónál az elvárt mapping `24 MATCHED / 50 UNMAPPED / 0 AMBIGUOUS`.
+- [x] **C07 – Blueprint Browser:** nyisd meg a `Blueprint Browser` lapot, keress rá: `JS-300`, majd kattints a találatra. `PASS`, ha a részletes recept 3 külön Recipe Slotot mutat: `Shell`, `Voltage Regulator`, `Stator Cores`.
+- [x] **C08 – Crafting Card:** kattints a `Megnyitott blueprint hozzáadása` gombra, majd nyisd meg a `Crafting List` lapot. `PASS`, ha megjelenik a JS-300 kártya, módosítható a `Gyártani kívánt mennyiség`, és látható az `Export HTML` gomb.
+- [x] **C09 – My Materials és Quality batch:** nyisd meg a `My Materials` lapot, és add hozzá ezt a tesztbatch-et: név `Stileron`; UUID `8cd317a3-df9b-4315-8ac3-0f1fca42dfd4`; Quality `517`; mennyiség `1`; unit `SCU`; megjegyzés `V1-GATE-CHROME`. `PASS`, ha külön Q517 batchként megjelenik.
+- [x] **C10 – Allocation újraszámolás:** térj vissza a `Crafting List` lapra. `PASS`, ha a JS-300 `Shell / Stileron` sorában Q517 batch-foglalás jelenik meg, a `Lefoglalt` érték `0,35 SCU`, és az inventory mennyisége nem csökken véglegesen.
+- [x] **C11 – Material Database és refinery adatok:** nyisd meg a `Material Database` lapot. Keress `Agricium` névre, ellenőrizd az egytalálatos keresést, majd próbáld ki az `All / Ship Mining / Vehicle Mining / FPS Mining / Harvestable` szűrőket. Válaszd ki az Agriciumot. `PASS`, ha látható a mining mód, Radar Signature, API-adat esetén rarity/instability/resistance, rendszerenkénti occurrence/spawn/max Quality location, UEX refinery és Default Loadout vagy pontos `Nincs adat`/`UNKNOWN` állapot. A JS-300 kártya adatpillanatképe továbbra is jelenjen meg.
+- [x] **C12 – Mining Loadouts:** nyisd meg a külön `Mining Loadouts` felső navigációt, válaszd a `Beryl` commodityt, kattints az `Új loadout ehhez a materialhoz` gombra, add meg a `V1-GATE-CHROME` nevet, válassz egy elérhető mining vehicle-t és headet, majd mentsd, és állítsd Default Loadoutnak. `PASS`, ha a mentett loadout kiválasztható, defaultként jelölt, és a Material Database Beryl adatlapján is megjelenik.
+- [x] **C13 – Combined Materials:** nyisd meg a `Combined Materials` lapot. `PASS`, ha a JS-300 három materialja külön megjelenik, a Recipe Slot részletek megmaradnak, és a Stileron lefoglalása megegyezik a Crafting Card értékével.
+- [x] **C14 – Log másolása:** nyisd meg a `Data / Settings` lapot, kattints a `Log másolása` gombra, majd illeszd be ideiglenesen egy üres szövegfájlba. `PASS`, ha az M1–M6 diagnosztikai szöveg beilleszthető, és tartalmaz `User Data fingerprint`, `UEX`, `allocation`, `Combined Materials` és `standaloneExport` adatot.
+- [x] **C15 – IndexedDB újratöltés:** a `Data / Settings` lapon jegyezd fel a `User Data fingerprint` értéket (`Chrome B`), majd nyomj `Ctrl+R`-t. `PASS`, ha a JS-300 kártya, a Q517 batch és a `V1-GATE-CHROME` loadout megmarad, és újra a `Data / Settings` lapra lépve ugyanaz a fingerprint látható (`Chrome C = Chrome B`).
+- [x] **C16 – Game Data nem ír User Data-t:** kattints az `Adatok frissítése` gombra, várd meg a sikeres lezárást, majd újra olvasd le a fingerprintet (`Chrome D`). `PASS`, ha `Chrome D = Chrome C`, és minden tesztadat megmaradt.
+- [x] **C17 – Konzol:** töröld a Console korábbi tartalmát, nyomj `Ctrl+R`-t, és járd végig egyszer a fenti lapokat. `PASS`, ha nincs új, az alkalmazásból származó piros JavaScript hiba.
 
 Gate 1 csak akkor `PASS`, ha **C01–C17 mind PASS**.
+
+**Rogzitett eredmeny: PASS.** Chrome B/C/D fingerprint: `2667ea55`; User Data-vesztes nem tortent.
 
 ## Gate 2 — tényleges standalone export offline Chrome-ban
 
@@ -61,14 +63,16 @@ Gate 1 csak akkor `PASS`, ha **C01–C17 mind PASS**.
 5. Zárd be az export lapját, majd kapcsold ki a számítógép internetkapcsolatát. A böngésző DevTools `Network > Offline` módja csak kiegészítő ellenőrzés; az elsődleges próba a Windows hálózati kapcsolat kikapcsolása.
 6. Az internet kikapcsolása után nyisd meg újra ugyanazt az exportált HTML-t közvetlenül a fájlból.
 
-- [ ] **O01 – Tényleges fájl:** az exportfájl létrejött, nem 0 bájtos, és a címsor az export saját `file:///` URL-jét mutatja.
-- [ ] **O02 – Teljes kártya:** internet nélkül is látható a JS-300 fejléc, SC-verzió, gyártási mennyiség, maximum/bottleneck, mindhárom Recipe Slot, Quality szabály, allocation/batch részletek, mining/farmhelyek, loadout és UEX refinery szekció vagy az adat hiányát pontosan jelző warning.
-- [ ] **O03 – Beágyazott kinézet:** az export formázott SPG-kártyaként jelenik meg; nem kell mellé `Info/style.css` vagy más fájl.
-- [ ] **O04 – Valóban offline újranyitás:** a fájl bezárás után, továbbra is kikapcsolt internet mellett újra megnyílik és ugyanazt a teljes tartalmat mutatja.
-- [ ] **O05 – Nincs külső kérés:** a DevTools `Network` panel törlése után töltsd újra az exportot. `PASS`, ha nincs `http://` vagy `https://` kérés Google Fonts, CSS, Wiki API, UEX API vagy más külső cím felé.
-- [ ] **O06 – Offline konzol:** a Console panelen nincs piros JavaScript-, CSS- vagy hálózati hiba.
+- [x] **O01 – Tényleges fájl:** az exportfájl létrejött, nem 0 bájtos, és a címsor az export saját `file:///` URL-jét mutatja.
+- [x] **O02 – Teljes kártya:** az exportban látható a JS-300 fejléc, SC-verzió, gyártási mennyiség, maximum/bottleneck, mindhárom Recipe Slot, Quality szabály, allocation/batch részletek, mining/farmhelyek, loadout és UEX refinery szekció vagy az adat hiányát pontosan jelző warning.
+- [x] **O03 – Beágyazott kinézet:** az export formázott SPG-kártyaként jelenik meg; nem kell mellé `Info/style.css` vagy más fájl.
+- [ ] **O04 – Valóban offline újranyitás – NOT TESTED:** a felhasznalo nem kert Windows-szintu halozatlekapcsolast; ez a pont nem PASS.
+- [x] **O05 – Nincs külső kérés:** a DevTools `Network` panel törlése után újratöltött export nem indított `http://` vagy `https://` kérést Google Fonts, CSS, Wiki API, UEX API vagy más külső cím felé.
+- [x] **O06 – Offline konzol:** a Console panel üres volt, `No Issues` állapottal.
 
 Gate 2 csak akkor `PASS`, ha **O01–O06 mind PASS**. Utána kapcsold vissza az internetet.
+
+**Rogzitett eredmeny: PARTIAL PASS.** O01-O03 es O05-O06 PASS; O04 `NOT TESTED`.
 
 ## Gate 3 — külön Microsoft Edge regresszió
 
@@ -86,6 +90,8 @@ Edge-ben ne a Chrome már megnyitott lapját használd: a fő HTML-t újra a Win
 - [ ] **E10 – Nincs User Data-vesztés:** az Edge teszt végén a kártya, batch, Quality, loadout és beállítások továbbra is elérhetők; a fingerprint változatlan.
 
 Gate 3 csak akkor `PASS`, ha **E01–E10 mind PASS**. Utána kapcsold vissza az internetet.
+
+**Rogzitett eredmeny: NOT TESTED.** A felhasznalo nem kert kulon Edge manual acceptance-et; E01-E10 egyike sem minosul PASS-nak.
 
 ## Mit küldj vissza egyben
 

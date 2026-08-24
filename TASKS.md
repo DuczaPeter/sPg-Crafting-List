@@ -35,16 +35,18 @@
 - [x] M6.1 teljes M1-M6 + 14 pontos UI regresszio, Chrome 13/13, IndexedDB reload, fingerprint es 390 px ellenorzes.
 - [x] C04 CSSOM `SecurityError` javitasa kozponti CSS-bol reprodukalhato, drift-ellenorzott embedded export snapshot fallbackkel.
 - [x] C04 celzott file-modellteszt, teljes M1-M6.1 regresszio es Chrome localhost 13/13 PASS.
-- [ ] C04 Technikai proba kezi ujrateszt normal Chrome `file://` modban.
-- [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
-- [ ] Letoltott standalone export kulon, offline ujranyitasa.
-- [ ] Kulon Edge-regresszio.
+- [x] C04 Technikai proba kezi ujrateszt normal Chrome `file://` modban.
+- [x] Kozvetlen `file://` technikai proba aktualis Chrome-ban: C01-C17 PASS.
+- [x] Vegso automatizalt M1-M6.1 + C04 regresszio, elo SC/UEX probe, CSS-drift es standalone exportartifact PASS (`V001-C013`).
+- [x] V1 pre-release acceptance report elkeszitese a manualis PASS/NOT TESTED allapotok valosaghu megorzesevel.
+- [ ] O04: letoltott standalone export Windows-szintu halozatlekapcsolas utani ujranyitasa (`NOT TESTED`, felhasznalo elutasitotta).
+- [ ] E01-E10: kulon Edge-regresszio (`NOT TESTED`, felhasznalo elutasitotta).
 
 ## Kovetkezo
 
 - [x] `sPg Crafting List.html` technikai baseline letrehozasa.
 - [x] API + IndexedDB + standalone export builder technikai proba localhost Chrome-ban.
-- [ ] API + `file://` + IndexedDB + standalone export kezi technikai proba.
+- [x] API + `file://` + IndexedDB + standalone export kezi Chrome technikai proba.
 - [x] M1: verziozott, igeny szerinti API cache es Blueprint Browser.
 - [x] M2: My Materials, Quality batch-ek es determinisztikus Allocation Engine.
 - [x] M3: mining adatok, location rangsor es loadoutok.
@@ -62,5 +64,5 @@
 
 ## Blokkolo problema
 
-- A C04 kodjavitas PASS, de a stabil V1 kiadast blokkolja a C04 valos `file://` ujratesztje es a tovabbi kezi release-gate-ek.
+- A candidate automatizalt es Chrome gate-je PASS, de O04 es E01-E10 `NOT TESTED`; stabil V1 csak kulon release-waiver vagy a ket gate tenyleges PASS eredmenye utan dontheto el.
 

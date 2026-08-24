@@ -237,3 +237,22 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Teszt: 80 617 byte es `463be393...e24bb` SHA-egyezes, file CSSOM olvasas 0, WARN 0; teljes M1-M6.1 + C04 regresszio es `V001-C012` PASS.
 - Chrome localhost: 13/13 technikai proba, 107 KiB standalone export, fingerprint `e6d8dec8` valtozatlan, DevTools warning/error 0.
 - Nyitott: a normal Chrome `file://` C04 kezi ujrateszt `NOT_TESTED`; C05 es a tobbi acceptance csak C04 PASS utan folytathato. Stabil tag/release nincs.
+
+### 2026-08-24T11:11:52 - V001-C013
+
+- Cel: V1 pre-release automated acceptance
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C013/test-summary.json`
+
+### V1 pre-release acceptance lezaras - 2026-08-24
+
+- Kezi Chrome: C01-C17 PASS; B/C/D User Data fingerprint mindharomszor `2667ea55`, User Data-vesztes nem tortent, a vegso C17 konzol tiszta.
+- Standalone: O01-O03 es O05-O06 PASS; O04 `NOT TESTED`, mert a felhasznalo nem kert Windows-szintu halozatlekapcsolast. Edge E01-E10 `NOT TESTED`, mert a felhasznalo nem kert kulon Edge acceptance-et.
+- Automatizalt: teljes M1-M6.1 + C04 PASS; az elo SC API `4.9.0-LIVE.12232306`, az elo UEX mapping `24 MATCHED / 50 UNMAPPED / 0 AMBIGUOUS`.
+- CSS: a kozponti fajl es export snapshot 80 617 byte-tal, `463be393...e24bb` SHA-256-tal byte-azonos; drift nincs.
+- Uj automatikus JS-300 export: 92 083 byte, `89b3c196...21892c` SHA-256, embedded CSS, ervenyes snapshot JSON, kulso runtime/network dependency nelkul.
+- Dokumentacio: `docs/V1_PRE_RELEASE_ACCEPTANCE_REPORT.md`; bizonyitek: `test-artifacts/V001-C013/`.
+- Vegso allapot: release candidate, nem stabil V1. Release commit/tag/verzioemeles nem keszult; a kovetkezo lepes release-waiver dontes O04 es Edge kapurol.

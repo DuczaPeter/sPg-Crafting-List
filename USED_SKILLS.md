@@ -145,3 +145,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: 13/13 technikai proba, 107 KiB standalone export, valtozatlan `e6d8dec8` User Data fingerprint es 0 DevTools warning/error bizonyitasa.
 - Mely fajlokat vagy donteseket erintett: `docs/C04_FILE_EXPORT_REPAIR.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C012/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V1 pre-release automatizalt acceptance
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a release candidate vegso automatizalt ujraellenorzesekor es a manualis gate-eredmenyek rogzitesekor.
+- Mire segitett: haromsoros scope-terv, tiszta munkafarol indulo `V001-C013` full-regression ciklus, explicit PASS/NOT TESTED szetvalasztas es a stabil release visszatartasa.
+- Mely fajlokat vagy donteseket erintett: `tools/run-m6-tests.mjs`, `TEST_COMMANDS.md`, `V1_RELEASE_GATE_CHECKLIST.md`, `docs/V1_PRE_RELEASE_ACCEPTANCE_REPORT.md`, statusz/naplo/verzio fajlok es a C013 artifactok.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

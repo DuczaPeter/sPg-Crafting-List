@@ -1,0 +1,59 @@
+{
+  "cycleId": "V001-C013",
+  "checkedAt": "2026-08-24T11:11:52+02:00",
+  "automated": {
+    "status": "PASS",
+    "suite": ["M1", "M2", "M3", "M4", "M5", "M5.1", "M6", "M6.1", "C04"],
+    "scDataVersion": "4.9.0-LIVE.12232306",
+    "uex": {
+      "httpStatus": 200,
+      "authorizationHeaderSent": false,
+      "recordCount": 215,
+      "commodityCount": 24,
+      "mapping": { "MATCHED": 24, "UNMAPPED": 50, "AMBIGUOUS": 0 }
+    },
+    "cssSnapshot": {
+      "bytes": 80617,
+      "sha256": "463be3931f20cfa00649f8499dcdf4f8f6bd4e4195d5ac24bec0d0e4298e24bb",
+      "drift": false,
+      "fileProtocolCssomReads": 0,
+      "httpProtocolCssomReads": 1
+    },
+    "standaloneArtifact": {
+      "path": "test-artifacts/V001-C013/standalone-js-300-automated.html",
+      "bytes": 92083,
+      "sha256": "89b3c196f3495f1a14381f8a099b10fa867e57c8ad5c264d719ccb6a3a21892c",
+      "recipeSlots": 3,
+      "embeddedCss": true,
+      "externalRuntimeDependency": false,
+      "externalNetworkResource": false,
+      "snapshotJsonValid": true
+    }
+  },
+  "manual": {
+    "source": "user-reported release-gate execution",
+    "chrome": {
+      "C01-C17": "PASS",
+      "fingerprints": { "B": "2667ea55", "C": "2667ea55", "D": "2667ea55" },
+      "userDataLoss": false,
+      "finalConsoleApplicationJsError": false
+    },
+    "standalone": {
+      "file": "sPg Crafting List - JS-300.html",
+      "O01": "PASS",
+      "O02": "PASS",
+      "O03": "PASS",
+      "O04": "NOT_TESTED",
+      "O04Reason": "user declined Windows-level offline test",
+      "O05": "PASS",
+      "O06": "PASS",
+      "externalHttpRequests": 0
+    },
+    "edge": {
+      "E01-E10": "NOT_TESTED",
+      "reason": "user declined Edge manual gate"
+    },
+    "overallManualGate": "NOT_FULL_PASS"
+  },
+  "finalStatus": "V1 RELEASE CANDIDATE – automated regression PASS, Chrome manual gate PASS, standalone partial PASS, offline hard-disconnect and Edge manual gates NOT TESTED."
+}
