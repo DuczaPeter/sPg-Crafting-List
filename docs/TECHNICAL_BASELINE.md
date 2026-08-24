@@ -30,6 +30,7 @@ Datum: 2026-08-22
 - Teljes standalone Crafting/Farm Card export slotonkenti Quality/allocation, mining, loadout es refinery adatokkal; a kozponti CSS beagyazva, kulso eroforras nelkul.
 - Egyetlen `Log masolasa` muvelettel exportalhato M1-M6 allapotcsomag.
 - Pontosan nyolc enabled felso navigacios cel; keresheto/kategorizalhato Material Database a meglevo mining/refinery/loadout modelleken, valamint kulon Mining Loadouts navigacio.
+- Reprodukalhato export-CSS snapshot: a fo HTML tovabbra is `Info/style.css`-t tolt, file exporthoz a centralis CSS byte-azonos, SHA-ellenorzott generalt masolata hasznalhato CSSOM security bypass nelkul.
 
 ## Bizonyitott
 
@@ -57,10 +58,12 @@ Datum: 2026-08-22
 - M6.1 `V001-C011`: teljes M1-M6 + 14 pontos UI regresszio PASS.
 - Valodi Chrome localhost M6.1: 8/8 navigacio, 72 commodity, mind a negy kategoria, Agricium API-metrikak/location/refinery/default loadout, loadout mentes+reload, 13/13 technikai proba, 390 px overflow nelkul es 0 konzol warning/error PASS.
 - M6.1 User Data fingerprint IndexedDB reload utan es Mining Game Data sync utan: `e6d8dec8` = `e6d8dec8`.
+- C04 modellregresszio: file protokollnal 0 CSSOM `cssRules` olvasas, 0 WARN, 80 617 byte centralis CSS/snapshot egyezes; localhost CSSOM utvonal megmaradt; `V001-C012` PASS.
+- C04 utani Chrome localhost: 13/13 technikai proba, 107 KiB standalone export, `e6d8dec8` fingerprint es 0 DevTools warning/error PASS.
 
 ## Meg nem bizonyitott
 
-- Kozvetlen `file://` Chrome/Edge proba. Az automatizalt Chrome-felulet biztonsagi szabaly miatt helyi fajl URL nem nyithato meg.
+- Kozvetlen `file://` teljes Chrome/Edge proba: Chrome C01-C03 felhasznaloi PASS, de a C04 CSSOM-javitas utani kezi ujrateszt meg nyitott; Edge meg nem futott. Az automatizalt Chrome-felulet helyi fajl URL-t nem nyithat meg.
 - A bongeszo altal tenylegesen letoltott exportfajl kulon, kikapcsolt internet melletti ujranyitasa. A letoltott fajl letezik es statikusan PASS, de ez nem bizonyitja a valos offline bongeszos ujranyitast.
 - Edge kulon regresszio.
 

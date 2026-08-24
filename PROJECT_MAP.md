@@ -30,6 +30,7 @@
 - M5 UEX refinery regresszio: `tools/validate-m5.ps1`, amely az M1-M4 kapukat es a `tools/run-m5-tests.mjs` 18 kotelezo mapping/ranking/cache/snapshot esetet futtatja.
 - M6 standalone export regresszio: `tools/validate-m6.ps1`, amely az M1-M5 kapukat es a `tools/run-m6-tests.mjs` 14 exportesetet futtatja.
 - M6.1 UI Completeness regresszio: `tools/validate-m61.ps1`, amely a teljes M1-M6 kaput es a `tools/run-m61-ui-tests.mjs` 14 navigacios/Material Database/Mining Loadouts/responsive esetet futtatja.
+- C04 file export CSS regresszio: `tools/validate-c04.ps1`; a `tools/sync-export-css-snapshot.mjs` a centralis CSS-bol general es driftet ellenoriz, a `tools/run-c04-file-export-tests.mjs` pedig file/HTTP utvonalat tesztel.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -48,6 +49,7 @@
 - `docs/M4_REPORT.md`: Combined Materials projekcio, backup schema/importtranzakcio, diagnosztika, teljesitmeny es M5 elotti nyitott pontok.
 - `docs/M5_REPORT.md`: UEX endpoint/valasz, mapping, rendszerrangsor, napi cache/rollback, kartya-snapshot, valos tesztpeldak es M6 elotti nyitott pontok.
 - `docs/M6_1_REPORT.md`: a placeholder-ok oka, a meglevo M3/M5 modellek ujrahasznalata, a nyolc navigacios cel, Material Database/Mining Loadouts es Chrome audit bizonyitekai.
+- `docs/C04_FILE_EXPORT_REPAIR.md`: a CSSOM SecurityError oka, a generalt snapshot megoldas, hash, regresszio es a kezi C04 ujrateszt kapuja.
 - `BACKUP_RESTORE.md`: backup export/import, preview, migracio, snapshot es rollback rovid uzemeltetesi leirasa.
 - `tests/fixtures/`: JS-300, Hofstede-S1 es azonos materialt ket slotban tarto regresszios fixture.
 - `test-artifacts/V001-C001/`: az elso statikus es Chrome localhost baseline bizonyitekai.
@@ -60,6 +62,7 @@
 - `test-artifacts/V001-C008/`: az M5 17 esetes regresszio, valos browser-ellenorzes es UEX cache/mapping bizonyitekai.
 - `test-artifacts/V001-C010/`: az M6 teljes regresszio, tenyleges exportfixture es Chrome localhost RC-bizonyitekai; a harom kezi release-gate egyertelmuen `NOT_TESTED` maradt.
 - `test-artifacts/V001-C011/`: az M6.1 teljes M1-M6 + 14 pontos UI regresszio es a valos Chrome kattintas/reload/fingerprint/responsive/konzol bizonyitekai.
+- `test-artifacts/V001-C012/`: a C04 CSS fallback teljes regresszio es localhost Chrome bizonyitekai; a valos file C04 ujrateszt `NOT_TESTED`.
 
 ## Iranyito fajlok
 

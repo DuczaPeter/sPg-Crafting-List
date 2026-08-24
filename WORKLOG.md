@@ -218,3 +218,22 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Dokumentacio: `docs/M6_1_REPORT.md`, frissitett `V1_RELEASE_GATE_CHECKLIST.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C011/browser-manual-summary.json`.
 - Implementacios commit: `bb24bf9` (`feat: complete M6.1 UI audit`).
 - Nyitott: a stabil V1-et tovabbra is blokkolja a kezi Chrome `file://`, a valos offline export-ujranyitas es a kulon Edge regresszio. Stabil tag/release nem keszult.
+
+### 2026-08-24T09:35:01 - V001-C012
+
+- Cel: C04 file standalone export CSS fallback
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C012/test-summary.json`
+
+### C04 file standalone export CSS javitas - 2026-08-24
+
+- Felhasznaloi bizonyitek: Chrome 151 normal `file://` futasban C01-C03 PASS, C04 12/13 FAIL; a centralis CSS normalisan betoltodott, de `cssRules` olvasas `SecurityError` lett.
+- Hibalanc: `CSS_CSSOM_READ_FAILED -> EXPORT_FAILED -> TECHNICAL_CHECK_FAILED`; a tobbi 12 technikai ellenorzes PASS volt.
+- Javitas: a fo kulso `Info/style.css` byte-azonos, SHA-256-tal jelolt base64 snapshotja generatorral kerul a HTML nem vegrehajthato template elemebe. File modban az export ezt hasznalja, CSSOM olvasas nelkul; HTTP alatt a regi utvonal maradt.
+- Karbantarthatosag: `validate-baseline.ps1` minden regresszioban driftet ellenoriz; a snapshot nem masodik kezzel karbantartott stilusrendszer.
+- Teszt: 80 617 byte es `463be393...e24bb` SHA-egyezes, file CSSOM olvasas 0, WARN 0; teljes M1-M6.1 + C04 regresszio es `V001-C012` PASS.
+- Chrome localhost: 13/13 technikai proba, 107 KiB standalone export, fingerprint `e6d8dec8` valtozatlan, DevTools warning/error 0.
+- Nyitott: a normal Chrome `file://` C04 kezi ujrateszt `NOT_TESTED`; C05 es a tobbi acceptance csak C04 PASS utan folytathato. Stabil tag/release nincs.

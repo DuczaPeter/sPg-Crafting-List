@@ -129,3 +129,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: 8/8 valodi navigacios kattintas, a simitott gorgetes kattintasvesztesenek megtalalasa, 72 commodity es kategoriak, Agricium API-metrikak, Default Loadout mentes/reload, azonos `e6d8dec8` fingerprint, 13/13 technikai proba, 390 px es warning/error 0 bizonyitasa.
 - Mely fajlokat vagy donteseket erintett: `sPg Crafting List.html`, `Info/style.css`, `docs/M6_1_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C011/browser-manual-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## C04 file export javitasi ciklus
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a C04 `file://` CSSOM SecurityError javitasakor.
+- Mire segitett: a stabil allapot megorzese, a szuk C04 javitasi scope, a teljes regresszio, a `V001-C012` ciklus es a manualis kapu valosaghu nyitva tartasa.
+- Mely fajlokat vagy donteseket erintett: fo HTML, snapshot generator/teszt/validator, tesztterv, C04 jelentes, release checklist es C012 artifact.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## Chrome C04 localhost regresszio
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-24`, a C04 javitas utani valos localhost Chrome ellenorzesekor.
+- Mire segitett: 13/13 technikai proba, 107 KiB standalone export, valtozatlan `e6d8dec8` User Data fingerprint es 0 DevTools warning/error bizonyitasa.
+- Mely fajlokat vagy donteseket erintett: `docs/C04_FILE_EXPORT_REPAIR.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C012/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

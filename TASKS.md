@@ -33,6 +33,9 @@
 - [x] Pontos, visszakuldheto kezi V1 release-gate checklist elkeszitese.
 - [x] M6.1 UI Completeness Audit: pontosan 8 enabled felso navigacio, hasznalhato Material Database es kulon Mining Loadouts kapu.
 - [x] M6.1 teljes M1-M6 + 14 pontos UI regresszio, Chrome 13/13, IndexedDB reload, fingerprint es 390 px ellenorzes.
+- [x] C04 CSSOM `SecurityError` javitasa kozponti CSS-bol reprodukalhato, drift-ellenorzott embedded export snapshot fallbackkel.
+- [x] C04 celzott file-modellteszt, teljes M1-M6.1 regresszio es Chrome localhost 13/13 PASS.
+- [ ] C04 Technikai proba kezi ujrateszt normal Chrome `file://` modban.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.
@@ -59,5 +62,5 @@
 
 ## Blokkolo problema
 
-- Az M6.1 PASS, de a stabil V1 kiadast tovabbra is blokkolja a harom meg nem futtatott kezi release-gate.
+- A C04 kodjavitas PASS, de a stabil V1 kiadast blokkolja a C04 valos `file://` ujratesztje es a tovabbi kezi release-gate-ek.
 

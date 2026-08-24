@@ -1,0 +1,26 @@
+{
+  "cycleId": "V001-C012",
+  "status": "PASS",
+  "scope": "localhost Chrome regression after C04 CSS export repair",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "technicalProbe": {
+    "passed": 13,
+    "total": 13,
+    "standaloneExport": "PASS",
+    "standaloneExportBytes": 109076
+  },
+  "userData": {
+    "fingerprintBefore": "e6d8dec8",
+    "fingerprintAfter": "e6d8dec8",
+    "preserved": true
+  },
+  "console": {
+    "warningErrorCount": 0,
+    "status": "PASS"
+  },
+  "fileProtocol": {
+    "automatedModelRegression": "PASS",
+    "actualChromeManualRetest": "NOT_TESTED",
+    "nextRequiredGate": "C04"
+  }
+}

@@ -154,6 +154,25 @@ M6.1 repair-cycle futtatas:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "M6.1 V1 UI completeness audit" -TestId m61-ui-regression
 ```
 
+Kozponti CSS export snapshot frissitese es drift-ellenorzese:
+
+```powershell
+node .\tools\sync-export-css-snapshot.mjs
+node .\tools\sync-export-css-snapshot.mjs --check
+```
+
+C04 `file://` CSS fallback + teljes M1-M6.1 regresszio:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-c04.ps1"
+```
+
+C04 repair-cycle:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V001 -Purpose "C04 file standalone export CSS fallback" -TestId c04-file-export-regression
+```
+
 Valos bongeszos ellenorzes:
 
 Reszletes, kattintasonkenti V1 acceptance es visszakuldesi sablon: `V1_RELEASE_GATE_CHECKLIST.md`.
@@ -196,3 +215,4 @@ node .\tools\serve-local.mjs
 - `m5-regression`: az M1-M4 kapuk mellett 18 kotelezo UEX mapping/ranking/cache/snapshot/diagnosztikai eset, az 5 verziozott canonical alias, fuzzy-elutasitas, 500 soros limitfixture es teljesitmenyproba.
 - `m6-regression`: teljes M1-M5 regresszio, 14 kotelezo teljes standalone export eset, offline eroforrasfuggetlenseg, per-card export, JSON roundtrip, XSS-escape es 120 slotos teljesitmenyfixture. A valos `file://` Chrome/Edge es offline ujranyitas tovabbra is kulon bongeszos release-gate.
 - `m61-ui-regression`: teljes M1-M6 regresszio es 14 kotelezo UI-eset a pontos 8 enabled navigaciora, celpanelekre, Material Database kereses/kategoriak/adatlapra, az M3/M5 projekciok es a `userLoadouts` ujrahasznalatara, valamint responsive CSS-re. A valos kattintas/reload/konzol bizonyitek kulon Chrome-summaryban van.
+- `c04-file-export-regression`: teljes M1-M6.1 regresszio, centralis CSS/snapshot byte- es SHA-egyezes, `file://` CSSOM-kerules, localhost CSSOM-megorzes, tavoli fontimport eltavolitas es standalone CSS keszenlet.

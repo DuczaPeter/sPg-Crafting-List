@@ -8,12 +8,14 @@ $htmlPath = Join-Path $projectRoot 'sPg Crafting List.html'
 $cssPath = Join-Path $projectRoot 'Info\style.css'
 $specPath = Join-Path $projectRoot 'docs\PROJECT_SPECIFICATION.md'
 $decisionsPath = Join-Path $projectRoot 'docs\IMPLEMENTATION_DECISIONS.md'
+$cssSnapshotTool = Join-Path $PSScriptRoot 'sync-export-css-snapshot.mjs'
 
 $requiredPaths = @(
     $htmlPath,
     $cssPath,
     $specPath,
-    $decisionsPath
+    $decisionsPath,
+    $cssSnapshotTool
 )
 
 $missingPaths = @($requiredPaths | Where-Object { -not (Test-Path -LiteralPath $_) })
@@ -44,7 +46,9 @@ $requiredSymbols = @(
     'class DiagnosticLogger',
     'function normalizeBlueprint',
     'function buildStandaloneExport',
+    'function readEmbeddedApplicationCssSnapshot',
     'function runTechnicalProbe',
+    'SPG_APPLICATION_CSS_SNAPSHOT_START',
     'window.onerror',
     'unhandledrejection'
 )
@@ -59,6 +63,12 @@ $node = Get-Command node -ErrorAction SilentlyContinue
 if (-not $node) {
     throw 'A fejlesztesi JavaScript-szintaxisellenorzeshez Node.js szukseges.'
 }
+
+$snapshotOutput = & $node.Source $cssSnapshotTool --check 2>&1
+if ($LASTEXITCODE -ne 0) {
+    throw "Az export-CSS snapshot eltér a központi Info/style.css fájltól: $($snapshotOutput -join [Environment]::NewLine)"
+}
+$snapshotOutput | Write-Output
 
 $tempJsPath = Join-Path ([System.IO.Path]::GetTempPath()) ("spg-crafting-list-{0}.js" -f ([guid]::NewGuid().ToString('N')))
 try {

@@ -99,6 +99,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m61.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "c04-file-export-regression",
+      "level": "full-regression",
+      "description": "Runs M1-M6.1, verifies that the generated embedded CSS snapshot is byte-identical to Info/style.css, simulates file:// without reading cssRules, preserves localhost CSSOM, removes remote font dependencies, and validates standalone export CSS readiness.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-c04.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

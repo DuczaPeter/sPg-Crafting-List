@@ -10,6 +10,8 @@ Az M6 jelenleg release candidate. Stabil V1 csak akkor készülhet, ha az össze
 
 Az `M6.1 UI Completeness Audit` a `V001-C011` ciklusban PASS: a felso navigacio pontosan nyolc enabled celt tartalmaz, a `Material Database` es a `Mining Loadouts` hasznalhato, a teljes M1-M6 + M6.1 regresszio es a Chrome localhost 13/13 proba zold. Ezert a korabban szunetelt kezi acceptance most ujra folytathato. Az M6.1 localhost bizonyitek nem helyettesiti az alabbi `file://`, offline es Edge kapukat.
 
+2026-08-24-i kezi eredmeny: C01-C03 PASS, C04 FAIL volt a `file://` CSSOM `SecurityError` miatt. A `V001-C012` javitas a kozponti CSS-bol generalt, automatikusan drift-ellenorzott export snapshotot vezetett be; a teljes regresszio es localhost Chrome 13/13 PASS. A kovetkezo kezi lepes **kizarolag C04 ujrateszt**. C05 csak C04 PASS utan kezdheto.
+
 ## Tesztelendő fájlok
 
 - Fő alkalmazás: `C:\Users\ganos\OneDrive\Munka\Codex\sPg Crafring List\sPg Crafting List.html`
@@ -30,10 +32,10 @@ Ne localhost URL-t nyiss meg. A címsornak mindkét böngészőben `file:///C:/.
 
 Nyisd meg a fő HTML-t a Windows Intézőből a `Megnyitás ezzel > Google Chrome` művelettel.
 
-- [ ] **C01 – Valódi file mód:** a címsor `file:///` URL-t mutat, a felső `Futtatási mód` mező pedig `file://` értékű. Localhost használata `FAIL`.
-- [ ] **C02 – CSS:** nyomj `F12`-t, töröld a `Network` listát, majd nyomj `Ctrl+R`-t. Sötét, cián keretes SPG felület jelenjen meg, az `Info/style.css` pedig helyi fájlként, piros hiba nélkül töltődjön be. Formázatlan fehér oldal `FAIL`.
-- [ ] **C03 – JavaScript indulás:** a fejléc, a modulnavigáció és az SC-verzió megjelenik; a `Console` panelen nincs piros, az alkalmazásból származó JavaScript hiba.
-- [ ] **C04 – Technikai próba:** kattints a `Technikai próba` gombra. `PASS`, ha mind a 13 sor zöld, koztuk az `M6.1 V1 UI completeness`, a badge `Minden próba sikeres`, a `Futtatási mód` sor pedig `Közvetlen file:// futás`.
+- [x] **C01 – Valódi file mód:** a címsor `file:///` URL-t mutat, a felső `Futtatási mód` mező pedig `file://` értékű. Localhost használata `FAIL`. *(Felhasználói eredmény: PASS.)*
+- [x] **C02 – CSS:** nyomj `F12`-t, töröld a `Network` listát, majd nyomj `Ctrl+R`-t. Sötét, cián keretes SPG felület jelenjen meg, az `Info/style.css` pedig helyi fájlként, piros hiba nélkül töltődjön be. Formázatlan fehér oldal `FAIL`. *(Felhasználói eredmény: PASS.)*
+- [x] **C03 – JavaScript indulás:** a fejléc, a modulnavigáció és az SC-verzió megjelenik; a `Console` panelen nincs piros, az alkalmazásból származó JavaScript hiba. *(Felhasználói eredmény: PASS.)*
+- [ ] **C04 – Technikai próba – ÚJRATESZT:** kattints a `Technikai próba` gombra. `PASS`, ha mind a 13 sor zöld, koztuk az `M6.1 V1 UI completeness` es a `Standalone HTML export`, a badge `Minden próba sikeres`, a `Futtatási mód` sor pedig `Közvetlen file:// futás`. Nem jelenhet meg `CSS_CSSOM_READ_FAILED`, `CSS_EMBEDDED_SNAPSHOT_FAILED`, `EXPORT_FAILED` vagy `TECHNICAL_CHECK_FAILED`.
 - [ ] **C05 – Wiki API:** ugyanebben a próbában a `Star Citizen Wiki API` sor PASS és JS-300 receptet jelez. Ezután kattints az `Adatok frissítése` gombra. `PASS`, ha a `Wiki API` állapot `Elérhető`, és nincs fetch/CORS hiba.
 - [ ] **C06 – UEX API:** nyisd meg az `UEX Refinery` lapot, kattints az `UEX adatok kézi frissítése` gombra, majd válaszd a `Beryl` commodityt. `PASS`, ha aktív cache/mapping összegzés és rendszerenkénti refinery ajánlás jelenik meg. A jelenlegi SC-verziónál az elvárt mapping `24 MATCHED / 50 UNMAPPED / 0 AMBIGUOUS`.
 - [ ] **C07 – Blueprint Browser:** nyisd meg a `Blueprint Browser` lapot, keress rá: `JS-300`, majd kattints a találatra. `PASS`, ha a részletes recept 3 külön Recipe Slotot mutat: `Shell`, `Voltage Regulator`, `Stator Cores`.
