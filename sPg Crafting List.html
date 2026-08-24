@@ -6855,6 +6855,12 @@ code {
       UNKNOWN: "UNKNOWN"
     });
 
+    var M3_PRESENTATION_PROVIDER_FAMILIES = Object.freeze({
+      HPP_AaronHalo: Object.freeze({ key: "AARON_HALO", label: "Aaron Halo", memberKind: "MINING_BASE" }),
+      HPP_Pyro_DeepSpaceAsteroids: Object.freeze({ key: "PYRO_DEEP_SPACE_ASTEROIDS", label: "Pyro Deep Space Asteroids", memberKind: "RMB_RAB" }),
+      HPP_Pyro_AkiroCluster: Object.freeze({ key: "PYRO_DEEP_SPACE_ASTEROIDS", label: "Pyro Deep Space Asteroids", memberKind: "AKIRO" })
+    });
+
     function m3CanonicalDepositName(value) {
       return String(value || "").toLowerCase()
         .replace(/\((?:ore|raw|r)\)/g, "")
@@ -7017,7 +7023,7 @@ code {
       });
       return {
         cacheKey: provenance.gameVersion + "::commodity-detail::" + raw.uuid,
-        recommendationModelVersion: 3,
+        recommendationModelVersion: 4,
         uuid: raw.uuid,
         key: raw.key || null,
         slug: raw.slug || null,
@@ -7133,6 +7139,183 @@ code {
       return Array.from(new Set(values || [])).sort(function (a, b) { return String(a).localeCompare(String(b), "hu"); });
     }
 
+    function m3ResourceIdentity(candidate) {
+      return [
+        candidate && candidate.resourceUuid || "",
+        candidate && candidate.resourceKey || "",
+        candidate && candidate.resourceGroupName || "",
+        candidate && candidate.resourceKind || ""
+      ].join("::");
+    }
+
+    function m3CandidateProviders(candidate) {
+      return m3UniqueSorted(candidate && candidate.providerNames || []);
+    }
+
+    function m3NormalizeLagrangeName(name) {
+      return String(name || "").trim().replace(/\s+(L[1-5])$/i, "-$1");
+    }
+
+    function m3JoinHumanList(values) {
+      var items = (values || []).filter(Boolean);
+      if (items.length < 2) {
+        return items[0] || "";
+      }
+      if (items.length === 2) {
+        return items[0] + " és " + items[1];
+      }
+      return items.slice(0, -1).join(", ") + " és " + items[items.length - 1];
+    }
+
+    function m3ProviderFamily(candidate) {
+      var providers = m3CandidateProviders(candidate);
+      for (var index = 0; index < providers.length; index += 1) {
+        if (Object.prototype.hasOwnProperty.call(M3_PRESENTATION_PROVIDER_FAMILIES, providers[index])) {
+          var family = M3_PRESENTATION_PROVIDER_FAMILIES[providers[index]];
+          if (family.key === "PYRO_DEEP_SPACE_ASTEROIDS" && !(candidate.system === "Pyro System" && candidate.environment === M3_ENVIRONMENTS.SPACE && /^(?:Asteroid|Asteroid_ValidQT)$/i.test(String(candidate.locationType || "")))) {
+            return null;
+          }
+          if (family.key === "AARON_HALO" && !(candidate.system === "Stanton System" && candidate.environment === M3_ENVIRONMENTS.SPACE)) {
+            return null;
+          }
+          return family;
+        }
+      }
+      if (candidate.environment === M3_ENVIRONMENTS.SPACE && isLagrangeMiningLocation(candidate) && providers.length === 1) {
+        var providerMatch = providers[0].match(/^HPP_Lagrange_([A-Za-z0-9]+)$/);
+        return {
+          key: "LAGRANGE_PROVIDER::" + providers[0],
+          label: providerMatch ? "Lagrange " + providerMatch[1].toUpperCase() : String(candidate.system || "").replace(/ System$/, "") + " Lagrange Points",
+          memberKind: "LAGRANGE"
+        };
+      }
+      return null;
+    }
+
+    function m3PresentationPartitionKey(candidate, family) {
+      var parentEvidence = candidate.parentUuid || (candidate.parentName ? candidate.parentType + "::" + candidate.parentName : "NO_PARENT");
+      if (family.key === "AARON_HALO") {
+        parentEvidence = "PROVIDER_SCOPED_SYSTEM_ROOT";
+      }
+      return [family.key, candidate.system, candidate.environment, parentEvidence, m3ResourceIdentity(candidate)].join("||");
+    }
+
+    function m3PyroMemberSummary(candidates) {
+      var names = m3UniqueSorted(candidates.map(function (candidate) { return candidate.locationName; }));
+      var hasAkiro = names.some(function (name) { return /^Akiro Cluster$/i.test(name); });
+      var rabCount = names.filter(function (name) { return /^RAB(?:-|\b)/i.test(name); }).length;
+      var rmbCount = names.filter(function (name) { return /^RMB(?:-|\b)/i.test(name); }).length;
+      var knownCount = (hasAkiro ? 1 : 0) + rabCount + rmbCount;
+      var familyLabels = [];
+      if (hasAkiro) { familyLabels.push("Akiro Cluster"); }
+      if (rabCount) { familyLabels.push("RAB"); }
+      if (rmbCount) { familyLabels.push("RMB"); }
+      var summary = "";
+      if (familyLabels.length > 1) {
+        summary = m3JoinHumanList(familyLabels) + " helyszínek";
+      } else if (familyLabels[0] === "Akiro Cluster") {
+        summary = "Akiro Cluster";
+      } else if (familyLabels.length === 1) {
+        summary = (rabCount || rmbCount) + " " + familyLabels[0] + " helyszín";
+      }
+      if (names.length > knownCount) {
+        summary += (summary ? " · " : "") + (names.length - knownCount) + " további API-helyszín";
+      }
+      return summary || names.length + " Pyro deep-space helyszín";
+    }
+
+    function m3AaronHaloMemberSummary(candidates) {
+      var names = m3UniqueSorted(candidates.map(function (candidate) { return candidate.locationName; }));
+      var miningBaseCount = names.filter(function (name) { return /^Mining Base #/i.test(name); }).length;
+      var systemRecordCount = candidates.filter(function (candidate) { return String(candidate.locationType || "").toLowerCase() === "star"; }).length;
+      var otherCount = Math.max(0, names.length - miningBaseCount - systemRecordCount);
+      var parts = [];
+      if (miningBaseCount) { parts.push(miningBaseCount + " Mining Base helyszín"); }
+      if (systemRecordCount) { parts.push(systemRecordCount + " rendszer-szintű API-rekord"); }
+      if (otherCount) { parts.push(otherCount + " további API-helyszín"); }
+      return parts.join(" · ") || names.length + " Aaron Halo helyszín";
+    }
+
+    function m3PresentationGroup(candidates, family, partitionKey) {
+      var locationNames = m3UniqueSorted(candidates.map(function (candidate) { return candidate.locationName; }));
+      var providers = m3UniqueSorted(candidates.reduce(function (all, candidate) { return all.concat(m3CandidateProviders(candidate)); }, []));
+      var label = family ? family.label : locationNames[0];
+      var memberSummary = "1 nyertes location";
+      var evidenceKind = "SINGLE_LOCATION";
+      if (family && family.key === "PYRO_DEEP_SPACE_ASTEROIDS") {
+        memberSummary = m3PyroMemberSummary(candidates);
+        evidenceKind = "VERIFIED_API_PROVIDER_FAMILY";
+      } else if (family && family.key === "AARON_HALO") {
+        memberSummary = m3AaronHaloMemberSummary(candidates);
+        evidenceKind = "VERIFIED_API_PROVIDER_FAMILY";
+      } else if (family && family.memberKind === "LAGRANGE") {
+        memberSummary = m3UniqueSorted(locationNames.map(m3NormalizeLagrangeName)).join(" · ");
+        evidenceKind = "EXACT_API_PROVIDER_RESOURCE_PARENT";
+      }
+      return {
+        key: family ? partitionKey : "LOCATION::" + candidates[0].locationId,
+        label: label,
+        memberSummary: memberSummary,
+        memberCount: locationNames.length,
+        rawLocationNames: locationNames,
+        rawLocationIds: m3UniqueSorted(candidates.map(function (candidate) { return candidate.locationId; })),
+        evidence: {
+          kind: evidenceKind,
+          providerNames: providers,
+          systems: m3UniqueSorted(candidates.map(function (candidate) { return candidate.system; })),
+          parentUuids: m3UniqueSorted(candidates.map(function (candidate) { return candidate.parentUuid; }).filter(Boolean)),
+          parentNames: m3UniqueSorted(candidates.map(function (candidate) { return candidate.parentName; }).filter(Boolean)),
+          locationTypes: m3UniqueSorted(candidates.map(function (candidate) { return candidate.locationType; }).filter(Boolean)),
+          resourceUuids: m3UniqueSorted(candidates.map(function (candidate) { return candidate.resourceUuid; }).filter(Boolean)),
+          resourceKeys: m3UniqueSorted(candidates.map(function (candidate) { return candidate.resourceKey; }).filter(Boolean))
+        }
+      };
+    }
+
+    function buildMiningRecommendationPresentation(equalBest, environmentCandidates, environment, best) {
+      var partitions = new Map();
+      var singletonCandidates = [];
+      equalBest.forEach(function (candidate) {
+        var family = m3ProviderFamily(candidate);
+        if (!family) {
+          singletonCandidates.push(candidate);
+          return;
+        }
+        var key = m3PresentationPartitionKey(candidate, family);
+        if (!partitions.has(key)) {
+          partitions.set(key, { key: key, family: family, candidates: [] });
+        }
+        partitions.get(key).candidates.push(candidate);
+      });
+      var groups = [];
+      partitions.forEach(function (partition) {
+        groups.push(m3PresentationGroup(partition.candidates, partition.family, partition.key));
+      });
+      singletonCandidates.forEach(function (candidate) {
+        groups.push(m3PresentationGroup([candidate], null, null));
+      });
+      groups.sort(function (left, right) {
+        return left.label.localeCompare(right.label, "hu") || left.key.localeCompare(right.key);
+      });
+      var relevantLagrangeCandidates = environmentCandidates.filter(isLagrangeMiningLocation);
+      var allLagrangePoints = environment === M3_ENVIRONMENTS.SPACE && relevantLagrangeCandidates.length > 1 && relevantLagrangeCandidates.every(function (candidate) {
+        return sameMiningRank(candidate, best);
+      });
+      var groupLabel = groups.length === 1 ? groups[0].label : groups.length + " azonos rangú farmhely";
+      var memberSummary = groups.length === 1
+        ? groups[0].memberSummary
+        : (groups.length <= 4 ? groups.map(function (group) { return group.label; }).join(" · ") : groups.slice(0, 3).map(function (group) { return group.label; }).join(" · ") + " · +" + (groups.length - 3) + " további");
+      return {
+        schemaVersion: 1,
+        groupLabel: groupLabel,
+        memberSummary: memberSummary,
+        groups: groups,
+        allLagrangePoints: allLagrangePoints,
+        rawLocationCount: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationName; })).length,
+        rawLocationNames: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationName; }))
+      };
+    }
+
     function buildMiningFarmRecommendations(commodity, systems) {
       var decisions = [];
       var primaryCandidates = [];
@@ -7151,9 +7334,14 @@ code {
             locationType: location.type,
             parentName: location.parentName,
             parentType: location.parentType,
+            parentUuid: location.parentUuid,
             resourceIndex: resource.resourceIndex,
             resourceKey: resource.key,
+            resourceUuid: resource.resourceUuid,
             resourceLabel: resource.label,
+            resourceGroupName: resource.groupName,
+            resourceKind: resource.resourceKind,
+            providerNames: resource.providerNames.slice(),
             miningMethod: resource.miningMethod === M3_MINING_CATEGORIES.UNKNOWN ? location.miningMethod : resource.miningMethod,
             environment: environment.category,
             environmentEvidence: environment.evidence,
@@ -7192,17 +7380,8 @@ code {
               ? "Best resource-specific spawn, occurrence and Quality tuple in this system/category."
               : "A stronger primary candidate exists in the same system/category.";
           });
-          var relevantLagrangeCandidates = environmentCandidates.filter(isLagrangeMiningLocation);
-          var relevantLagrangeNames = m3UniqueSorted(relevantLagrangeCandidates.map(function (candidate) { return candidate.locationName; }));
-          var allLagrangePoints = environment === M3_ENVIRONMENTS.SPACE && relevantLagrangeNames.length > 1 && relevantLagrangeCandidates.every(function (candidate) {
-            return sameMiningRank(candidate, best);
-          });
           var locationNames = m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationName; }));
-          var labelParts = allLagrangePoints
-            ? ["All Lagrange Points"].concat(locationNames.filter(function (name) {
-              return !isLagrangeMiningLocation({ locationName: name });
-            }))
-            : locationNames;
+          var presentation = buildMiningRecommendationPresentation(equalBest, environmentCandidates, environment, best);
           return {
             category: environment,
             recommendationLabel: environment === M3_ENVIRONMENTS.SPACE ? "Legjobb űrbeli farmhely" : "Legjobb farmhely",
@@ -7216,8 +7395,10 @@ code {
             resourceLabels: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.resourceLabel; })),
             locationIds: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.locationId; })),
             locationNames: locationNames,
-            locationLabel: labelParts.join(" / "),
-            allLagrangePoints: allLagrangePoints,
+            locationLabel: presentation.groupLabel,
+            locationSummary: presentation.memberSummary,
+            presentation: presentation,
+            allLagrangePoints: presentation.allLagrangePoints,
             mergedCount: locationNames.length,
             environmentEvidence: m3UniqueSorted(equalBest.map(function (candidate) { return candidate.environmentEvidence; }))
           };
@@ -7231,7 +7412,7 @@ code {
         candidate.decisionDetail = "Primary resource retained, but its API location type is not classified as normal or space.";
       });
       return {
-        schemaVersion: 3,
+        schemaVersion: 4,
         rankingOrder: ["PRIMARY_RESOURCE_GATE", "GROUP_PROBABILITY_SPAWN_DESC", "RELATIVE_PROBABILITY_OCCURRENCE_DESC", "HIGH_Q_QUANTIZED_VALUES_DESC", "QUALITY_RANGE_DESC"],
         systems: systemResults,
         decisions: decisions.map(function (candidate) {
@@ -7242,7 +7423,15 @@ code {
             system: candidate.system,
             resourceIndex: candidate.resourceIndex,
             resourceKey: candidate.resourceKey,
+            resourceUuid: candidate.resourceUuid,
             resourceLabel: candidate.resourceLabel,
+            resourceGroupName: candidate.resourceGroupName,
+            resourceKind: candidate.resourceKind,
+            providerNames: candidate.providerNames.slice(),
+            locationType: candidate.locationType,
+            parentName: candidate.parentName,
+            parentType: candidate.parentType,
+            parentUuid: candidate.parentUuid,
             miningMethod: candidate.miningMethod,
             environment: candidate.environment,
             environmentEvidence: candidate.environmentEvidence,
@@ -8741,7 +8930,7 @@ code {
       var cached = await database.get("miningNormalizedCache", cacheKey);
       var normalized = cached;
       var origin = "CACHE";
-      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 3)) {
+      if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 4)) {
         var cachedRaw = await database.get("miningRawCache", version + "::raw::commodity-detail::" + cached.uuid);
         if (cachedRaw && cachedRaw.raw) {
           normalized = normalizeMiningCommodity(cachedRaw.raw, miningProvenance(
@@ -9012,7 +9201,7 @@ code {
             status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
             radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
             methods: (detail ? detail.categories : (commodity.categories || [])).slice(),
-            recommendationSchemaVersion: farmRecommendation ? farmRecommendation.schemaVersion : 3,
+            recommendationSchemaVersion: farmRecommendation ? farmRecommendation.schemaVersion : 4,
             rankingOrder: farmRecommendation ? farmRecommendation.rankingOrder.slice() : [],
             systems: farmRecommendation ? farmRecommendation.systems : [],
             decisions: farmRecommendation ? farmRecommendation.decisions : [],
@@ -9548,6 +9737,9 @@ code {
             methodName.textContent = method.recommendationLabel + " · " + method.method;
             var locationName = document.createElement("strong");
             locationName.textContent = method.locationLabel;
+            var locationSummary = document.createElement("small");
+            locationSummary.className = "spg-muted";
+            locationSummary.textContent = method.locationSummary || "";
             var metrics = document.createElement("div");
             metrics.className = "spg-location-metrics";
             [["Spawn", formatMiningMetric(method.spawn, "%")], ["Occurrence", formatMiningMetric(method.occurrence, "%")], ["Quality", formatMiningQualityProfile(method.qualityProfile)]].forEach(function (metric) {
@@ -9555,7 +9747,7 @@ code {
               metricItem.textContent = metric[0] + ": " + metric[1];
               metrics.append(metricItem);
             });
-            row.append(methodName, locationName, metrics);
+            row.append(methodName, locationName, locationSummary, metrics);
             card.append(row);
             logger.event("INFO", "MINING_LOCATION_RANKED", "Rendszerenkénti legjobb mining location kiszámítva.", {
               commodityUuid: commodity.uuid,
@@ -9568,7 +9760,8 @@ code {
               qualityProfile: method.qualityProfile,
               resourceKeys: method.resourceKeys,
               mergedLocations: method.locationNames,
-              allLagrangePoints: method.allLagrangePoints
+              allLagrangePoints: method.allLagrangePoints,
+              presentation: method.presentation
             });
           });
         }
@@ -10166,7 +10359,7 @@ code {
           var row = document.createElement("div");
           row.className = "spg-intelligence-row";
           row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.recommendationLabel || method.category || method.method) + "</strong><span>" +
-            escapeHtml(method.locationLabel) + "</span><small>Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
+            escapeHtml(method.locationLabel) + "</span><small>" + escapeHtml(method.locationSummary || "") + (method.locationSummary ? " · " : "") + "Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
             " · Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) + " · " + escapeHtml(formatMiningQualityProfile(method.qualityProfile)) + "</small>";
           details.append(row);
         });
@@ -11842,6 +12035,7 @@ code {
           farmCards.push([
             '<article class="spg-export-location-card">',
             '<header><span class="spg-export-system-pill">', m6EscapeHtml(system.system), '</span><h4>', m6EscapeHtml(method.recommendationLabel || method.category || "Farmhely"), ': ', m6EscapeHtml(method.locationLabel), '</h4></header>',
+            '<p class="spg-muted">', m6EscapeHtml(method.locationSummary || ""), '</p>',
             '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
             '<div class="spg-export-metrics">',
             '<span><small>Módszer</small><strong>', m6EscapeHtml(method.method), '</strong></span>',

@@ -14,7 +14,12 @@
 - [x] Common/uncommon/legendary, secondary trap, Stanton/Pyro/Nyx, normal/space es 5 000 locationos tesztek.
 - [x] `V003-C001` teljes M1-M6.1 + C04 + elo Wiki API + V002-integritas regresszio PASS.
 - [x] Valodi Chrome localhost 13/13, reload fingerprint es konzolhiba 0 PASS.
-- [ ] Valodi Chrome `file://` kezi kapu; az automatizalas URL-policy miatt blokkolt, nem PASS.
+- [x] `V003-C002`: ranking utani presentation/grouping reteg, nyers location lista es decision trace megorzesevel.
+- [x] Lagrange provider-csalad rovid neve + konkret LP-lista; `All Lagrange Points` csak szigoru teljes tie eseten engedelyezett.
+- [x] Pyro Akiro/RMB (es bizonyitek-gate-es jovobeli RAB), valamint Aaron Halo Mining Base emberi csoportok valos API provider/resource/parent bizonyitekkal.
+- [x] Material Database, Crafting/Combined snapshot es standalone export ugyanazt a csoportositott recommendation modellt hasznalja.
+- [x] `V003-C002` teljes regresszio, 33 M3 eset es elo Aluminum/Agricium/Stileron grouping-proba PASS.
+- [x] Valodi Chrome `file://` kezi kapu: USER MANUAL PASS; a felhasznalo futtatta, nem Codex automation.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V002 GitHub- es Discord-dokumentacio
@@ -112,5 +117,5 @@
 
 ## Blokkolo problema
 
-- A V003 `file://` Chrome-kaput az automatizalasi URL-policy blokkolja, ezert kezi ellenorzes kell. A V002 stabil single-file release lezart; a V001/V002 valtozatlan es visszaallithato.
+- Nincs fejlesztesi blokkolo. A stabil V003 release/tag tovabbra sincs engedelyezve; a V002 stabil single-file release lezart, valtozatlan es visszaallithato.
 

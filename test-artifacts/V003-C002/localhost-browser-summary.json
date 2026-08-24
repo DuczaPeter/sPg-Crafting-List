@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "cycleId": "V003-C002",
+  "status": "PASS",
+  "evidenceOrigin": "CODEX_BROWSER_AUTOMATION",
+  "browserSurface": "Codex in-app Chromium browser",
+  "protocol": "http:",
+  "url": "http://127.0.0.1:4177/",
+  "scVersion": "4.9.0-LIVE.12232306",
+  "consoleWarningErrorCount": 0,
+  "verifiedPresentation": {
+    "aluminumPyro": "Pyro Deep Space Asteroids | 86 RMB helyszin",
+    "aluminumStanton": "Aaron Halo | 50 Mining Base helyszin | 1 rendszer-szintu API-rekord",
+    "aluminumNyx": "Keeger Belt | 1 nyertes location",
+    "agriciumPyroNormal": "2 azonos rangu farmhely | Terminus | Vuur",
+    "agriciumStantonSpace": "Lagrange D | ARC-L3 | CRU-L5 | MIC-L4"
+  }
+}

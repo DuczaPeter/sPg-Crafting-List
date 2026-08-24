@@ -225,3 +225,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: localhost 13/13 technikai proba, valtozatlan `e6d8dec8` fingerprint, ures warning/error konzol es Material Database vizualis ellenorzes. A `file://` URL-policy blokkolast nem kerulte meg, ezert a file kapu nyitva maradt.
 - Mely fajlokat vagy donteseket erintett: `docs/V003_FARM_RECOMMENDATION_REPORT.md` es `test-artifacts/V003-C001/browser-summary.json`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C002 farmhely presentation/grouping
+
+- Skillek neve: `uj-projekt`, `browser:control-in-app-browser`.
+- Mikor hasznaltuk: `2026-08-24`, a C001 rangsor utani emberi farmhely-csoportositas javitasakor.
+- Mire segitett: a stabil V002 vedelmere, a haromsoros scope-tervre, a valos API-bizonyitek elso auditjara, a C002 repair-cycle-re, a teljes regresszios kapura es a localhost Material Database valos DOM/vizualis ellenorzesere.
+- Mely fajlokat vagy donteseket erintett: V003 mining presentation modell/UI/export, M3/M6 fixture-ek, elo API-proba, C002 dokumentacio es test artifact; a bongeszoproba konzol warning/error 0 eredmenyt adott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

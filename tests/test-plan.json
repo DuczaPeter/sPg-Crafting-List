@@ -131,6 +131,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-farm.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c002-grouping-regression",
+      "level": "full-regression",
+      "description": "V003-C002 gate: full M1-M6.1 and C04 regression, live Aluminum/Agricium/Stileron grouping proof, provider/resource/parent-gated presentation groups, unchanged C001 ranking/secondary exclusion, shared standalone export rendering, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-farm.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

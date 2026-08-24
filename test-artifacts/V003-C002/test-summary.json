@@ -1,0 +1,64 @@
+﻿{
+    "projectVersion":  "V003-dev",
+    "cycle":  "C002",
+    "cycleId":  "V003-C002",
+    "status":  "PASS",
+    "statusReason":  "Full M1-M6.1 + C04, live grouping probe, standalone export and frozen V002 integrity passed.",
+    "purpose":  "V003 mining recommendation emberi farmhely-csoportok",
+    "testLevel":  "full-regression",
+    "testId":  "v003-c002-grouping-regression",
+    "testSource":  "test-plan",
+    "testExecutable":  "powershell.exe",
+    "testArguments":  [
+                          "-NoProfile",
+                          "-ExecutionPolicy",
+                          "Bypass",
+                          "-File",
+                          ".\\tools\\validate-v003-farm.ps1"
+                      ],
+    "testExitCode":  0,
+    "checkpoint":  "not-requested",
+    "checkpointCommit":  null,
+    "checkpointStagedFiles":  [
+
+                              ],
+    "branch":  "develop/V003",
+    "startedAt":  "2026-08-24T17:35:14",
+    "artifactDir":  "C:\\Users\\ganos\\OneDrive\\Munka\\Codex\\sPg Crafring List\\test-artifacts\\V003-C002",
+    "appLog":  "app-log.json",
+    "appLogCaptured":  false,
+    "browserConsole":  "browser-console.log",
+    "browserConsoleCaptured":  false,
+    "captureRequired":  false,
+    "appLogRequired":  false,
+    "browserConsoleRequired":  false,
+    "missingCaptures":  [
+
+                        ],
+    "testOutput":  "test-output.log",
+    "additionalEvidence":  {
+                                "standaloneArtifact":  "standalone-js-300-grouped.html",
+                                "standaloneSha256":  "f7bdb1f2340967b20ad1507fc9cc7d1decef88350cfbf0455bf1f292e4ba36e0",
+                                "localhostBrowser":  "localhost-browser-summary.json",
+                                "manualFileGate":  "browser-summary.json",
+                                "manualFileGateOrigin":  "USER_MANUAL_NOT_CODEX_AUTOMATION"
+                            },
+    "browserDiagnostics":  {
+                               "enabled":  false,
+                               "testId":  null,
+                               "configPath":  null,
+                               "status":  null,
+                               "browser":  null,
+                               "durationMs":  null,
+                               "consoleErrorCount":  null,
+                               "pageErrorCount":  null,
+                               "networkErrorCount":  null,
+                               "appErrorCount":  null,
+                               "screenshotPath":  null,
+                               "diagnosticExcerpt":  null,
+                               "primaryError":  null,
+                               "errorCode":  null,
+                               "failedStep":  null,
+                               "summary":  null
+                           }
+}

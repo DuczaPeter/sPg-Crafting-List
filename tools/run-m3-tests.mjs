@@ -97,7 +97,7 @@ const ranked = [
 assert.deepEqual(Array.from(ranked, item => item.id), ["spawn", "quality-high", "quality-low", "occurrence"]);
 
 // 9. Normal and space results are independent, and strict All Lagrange Points needs every relevant LP to tie.
-function primaryLocation(uuid, name, spawn, occurrence) {
+function primaryLocation(uuid, name, spawn, occurrence, options = {}) {
   return {
     uuid,
     name,
@@ -105,10 +105,14 @@ function primaryLocation(uuid, name, spawn, occurrence) {
     type: "Asteroid",
     parent_name: "Stanton",
     parent_type: "Star",
+    parent_uuid: "stanton-star",
     resources: [{
       key: "MineableRock_AsteroidUncommon_Agricium",
+      resource_uuid: "resource-agricium-asteroid",
       label: "Agricium",
       group_name: "SpaceShip_Mineables",
+      resource_kind: "mineable",
+      provider_names: [options.provider || "HPP_Lagrange_D"],
       materials: [{
         key: "Ore_Agricium",
         name: "Agricium (Ore)",
@@ -132,14 +136,106 @@ lagrangeRaw.locations = [
 let lagrangeRecommendation = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(lagrangeRaw, provenance), ["Stanton System"]);
 let bestSpace = lagrangeRecommendation.systems.find(system => system.system === "Stanton System").methods[0];
 assert.equal(bestSpace.allLagrangePoints, false);
-assert.equal(bestSpace.locationLabel, "ARC L1 / ARC L2");
+assert.equal(bestSpace.locationLabel, "Lagrange D");
+assert.equal(bestSpace.locationSummary, "ARC-L1 · ARC-L2");
 lagrangeRaw.locations = lagrangeRaw.locations.slice(0, 2);
 lagrangeRecommendation = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(lagrangeRaw, provenance), ["Stanton System"]);
 bestSpace = lagrangeRecommendation.systems.find(system => system.system === "Stanton System").methods[0];
 assert.equal(bestSpace.allLagrangePoints, true);
-assert.equal(bestSpace.locationLabel, "All Lagrange Points");
+assert.equal(bestSpace.locationLabel, "Lagrange D");
+assert.notEqual(bestSpace.locationLabel, "All Lagrange Points", "A provider-család rövid neve olvashatóbb az általános All Lagrange labelnél.");
 
-// 10. Actual-schema common/uncommon/legendary fixtures cover Nyx, Stanton, Pyro, surface and space.
+// 10. C002 presentation grouping is provider/resource/parent gated and keeps the full raw list.
+function groupingLocation({ uuid, name, provider, system = "Pyro System", type = "Asteroid", parentUuid = "pyro-star", parentName = "Pyro", resourceUuid = "resource-aluminum", spawn = 10, occurrence = 2 }) {
+  return {
+    uuid,
+    name,
+    system,
+    type,
+    parent_name: parentName,
+    parent_type: "Star",
+    parent_uuid: parentUuid,
+    resources: [{
+      key: "MineableRock_AsteroidCommon_Aluminum",
+      resource_uuid: resourceUuid,
+      label: "Aluminum",
+      group_name: "SpaceShip_Mineables",
+      resource_kind: "mineable",
+      provider_names: [provider],
+      materials: [{
+        key: "Ore_Aluminum",
+        name: "Aluminum (Ore)",
+        uuid: "grouping-aluminum",
+        is_current: true,
+        group_probability_percent: spawn,
+        relative_probability_percent: occurrence,
+        quality_min: 501,
+        quality_max: 1000,
+        quality_quantized_values: [588, 796, 1000]
+      }]
+    }]
+  };
+}
+const pyroGroupingRaw = {
+  uuid: "grouping-aluminum",
+  key: "Ore_Aluminum",
+  name: "Aluminum (Ore)",
+  kind: "mineable",
+  has_ship_mineables: true,
+  systems: ["Pyro System"],
+  locations: [
+    groupingLocation({ uuid: "akiro", name: "Akiro Cluster", provider: "HPP_Pyro_AkiroCluster", type: "Asteroid_ValidQT" }),
+    groupingLocation({ uuid: "rab", name: "RAB-TUNG", provider: "HPP_Pyro_DeepSpaceAsteroids" }),
+    groupingLocation({ uuid: "rmb-1", name: "RMB-1-01", provider: "HPP_Pyro_DeepSpaceAsteroids" }),
+    groupingLocation({ uuid: "rmb-2", name: "RMB-2-01", provider: "HPP_Pyro_DeepSpaceAsteroids" })
+  ]
+};
+const pyroGrouped = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(pyroGroupingRaw, provenance), ["Pyro System"]).systems[0].methods[0];
+assert.equal(pyroGrouped.locationLabel, "Pyro Deep Space Asteroids");
+assert.equal(pyroGrouped.locationSummary, "Akiro Cluster, RAB és RMB helyszínek");
+assert.equal(pyroGrouped.presentation.groups[0].evidence.kind, "VERIFIED_API_PROVIDER_FAMILY");
+assert.deepEqual(Array.from(pyroGrouped.locationNames), ["Akiro Cluster", "RAB-TUNG", "RMB-1-01", "RMB-2-01"]);
+assert.equal(pyroGrouped.locationLabel.includes("RMB-"), false, "A normál label nem lehet technikai névfal.");
+
+const aluminumLagrangeRaw = clone(lagrangeRaw);
+aluminumLagrangeRaw.uuid = "grouping-aluminum";
+aluminumLagrangeRaw.key = "Ore_Aluminum";
+aluminumLagrangeRaw.name = "Aluminum (Ore)";
+aluminumLagrangeRaw.locations = [
+  primaryLocation("hur-l2", "HUR L2", 30, 10.3, { provider: "HPP_Lagrange_F" }),
+  primaryLocation("arc-l1", "ARC L1", 30, 10.3, { provider: "HPP_Lagrange_F" }),
+  primaryLocation("arc-l2", "ARC L2", 30, 10.3, { provider: "HPP_Lagrange_F" }),
+  primaryLocation("arc-l4", "ARC L4", 30, 10.3, { provider: "HPP_Lagrange_F" })
+].map(location => {
+  location.resources[0].label = "Aluminum";
+  location.resources[0].key = "MineableRock_AsteroidCommon_Aluminum";
+  location.resources[0].resource_uuid = "resource-aluminum";
+  location.resources[0].materials[0].uuid = "grouping-aluminum";
+  location.resources[0].materials[0].name = "Aluminum (Ore)";
+  return location;
+});
+const aluminumLagrange = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(aluminumLagrangeRaw, provenance), ["Stanton System"]).systems.find(system => system.system === "Stanton System").methods[0];
+assert.equal(aluminumLagrange.locationLabel, "Lagrange F");
+assert.equal(aluminumLagrange.locationSummary, "ARC-L1 · ARC-L2 · ARC-L4 · HUR-L2");
+
+const unrelatedRaw = clone(pyroGroupingRaw);
+unrelatedRaw.locations = [
+  groupingLocation({ uuid: "terminus", name: "Terminus", provider: "HPP_Pyro6", type: "Moon", parentUuid: "pyro-6", parentName: "Pyro VI" }),
+  groupingLocation({ uuid: "vuur", name: "Vuur", provider: "HPP_Pyro5f", type: "Moon", parentUuid: "pyro-5", parentName: "Pyro V" })
+];
+const unrelated = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(unrelatedRaw, provenance), ["Pyro System"]).systems[0].methods[0];
+assert.equal(unrelated.locationLabel, "2 azonos rangú farmhely");
+assert.equal(unrelated.presentation.groups.length, 2, "Eltérő provider/parent családot nem szabad egy csoporttá mosni.");
+assert.ok(unrelated.presentation.groups.every(group => group.evidence.kind === "SINGLE_LOCATION"));
+
+const singleRaw = clone(pyroGroupingRaw);
+singleRaw.locations = [groupingLocation({ uuid: "single", name: "Keeger Belt", provider: "HPP_Nyx_KeegerBelt", system: "Nyx System", parentUuid: "nyx-star", parentName: "Nyx" })];
+singleRaw.systems = ["Nyx System"];
+const singleWinner = model.buildMiningFarmRecommendations(model.normalizeMiningCommodity(singleRaw, provenance), ["Nyx System"]).systems[0].methods[0];
+assert.equal(singleWinner.locationLabel, "Keeger Belt");
+assert.equal(singleWinner.locationSummary, "1 nyertes location");
+
+// 11. Actual-schema common/uncommon/legendary fixtures cover Nyx, Stanton, Pyro, surface and space.
 const common = model.normalizeMiningCommodity(fixture.recommendationCommodities.common, provenance);
 const legendary = model.normalizeMiningCommodity(fixture.recommendationCommodities.legendary, provenance);
 assert.equal(model.buildMiningFarmRecommendations(common, fixture.knownSystems).systems.find(system => system.system === "Nyx System").methods[0].locationLabel, "Keeger Belt");
@@ -147,7 +243,7 @@ const legendaryPyro = model.buildMiningFarmRecommendations(legendary, fixture.kn
 assert.equal(legendaryPyro.methods.find(method => method.category === model.environments.NORMAL).locationLabel, "Pyro IV");
 assert.equal(legendaryPyro.methods.find(method => method.category === model.environments.SPACE).locationLabel, "Akiro Cluster");
 
-// 10–11. Head module dropdown count comes from the current item detail.
+// 12–13. Head module dropdown count comes from the current item detail.
 assert.equal(model.normalizeMiningHeadDetail(fixture.heads.oneSlot, provenance).moduleSlotCount, 1);
 assert.equal(model.normalizeMiningHeadDetail(fixture.heads.threeSlot, provenance).moduleSlotCount, 3);
 assert.equal(model.resizeMiningModules([], 1, prefix => `${prefix}-1`).length, 1);
@@ -233,7 +329,7 @@ assert.ok(performanceDurationMs < 500, `Az M3 location ranking túl lassú: ${pe
 
 console.log("M3_MINING_TEST_PASS");
 console.log(JSON.stringify({
-  mandatoryCases: 24,
+  mandatoryCases: 33,
   realFixtures: ["Aluminum (Ore)", "Agricium (Ore)", "Stileron (Ore)", "Beradom", "Aphorite", "Bluemoon Fungus", "Arbor MH1", "Helix II", "MOLE"],
   performance: { locations: 5000, durationMs: Number(performanceDurationMs.toFixed(2)) }
 }, null, 2));

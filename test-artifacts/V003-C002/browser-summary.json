@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "cycleId": "V003-C002",
+  "status": "PASS",
+  "evidenceOrigin": "USER_MANUAL",
+  "automationExecutedByCodex": false,
+  "browser": "Google Chrome",
+  "protocol": "file:",
+  "reportedAt": "2026-08-24",
+  "technicalBaseline": "ALL_GREEN",
+  "verified": [
+    "direct file:// runtime",
+    "IndexedDB",
+    "Star Citizen Wiki API",
+    "V003 location-ranking rule",
+    "M3 mining model",
+    "standalone export"
+  ],
+  "note": "A felhasznalo altal vegrehajtott kezi PASS; nem Codex automation eredmenye."
+}

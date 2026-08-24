@@ -82,10 +82,40 @@ const aluminumNyx = byRawName.get("Aluminum (Ore)").recommendation.systems.find(
 assert.equal(aluminumNyx.status, "AVAILABLE");
 assert.ok(aluminumNyx.methods.some((method) => method.category === model.environments.SPACE && method.locationNames.includes("Keeger Belt")));
 
+function methodFor(rawName, systemName, category) {
+  return byRawName.get(rawName).recommendation.systems.find((system) => system.system === systemName)?.methods.find((method) => method.category === category);
+}
+
+const aluminumPyroSpace = methodFor("Aluminum (Ore)", "Pyro System", model.environments.SPACE);
+assert.equal(aluminumPyroSpace.locationLabel, "Pyro Deep Space Asteroids");
+assert.equal(aluminumPyroSpace.locationSummary, "86 RMB helyszín");
+assert.equal(aluminumPyroSpace.locationNames.length, 86, "A teljes Aluminum/Pyro RMB nyers lista nem maradt meg.");
+assert.equal(/RMB-/.test(aluminumPyroSpace.locationLabel), false, "Az Aluminum/Pyro UI label technikai RMB-listát tartalmaz.");
+
+const aluminumStantonSpace = methodFor("Aluminum (Ore)", "Stanton System", model.environments.SPACE);
+assert.equal(aluminumStantonSpace.locationLabel, "Aaron Halo");
+assert.equal(aluminumStantonSpace.locationSummary, "50 Mining Base helyszín · 1 rendszer-szintű API-rekord");
+assert.equal(aluminumStantonSpace.presentation.groups[0].evidence.providerNames.includes("HPP_AaronHalo"), true);
+
+const agriciumStantonSpace = methodFor("Agricium (Ore)", "Stanton System", model.environments.SPACE);
+assert.equal(agriciumStantonSpace.locationLabel, "Lagrange D");
+assert.equal(agriciumStantonSpace.locationSummary, "ARC-L3 · CRU-L5 · MIC-L4");
+const agriciumPyroNormal = methodFor("Agricium (Ore)", "Pyro System", model.environments.NORMAL);
+assert.equal(agriciumPyroNormal.locationLabel, "2 azonos rangú farmhely");
+assert.equal(agriciumPyroNormal.presentation.groups.length, 2, "A Terminus/Vuur rekordokat nem szabad bizonyíték nélkül összevonni.");
+
+const agriciumPyroSpace = methodFor("Agricium (Ore)", "Pyro System", model.environments.SPACE);
+assert.equal(agriciumPyroSpace.locationLabel, "Pyro Lagrange Points");
+assert.equal(agriciumPyroSpace.presentation.groups[0].evidence.providerNames.includes("HPP_Pyro_Warm01"), true);
+
 const stileronPyro = byRawName.get("Stileron (Ore)").recommendation.systems.find((system) => system.system === "Pyro System");
 assert.equal(stileronPyro.status, "AVAILABLE");
 assert.ok(stileronPyro.methods.some((method) => method.category === model.environments.NORMAL));
 assert.ok(stileronPyro.methods.some((method) => method.category === model.environments.SPACE));
+const stileronPyroSpace = stileronPyro.methods.find((method) => method.category === model.environments.SPACE);
+assert.equal(stileronPyroSpace.locationLabel, "Pyro Deep Space Asteroids");
+assert.equal(stileronPyroSpace.locationSummary, "Akiro Cluster és RMB helyszínek");
+assert.equal(stileronPyroSpace.locationNames.length, 87, "A teljes Stileron/Pyro nyers lista nem maradt meg.");
 
 const allEnvironmentEvidence = projections.flatMap((entry) => entry.recommendation.decisions.map((decision) => decision.environmentEvidence));
 assert.ok(allEnvironmentEvidence.some((evidence) => /ASTEROID/.test(evidence)), "Nincs API-alapú space bizonyíték.");
@@ -104,5 +134,12 @@ console.log(JSON.stringify({
   })),
   systems,
   highSpawnSecondaryExcluded: highSpawnSecondary,
+  grouping: {
+    aluminumPyro: { label: aluminumPyroSpace.locationLabel, summary: aluminumPyroSpace.locationSummary, rawCount: aluminumPyroSpace.locationNames.length },
+    aluminumStanton: { label: aluminumStantonSpace.locationLabel, summary: aluminumStantonSpace.locationSummary, rawCount: aluminumStantonSpace.locationNames.length },
+    agriciumStanton: { label: agriciumStantonSpace.locationLabel, summary: agriciumStantonSpace.locationSummary },
+    agriciumPyroNormal: { label: agriciumPyroNormal.locationLabel, groupCount: agriciumPyroNormal.presentation.groups.length },
+    stileronPyro: { label: stileronPyroSpace.locationLabel, summary: stileronPyroSpace.locationSummary, rawCount: stileronPyroSpace.locationNames.length }
+  },
   recommendationFunction: "buildMiningFarmRecommendations"
 }, null, 2));

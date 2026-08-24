@@ -1,48 +1,51 @@
-{
-  "stableRelease": "V002",
-  "stableFile": "releases/V002/sPg Crafting List.html",
-  "developmentTarget": "V003-dev",
-  "currentCycle": "C001",
-  "currentCycleId": "V003-C001",
-  "lastSuccessfulCycle": "V003-C001",
-  "branch": "develop/V003",
-  "releaseGate": "dev-cycle",
-  "lastUpdated": "2026-08-24T15:39:12+02:00",
-  "currentCyclePurpose": "V003 farm recommendation primary filter es quality ranking",
-  "currentCycleStartedAt": "2026-08-24T15:31:53",
-  "currentTestLevel": "full-regression",
-  "currentCycleStatus": "PASS",
-  "currentCycleStatusReason": "V003-C001 full regression, live Wiki API resource proof, single-file gate and frozen V002 integrity PASS.",
-  "developmentAcceptance": "V003-dev FARM RECOMMENDATION – AUTOMATED PASS, CHROME LOCALHOST PASS, REAL CHROME file:// BLOCKED/NOT TESTED.",
-  "manualFileGate": {
-    "status": "PASS",
-    "testedAt": "2026-08-24",
-    "browser": "Google Chrome",
-    "protocol": "file:",
-    "technicalBaselinePassed": 13,
-    "technicalBaselineFailed": 0,
-    "externalStylesheet": false,
-    "externalResource": false,
-    "diagnosticErrorCount": 0,
-    "scope": "frozen V002 stable release evidence"
-  },
-  "releaseTag": "V002",
-  "releaseApproval": "V002 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS",
-  "releaseArtifact": {
-    "path": "releases/V002/sPg Crafting List.html",
-    "sha256": "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357",
-    "bytes": 489492,
-    "runtimeFilesRequired": 1,
-    "localSidecarFilesRequired": 0
-  },
-  "acceptedManualTestWaivers": [],
-  "v003DevelopmentGate": {
-    "status": "AUTOMATED_PASS_FILE_GATE_OPEN",
-    "cycle": "V003-C001",
-    "chromeLocalhostTechnicalProbe": "13/13 PASS",
-    "chromeFileGate": "BLOCKED_BY_AUTOMATION_URL_POLICY",
-    "userDataFingerprintBefore": "e6d8dec8",
-    "userDataFingerprintAfterReload": "e6d8dec8",
-    "consoleWarningErrorCount": 0
-  }
+﻿{
+    "stableRelease":  "V002",
+    "stableFile":  "releases/V002/sPg Crafting List.html",
+    "developmentTarget":  "V003-dev",
+    "currentCycle":  "C002",
+    "currentCycleId":  "V003-C002",
+    "lastSuccessfulCycle":  "V003-C002",
+    "branch":  "develop/V003",
+    "releaseGate":  "dev-cycle",
+    "lastUpdated":  "2026-08-24T17:42:38+02:00",
+    "currentCyclePurpose":  "V003 mining recommendation emberi farmhely-csoportok",
+    "currentCycleStartedAt":  "2026-08-24T17:35:14",
+    "currentTestLevel":  "full-regression",
+    "currentCycleStatus":  "PASS",
+    "currentCycleStatusReason":  "V003-C002 full regression, live API grouping proof, grouped standalone export and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev HUMAN-READABLE FARM GROUPING – AUTOMATED PASS, USER MANUAL REAL CHROME file:// PASS; STABLE RELEASE NOT APPROVED.",
+    "manualFileGate":  {
+                           "status":  "PASS",
+                           "testedAt":  "2026-08-24",
+                           "browser":  "Google Chrome",
+                           "protocol":  "file:",
+                           "technicalBaselinePassed":  13,
+                           "technicalBaselineFailed":  0,
+                           "externalStylesheet":  false,
+                           "externalResource":  false,
+                           "diagnosticErrorCount":  0,
+                           "scope":  "frozen V002 stable release evidence"
+                       },
+    "releaseTag":  "V002",
+    "releaseApproval":  "V002 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS",
+    "releaseArtifact":  {
+                            "path":  "releases/V002/sPg Crafting List.html",
+                            "sha256":  "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357",
+                            "bytes":  489492,
+                            "runtimeFilesRequired":  1,
+                            "localSidecarFilesRequired":  0
+                        },
+    "acceptedManualTestWaivers":  [
+
+                                  ],
+    "v003DevelopmentGate":  {
+                                "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
+                                "cycle":  "V003-C002",
+                                "chromeLocalhostTechnicalProbe":  "13/13 PASS",
+                                "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
+                                "chromeFileGateEvidence":  "Technical baseline all green: file runtime, IndexedDB, Wiki API, location ranking, M3 model and standalone export.",
+                                "userDataFingerprintBefore":  "e6d8dec8",
+                                "userDataFingerprintAfterReload":  "e6d8dec8",
+                                "consoleWarningErrorCount":  0
+                            }
 }

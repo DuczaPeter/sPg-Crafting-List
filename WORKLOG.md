@@ -387,3 +387,27 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Standalone artifact: 92 386 byte, SHA-256 `3d118c1e...92592ce`; external runtime dependency nincs.
 - V002: tag commit `b326aaff...150e35`, release HTML SHA-256 `de2d59b4...9f2357`; valtozatlan.
 - Riport: `docs/V003_FARM_RECOMMENDATION_REPORT.md`. Visszaallas: a V003 fejlesztesi commit revertje vagy a fagyasztott V002 tag/release.
+
+### 2026-08-24T17:35:18 - V003-C002
+
+- Cel: V003 mining recommendation emberi farmhely-csoportok
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C002/test-summary.json`
+
+### V003-C002 emberi farmhely-csoportositas - 2026-08-24
+
+- Scope: a C001 primary/secondary kapu, spawn -> occurrence -> Quality rangsor es NORMAL/SPACE szetvalasztas valtozatlan; uj logika csak a ranking utani presentation retegben.
+- Modell: `groupLabel`, `memberSummary`, bizonyitekos `groups[]`; a teljes raw location nev/ID, provider, parent, type es resource adat a recommendation/diagnosztika resze maradt.
+- Lagrange: exact provider + system + parent + resource identity; rovid `Lagrange X` label es konkret LP-lista. Az `allLagrangePoints` csak minden relevans LP teljes rankazonossaganal igaz.
+- Pyro: exact `HPP_Pyro_AkiroCluster` / `HPP_Pyro_DeepSpaceAsteroids`, Pyro SPACE/type, kozos parent/resource es rank; live adatban Akiro+RMB, a RAB jovobiztos provider-gate-es fixture, nem allitott live jelenlet.
+- Mining Base: az `Aaron Halo` csoportot az exact `HPP_AaronHalo` provider, azonos system/resource/rank bizonyitja; a prefix csak a mar bizonyitott member-summaryhoz hasznalt.
+- Elo API PASS: Aluminum/Pyro 86 RMB -> `Pyro Deep Space Asteroids`; Aluminum/Stanton 50 Mining Base + 1 system record -> `Aaron Halo`; Agricium/Stanton -> `Lagrange D`; Stileron/Pyro 87 raw rekord -> `Pyro Deep Space Asteroids`.
+- Teszt: teljes M1-M6.1 + C04 PASS; M3 33 eset es 5 000 location kb. 134 ms; C001 secondary-exclusion/ranking PASS.
+- Localhost UI: Material Database Aluminum/Agricium grouped label/summary vizualisan es DOM-ban PASS; warning/error konzol 0. Ezt Codex browser automation futtatta, a `file://` manual kaput nem helyettesiti.
+- Standalone: grouped label/summary PASS, 92 792 byte, SHA-256 `f7bdb1f2...a36e0`; a normal exportkartya nem listazza a technikai RMB/RAB neveket.
+- Chrome `file://`: USER MANUAL PASS, minden Technikai baseline sor zold; a bizonyitekot a felhasznalo futtatta, nem Codex automation.
+- V002: tag commit `b326aaff...150e35`, stabil HTML SHA-256 `de2d59b4...9f2357`; valtozatlan. Stabil V003 release/tag nem keszult.
+- Visszaallas: a C002 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.

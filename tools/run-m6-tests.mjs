@@ -78,7 +78,15 @@ const intelligence = {
         recommendationLabel: "Legjobb farmhely",
         decision: "BEST_NORMAL",
         method: "SHIP_MINING",
-        locationLabel: "Pyro II – Monox",
+        locationLabel: "Pyro Deep Space Asteroids",
+        locationSummary: "Akiro Cluster, RAB és RMB helyszínek",
+        locationNames: ["Akiro Cluster", "RAB-TUNG", "RMB-1-01", "RMB-2-01"],
+        presentation: {
+          schemaVersion: 1,
+          groupLabel: "Pyro Deep Space Asteroids",
+          memberSummary: "Akiro Cluster, RAB és RMB helyszínek",
+          rawLocationNames: ["Akiro Cluster", "RAB-TUNG", "RMB-1-01", "RMB-2-01"]
+        },
         occurrence: 0.3,
         spawn: 10,
         maximumQuality: 1000,
@@ -160,9 +168,11 @@ assert.equal(snapshot.requirements[2].bottleneck, true);
 assert.equal(snapshot.requirements[2].missingQualityUnits, card.requirements[2].requiredQuantityUnits * 2);
 
 // 5-7. Farm location, radar, default loadout and UEX refinery snapshot are embedded.
-for (const marker of ["Pyro II – Monox", "3185", "Prospector Helix", "Prospector", "Helix I", "Rieger-C3", "OptiMax", "MIC-L5", "HUR-L1", "+8%"] ) {
+for (const marker of ["Pyro Deep Space Asteroids", "Akiro Cluster, RAB és RMB helyszínek", "3185", "Prospector Helix", "Prospector", "Helix I", "Rieger-C3", "OptiMax", "MIC-L5", "HUR-L1", "+8%"] ) {
   assert.ok(exportedHtml.includes(marker), `Az exportból hiányzik: ${marker}`);
 }
+const renderedFarmCard = exportedHtml.match(/<article class="spg-export-location-card">[\s\S]*?<\/article>/)?.[0] || "";
+assert.equal(renderedFarmCard.includes("RMB-1-01"), false, "Az export normál nézetében nem jelenhet meg a technikai RMB névfal.");
 assert.equal(snapshot.summary.locationCount, 1);
 assert.equal(snapshot.summary.selectedLoadoutCount, 1);
 assert.equal(snapshot.summary.refinerySystemCount, 1);
@@ -218,10 +228,11 @@ if (artifactArgument) {
   const requestedPath = artifactArgument.slice("--artifact=".length).trim();
   assert.ok(requestedPath, "Az --artifact útvonal nem lehet üres.");
   const artifactPath = path.resolve(projectDirectory, requestedPath);
+  const artifactHtml = exportedHtml.replace(/[ \t]+$/gm, "");
   fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
-  fs.writeFileSync(artifactPath, exportedHtml, "utf8");
+  fs.writeFileSync(artifactPath, artifactHtml, "utf8");
   const persistedHtml = fs.readFileSync(artifactPath, "utf8");
-  assert.equal(persistedHtml, exportedHtml, "A kiírt standalone artifact eltér a validált exporttól.");
+  assert.equal(persistedHtml, artifactHtml, "A kiírt standalone artifact eltér a validált, trailing-whitespace-normalizált exporttól.");
   automatedExportArtifact = {
     path: path.relative(projectDirectory, artifactPath),
     bytes: Buffer.byteLength(persistedHtml),
