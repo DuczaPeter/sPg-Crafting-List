@@ -81,3 +81,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Nem keszul kulon runtime HTML. A default nezet Crafting Card + szukseges user UI; diagnosztika, baseline, debug es raw adatok Advanced/Diagnostics ala kerulnek.
 - A standalone export ugyanazt a tiszta final-card adatmodellt hasznalja. A roadmap: V003-C006 adatkontraktus, V003-C007 card-first UI, V003-C008 in-app detail/deep link, V003-C009 Advanced/Diagnostics, V003-C010 standalone parity es acceptance.
 - A roadmap zarasa nem V003 release-engedely. Stabil V003 tag/release csak kulon felhasznaloi jovahagyassal keszulhet.
+
+## 2026-08-24 - V003-C006 final-card es material intelligence hydration
+
+- A Crafting Card letrehozasa, alkalmazasinditas/reload es standalone export elott minden recipe ingredient automatikusan megkapja a cache-bol vagy Wiki API-bol elerheto material intelligence reszletet; a Material Database megnyitasa nem lehet elofeltetel.
+- Cache talalat offline is teljes kartyaadatot ad. Offline es cache nelkul explicit nem elerheto allapot jelenik meg; nincs crash, kitalalt adat vagy csendes rosszabb fallback.
+- A normal UI es az export ugyanazt a `buildFinalCraftingCardViewModel()` projekciot hasznalja, amely a valtozatlan determinisztikus Allocation Engine eredmenyet, a C001-C005 mining/radar projekciot es a biztonsagos UEX mappinget fogyasztja.
+- Stileron UEX eredmenye exact `Nincs biztonságos UEX refinery adat`; fuzzy parositas tovabbra is tilos.
+- A final cardon a material tokenek neutralis, jovobeli accent hookot es stabil UUID/nev data-attributumot kapnak. Uj materialszin vagy C008 reszletnezet nem resze a C006-nak.
+- Stabil V003 release/tag tovabbra sem engedelyezett.

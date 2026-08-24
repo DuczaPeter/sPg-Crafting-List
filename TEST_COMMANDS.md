@@ -277,6 +277,24 @@ Elo Wiki Lagrange F + Radar reconciliation + Top-3 consistency audit:
 node .\tools\audit-v003-c005.mjs --output-dir="test-artifacts/V003-C005"
 ```
 
+V003-C006 Final Crafting Card + teljes material snapshot hydration kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c006.ps1"
+```
+
+Csak a C006 final view-model, allocation, offline hydration es standalone teszt:
+
+```powershell
+node .\tools\run-v003-c006-tests.mjs
+```
+
+C006 repair-cycle a teszttervbol:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "Final Crafting Card Layout + complete material snapshot hydration" -TestId v003-c006-final-card-regression
+```
+
 C04 repair-cycle:
 
 ```powershell
@@ -344,4 +362,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-c003-material-naming-regression`: exact UUID-alias, biztonsagos terminalis suffix, invalid rekord rejtese, raw/alias kereses, `refined_version`-bizonyitekos duplicate projection, kozos UI/export consumer es teljes C001/C002/fagyasztott V002 regresszio.
 - `v003-c004-radar-top3-regression`: 33 rekordszamu curated radar registry, 31 explicit `Nincs adat`, Wiki API_RAW diagnosztika, 3 dense rank tier/kornyezet, tie es nem-Ship SPACE eset, SCMDB osszehasonlito audit, kozos UI/export projekcio es teljes C001-C003/V002 regresszio.
 - `v003-c005-consistency-regression`: exact Lagrange F primary/secondary decision trace, 7/7 ROC/FPS category proof, 31 jogos UNMAPPED, valtozatlan C004 Top-3, cache/consumer konzisztencia, C006-C010 roadmap, teljes C001-C004/M1-M6.1/C04 es V002-integritas.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`.
+- `v003-c006-final-card-regression`: JS-300 final card header es slotprojekcio, quantity/max, HP_MIN_500/FIXED/shortage, cache/offline hydration, harom teljes Radar/Mining/UEX snapshot, kozos standalone view-model, C001-C005/M1-M6.1/C04 es V002-integritas.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`.

@@ -3018,6 +3018,94 @@ code {
   padding: 14px;
 }
 
+#craftingCardsPanel {
+  order: -1;
+}
+
+.spg-crafting-card {
+  overflow: hidden;
+  padding: 0;
+  background:
+    linear-gradient(135deg, rgba(24, 218, 255, 0.07), transparent 42%),
+    rgba(5, 18, 28, 0.72);
+}
+
+.spg-crafting-card-heading {
+  padding: 18px;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.18);
+  background: rgba(2, 12, 20, 0.58);
+}
+
+.spg-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.spg-card-detail-trigger,
+.spg-material-token,
+.spg-intelligence-trigger {
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  text-align: left;
+}
+
+.spg-card-detail-trigger:hover,
+.spg-card-detail-trigger:focus-visible,
+.spg-material-token:hover,
+.spg-material-token:focus-visible,
+.spg-intelligence-trigger:hover,
+.spg-intelligence-trigger:focus-visible {
+  transform: none;
+  color: var(--accent-strong);
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.spg-card-detail-trigger h3 {
+  margin: 0;
+}
+
+.spg-card-header-meta {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(96px, 1fr));
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.spg-card-header-meta span,
+.spg-requirement-quantity-grid span {
+  display: grid;
+  gap: 3px;
+  padding: 8px 9px;
+  border: 1px solid rgba(24, 218, 255, 0.14);
+  border-radius: 9px;
+  background: rgba(15, 23, 32, 0.58);
+}
+
+.spg-card-header-meta small,
+.spg-requirement-quantity-grid small,
+.spg-intelligence-card small {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spg-card-header-meta strong,
+.spg-requirement-quantity-grid strong {
+  color: var(--ink);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
 .spg-material-group-heading {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(24, 218, 255, 0.16);
@@ -3082,7 +3170,7 @@ code {
   grid-template-columns: minmax(180px, 0.7fr) minmax(180px, 0.7fr) auto;
   gap: 12px;
   align-items: end;
-  margin: 14px 0;
+  margin: 14px 18px;
   padding: 12px;
   border-radius: 12px;
   background: rgba(15, 23, 32, 0.72);
@@ -3102,7 +3190,77 @@ code {
 }
 
 .spg-card-requirement {
-  padding: 12px;
+  padding: 14px;
+}
+
+.spg-card-requirements {
+  padding: 0 18px 18px;
+}
+
+.spg-material-token {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid rgba(144, 164, 174, 0.32);
+  border-radius: 999px;
+  background: rgba(144, 164, 174, 0.1);
+  font-weight: 800;
+}
+
+.spg-material-token-accent-pending {
+  --spg-material-accent: transparent;
+  --spg-material-background: rgba(144, 164, 174, 0.1);
+}
+
+.spg-requirement-quantity-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.spg-requirement-quantity-grid span[data-tone="shortage"] strong {
+  color: #ffcdd2;
+}
+
+.spg-requirement-quantity-grid span[data-tone="remaining"] strong {
+  color: #b9f6ca;
+}
+
+.spg-material-intelligence {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.spg-intelligence-card {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(24, 218, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(2, 12, 20, 0.46);
+}
+
+.spg-intelligence-card > strong,
+.spg-intelligence-card > span,
+.spg-intelligence-card > small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.spg-intelligence-card > strong {
+  margin-top: 5px;
+  color: var(--ink);
+}
+
+.spg-intelligence-row {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(24, 218, 255, 0.12);
 }
 
 .spg-card-requirement[data-status="SATISFIED"] {
@@ -4205,6 +4363,9 @@ code {
   .spg-allocation-summary,
   .spg-card-controls,
   .spg-allocation-values,
+  .spg-card-header-meta,
+  .spg-requirement-quantity-grid,
+  .spg-material-intelligence,
   .spg-strategy-row {
     grid-template-columns: 1fr;
   }
@@ -4838,6 +4999,8 @@ code {
       selectedRefineryCommodityUuid: null,
       refineryLastSyncResult: null,
       materialIntelligenceByWikiUuid: new Map(),
+      materialIntelligenceHydrationByWikiUuid: new Map(),
+      craftingOutputPresentationByUuid: new Map(),
       requirementCommodityUuidBySlotId: new Map(),
       selectedMiningCommodity: null,
       miningLoadouts: [],
@@ -9546,7 +9709,7 @@ code {
       }
     }
 
-    async function loadMiningCommodityDetail(identifier, options) {
+    async function resolveMiningCommodityDetailRecord(identifier, options) {
       var settings = options || {};
       var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
       if (!version) {
@@ -9572,6 +9735,9 @@ code {
         }
       }
       if (!normalized) {
+        if (settings.allowNetwork === false || !navigator.onLine) {
+          return { normalized: null, origin: "UNAVAILABLE_OFFLINE" };
+        }
         var raw = await api.getCommodity(identifier, version);
         var fetchedAt = nowIso();
         normalized = normalizeMiningCommodity(raw, miningProvenance(version, APP.apiBase + "/commodities/" + encodeURIComponent(identifier), fetchedAt));
@@ -9585,6 +9751,16 @@ code {
           raw: raw
         }, normalized);
         origin = "API";
+      }
+      return { normalized: normalized, origin: origin };
+    }
+
+    async function loadMiningCommodityDetail(identifier, options) {
+      var resolved = await resolveMiningCommodityDetailRecord(identifier, options);
+      var normalized = resolved.normalized;
+      var origin = resolved.origin;
+      if (!normalized) {
+        throw new Error("A mining részlet offline és nincs cache-ben.");
       }
       var displayProjection = buildMaterialDisplayIndex(state.miningCommodityIndex).find(function (record) {
         return record.uuid === normalized.uuid || (record.sourceUuids || []).indexOf(normalized.uuid) !== -1;
@@ -9806,9 +9982,15 @@ code {
     }
 
     async function refreshMaterialIntelligenceSnapshots(trigger) {
-      var detailRecords = state.dbReady ? (await database.getAll("miningNormalizedCache")).filter(function (record) {
+      var allNormalizedMiningRecords = state.dbReady ? await database.getAll("miningNormalizedCache") : [];
+      var detailRecords = allNormalizedMiningRecords.filter(function (record) {
         return record.recordType === "COMMODITY_DETAIL";
-      }) : [];
+      });
+      state.craftingOutputPresentationByUuid = new Map(allNormalizedMiningRecords.filter(function (record) {
+        return record.recordType === "CRAFTING_OUTPUT_ITEM_PRESENTATION";
+      }).map(function (record) {
+        return [record.uuid, record];
+      }));
       var blueprintDetails = state.dbReady ? await database.getAll("blueprintNormalizedCache") : [];
       var slotCommodityMap = new Map();
       blueprintDetails.forEach(function (blueprint) {
@@ -9834,6 +10016,7 @@ code {
           rankingField: "value_month",
           datasetId: state.activeUexRefineryDataset ? state.activeUexRefineryDataset.datasetId : null
         };
+        var hydrationState = state.materialIntelligenceHydrationByWikiUuid.get(commodity.uuid) || null;
         intelligence.set(commodity.uuid, {
           snapshotSchemaVersion: 1,
           generatedFor: "M6_STANDALONE_EXPORT",
@@ -9841,7 +10024,7 @@ code {
           commodityName: resolveMaterialDisplayName(commodity, "Ismeretlen material"),
           scVersion: state.gameVersion ? state.gameVersion.code : null,
           mining: {
-            status: detail ? "AVAILABLE" : "DETAIL_NOT_CACHED",
+            status: detail ? "AVAILABLE" : (hydrationState ? hydrationState.status : "DETAIL_NOT_CACHED"),
             radarSignature: detail ? detail.radarSignature : commodity.radarSignature,
             radarSignatureDisplay: detail ? detail.radarSignatureDisplay : commodity.radarSignatureDisplay,
             radarSignatureClusterRule: detail ? detail.radarSignatureClusterRule : commodity.radarSignatureClusterRule,
@@ -9883,15 +10066,51 @@ code {
       return intelligence;
     }
 
-    async function ensureCraftingCardMiningDetails() {
-      if (!state.activeMiningDataset || !navigator.onLine || !state.craftingCards.length) {
-        return { requested: 0, loaded: 0 };
+    /* C006_HYDRATION_MODEL_START */
+    async function hydrateMaterialIntelligenceRecords(input) {
+      var source = input || {};
+      var allowNetwork = source.allowNetwork === true;
+      var resolver = source.resolve;
+      var commodityUuids = Array.from(new Set((source.commodityUuids || []).filter(Boolean)));
+      var details = await Promise.all(commodityUuids.map(async function (uuid) {
+        try {
+          var resolved = await resolver(uuid, { allowNetwork: allowNetwork });
+          return {
+            commodityUuid: uuid,
+            status: resolved && resolved.normalized ? "AVAILABLE" : (allowNetwork ? "UNAVAILABLE" : "UNAVAILABLE_OFFLINE"),
+            origin: resolved && resolved.origin ? resolved.origin : (allowNetwork ? "NOT_FOUND" : "OFFLINE_NO_CACHE")
+          };
+        } catch (error) {
+          return {
+            commodityUuid: uuid,
+            status: "UNAVAILABLE",
+            origin: "API_FAILED",
+            error: error && error.message ? error.message : String(error)
+          };
+        }
+      }));
+      return {
+        requested: commodityUuids.length,
+        cacheHits: details.filter(function (detail) { return /^CACHE/.test(detail.origin); }).length,
+        apiLoaded: details.filter(function (detail) { return detail.origin === "API"; }).length,
+        unavailable: details.filter(function (detail) { return detail.status !== "AVAILABLE"; }).length,
+        details: details
+      };
+    }
+    /* C006_HYDRATION_MODEL_END */
+
+    async function ensureMaterialIntelligenceHydrated(cards, options) {
+      var settings = options || {};
+      var sourceCards = Array.isArray(cards) ? cards : state.craftingCards;
+      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      if (!version || !sourceCards.length || !state.dbReady) {
+        return { requested: 0, cacheHits: 0, apiLoaded: 0, unavailable: 0, details: [] };
       }
       if (!state.requirementCommodityUuidBySlotId.size) {
         await refreshMaterialIntelligenceSnapshots("CARD_DETAIL_RESOLUTION");
       }
       var mappingCommodities = m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null);
-      var requestedCommodityUuids = Array.from(new Set(state.craftingCards.reduce(function (uuids, card) {
+      var requestedCommodityUuids = Array.from(new Set(sourceCards.reduce(function (uuids, card) {
         (card.requirements || []).forEach(function (requirement) {
           var commodityUuid = requirement.commodityUuid || state.requirementCommodityUuidBySlotId.get(requirement.id);
           if (commodityUuid && mappingCommodities.some(function (commodity) { return commodity.uuid === commodityUuid; })) {
@@ -9900,35 +10119,83 @@ code {
         });
         return uuids;
       }, [])));
-      var cachedDetails = (await database.getAll("miningNormalizedCache")).filter(function (record) {
-        return record.recordType === "COMMODITY_DETAIL";
+      var allowNetwork = settings.allowNetwork !== false && navigator.onLine;
+      var hydration = await hydrateMaterialIntelligenceRecords({
+        commodityUuids: requestedCommodityUuids,
+        allowNetwork: allowNetwork,
+        resolve: resolveMiningCommodityDetailRecord
       });
-      var cachedUuids = new Set(cachedDetails.map(function (record) { return record.uuid; }));
-      var missingUuids = requestedCommodityUuids.filter(function (uuid) { return !cachedUuids.has(uuid); });
-      var version = state.activeMiningDataset.version;
-      var loaded = await Promise.all(missingUuids.map(async function (uuid) {
-        var raw = await api.getCommodity(uuid, version);
-        var fetchedAt = nowIso();
-        var normalized = normalizeMiningCommodity(raw, miningProvenance(version, APP.apiBase + "/commodities/" + encodeURIComponent(uuid), fetchedAt));
-        normalized.recordType = "COMMODITY_DETAIL";
-        await database.putMiningDetail({
-          cacheKey: version + "::raw::commodity-detail::" + raw.uuid,
-          version: version,
-          recordType: "RAW_COMMODITY_DETAIL",
-          endpoint: APP.apiBase + "/commodities/" + encodeURIComponent(uuid),
-          fetchedAt: fetchedAt,
-          raw: raw
-        }, normalized);
-        return normalized;
-      }));
-      logger.event("INFO", "CARD_MINING_DETAILS_LAZY_LOADED", "A Crafting Cardok mining részletei igény szerint betöltődtek.", {
+      hydration.details.forEach(function (detail) {
+        state.materialIntelligenceHydrationByWikiUuid.set(detail.commodityUuid, detail);
+      });
+      logger.event("INFO", "CARD_MATERIAL_INTELLIGENCE_HYDRATED", "A Crafting Card material intelligence részletei cache/API alapon elkészültek.", {
         requestedCommodityCount: requestedCommodityUuids.length,
-        cacheHitCount: requestedCommodityUuids.length - missingUuids.length,
-        apiLoadCount: loaded.length,
-        commodityUuids: requestedCommodityUuids
+        cacheHitCount: hydration.cacheHits,
+        apiLoadCount: hydration.apiLoaded,
+        unavailableCount: hydration.unavailable,
+        networkAllowed: allowNetwork,
+        results: hydration.details
       });
-      await refreshMaterialIntelligenceSnapshots("CARD_MINING_DETAILS_READY");
-      return { requested: requestedCommodityUuids.length, loaded: loaded.length };
+      await refreshMaterialIntelligenceSnapshots("CARD_MATERIAL_INTELLIGENCE_READY");
+      return hydration;
+    }
+
+    async function ensureCraftingOutputPresentationHydrated(cards, options) {
+      var settings = options || {};
+      var sourceCards = Array.isArray(cards) ? cards : state.craftingCards;
+      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      if (!version || !sourceCards.length || !state.dbReady) {
+        return { requested: 0, loaded: 0, unavailable: 0 };
+      }
+      var allowNetwork = settings.allowNetwork !== false && navigator.onLine;
+      var outputUuids = Array.from(new Set(sourceCards.map(function (card) { return card.outputUuid; }).filter(Boolean)));
+      var loaded = 0;
+      var unavailable = 0;
+      await Promise.all(outputUuids.map(async function (uuid) {
+        var cacheKey = version + "::crafting-output-item::" + uuid;
+        var cached = await database.get("miningNormalizedCache", cacheKey);
+        if (cached) {
+          state.craftingOutputPresentationByUuid.set(uuid, cached);
+          return;
+        }
+        if (!allowNetwork) {
+          unavailable += 1;
+          return;
+        }
+        try {
+          var raw = await api.getItem(uuid, version);
+          var fetchedAt = nowIso();
+          var normalized = {
+            cacheKey: cacheKey,
+            recordType: "CRAFTING_OUTPUT_ITEM_PRESENTATION",
+            uuid: raw.uuid,
+            name: raw.name || null,
+            size: Number.isFinite(Number(raw.size)) ? Number(raw.size) : null,
+            classLabel: raw.class || null,
+            typeLabel: raw.type_label || raw.type || null,
+            subTypeLabel: raw.sub_type_label || raw.sub_type || null,
+            gradeLabel: raw.grade || null,
+            provenance: miningProvenance(version, APP.apiBase + "/items/" + encodeURIComponent(uuid), fetchedAt)
+          };
+          await database.putMiningDetail({
+            cacheKey: version + "::raw::crafting-output-item::" + raw.uuid,
+            version: version,
+            recordType: "RAW_CRAFTING_OUTPUT_ITEM_DETAIL",
+            endpoint: APP.apiBase + "/items/" + encodeURIComponent(uuid),
+            fetchedAt: fetchedAt,
+            raw: raw
+          }, normalized);
+          state.craftingOutputPresentationByUuid.set(uuid, normalized);
+          loaded += 1;
+        } catch (error) {
+          unavailable += 1;
+        }
+      }));
+      return { requested: outputUuids.length, loaded: loaded, unavailable: unavailable };
+    }
+
+    async function ensureCraftingCardMiningDetails(cards, options) {
+      return ensureMaterialIntelligenceHydrated(cards, options);
     }
 
     async function rebuildUexRefineryProjection(trigger) {
@@ -10991,55 +11258,96 @@ code {
       return usage.qualityRule;
     }
 
+    function emitPreparedDetailAction(kind, id, label) {
+      document.dispatchEvent(new CustomEvent("spg:detail-request", { detail: { kind: kind, id: id, label: label } }));
+    }
+
+    function createPreparedDetailButton(label, kind, id, className) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = className || "spg-intelligence-trigger";
+      button.textContent = label;
+      button.dataset.detailKind = kind;
+      button.dataset.detailId = id || "";
+      button.title = "Részletes nézet – előkészített C008 cél";
+      button.addEventListener("click", function () {
+        emitPreparedDetailAction(kind, id, label);
+      });
+      return button;
+    }
+
     function renderMaterialIntelligenceSnapshot(snapshot) {
-      var details = document.createElement("details");
-      details.className = "spg-material-intelligence";
-      var summary = document.createElement("summary");
-      summary.textContent = "Mining + UEX Refinery adatpillanatkép";
-      details.append(summary);
-      if (!snapshot) {
-        var missing = document.createElement("p");
-        missing.className = "spg-muted";
-        missing.textContent = "Ehhez az ingredienthez nincs biztonságosan összekapcsolható mining commodity.";
-        details.append(missing);
-        return details;
-      }
-      var mining = snapshot.mining || {};
-      var miningMeta = document.createElement("p");
-      miningMeta.className = "spg-intelligence-meta";
-      miningMeta.textContent = "Radar: " + (mining.radarSignatureDisplay || (mining.radarSignature === null || mining.radarSignature === undefined ? "Nincs adat" : mining.radarSignature)) +
-        " · módszer: " + (mining.methods || []).join(" / ") +
-        " · loadout: " + ((snapshot.loadouts || []).length ? snapshot.loadouts.map(function (loadout) { return loadout.name + (loadout.default ? " (default)" : ""); }).join(", ") : "nincs mentett loadout");
-      details.append(miningMeta);
+      var container = document.createElement("div");
+      container.className = "spg-material-intelligence";
+      var materialName = snapshot && (snapshot.materialName || snapshot.commodityName) || "Material";
+      var commodityUuid = snapshot && (snapshot.commodityUuid || snapshot.materialUuid) || "";
+      var mining = snapshot && snapshot.mining ? snapshot.mining : {};
+      var refinery = snapshot && snapshot.refinery ? snapshot.refinery : {};
+
+      var radarCard = document.createElement("section");
+      radarCard.className = "spg-intelligence-card spg-radar-snapshot";
+      radarCard.dataset.detailKind = "radar";
+      radarCard.append(createPreparedDetailButton("Radar Signature", "radar", commodityUuid, "spg-intelligence-trigger"));
+      var radarValue = document.createElement("strong");
+      radarValue.textContent = mining.radarSignatureDisplay || (mining.radarSignature === null || mining.radarSignature === undefined ? "Nincs adat" : String(mining.radarSignature));
+      radarCard.append(radarValue);
+
+      var miningCard = document.createElement("section");
+      miningCard.className = "spg-intelligence-card spg-mining-snapshot";
+      miningCard.dataset.detailKind = "mining";
+      miningCard.append(createPreparedDetailButton("Mining snapshot", "mining", commodityUuid, "spg-intelligence-trigger"));
+      var miningRows = 0;
       (mining.systems || []).forEach(function (system) {
         if (system.status !== "AVAILABLE") { return; }
-        system.methods.forEach(function (method) {
+        (system.methods || []).forEach(function (method) {
+          miningRows += 1;
           var row = document.createElement("div");
           row.className = "spg-intelligence-row";
-          row.innerHTML = "<strong>Farm · " + escapeHtml(system.system) + " · " + escapeHtml(method.recommendationLabel || method.category || method.method) + "</strong><span>" +
-            escapeHtml(method.tierDisplayLabel || method.locationLabel) + "</span><small>" + escapeHtml(method.tierMemberSummary || method.locationSummary || "") + ((method.tierMemberSummary || method.locationSummary) ? " · " : "") + "Spawn " + escapeHtml(formatMiningMetric(method.spawn, "%")) +
-            " · Occurrence " + escapeHtml(formatMiningMetric(method.occurrence, "%")) + " · " + escapeHtml(formatMiningQualityProfile(method.qualityProfile)) + "</small>";
-          details.append(row);
+          var title = document.createElement("strong");
+          title.textContent = system.system + " · " + (method.recommendationLabel || method.category || method.method);
+          var location = document.createElement("span");
+          location.textContent = method.tierDisplayLabel || method.locationLabel || "Nincs adat";
+          var metrics = document.createElement("small");
+          metrics.textContent = (method.tierMemberSummary || method.locationSummary ? (method.tierMemberSummary || method.locationSummary) + " · " : "") +
+            "Módszer " + formatMiningMethodLabel(method.method) + " · Spawn " + formatMiningMetric(method.spawn, "%") +
+            " · Occurrence " + formatMiningMetric(method.occurrence, "%") + " · " + formatMiningQualityProfile(method.qualityProfile);
+          row.append(title, location, metrics);
+          miningCard.append(row);
         });
       });
-      var refinery = snapshot.refinery || {};
-      if (refinery.status === "AVAILABLE") {
+      if (!miningRows) {
+        var miningStatus = document.createElement("strong");
+        miningStatus.textContent = snapshot && snapshot.miningStatusText
+          ? snapshot.miningStatusText
+          : (mining.status === "UNAVAILABLE_OFFLINE" ? "A mining részlet offline és nincs cache-ben." : "Nincs elérhető mining helyadat.");
+        miningCard.append(miningStatus);
+      }
+
+      var refineryCard = document.createElement("section");
+      refineryCard.className = "spg-intelligence-card spg-refinery-snapshot";
+      refineryCard.dataset.detailKind = "refinery";
+      refineryCard.append(createPreparedDetailButton("UEX Refinery", "refinery", commodityUuid, "spg-intelligence-trigger"));
+      if (refinery.status === "AVAILABLE" && (refinery.systems || []).length) {
         refinery.systems.forEach(function (system) {
           var row = document.createElement("div");
           row.className = "spg-intelligence-row spg-intelligence-refinery";
-          row.innerHTML = "<strong>Refinery · " + escapeHtml(system.starSystemName) + " · " + escapeHtml(formatRefineryBonus(system.rankingValue)) + "</strong><span>" +
-            escapeHtml(system.terminals.map(function (terminal) { return terminal.terminalName; }).join(" / ")) + "</span><small>UEX · value_month · " + escapeHtml(system.tieCount) + " azonos legjobb</small>";
-          details.append(row);
+          var title = document.createElement("strong");
+          title.textContent = system.starSystemName + " · " + formatRefineryBonus(system.rankingValue);
+          var terminals = document.createElement("span");
+          terminals.textContent = system.terminals.map(function (terminal) { return terminal.terminalName; }).join(" / ");
+          row.append(title, terminals);
+          refineryCard.append(row);
         });
       } else {
-        var refineryStatus = document.createElement("p");
-        refineryStatus.className = "spg-muted";
-        refineryStatus.textContent = refinery.status === "NO_REFINERY_DATA"
-          ? "UEX mapping sikeres, de nincs refinery adat."
-          : "UEX mapping nem oldható fel biztonságosan (" + ((refinery.mapping && refinery.mapping.status) || "UNMAPPED") + ").";
-        details.append(refineryStatus);
+        var refineryStatus = document.createElement("strong");
+        refineryStatus.textContent = snapshot && snapshot.refineryStatusText
+          ? snapshot.refineryStatusText
+          : (refinery.status === "NO_REFINERY_DATA" ? "UEX mapping van, refinery yield nincs." : "Nincs biztonságos UEX refinery adat");
+        refineryCard.append(refineryStatus);
       }
-      return details;
+      container.dataset.materialName = materialName;
+      container.append(radarCard, miningCard, refineryCard);
+      return container;
     }
 
     function renderCombinedMaterials() {
@@ -11269,7 +11577,8 @@ code {
       return labels[decision] || String(decision).toLowerCase().replace(/_/g, " ");
     }
 
-    function renderRequirementAllocation(card, requirement, allocation, trace) {
+    function renderRequirementAllocation(card, requirement, allocation, trace, requirementViewModel) {
+      var view = requirementViewModel || {};
       var article = document.createElement("article");
       article.className = "spg-card-requirement";
       article.dataset.status = allocation ? allocation.status : "PENDING";
@@ -11279,14 +11588,18 @@ code {
       var slot = document.createElement("span");
       slot.className = "spg-recipe-slot";
       slot.textContent = requirement.recipeSlotName;
-      var material = document.createElement("strong");
-      material.textContent = resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material");
+      var materialName = view.materialName || resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material");
+      var material = createPreparedDetailButton(materialName, "material", view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, "spg-material-token spg-material-token-accent-pending");
+      material.dataset.materialUuid = requirement.ingredientUuid || "";
+      material.dataset.materialName = materialName;
       title.append(slot, material);
       var slotStrategies = card.slotStrategies || {};
       var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
       var ruleBadge = document.createElement("span");
       ruleBadge.className = "spg-badge spg-badge-" + (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
-      ruleBadge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500 ? "Q500+ elég" : qualityRule.mode;
+      ruleBadge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500
+        ? "Q500+ elég"
+        : (qualityRule.mode === M2_QUALITY_RULES.TARGET_Q ? "Target Q" + qualityRule.targetQuality + "+" : qualityRule.mode);
       heading.append(title, ruleBadge);
       article.append(heading);
 
@@ -11334,21 +11647,30 @@ code {
       }
 
       var values = document.createElement("div");
-      values.className = "spg-allocation-values";
-      var required = allocation ? allocation.requiredUnits : requirement.requiredQuantityUnits * card.quantity;
+      values.className = "spg-requirement-quantity-grid";
+      var required = view.requiredUnits === undefined ? (allocation ? allocation.requiredUnits : requirement.requiredQuantityUnits * card.quantity) : view.requiredUnits;
+      var shortage = view.shortageUnits === undefined
+        ? Number(allocation ? allocation.missingAmountUnits : required) + Number(allocation ? allocation.missingQualityUnits : 0)
+        : view.shortageUnits;
       var valueRows = [
-        ["Szükséges", formatInventoryUnits(requirement.unit, required)],
-        ["Lefoglalt", formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0)],
-        ["Mennyiséghiány", formatInventoryUnits(requirement.unit, allocation ? allocation.missingAmountUnits : required)],
-        ["Quality-hiány", formatInventoryUnits(requirement.unit, allocation ? allocation.missingQualityUnits : 0)]
+        ["1 db-hoz", formatInventoryUnits(requirement.unit, view.perCraftUnits === undefined ? requirement.requiredQuantityUnits : view.perCraftUnits), "neutral"],
+        [card.quantity + " db-hoz", formatInventoryUnits(requirement.unit, required), "neutral"],
+        ["Megfelelő készlet", formatInventoryUnits(requirement.unit, view.suitableInventoryUnits === undefined ? (allocation ? allocation.allocatedUnits : 0) : view.suitableInventoryUnits), "neutral"],
+        ["Lefoglalt", formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0), "neutral"],
+        [shortage > 0 ? "Hiány" : "Maradék", formatInventoryUnits(requirement.unit, shortage > 0 ? shortage : Number(view.remainingUnits || 0)), shortage > 0 ? "shortage" : "remaining"]
       ];
       valueRows.forEach(function (row) {
         var item = document.createElement("span");
-        item.textContent = row[0] + ": " + row[1];
+        item.dataset.tone = row[2];
+        var label = document.createElement("small");
+        label.textContent = row[0];
+        var content = document.createElement("strong");
+        content.textContent = row[1];
+        item.append(label, content);
         values.append(item);
       });
       article.append(values);
-      article.append(renderMaterialIntelligenceSnapshot(allocation ? allocation.materialIntelligence : null));
+      article.append(renderMaterialIntelligenceSnapshot(Object.keys(view).length ? view : (allocation ? allocation.materialIntelligence : null)));
 
       if (allocation && allocation.allocatedBatches.length) {
         var allocated = document.createElement("p");
@@ -11363,21 +11685,6 @@ code {
         bottleneck.className = "spg-bottleneck";
         bottleneck.textContent = "Szűk keresztmetszet: " + resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material") + " / " + requirement.recipeSlotName;
         article.append(bottleneck);
-      }
-      if (trace) {
-        var details = document.createElement("details");
-        details.className = "spg-allocation-log";
-        var summary = document.createElement("summary");
-        summary.textContent = "Allocation log · " + trace.rule + " · " + trace.status;
-        var list = document.createElement("ul");
-        trace.available.forEach(function (item) {
-          var entry = document.createElement("li");
-          entry.textContent = (item.quality == null ? "Q?" : "Q" + item.quality) + " · " +
-            formatInventoryUnits(item.unit, item.availableUnitsAtSlot) + " · " + translateAllocationDecision(item.decision);
-          list.append(entry);
-        });
-        details.append(summary, list);
-        article.append(details);
       }
       return article;
     }
@@ -11410,8 +11717,20 @@ code {
       }
       state.craftingCards.forEach(function (card, index) {
         var cardResult = resultByCard.get(card.id);
+        var cardTrace = state.allocationResult ? state.allocationResult.trace.filter(function (trace) { return trace.cardId === card.id; }) : [];
+        var cardViewModel = buildFinalCraftingCardViewModel({
+          appName: APP.name,
+          generatedAt: nowIso(),
+          scDataVersion: card.gameVersion,
+          card: card,
+          cardResult: cardResult,
+          blueprint: {},
+          outputPresentation: state.craftingOutputPresentationByUuid.get(card.outputUuid) || null,
+          trace: cardTrace
+        });
         var article = document.createElement("article");
         article.className = "spg-crafting-card";
+        article.dataset.cardViewModel = "V003-C006";
         article.dataset.cardId = card.id;
         article.dataset.cardOrder = String(index);
         article.dataset.satisfied = cardResult && cardResult.satisfied ? "true" : "false";
@@ -11421,11 +11740,28 @@ code {
         var priority = document.createElement("span");
         priority.className = "eyebrow";
         priority.textContent = "Prioritás " + (index + 1);
-        var name = document.createElement("h3");
-        name.textContent = card.outputName;
-        var version = document.createElement("small");
-        version.textContent = card.gameVersion || "Ismeretlen SC-verzió";
-        title.append(priority, name, version);
+        var name = createPreparedDetailButton(cardViewModel.card.outputName, "blueprint", card.blueprintUuid, "spg-card-detail-trigger");
+        var nameHeading = document.createElement("h3");
+        nameHeading.textContent = cardViewModel.card.outputName;
+        name.replaceChildren(nameHeading);
+        var headerMeta = document.createElement("div");
+        headerMeta.className = "spg-card-header-meta";
+        [
+          ["Size", cardViewModel.card.outputSize],
+          ["Class", cardViewModel.card.outputClass],
+          ["Type", cardViewModel.card.outputType],
+          ["Grade", cardViewModel.card.outputGrade],
+          ["Crafting Time", m6FormatCraftTime(cardViewModel.card.craftTimeSeconds)]
+        ].forEach(function (entry) {
+          var item = document.createElement("span");
+          var label = document.createElement("small");
+          label.textContent = entry[0];
+          var value = document.createElement("strong");
+          value.textContent = entry[1] || "Nincs adat";
+          item.append(label, value);
+          headerMeta.append(item);
+        });
+        title.append(priority, name, headerMeta);
         var actions = document.createElement("div");
         actions.className = "spg-inline-actions";
         [["↑", "Feljebb", index > 0, -1], ["↓", "Lejjebb", index < state.craftingCards.length - 1, 1]].forEach(function (action) {
@@ -11444,7 +11780,8 @@ code {
         });
         var duplicate = document.createElement("button");
         duplicate.type = "button";
-        duplicate.textContent = "Duplikálás";
+        duplicate.textContent = "+ Crafting List";
+        duplicate.title = "Még egy példány hozzáadása a Crafting Listhez";
         duplicate.addEventListener("click", function () {
           duplicateCraftingCard(card.id).catch(function (error) { setNotice("Duplikálási hiba: " + error.message, "error"); });
         });
@@ -11481,7 +11818,7 @@ code {
         controls.className = "spg-card-controls";
         var quantityLabel = document.createElement("label");
         var quantityText = document.createElement("span");
-        quantityText.textContent = "Gyártani kívánt mennyiség";
+        quantityText.textContent = "Gyártani akarok";
         var quantity = document.createElement("input");
         quantity.type = "number";
         quantity.min = "1";
@@ -11499,7 +11836,7 @@ code {
         var maximumLabel = document.createElement("span");
         maximumLabel.textContent = "Készletből maximálisan gyártható";
         var maximumValue = document.createElement("strong");
-        maximumValue.textContent = String(cardResult ? cardResult.maxCraftable : 0) + " db";
+        maximumValue.textContent = String(cardViewModel.card.maxCraftable) + " db";
         maximum.append(maximumLabel, maximumValue);
         var status = document.createElement("span");
         status.className = "spg-badge spg-badge-" + (cardResult && cardResult.satisfied ? "pass" : "fail");
@@ -11515,7 +11852,8 @@ code {
               return item.recipeSlotId === requirement.id;
             });
             var trace = traceBySlot.get(card.id + "::" + requirement.id);
-            requirements.append(renderRequirementAllocation(card, requirement, allocation, trace));
+            var requirementViewModel = cardViewModel.requirements.find(function (item) { return item.recipeSlotId === requirement.id; });
+            requirements.append(renderRequirementAllocation(card, requirement, allocation, trace, requirementViewModel));
           });
           article.append(requirements);
         }
@@ -11585,7 +11923,11 @@ code {
       try {
         state.craftingCards = await userDataRepository.saveCraftingCards(nextCards);
         recalculateAllocation(processType);
-        await ensureCraftingCardMiningDetails();
+        await Promise.all([
+          ensureMaterialIntelligenceHydrated(state.craftingCards),
+          ensureCraftingOutputPresentationHydrated(state.craftingCards)
+        ]);
+        recalculateAllocation((processType || "CARD_UPDATE") + "_HYDRATED");
         updateKnownMaterials();
         logger.finish("PASS", {
           cardCount: state.craftingCards.length,
@@ -12541,6 +12883,18 @@ code {
         : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
     }
 
+    function formatMiningMethodLabel(method) {
+      return {
+        SHIP_MINING: "Ship Mining",
+        VEHICLE_MINING: "Vehicle / ROC Mining",
+        ROC_MINING: "ROC Mining",
+        FPS_MINING: "FPS Mining",
+        HAND_MINING: "Hand Mining",
+        HARVESTABLE: "Harvesting",
+        HARVESTING: "Harvesting"
+      }[String(method || "").toUpperCase()] || "Nincs adat";
+    }
+
     function m6FormatQualityProfile(profile) {
       var quality = profile || {};
       var ranges = Array.isArray(quality.ranges) ? quality.ranges : [];
@@ -12564,11 +12918,12 @@ code {
       return minutes ? minutes + " perc " + remainder + " mp" : remainder + " mp";
     }
 
-    function m6BuildStandaloneSnapshot(input) {
+    function buildFinalCraftingCardViewModel(input) {
       var source = input || {};
       var card = source.card || {};
       var result = source.cardResult || { requirements: [], bottleneckSlotIds: [] };
       var blueprint = source.blueprint || {};
+      var outputPresentation = source.outputPresentation || {};
       var resultBySlot = new Map((result.requirements || []).map(function (requirement) {
         return [requirement.recipeSlotId, requirement];
       }));
@@ -12600,14 +12955,21 @@ code {
         if (!intelligence) {
           missingData.push(materialDisplayName + ": nincs biztonságosan kapcsolható mining commodity");
         } else if (!mining || mining.status !== "AVAILABLE") {
-          missingData.push(materialDisplayName + ": mining location részlet nincs cache-ben");
+          missingData.push(materialDisplayName + ": " + (mining && mining.status === "UNAVAILABLE_OFFLINE"
+            ? "a mining részlet offline és nincs cache-ben"
+            : "a mining részlet jelenleg nem elérhető"));
         }
         if (refinery && refinery.status === "MAPPING_UNRESOLVED") {
-          missingData.push(materialDisplayName + ": UEX mapping nem oldható fel");
+          missingData.push(materialDisplayName + ": Nincs biztonságos UEX refinery adat");
         }
         var availableUnitsAtSlot = trace ? (trace.available || []).reduce(function (sum, batch) {
           return sum + (batch.unit === requirement.unit ? Number(batch.availableUnitsAtSlot || 0) : 0);
         }, 0) : null;
+        var suitableInventoryUnits = trace ? (trace.available || []).reduce(function (sum, batch) {
+          return sum + (batch.unit === requirement.unit && batch.eligible !== false ? Number(batch.availableUnitsAtSlot || 0) : 0);
+        }, 0) : Number(allocation.allocatedUnits || 0);
+        var shortageUnits = Number(allocation.missingAmountUnits || 0) + Number(allocation.missingQualityUnits || 0);
+        var requiredUnits = Number(allocation.requiredUnits || (requirement.requiredQuantityUnits * Number(card.quantity || 1)));
         return {
           recipeSlotId: requirement.id,
           recipeSlotName: requirement.recipeSlotName,
@@ -12616,8 +12978,11 @@ code {
           materialName: materialDisplayName,
           unit: requirement.unit,
           perCraftUnits: requirement.requiredQuantityUnits,
-          requiredUnits: Number(allocation.requiredUnits || (requirement.requiredQuantityUnits * Number(card.quantity || 1))),
+          requiredUnits: requiredUnits,
           availableUnitsAtSlot: availableUnitsAtSlot,
+          suitableInventoryUnits: suitableInventoryUnits,
+          shortageUnits: shortageUnits,
+          remainingUnits: shortageUnits > 0 ? 0 : Math.max(0, suitableInventoryUnits - requiredUnits),
           allocatedUnits: Number(allocation.allocatedUnits || 0),
           missingAmountUnits: Number(allocation.missingAmountUnits || 0),
           missingQualityUnits: Number(allocation.missingQualityUnits || 0),
@@ -12633,7 +12998,26 @@ code {
           mining: mining,
           refinery: refinery,
           selectedLoadout: selectedLoadout,
-          refinerySnapshotFingerprint: intelligence ? intelligence.refinerySnapshotFingerprint : null
+          refinerySnapshotFingerprint: intelligence ? intelligence.refinerySnapshotFingerprint : null,
+          miningStatusText: !mining || mining.status === "DETAIL_NOT_CACHED"
+            ? "Mining részlet még nincs betöltve."
+            : (mining.status === "UNAVAILABLE_OFFLINE"
+              ? "A mining részlet offline és nincs cache-ben."
+              : (mining.status === "UNAVAILABLE" ? "A mining részlet jelenleg nem elérhető." : null)),
+          refineryStatusText: refinery && refinery.status === "NO_REFINERY_DATA"
+            ? "UEX mapping van, refinery yield nincs."
+            : (refinery && refinery.status === "AVAILABLE" ? null : "Nincs biztonságos UEX refinery adat"),
+          materialToken: {
+            uuid: requirement.ingredientUuid,
+            name: materialDisplayName,
+            accentClass: "spg-material-token-accent-pending"
+          },
+          interactions: {
+            material: { kind: "material", id: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid },
+            mining: { kind: "mining", id: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid },
+            refinery: { kind: "refinery", id: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid },
+            radar: { kind: "radar", id: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid }
+          }
         };
       });
       return {
@@ -12648,13 +13032,20 @@ code {
           priority: Number(card.order || 0) + 1,
           blueprintUuid: card.blueprintUuid || blueprint.uuid || null,
           outputName: card.outputName || blueprint.outputName || "Ismeretlen output",
-          outputType: card.outputTypeLabel || blueprint.outputTypeLabel || card.outputType || blueprint.outputType || "Ismeretlen kategória",
+          outputType: outputPresentation.typeLabel || card.outputTypeLabel || blueprint.outputTypeLabel || card.outputType || blueprint.outputType || "Nincs adat",
+          outputSubType: outputPresentation.subTypeLabel || blueprint.outputSubTypeLabel || "Nincs adat",
+          outputSize: outputPresentation.size === null || outputPresentation.size === undefined ? "Nincs adat" : String(outputPresentation.size),
+          outputClass: outputPresentation.classLabel || "Nincs adat",
+          outputGrade: outputPresentation.gradeLabel || "Nincs adat",
           blueprintAvailability: (card.isAvailableByDefault || blueprint.isAvailableByDefault) ? "Alapértelmezetten elérhető" : "Blueprint szükséges / nincs alapértelmezett elérhetőség",
           craftTimeSeconds: card.craftTimeSeconds === null || card.craftTimeSeconds === undefined ? blueprint.craftTimeSeconds : card.craftTimeSeconds,
           requestedQuantity: Number(card.quantity || 1),
           maxCraftable: Number(result.maxCraftable || 0),
           satisfied: result.satisfied === true,
           bottleneckSlotIds: (result.bottleneckSlotIds || []).slice()
+        },
+        interactions: {
+          blueprint: { kind: "blueprint", id: card.blueprintUuid || blueprint.uuid || null }
         },
         requirements: requirements,
         summary: {
@@ -12665,6 +13056,10 @@ code {
           missingData: missingData
         }
       };
+    }
+
+    function m6BuildStandaloneSnapshot(input) {
+      return buildFinalCraftingCardViewModel(input);
     }
 
     function m6RenderLoadout(loadout) {
@@ -12703,7 +13098,7 @@ code {
             '<p class="spg-muted">', m6EscapeHtml(method.tierMemberSummary || method.locationSummary || ""), '</p>',
             '<div class="spg-export-radar"><span>Radar Signature</span><strong>', m6EscapeHtml(mining.radarSignatureDisplay || m6FormatMetric(mining.radarSignature, "")), '</strong></div>',
             '<div class="spg-export-metrics">',
-            '<span><small>Módszer</small><strong>', m6EscapeHtml(method.method), '</strong></span>',
+            '<span><small>Módszer</small><strong>', m6EscapeHtml(formatMiningMethodLabel(method.method)), '</strong></span>',
             '<span><small>Spawn</small><strong>', m6EscapeHtml(m6FormatMetric(method.spawn, "%")), '</strong></span>',
             '<span><small>Occurrence</small><strong>', m6EscapeHtml(m6FormatMetric(method.occurrence, "%")), '</strong></span>',
             '<span><small>Quality</small><strong>', m6EscapeHtml(m6FormatQualityProfile(method.qualityProfile)), '</strong></span>',
@@ -12712,7 +13107,7 @@ code {
         });
       });
       if (!farmCards.length) {
-        farmCards.push('<div class="spg-export-empty">Nincs cache-elt, rangsorolt mining location.</div>');
+        farmCards.push('<div class="spg-export-empty">' + m6EscapeHtml(requirement.miningStatusText || "Nincs elérhető mining helyadat.") + '</div>');
       }
       var refinery = requirement.refinery || {};
       var refineryCards = [];
@@ -12728,12 +13123,12 @@ code {
           ].join(""));
         });
       } else {
-        refineryCards.push('<div class="spg-export-empty">' + m6EscapeHtml(refinery.status === "NO_REFINERY_DATA" ? "UEX mapping van, refinery yield nincs." : "Nincs biztonságos UEX refinery mapping.") + '</div>');
+        refineryCards.push('<div class="spg-export-empty">' + m6EscapeHtml(requirement.refineryStatusText || (refinery.status === "NO_REFINERY_DATA" ? "UEX mapping van, refinery yield nincs." : "Nincs biztonságos UEX refinery adat")) + '</div>');
       }
       return [
-        '<details class="spg-export-farm" open><summary>Mining / Farm helyek · ', m6EscapeHtml(requirement.materialName), '</summary>',
+        '<details class="spg-export-farm" open data-detail-kind="mining" data-detail-id="', m6EscapeHtml(requirement.commodityUuid || requirement.materialUuid), '"><summary>Mining / Farm helyek · ', m6EscapeHtml(requirement.materialName), '</summary>',
         '<div class="spg-export-location-grid">', farmCards.join(""), '</div></details>',
-        '<details class="spg-export-refinery" open><summary>UEX refinery ajánló · ', m6EscapeHtml(requirement.materialName), '</summary>',
+        '<details class="spg-export-refinery" open data-detail-kind="refinery" data-detail-id="', m6EscapeHtml(requirement.commodityUuid || requirement.materialUuid), '"><summary>UEX refinery ajánló · ', m6EscapeHtml(requirement.materialName), '</summary>',
         '<div class="spg-export-refinery-grid">', refineryCards.join(""), '</div></details>',
         '<details class="spg-export-loadout-wrap" open><summary>Mining loadout · ', m6EscapeHtml(requirement.materialName), '</summary>',
         m6RenderLoadout(requirement.selectedLoadout), '</details>'
@@ -12743,25 +13138,24 @@ code {
     function m6RenderRequirement(requirement) {
       var batches = requirement.allocatedBatches.length ? requirement.allocatedBatches.map(function (batch) {
         return '<li><strong>' + m6EscapeHtml(batch.quality === null || batch.quality === undefined ? "Q?" : "Q" + batch.quality) + '</strong><span>' +
-          m6EscapeHtml(m6FormatUnits(requirement.unit, batch.allocatedUnits)) + '</span><small>' + m6EscapeHtml(batch.reason || "deterministic allocation") + '</small></li>';
+          m6EscapeHtml(m6FormatUnits(requirement.unit, batch.allocatedUnits)) + '</span></li>';
       }).join("") : '<li>Nincs lefoglalt batch.</li>';
       var stats = requirement.affectedStats.length ? requirement.affectedStats.map(function (stat) {
         return '<span class="spg-export-stat-chip">' + m6EscapeHtml(stat) + '</span>';
       }).join("") : '<span class="spg-export-stat-chip">Nincs API stat-adat</span>';
       return [
         '<article class="spg-export-ingredient-card" data-status="', m6EscapeHtml(requirement.status), '" data-bottleneck="', requirement.bottleneck ? "true" : "false", '">',
-        '<header><div><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span><h3>', m6EscapeHtml(requirement.materialName), '</h3></div>',
-        '<span class="spg-export-status ', requirement.status === "SATISFIED" ? "is-pass" : "is-fail", '">', m6EscapeHtml(requirement.status), '</span></header>',
+        '<header><div><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span><button type="button" class="spg-material-token spg-material-token-accent-pending" data-detail-kind="material" data-detail-id="', m6EscapeHtml(requirement.commodityUuid || requirement.materialUuid), '" data-material-uuid="', m6EscapeHtml(requirement.materialUuid), '" data-material-name="', m6EscapeHtml(requirement.materialName), '">', m6EscapeHtml(requirement.materialName), '</button></div>',
+        '<span class="spg-export-status ', requirement.status === "SATISFIED" ? "is-pass" : "is-fail", '">', requirement.status === "SATISFIED" ? "Fedezve" : "Hiány", '</span></header>',
         '<div class="spg-export-stats">', stats, '</div>',
         '<div class="spg-export-quantity-grid">',
         '<span><small>1 darabhoz</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
         '<span><small>Teljes szükséglet</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.requiredUnits)), '</strong></span>',
-        '<span><small>Készlet a slotnál</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.availableUnitsAtSlot)), '</strong></span>',
+        '<span><small>Megfelelő készlet</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong></span>',
         '<span><small>Lefoglalt</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.allocatedUnits)), '</strong></span>',
-        '<span><small>Mennyiséghiány</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.missingAmountUnits)), '</strong></span>',
-        '<span><small>Quality-hiány</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.missingQualityUnits)), '</strong></span>',
+        '<span><small>', requirement.shortageUnits > 0 ? "Hiány" : "Maradék", '</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.shortageUnits > 0 ? requirement.shortageUnits : requirement.remainingUnits)), '</strong></span>',
         '</div>',
-        '<p class="spg-export-quality"><strong>', m6EscapeHtml(requirement.qualityCapability), '</strong> · ', m6EscapeHtml(m6QualityRuleLabel(requirement)), '</p>',
+        '<p class="spg-export-quality"><strong>Quality:</strong> ', m6EscapeHtml(m6QualityRuleLabel(requirement)), '</p>',
         requirement.bottleneck ? '<p class="spg-export-bottleneck">Szűk keresztmetszet: ez a Recipe Slot korlátozza a gyártható mennyiséget.</p>' : '',
         '<details class="spg-export-batches" open><summary>Felhasznált Quality batch-ek</summary><ul>', batches, '</ul></details>',
         m6RenderFarmAndRefinery(requirement),
@@ -12782,15 +13176,17 @@ code {
         '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
         '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
         '<main class="spg-export-page">',
-        '<header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><h1>', m6EscapeHtml(snapshot.card.outputName), '</h1>',
-        '<p>', m6EscapeHtml(snapshot.card.outputType), ' · ', m6EscapeHtml(snapshot.card.blueprintAvailability), '</p></div>',
+        '<header class="spg-export-hero" data-detail-kind="blueprint" data-detail-id="', m6EscapeHtml(snapshot.card.blueprintUuid || ""), '"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><h1>', m6EscapeHtml(snapshot.card.outputName), '</h1>',
+        '<p>', m6EscapeHtml(snapshot.card.outputClass), ' · ', m6EscapeHtml(snapshot.card.outputType), ' · Grade ', m6EscapeHtml(snapshot.card.outputGrade), '</p></div>',
         '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "Terv teljesíthető" : "Hiány van", '</span></header>',
         '<section class="spg-export-overview">',
-        '<span><small>Prioritás</small><strong>', m6EscapeHtml(snapshot.card.priority), '</strong></span>',
-        '<span><small>Gyártani kívánt</small><strong>', m6EscapeHtml(snapshot.card.requestedQuantity), ' db</strong></span>',
+        '<span><small>Size</small><strong>', m6EscapeHtml(snapshot.card.outputSize), '</strong></span>',
+        '<span><small>Class</small><strong>', m6EscapeHtml(snapshot.card.outputClass), '</strong></span>',
+        '<span><small>Type</small><strong>', m6EscapeHtml(snapshot.card.outputType), '</strong></span>',
+        '<span><small>Grade</small><strong>', m6EscapeHtml(snapshot.card.outputGrade), '</strong></span>',
+        '<span><small>Gyártani akarok</small><strong>', m6EscapeHtml(snapshot.card.requestedQuantity), ' db</strong></span>',
         '<span><small>Maximum készletből</small><strong>', m6EscapeHtml(snapshot.card.maxCraftable), ' db</strong></span>',
         '<span><small>Craft time</small><strong>', m6EscapeHtml(m6FormatCraftTime(snapshot.card.craftTimeSeconds)), '</strong></span>',
-        '<span><small>SC Data Version</small><strong>', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</strong></span>',
         '<span><small>Recipe Slot</small><strong>', m6EscapeHtml(snapshot.summary.ingredientCount), '</strong></span>',
         '</section>',
         missingData,
@@ -12801,8 +13197,6 @@ code {
         '<span><strong>SC Data Version:</strong> ', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</span>',
         '<span><strong>Generated:</strong> ', m6EscapeHtml(snapshot.generatedAt), '</span>',
         '<span><strong>Data Source:</strong> Star Citizen Wiki API + UEX</span>',
-        '<span><strong>Blueprint UUID:</strong> ', m6EscapeHtml(snapshot.card.blueprintUuid || "Nincs adat"), '</span>',
-        '<span><strong>Export schema:</strong> ', m6EscapeHtml(snapshot.exportSchemaVersion), '</span>',
         '</footer>',
         '<script type="application/json" id="spg-export-snapshot">', snapshotJson, '<\/script>',
         '</main></body></html>'
@@ -12843,11 +13237,19 @@ code {
         card = buildCraftingCard(state.normalizedBlueprint);
         card.id = "technical-export-preview";
         card.order = 0;
-        allocation = allocateCardsDeterministically([card], state.materialBatches);
-        attachExportMaterialIntelligence(card, allocation.cards[0]);
       }
       if (!card) {
         throw new Error("Nincs exportálható Crafting Card vagy betöltött blueprint.");
+      }
+      await Promise.all([
+        ensureMaterialIntelligenceHydrated([card]),
+        ensureCraftingOutputPresentationHydrated([card])
+      ]);
+      if (state.craftingCards.some(function (candidate) { return candidate.id === card.id; })) {
+        allocation = recalculateAllocation("EXPORT_MATERIAL_HYDRATION");
+      } else {
+        allocation = allocateCardsDeterministically([card], state.materialBatches);
+        attachExportMaterialIntelligence(card, allocation.cards[0]);
       }
       var cardResult = allocation && allocation.cards.find(function (result) { return result.cardId === card.id; });
       if (!cardResult) {
@@ -12863,6 +13265,7 @@ code {
         card: card,
         cardResult: cardResult,
         blueprint: blueprint,
+        outputPresentation: state.craftingOutputPresentationByUuid.get(card.outputUuid) || null,
         trace: allocation ? allocation.trace.filter(function (trace) { return trace.cardId === card.id; }) : []
       });
       var html = m6RenderStandaloneHtml(snapshot, css);
@@ -13693,7 +14096,11 @@ code {
         }
 
         if (state.activeMiningDataset) {
-          await ensureCraftingCardMiningDetails();
+          await Promise.all([
+            ensureMaterialIntelligenceHydrated(state.craftingCards),
+            ensureCraftingOutputPresentationHydrated(state.craftingCards)
+          ]);
+          recalculateAllocation("STARTUP_CARD_HYDRATED");
           await selectDefaultMiningCommodity();
         }
 
@@ -14051,6 +14458,7 @@ code {
       buildStandaloneExport: buildStandaloneExport,
       downloadStandaloneExport: downloadStandaloneExport,
       buildStandaloneSnapshot: m6BuildStandaloneSnapshot,
+      buildFinalCraftingCardViewModel: buildFinalCraftingCardViewModel,
       renderStandaloneHtml: m6RenderStandaloneHtml,
       readApplicationCss: readApplicationCss,
       readEmbeddedApplicationCss: readEmbeddedApplicationCss,
@@ -14116,6 +14524,8 @@ code {
       syncUexRefineryDataset: syncUexRefineryDataset,
       rebuildUexRefineryProjection: rebuildUexRefineryProjection,
       refreshMaterialIntelligenceSnapshots: refreshMaterialIntelligenceSnapshots,
+      ensureMaterialIntelligenceHydrated: ensureMaterialIntelligenceHydrated,
+      ensureCraftingOutputPresentationHydrated: ensureCraftingOutputPresentationHydrated,
       ensureCraftingCardMiningDetails: ensureCraftingCardMiningDetails,
       verifyUexRefineryRollbackPreservesActiveDataset: verifyUexRefineryRollbackPreservesActiveDataset
     });

@@ -257,3 +257,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk, feature-mentes C005 scope, a V002 vedelem, az exact API-bizonyitek, a teljes cikluskapu, valamint a Chrome 15/15 technikai proba, Aluminum/Carinite UI, reload fingerprint es warning/error konzol ellenorzese.
 - Mely fajlokat vagy donteseket erintett: C004 SCMDB auditindok, C005 audit/fixture/validator/riport/artifact, C006-C010 roadmap es projekt statuszfajlok; alkalmazaskod nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C006 Final Crafting Card es hydration
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-24`, a final Crafting Card layout, a teljes ingredient-intelligence hydration, a C006 repair-cycle es a valodi Chrome localhost/export ellenorzes soran.
+- Mire segitett: a C006 scope es fagyasztott V002 vedelmere, a celzott offline-cache fixture-re, a teljes regresszios kapura, valamint a friss origines JS-300 hydration, reload fingerprint, tenyleges download es konzol ellenorzesere.
+- Mely fajlokat vagy donteseket erintett: a V003 final-card UI/view-model/hydration/export kod, C006 teszt/validator/artifact/riport es projekt statuszfajlok; V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

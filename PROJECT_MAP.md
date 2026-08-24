@@ -40,6 +40,9 @@
 - V003-C005 consistency kapu: `tools/validate-v003-c005.ps1`; exact Lagrange F primary/secondary trace, teljes Radar reconciliation, C001-C004/M1-M6.1/C04, standalone es V002-integritas.
 - V003-C005 elo audit: `tools/audit-v003-c005.mjs`; a Wiki `4.9.0-LIVE.12232306` adaton keszit mezoszintu Lagrange F trace-t, 7 ROC/FPS kategoriabizonyitekot, 31 jogos UNMAPPED listat es C004 Top-3 snapshot-egyezest.
 - V003-C005 riport: `docs/V003_C005_CONSISTENCY_REPORT.md`; forrashierarchia, auditjavitas es a V003-C006-C010 final-card roadmap.
+- V003-C006 final-card kapu: `tools/validate-v003-c006.ps1`; C006 adatmodell/hydration/standalone teszt, teljes C001-C005 + M1-M6.1 + C04, elo Wiki audit es V002-integritas.
+- V003-C006 celzott teszt: `tools/run-v003-c006-tests.mjs`; JS-300 vegso view-model, quantity/max/allocation, cached/uncached offline hydration, teljes material snapshot es kozos standalone render.
+- V003-C006 riport: `docs/V003_C006_FINAL_CARD_REPORT.md`; layout, hydration, offline viselkedes, export, Chrome es V002-integritas bizonyitek.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -56,6 +59,7 @@
 - `docs/V003_FARM_RECOMMENDATION_REPORT.md`: a primary/secondary API-audit, uj rangsor, space/normal besorolas, tesztek es nyitott `file://` kapu.
 - `docs/V003_MATERIAL_NAMING_REPORT.md`: a C003 teljes nevmező/suffix/alias/invalid/duplicate auditja, kozos resolvere, fogyasztoi es regresszios bizonyiteka.
 - `docs/V003_C004_RADAR_TOP3_REPORT.md`: a forraskep-alapu radar registry, Wiki API_RAW mezohatar, Top-3 dense rank, SCMDB audit, Chrome es regresszios bizonyitek.
+- `docs/V003_C006_FINAL_CARD_REPORT.md`: a final Crafting Card adatkontraktus, automatikus ingredient hydration, kozos UI/export projekcio es C006 acceptance.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -89,6 +93,8 @@
 - `test-artifacts/V003-C002/`: a ranking utani bizonyitekos farmhely-grouping teljes regresszios es browser bizonyiteka.
 - `test-artifacts/V003-C003/`: a material naming teljes elo API-auditja, Chrome localhost summaryja es repair-cycle PASS summaryja.
 - `test-artifacts/V003-C004/`: Radar Signature/SCMDB/Top-3 elo auditok, standalone export, teljes PASS summary es valodi Chrome localhost bizonyitek.
+- `test-artifacts/V003-C005/`: a consistency closure elo auditja, standalone exportja es teljes PASS summaryja.
+- `test-artifacts/V003-C006/`: a final Crafting Card teljes regresszios summaryja, Chrome evidence es standalone artifactja.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

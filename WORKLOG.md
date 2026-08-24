@@ -467,3 +467,23 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Roadmap: V003-C006 adatkontraktus, C007 card-first UI/szinek, C008 in-app detail/deep link, C009 Advanced/Diagnostics, C010 standalone parity/acceptance.
 - Alkalmazaskod nem valtozott. Korabbi felhasznaloi valos Chrome `file://` kapu MANUAL PASS maradt, nem Codex automation. C006 csak uj felhasznaloi file-ujrateszt es kulon utasitas utan indul.
 - V002 tag/artifact valtozatlan; V003 release/tag nem keszult. Visszaallas: a C005 commit revertje vagy a fagyasztott V002 tag/release.
+
+### 2026-08-24T21:09:34 - V003-C006
+
+- Cel: Final Crafting Card Layout + complete material snapshot hydration
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C006/test-summary.json`
+
+### V003-C006 Final Crafting Card + complete material snapshot hydration - 2026-08-24
+
+- A kartyafejlec a valos Wiki item detailbol mutatja a JS-300 `Size 1`, `Military`, `Power Plant`, `Grade A` es `15 perc` adatait; a kartya requested quantity/max craftable es slotonkenti terv az M2 Allocation Engine valtozatlan eredmenye.
+- Uj kozos hydration: `hydrateMaterialIntelligenceRecords()` + `ensureMaterialIntelligenceHydrated()`; cache eloszor, engedelyezett halozatnal Wiki detail, majd a meglevo C001-C005 normalizer/ranking/naming/radar es M5 UEX snapshot.
+- A UI es export kozos `buildFinalCraftingCardViewModel()` adatot hasznal. A final kartyan nincs lathato raw UUID/provider/resource/debug/schema; material/blueprint/mining/refinery/radar interakcios data-hookok elokeszitve, C008 reszletnezet nelkul.
+- Fresh-cache Chrome localhost: Material Database elozetes megnyitasa nelkul mindharom JS-300 material Radar+Mining snapshotot kapott; Beryl/Savrilium UEX elerheto, Stileron exact `Nincs biztonságos UEX refinery adat`.
+- Chrome reload: quantity `2`, max `3`, harom inventory batch es snapshot megmaradt; User Data fingerprint `39341365 -> 39341365`; alkalmazas-konzol WARN/ERROR 0.
+- A Chrome-bol letoltott `sPg Crafting List - JS-300 (2).html`: 448 917 byte, SHA-256 `a834c84801639057b9a7f3e6a14f8a5a881bd45562d411159c1d5a6ef52542fb`; embedded CSS, ervenyes snapshot JSON, 3 material, 6 location, 4 refinery system es 0 kulso network/runtime resource.
+- Automatizalt C006 + C001-C005 + teljes M1-M6.1 + C04 + elo Wiki audit + standalone + fagyasztott V002 integritas PASS. A felhasznalo korabbi valos Chrome `file://` C005 kapuja MANUAL PASS bizonyitek, nem Codex automation.
+- V002 tag/artifact valtozatlan; V003 stabil release/tag es C007 nem keszult. Visszaallas: a C006 commit revertje vagy a fagyasztott V002 tag/release.

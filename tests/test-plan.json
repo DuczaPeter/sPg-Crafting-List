@@ -163,6 +163,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c005.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c006-final-card-regression",
+      "level": "full-regression",
+      "description": "V003-C006 gate: final Crafting Card view-model, cache/API material hydration, output item presentation, quantity/max-craftable and offline states, complete JS-300 standalone projection, full C001-C005/M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c006.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

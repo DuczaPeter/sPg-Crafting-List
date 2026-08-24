@@ -1,0 +1,65 @@
+﻿{
+    "projectVersion":  "V003-dev",
+    "cycle":  "C006",
+    "cycleId":  "V003-C006",
+    "status":  "PASS",
+    "statusReason":  "Selected test command exited with code 0.",
+    "purpose":  "Final Crafting Card Layout + complete material snapshot hydration",
+    "testLevel":  "full-regression",
+    "testId":  "v003-c006-final-card-regression",
+    "testSource":  "test-plan",
+    "testExecutable":  "powershell.exe",
+    "testArguments":  [
+                          "-NoProfile",
+                          "-ExecutionPolicy",
+                          "Bypass",
+                          "-File",
+                          ".\\tools\\validate-v003-c006.ps1"
+                      ],
+    "testExitCode":  0,
+    "checkpoint":  "not-requested",
+    "checkpointCommit":  null,
+    "checkpointStagedFiles":  [
+
+                              ],
+    "branch":  "develop/V003",
+    "startedAt":  "2026-08-24T21:09:26",
+    "artifactDir":  "C:\\Users\\ganos\\OneDrive\\Munka\\Codex\\sPg Crafring List\\test-artifacts\\V003-C006",
+    "appLog":  "app-log.json",
+    "appLogCaptured":  false,
+    "browserConsole":  "browser-console.log",
+    "browserConsoleCaptured":  true,
+    "captureRequired":  false,
+    "appLogRequired":  false,
+    "browserConsoleRequired":  false,
+    "missingCaptures":  [
+
+                        ],
+    "testOutput":  "test-output.log",
+    "manualBrowserEvidence":  {
+                                   "summary":  "browser-summary.json",
+                                   "captureSource":  "Codex Chrome control",
+                                   "consoleWarningErrorCount":  0,
+                                   "fingerprintBeforeReload":  "39341365",
+                                   "fingerprintAfterReload":  "39341365",
+                                   "downloadedStandaloneStatus":  "PASS"
+                               },
+    "browserDiagnostics":  {
+                               "enabled":  false,
+                               "testId":  null,
+                               "configPath":  null,
+                               "status":  null,
+                               "browser":  null,
+                               "durationMs":  null,
+                               "consoleErrorCount":  null,
+                               "pageErrorCount":  null,
+                               "networkErrorCount":  null,
+                               "appErrorCount":  null,
+                               "screenshotPath":  null,
+                               "diagnosticExcerpt":  null,
+                               "primaryError":  null,
+                               "errorCode":  null,
+                               "failedStep":  null,
+                               "summary":  null
+                           }
+}

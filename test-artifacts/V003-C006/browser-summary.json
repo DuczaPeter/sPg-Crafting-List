@@ -1,0 +1,41 @@
+{
+  "cycle": "V003-C006",
+  "browser": "Google Chrome",
+  "protocol": "http:",
+  "origin": "http://127.0.0.1:4186",
+  "automation": "Codex Chrome control",
+  "freshOrigin": true,
+  "materialDatabaseOpenedBeforeCard": false,
+  "appReady": true,
+  "cardCount": 1,
+  "output": "JS-300",
+  "requestedQuantity": 2,
+  "maxCraftable": 3,
+  "hydratedMaterials": ["Stileron", "Beryl", "Savrilium"],
+  "allRadarSnapshotsAvailable": true,
+  "allMiningSnapshotsAvailable": true,
+  "stileronRefineryText": "Nincs biztonságos UEX refinery adat",
+  "rawMiningMethodVisible": false,
+  "fingerprintBeforeReload": "39341365",
+  "fingerprintAfterReload": "39341365",
+  "userDataLoss": false,
+  "consoleWarningErrorCount": 0,
+  "downloadedStandalone": {
+    "fileName": "sPg Crafting List - JS-300 (2).html",
+    "bytes": 448917,
+    "sha256": "a834c84801639057b9a7f3e6a14f8a5a881bd45562d411159c1d5a6ef52542fb",
+    "requirements": 3,
+    "locations": 6,
+    "refinerySystems": 4,
+    "embeddedCss": true,
+    "snapshotJsonValid": true,
+    "externalNetworkResources": 0,
+    "status": "PASS"
+  },
+  "userManualFileGate": {
+    "status": "PASS",
+    "scope": "V003-C005 location-ranking technical baseline",
+    "evidenceSource": "USER_MANUAL_NOT_CODEX_AUTOMATION"
+  },
+  "status": "PASS"
+}
