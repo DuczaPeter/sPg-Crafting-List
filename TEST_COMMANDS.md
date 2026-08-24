@@ -167,6 +167,12 @@ C04 `file://` CSS fallback + teljes M1-M6.1 regresszio:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-c04.ps1"
 ```
 
+Validalt standalone JS-300 exportartifact kiirasa (a 14 M6 ellenorzes utan byte-egyezes es SHA-256 is keszul):
+
+```powershell
+node .\tools\run-m6-tests.mjs --artifact="test-artifacts/V001-C013/standalone-js-300-automated.html"
+```
+
 C04 repair-cycle:
 
 ```powershell

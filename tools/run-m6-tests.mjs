@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -130,6 +131,7 @@ const snapshot = m6.buildSnapshot({
 });
 const offlineCss = cssSource.replace(/@import\s+url\([^;]+fonts\.googleapis\.com[^;]+;/gi, "") + "\nbody{font-family:Arial,Helvetica,sans-serif;}";
 const exportedHtml = m6.renderHtml(snapshot, offlineCss);
+const artifactArgument = process.argv.find((argument) => argument.startsWith("--artifact="));
 
 // 1-4. Complete card, production, slot and Quality/allocation data.
 assert.equal(snapshot.card.outputName, "JS-300");
@@ -195,6 +197,22 @@ const durationMs = performance.now() - started;
 assert.ok(largeHtml.length > exportedHtml.length);
 assert.ok(durationMs < 1000, `A 120 slotos export túl lassú: ${durationMs.toFixed(1)} ms`);
 
+let automatedExportArtifact = null;
+if (artifactArgument) {
+  const requestedPath = artifactArgument.slice("--artifact=".length).trim();
+  assert.ok(requestedPath, "Az --artifact útvonal nem lehet üres.");
+  const artifactPath = path.resolve(projectDirectory, requestedPath);
+  fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+  fs.writeFileSync(artifactPath, exportedHtml, "utf8");
+  const persistedHtml = fs.readFileSync(artifactPath, "utf8");
+  assert.equal(persistedHtml, exportedHtml, "A kiírt standalone artifact eltér a validált exporttól.");
+  automatedExportArtifact = {
+    path: path.relative(projectDirectory, artifactPath),
+    bytes: Buffer.byteLength(persistedHtml),
+    sha256: crypto.createHash("sha256").update(persistedHtml).digest("hex")
+  };
+}
+
 console.log("M6_STANDALONE_EXPORT_TEST_PASS");
 console.log(JSON.stringify({
   mandatoryCases: 14,
@@ -204,5 +222,6 @@ console.log(JSON.stringify({
   loadouts: snapshot.summary.selectedLoadoutCount,
   refinerySystems: snapshot.summary.refinerySystemCount,
   exportBytes: Buffer.byteLength(exportedHtml),
+  automatedExportArtifact,
   performance: { recipeSlots: largeSnapshot.requirements.length, durationMs: Number(durationMs.toFixed(2)) }
 }, null, 2));
