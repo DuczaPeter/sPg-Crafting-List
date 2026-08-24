@@ -58,10 +58,9 @@
       <button id="craftingListNav" type="button" class="active" aria-current="page">Crafting List</button>
       <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
       <button id="myMaterialsNav" type="button">My Materials</button>
-      <button id="miningNav" type="button">Mining &amp; Loadouts</button>
+      <button id="materialDatabaseNav" type="button">Material Database</button>
+      <button id="miningLoadoutsNav" type="button">Mining Loadouts</button>
       <button id="refineryNav" type="button">UEX Refinery</button>
-      <button type="button" disabled>Material Database</button>
-      <button type="button" disabled>Mining Loadouts</button>
       <button id="combinedMaterialsNav" type="button">Combined Materials</button>
       <button id="dataSettingsNav" type="button">Data / Settings</button>
     </nav>
@@ -195,34 +194,77 @@
       <section id="miningPanel" class="panel spg-m3-panel" aria-labelledby="miningTitle">
         <div class="spg-section-heading">
           <div>
-            <p class="eyebrow">M3 · verziózott Mining Game Data</p>
-            <h2 id="miningTitle">Mining Data &amp; Farm Locations</h2>
+            <p class="eyebrow">M6.1 · meglévő Mining Game Data</p>
+            <h2 id="miningTitle">Material Database</h2>
           </div>
           <span id="miningDatasetStatus" class="spg-badge spg-badge-neutral">Nincs aktív cache</span>
         </div>
-        <div class="spg-mining-toolbar">
+        <div class="spg-material-database-toolbar" role="search">
           <label>
-            <span>Mining commodity</span>
-            <select id="miningCommoditySelect">
-              <option value="">Nincs betöltött commodity</option>
+            <span>Material keresése</span>
+            <input id="materialDatabaseSearch" type="search" autocomplete="off" placeholder="Materialnév vagy UUID">
+          </label>
+          <label>
+            <span>Kategória</span>
+            <select id="materialDatabaseCategory">
+              <option value="">All</option>
+              <option value="SHIP_MINING">Ship Mining</option>
+              <option value="VEHICLE_MINING">Vehicle Mining</option>
+              <option value="FPS_MINING">FPS Mining</option>
+              <option value="HARVESTABLE">Harvestable</option>
             </select>
           </label>
           <button id="syncMiningDataButton" type="button">Mining Game Data frissítése</button>
         </div>
         <p id="miningDataMeta" class="spg-muted">A commodity lista és az equipment index dinamikusan, API-filterekből épül.</p>
-        <div id="miningCommoditySummary" class="spg-mining-summary" aria-live="polite"></div>
-        <div id="miningLocationRanking" class="spg-system-ranking" aria-live="polite">
-          <p class="spg-muted">Válassz mining commodityt a rendszerenkénti legjobb farmhelyhez.</p>
+        <div class="spg-material-database-layout">
+          <div>
+            <div class="spg-browser-list-heading">
+              <strong>Materialok</strong>
+              <span id="materialDatabaseResultCount">0</span>
+            </div>
+            <div id="materialDatabaseResults" class="spg-material-database-results" aria-live="polite">
+              <p class="spg-muted">A Material Database a verziózott mining cache betöltése után jelenik meg.</p>
+            </div>
+          </div>
+          <article id="materialDatabaseDetail" class="spg-material-database-detail" aria-live="polite">
+            <p id="materialDatabaseDetailEmpty" class="spg-muted">Válassz materialt a részletes adatlaphoz.</p>
+            <div id="miningCommoditySummary" class="spg-mining-summary"></div>
+            <section class="spg-material-database-section" aria-labelledby="materialLocationTitle">
+              <h3 id="materialLocationTitle">Legjobb mining location rendszerenként</h3>
+              <div id="miningLocationRanking" class="spg-system-ranking">
+                <p class="spg-muted">Válassz mining commodityt a rendszerenkénti legjobb farmhelyhez.</p>
+              </div>
+            </section>
+            <section class="spg-material-database-section" aria-labelledby="materialRefineryTitle">
+              <h3 id="materialRefineryTitle">UEX refinery rendszerenként</h3>
+              <div id="materialDatabaseRefinery" class="spg-system-ranking">
+                <p class="spg-muted">Válassz materialt a refinery ajánláshoz.</p>
+              </div>
+            </section>
+            <section class="spg-material-database-section" aria-labelledby="materialDefaultLoadoutTitle">
+              <h3 id="materialDefaultLoadoutTitle">Default Mining Loadout</h3>
+              <div id="materialDatabaseDefaultLoadout" class="spg-material-default-loadout">
+                <p class="spg-muted">Válassz materialt a mentett default loadouthoz.</p>
+              </div>
+            </section>
+          </article>
         </div>
 
-        <div class="spg-mining-loadout-heading">
+        <div id="miningLoadoutsSection" class="spg-mining-loadout-heading" tabindex="-1">
           <div>
-            <p class="eyebrow">M3 · User Data</p>
+            <p class="eyebrow">M3 · meglévő User Data</p>
             <h3>Mining Loadouts</h3>
           </div>
           <span id="miningLoadoutCount" class="spg-badge spg-badge-neutral">0 loadout</span>
         </div>
         <div class="spg-loadout-toolbar">
+          <label>
+            <span>Material</span>
+            <select id="miningCommoditySelect">
+              <option value="">Nincs betöltött commodity</option>
+            </select>
+          </label>
           <label>
             <span>Mentett loadout</span>
             <select id="miningLoadoutSelect">
@@ -355,7 +397,7 @@
         <ol id="probeResults" class="spg-check-list" aria-live="polite">
           <li data-status="PENDING">
             <span class="spg-check-marker">•</span>
-            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tizenkét célzott ellenőrzést futtat.</small></span>
+            <span><strong>Indítsd el a technikai próbát.</strong><small>A kapu tizenhárom célzott ellenőrzést futtat.</small></span>
           </li>
         </ol>
 
@@ -2591,6 +2633,18 @@
         categories: classification.categories,
         classificationSource: classification.source,
         radarSignature: m3FiniteNumber(raw.signature),
+        rarity: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? String(raw.rarity) :
+          (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? String(raw.tier) : null),
+        raritySourceField: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? "rarity" :
+          (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? "tier" : "UNKNOWN"),
+        instability: m3FiniteNumber(raw.instability),
+        resistance: m3FiniteNumber(raw.resistance),
+        density: m3FiniteNumber(raw.density_g_per_cc),
+        commodityGroups: Array.isArray(raw.commodity_groups) ? raw.commodity_groups.slice() : [],
+        refinedVersion: raw.refined_version ? {
+          uuid: raw.refined_version.uuid || null,
+          name: raw.refined_version.name || null
+        } : null,
         systems: Array.isArray(raw.systems) ? raw.systems.slice() : [],
         locations: locations,
         rawLocationCount: locations.length,
@@ -2610,6 +2664,12 @@
         categories: classification.categories,
         classificationSource: classification.source,
         radarSignature: m3FiniteNumber(raw.signature),
+        rarity: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? String(raw.rarity) :
+          (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? String(raw.tier) : null),
+        raritySourceField: raw.rarity !== null && raw.rarity !== undefined && raw.rarity !== "" ? "rarity" :
+          (raw.tier !== null && raw.tier !== undefined && raw.tier !== "" ? "tier" : "UNKNOWN"),
+        instability: m3FiniteNumber(raw.instability),
+        resistance: m3FiniteNumber(raw.resistance),
         systems: Array.isArray(raw.systems) ? raw.systems.slice() : [],
         provenance: Object.assign({}, provenance, { rawCommodityUuid: raw.uuid })
       };
@@ -2832,6 +2892,49 @@
       });
     }
     /* M3_MINING_MODEL_END */
+
+    /* M61_UI_COMPLETENESS_MODEL_START */
+    var M61_REQUIRED_NAVIGATION = Object.freeze([
+      { id: "craftingListNav", label: "Crafting List", targetId: "craftingCardsPanel", focusId: "addCurrentBlueprintButton" },
+      { id: "blueprintBrowserNav", label: "Blueprint Browser", targetId: "blueprintBrowserPanel", focusId: "blueprintSearchInput" },
+      { id: "myMaterialsNav", label: "My Materials", targetId: "myMaterialsPanel", focusId: "batchMaterialName" },
+      { id: "materialDatabaseNav", label: "Material Database", targetId: "miningPanel", focusId: "materialDatabaseSearch" },
+      { id: "miningLoadoutsNav", label: "Mining Loadouts", targetId: "miningLoadoutsSection", focusId: "miningCommoditySelect" },
+      { id: "refineryNav", label: "UEX Refinery", targetId: "refineryPanel", focusId: "refineryCommoditySelect" },
+      { id: "combinedMaterialsNav", label: "Combined Materials", targetId: "combinedMaterialsPanel", focusId: null },
+      { id: "dataSettingsNav", label: "Data / Settings", targetId: "dataSettingsPanel", focusId: "backupExportButton" }
+    ]);
+
+    function m61FoldSearchText(value) {
+      return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    function m61FilterMaterialIndex(records, query, category) {
+      var foldedQuery = m61FoldSearchText(query);
+      return (records || []).filter(function (record) {
+        if (category && (!Array.isArray(record.categories) || record.categories.indexOf(category) === -1)) {
+          return false;
+        }
+        if (!foldedQuery) {
+          return true;
+        }
+        return m61FoldSearchText([record.name, record.uuid, record.slug, record.kind].join(" ")).indexOf(foldedQuery) !== -1;
+      }).sort(function (a, b) {
+        return String(a.name).localeCompare(String(b.name), "hu") || String(a.uuid).localeCompare(String(b.uuid));
+      });
+    }
+
+    function m61DefaultLoadout(loadouts, materialUuid) {
+      var matching = (loadouts || []).filter(function (loadout) {
+        return loadout && loadout.materialUuid === materialUuid;
+      });
+      return matching.find(function (loadout) { return loadout.isDefault === true; }) || null;
+    }
+
+    function m61ApiMetric(value) {
+      return value === null || value === undefined || value === "" ? "Nincs adat" : String(value);
+    }
+    /* M61_UI_COMPLETENESS_MODEL_END */
 
     /* M4_COMBINED_BACKUP_MODEL_START */
     var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
@@ -3854,6 +3957,66 @@
       document.body.dataset.miningCommodityCount = String(state.miningCommodityIndex.length);
       document.body.dataset.miningVehicleCount = String(state.miningVehicles.length);
       document.body.dataset.miningHeadCount = String(state.miningEquipment.heads.length);
+      renderMaterialDatabaseResults();
+    }
+
+    function m61CategoryLabel(category) {
+      return {
+        SHIP_MINING: "Ship Mining",
+        VEHICLE_MINING: "Vehicle Mining",
+        FPS_MINING: "FPS Mining",
+        HARVESTABLE: "Harvestable",
+        UNKNOWN: "UNKNOWN"
+      }[category] || "UNKNOWN";
+    }
+
+    function visibleMaterialDatabaseIndex() {
+      return m61FilterMaterialIndex(
+        state.miningCommodityIndex,
+        document.getElementById("materialDatabaseSearch").value,
+        document.getElementById("materialDatabaseCategory").value
+      );
+    }
+
+    function renderMaterialDatabaseResults() {
+      var container = document.getElementById("materialDatabaseResults");
+      if (!container) {
+        return;
+      }
+      var results = visibleMaterialDatabaseIndex();
+      container.replaceChildren();
+      setText("materialDatabaseResultCount", results.length + (results.length > 100 ? " · első 100" : ""));
+      document.body.dataset.materialDatabaseResultCount = String(results.length);
+      document.body.dataset.materialDatabaseCategory = document.getElementById("materialDatabaseCategory").value || "ALL";
+      if (!results.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = state.miningCommodityIndex.length
+          ? "Nincs a keresésnek és kategóriának megfelelő material."
+          : "A verziózott mining commodity cache még nincs betöltve.";
+        container.append(empty);
+        return;
+      }
+      results.slice(0, 100).forEach(function (record) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "spg-material-database-result";
+        button.dataset.materialUuid = record.uuid;
+        button.classList.toggle("active", Boolean(state.selectedMiningCommodity && state.selectedMiningCommodity.uuid === record.uuid));
+        var title = document.createElement("strong");
+        title.textContent = record.name;
+        var categories = document.createElement("span");
+        categories.textContent = (record.categories || []).map(m61CategoryLabel).join(" / ") || "UNKNOWN";
+        var radar = document.createElement("small");
+        radar.textContent = "Radar Signature: " + m61ApiMetric(record.radarSignature);
+        button.append(title, categories, radar);
+        button.addEventListener("click", function () {
+          selectMiningCommodityForUi(record.uuid, "MATERIAL_DATABASE").catch(function (error) {
+            setMiningNotice("Material adatlap betöltési hiba: " + error.message, "error");
+          });
+        });
+        container.append(button);
+      });
     }
 
     function populateMiningCommoditySelect() {
@@ -3872,6 +4035,31 @@
       });
       select.value = state.miningCommodityIndex.some(function (commodity) { return commodity.uuid === selected; }) ? selected : "";
       document.getElementById("addMiningLoadoutButton").disabled = !select.value;
+      renderMaterialDatabaseResults();
+    }
+
+    async function selectMiningCommodityForUi(uuid, origin) {
+      var nextUuid = uuid || "";
+      var currentUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
+      if (!nextUuid) {
+        state.selectedMiningCommodity = null;
+        state.selectedMiningLoadoutId = null;
+        state.editingMiningLoadout = null;
+        document.getElementById("miningCommoditySelect").value = "";
+        document.getElementById("addMiningLoadoutButton").disabled = true;
+        renderSelectedMiningCommodity(origin || "UI");
+        renderMiningLoadoutControls();
+        renderMaterialDatabaseResults();
+        return null;
+      }
+      if (currentUuid !== nextUuid) {
+        state.selectedMiningLoadoutId = null;
+        state.editingMiningLoadout = null;
+      }
+      document.getElementById("miningCommoditySelect").value = nextUuid;
+      var detail = await loadMiningCommodityDetail(nextUuid, { uiOrigin: origin || "UI" });
+      renderMaterialDatabaseResults();
+      return detail;
     }
 
     function miningFacetEquipmentType(facet) {
@@ -4044,6 +4232,21 @@
       var cached = await database.get("miningNormalizedCache", cacheKey);
       var normalized = cached;
       var origin = "CACHE";
+      if (cached && !Object.prototype.hasOwnProperty.call(cached, "raritySourceField")) {
+        var cachedRaw = await database.get("miningRawCache", version + "::raw::commodity-detail::" + cached.uuid);
+        if (cachedRaw && cachedRaw.raw) {
+          normalized = normalizeMiningCommodity(cachedRaw.raw, miningProvenance(
+            version,
+            cachedRaw.endpoint || (APP.apiBase + "/commodities/" + encodeURIComponent(cached.uuid)),
+            cachedRaw.fetchedAt || nowIso()
+          ));
+          normalized.recordType = "COMMODITY_DETAIL";
+          await database.putMiningDetail(cachedRaw, normalized);
+          origin = "CACHE_MIGRATION_M61";
+        } else {
+          normalized = null;
+        }
+      }
       if (!normalized) {
         var raw = await api.getCommodity(identifier, version);
         var fetchedAt = nowIso();
@@ -4064,6 +4267,7 @@
       document.getElementById("addMiningLoadoutButton").disabled = false;
       renderSelectedMiningCommodity(origin);
       renderMiningLoadoutControls();
+      renderMaterialDatabaseResults();
       logger.event("INFO", "MINING_COMMODITY_DETAIL", "Mining commodity részlet betöltve.", {
         commodityUuid: normalized.uuid,
         name: normalized.name,
@@ -4383,6 +4587,9 @@
       }
       await refreshMaterialIntelligenceSnapshots(trigger || "UEX_PROJECTION_REBUILD");
       renderRefineryDatasetState();
+      if (state.selectedMiningCommodity) {
+        renderMaterialDatabaseRefinery(state.selectedMiningCommodity);
+      }
       var mappingSummary = summarizeUexMappings(state.uexCommodityMappings);
       var systemGroupCount = recommendations.reduce(function (sum, recommendation) { return sum + recommendation.systems.length; }, 0);
       var tieGroupCount = recommendations.reduce(function (sum, recommendation) {
@@ -4653,10 +4860,96 @@
       return value === null || value === undefined ? "Nincs adat" : Number(value).toLocaleString("hu-HU", { maximumFractionDigits: 3 }) + (suffix || "");
     }
 
+    function renderMaterialDatabaseRefinery(commodity) {
+      var container = document.getElementById("materialDatabaseRefinery");
+      container.replaceChildren();
+      if (!commodity) {
+        var noSelection = document.createElement("p");
+        noSelection.className = "spg-muted";
+        noSelection.textContent = "Válassz materialt a refinery ajánláshoz.";
+        container.append(noSelection);
+        return;
+      }
+      var recommendation = state.uexRefineryRecommendations.get(commodity.uuid);
+      if (!recommendation || recommendation.status === "MAPPING_UNRESOLVED") {
+        var unresolved = document.createElement("p");
+        unresolved.className = "spg-muted";
+        unresolved.textContent = "Nincs adat – a Wiki ↔ UEX mapping nem oldható fel biztonságosan.";
+        container.append(unresolved);
+        document.body.dataset.materialDatabaseRefineryStatus = "MAPPING_UNRESOLVED";
+        return;
+      }
+      if (recommendation.status === "NO_REFINERY_DATA" || !recommendation.systems.length) {
+        var noRefinery = document.createElement("p");
+        noRefinery.className = "spg-muted";
+        noRefinery.textContent = "Nincs adat – ehhez a materialhoz nincs UEX refinery yield rekord.";
+        container.append(noRefinery);
+        document.body.dataset.materialDatabaseRefineryStatus = "NO_REFINERY_DATA";
+        return;
+      }
+      recommendation.systems.forEach(function (system) {
+        var card = document.createElement("article");
+        card.className = "spg-system-card spg-refinery-system-card";
+        var heading = document.createElement("h4");
+        heading.textContent = system.starSystemName + " · " + formatRefineryBonus(system.rankingValue);
+        var terminal = document.createElement("strong");
+        terminal.textContent = system.terminals.map(function (item) { return item.terminalName; }).join(" / ");
+        var meta = document.createElement("small");
+        meta.textContent = "UEX value_month · " + system.tieCount + " azonos legjobb";
+        card.append(heading, terminal, meta);
+        container.append(card);
+      });
+      document.body.dataset.materialDatabaseRefineryStatus = recommendation.status;
+      document.body.dataset.materialDatabaseRefinerySystemCount = String(recommendation.systems.length);
+    }
+
+    function renderMaterialDatabaseDefaultLoadout(commodity) {
+      var container = document.getElementById("materialDatabaseDefaultLoadout");
+      container.replaceChildren();
+      if (!commodity) {
+        var noSelection = document.createElement("p");
+        noSelection.className = "spg-muted";
+        noSelection.textContent = "Válassz materialt a mentett default loadouthoz.";
+        container.append(noSelection);
+        return;
+      }
+      var loadout = m61DefaultLoadout(state.miningLoadouts, commodity.uuid);
+      if (!loadout) {
+        var noLoadout = document.createElement("p");
+        noLoadout.className = "spg-muted";
+        noLoadout.textContent = "Nincs mentett Default Loadout ehhez a materialhoz.";
+        container.append(noLoadout);
+        document.body.dataset.materialDatabaseDefaultLoadout = "none";
+        return;
+      }
+      var heading = document.createElement("div");
+      heading.className = "spg-material-default-loadout-heading";
+      var title = document.createElement("strong");
+      title.textContent = loadout.name;
+      var vehicle = document.createElement("span");
+      vehicle.textContent = "Vehicle: " + (loadout.vehicle && loadout.vehicle.name || "Nincs adat");
+      heading.append(title, vehicle);
+      var equipment = document.createElement("div");
+      equipment.className = "spg-material-default-loadout-equipment";
+      (loadout.stations || []).forEach(function (station, index) {
+        var stationCard = document.createElement("article");
+        var headName = station.head && station.head.name || "Nincs adat";
+        stationCard.innerHTML = "<strong>Station " + escapeHtml(index + 1) + " · " + escapeHtml(headName) + "</strong><span>Module: " +
+          escapeHtml((station.modules || []).map(function (module) { return module.name || "UNKNOWN"; }).join(" / ") || "Nincs adat") + "</span>";
+        equipment.append(stationCard);
+      });
+      var gadgets = document.createElement("p");
+      gadgets.className = "spg-muted";
+      gadgets.textContent = "Gadget: " + ((loadout.gadgets || []).map(function (gadget) { return gadget.name || "UNKNOWN"; }).join(" / ") || "Nincs adat");
+      container.append(heading, equipment, gadgets);
+      document.body.dataset.materialDatabaseDefaultLoadout = loadout.id;
+    }
+
     function renderSelectedMiningCommodity(origin) {
       var commodity = state.selectedMiningCommodity;
       var summary = document.getElementById("miningCommoditySummary");
       var ranking = document.getElementById("miningLocationRanking");
+      document.getElementById("materialDatabaseDetailEmpty").hidden = Boolean(commodity);
       summary.replaceChildren();
       ranking.replaceChildren();
       if (!commodity) {
@@ -4664,12 +4957,17 @@
         empty.className = "spg-muted";
         empty.textContent = "Válassz mining commodityt.";
         ranking.append(empty);
+        renderMaterialDatabaseRefinery(null);
+        renderMaterialDatabaseDefaultLoadout(null);
         return;
       }
       [
-        ["Commodity", commodity.name],
-        ["Mining method", commodity.categories.join(" / ")],
-        ["Radar Signature", commodity.radarSignature === null ? "Nincs adat" : String(commodity.radarSignature)],
+        ["Material", commodity.name],
+        ["Mining kategória", commodity.categories.map(m61CategoryLabel).join(" / ") || "UNKNOWN"],
+        ["Radar Signature", m61ApiMetric(commodity.radarSignature)],
+        ["Rarity", m61ApiMetric(commodity.rarity) + (commodity.rarity && commodity.raritySourceField === "tier" ? " · API tier" : "")],
+        ["Instability", m61ApiMetric(commodity.instability)],
+        ["Resistance", m61ApiMetric(commodity.resistance)],
         ["Raw location rekord", commodity.rawLocationCount],
         ["Adat eredete", origin || commodity.provenance.origin]
       ].forEach(function (row) {
@@ -4725,9 +5023,15 @@
         }
         ranking.append(card);
       });
+      renderMaterialDatabaseRefinery(commodity);
+      renderMaterialDatabaseDefaultLoadout(commodity);
       document.body.dataset.selectedMiningCommodity = commodity.uuid;
       document.body.dataset.selectedMiningSignature = commodity.radarSignature === null ? "unknown" : String(commodity.radarSignature);
       document.body.dataset.selectedMiningLocationCount = String(commodity.locations.length);
+      document.body.dataset.materialDatabaseDetailReady = "true";
+      document.body.dataset.materialDatabaseRarity = commodity.rarity || "unknown";
+      document.body.dataset.materialDatabaseInstability = commodity.instability === null ? "unknown" : String(commodity.instability);
+      document.body.dataset.materialDatabaseResistance = commodity.resistance === null ? "unknown" : String(commodity.resistance);
     }
 
     function visibleBlueprintIndex() {
@@ -6437,6 +6741,7 @@
       });
       await refreshMaterialIntelligenceSnapshots("MINING_LOADOUT_UPDATE");
       renderMiningLoadoutControls(true);
+      renderMaterialDatabaseDefaultLoadout(state.selectedMiningCommodity);
     }
 
     function createMiningLoadoutDraft() {
@@ -7280,6 +7585,63 @@
       }
     }
 
+    function m61AuditNavigationDom() {
+      var navigation = document.querySelector(".spg-module-nav");
+      var visibleButtons = Array.from(navigation.querySelectorAll("button"));
+      assert(visibleButtons.length === M61_REQUIRED_NAVIGATION.length, "A fő navigáció nem pontosan a 8 V1 célpontot tartalmazza.");
+      var entries = M61_REQUIRED_NAVIGATION.map(function (item) {
+        var button = document.getElementById(item.id);
+        var target = document.getElementById(item.targetId);
+        var focusTarget = item.focusId ? document.getElementById(item.focusId) : null;
+        assert(Boolean(button), "Hiányzó navigációs gomb: " + item.id);
+        assert(button.disabled !== true, "Disabled navigációs gomb: " + item.label);
+        assert(button.textContent.trim() === item.label, "Eltérő navigációs címke: " + item.id);
+        assert(Boolean(target), "Hiányzó navigációs cél: " + item.targetId);
+        assert(!item.focusId || Boolean(focusTarget), "Hiányzó fókuszcél: " + item.focusId);
+        return { id: item.id, label: item.label, targetId: item.targetId, enabled: true };
+      });
+      assert(!visibleButtons.some(function (button) { return button.disabled; }), "A fő navigációban disabled placeholder maradt.");
+      document.body.dataset.m61NavigationAudit = "PASS";
+      document.body.dataset.m61NavigationCount = String(entries.length);
+      return entries;
+    }
+
+    async function runM61UiRegression() {
+      var navigation = m61AuditNavigationDom();
+      navigation.forEach(function (entry) {
+        document.getElementById(entry.id).click();
+        assert(document.body.dataset.activeModule === entry.id, "A kattintás nem aktiválta ezt a modult: " + entry.label);
+        assert(document.body.dataset.activeModuleTarget === entry.targetId, "A kattintás hibás célra navigált: " + entry.label);
+      });
+      var categoryFixture = [
+        { uuid: "ship", name: "Agricium", categories: ["SHIP_MINING"] },
+        { uuid: "vehicle", name: "Beradom", categories: ["VEHICLE_MINING"] },
+        { uuid: "fps", name: "Aphorite", categories: ["FPS_MINING"] },
+        { uuid: "harvest", name: "Bluemoon Fungus", categories: ["HARVESTABLE"] }
+      ];
+      assert(m61FilterMaterialIndex(categoryFixture, "agric", "").length === 1, "A materialkeresés hibás.");
+      assert(m61FilterMaterialIndex(categoryFixture, "", "FPS_MINING")[0].name === "Aphorite", "A kategóriaszűrés hibás.");
+      renderMaterialDatabaseResults();
+      if (!state.selectedMiningCommodity && state.miningCommodityIndex.length) {
+        await selectDefaultMiningCommodity();
+      }
+      if (state.selectedMiningCommodity) {
+        assert(document.body.dataset.materialDatabaseDetailReady === "true", "A Material Database részletes adatlapja nem renderelt.");
+        assert(document.getElementById("miningCommoditySummary").children.length >= 8, "A material adatlap kötelező metrikái hiányoznak.");
+        assert(document.getElementById("miningLocationRanking").children.length > 0, "A mining location nézet üres.");
+        assert(document.getElementById("materialDatabaseRefinery").children.length > 0, "A refinery nézet üres.");
+      }
+      assert(Boolean(document.getElementById("miningLoadoutForm")), "A meglévő Mining Loadout editor nem érhető el.");
+      document.body.dataset.m61UiRegression = "PASS";
+      return {
+        status: "PASS",
+        navigationCount: navigation.length,
+        materialResultCount: visibleMaterialDatabaseIndex().length,
+        selectedMaterialUuid: state.selectedMiningCommodity ? state.selectedMiningCommodity.uuid : null,
+        savedLoadoutCount: state.miningLoadouts.length
+      };
+    }
+
     function renderProbeResults(results) {
       var list = document.getElementById("probeResults");
       list.replaceChildren();
@@ -7488,6 +7850,12 @@
         assert(recommendation.systems.find(function (system) { return system.starSystemName === "Pyro"; }).rankingValue === -5, "A negatív value_month rangsorolása hibás.");
         var rollback = await verifyUexRefineryRollbackPreservesActiveDataset();
         return "exact MATCHED · tie 2 · negatív maximum · rollback " + rollback.activeDatasetId;
+      });
+
+      await check("M6.1 V1 UI completeness", async function () {
+        var audit = await runM61UiRegression();
+        assert(audit.navigationCount === 8, "Nem mind a 8 V1 navigációs cél működik.");
+        return "8/8 aktív navigáció · Material Database · meglévő Mining Loadouts";
       });
 
       await check("Standalone HTML export", async function () {
@@ -7950,10 +8318,10 @@
 
     document.getElementById("blueprintSearchInput").addEventListener("input", renderBlueprintBrowserResults);
     document.getElementById("blueprintTypeFilter").addEventListener("change", renderBlueprintBrowserResults);
-    function navigateToPanel(navId, panelId, focusId) {
-      ["craftingListNav", "blueprintBrowserNav", "combinedMaterialsNav", "myMaterialsNav", "miningNav", "refineryNav", "dataSettingsNav"].forEach(function (id) {
-        var navigationButton = document.getElementById(id);
-        var active = id === navId;
+    function navigateToPanel(navId, targetId, focusId) {
+      M61_REQUIRED_NAVIGATION.forEach(function (item) {
+        var navigationButton = document.getElementById(item.id);
+        var active = item.id === navId;
         navigationButton.classList.toggle("active", active);
         if (active) {
           navigationButton.setAttribute("aria-current", "page");
@@ -7961,32 +8329,31 @@
           navigationButton.removeAttribute("aria-current");
         }
       });
-      document.getElementById(panelId).scrollIntoView({ behavior: "smooth", block: "start" });
-      if (focusId) {
-        document.getElementById(focusId).focus({ preventScroll: true });
+      var target = document.getElementById(targetId);
+      target.scrollIntoView({ behavior: "auto", block: "start" });
+      var focusTarget = focusId ? document.getElementById(focusId) : null;
+      if (focusTarget && !focusTarget.disabled) {
+        focusTarget.focus({ preventScroll: true });
       }
+      document.body.dataset.activeModule = navId;
+      document.body.dataset.activeModuleTarget = targetId;
+      logger.event("INFO", "M61_NAVIGATION", "V1 fő navigáció célja megnyílt.", { navId: navId, targetId: targetId });
     }
-    document.getElementById("craftingListNav").addEventListener("click", function () {
-      navigateToPanel("craftingListNav", "craftingCardsPanel", "addCurrentBlueprintButton");
+    M61_REQUIRED_NAVIGATION.forEach(function (item) {
+      document.getElementById(item.id).addEventListener("click", function () {
+        navigateToPanel(item.id, item.targetId, item.focusId);
+        if (item.id === "materialDatabaseNav") {
+          renderMaterialDatabaseResults();
+          renderSelectedMiningCommodity("NAVIGATION");
+        }
+        if (item.id === "miningLoadoutsNav") {
+          renderMiningLoadoutControls();
+        }
+      });
     });
-    document.getElementById("blueprintBrowserNav").addEventListener("click", function () {
-      navigateToPanel("blueprintBrowserNav", "blueprintBrowserPanel", "blueprintSearchInput");
-    });
-    document.getElementById("combinedMaterialsNav").addEventListener("click", function () {
-      navigateToPanel("combinedMaterialsNav", "combinedMaterialsPanel");
-    });
-    document.getElementById("myMaterialsNav").addEventListener("click", function () {
-      navigateToPanel("myMaterialsNav", "myMaterialsPanel", "batchMaterialName");
-    });
-    document.getElementById("miningNav").addEventListener("click", function () {
-      navigateToPanel("miningNav", "miningPanel", "miningCommoditySelect");
-    });
-    document.getElementById("refineryNav").addEventListener("click", function () {
-      navigateToPanel("refineryNav", "refineryPanel", "refineryCommoditySelect");
-    });
-    document.getElementById("dataSettingsNav").addEventListener("click", function () {
-      navigateToPanel("dataSettingsNav", "dataSettingsPanel", "backupExportButton");
-    });
+
+    document.getElementById("materialDatabaseSearch").addEventListener("input", renderMaterialDatabaseResults);
+    document.getElementById("materialDatabaseCategory").addEventListener("change", renderMaterialDatabaseResults);
 
     document.getElementById("syncMiningDataButton").addEventListener("click", function () {
       var button = this;
@@ -8023,17 +8390,7 @@
     });
 
     document.getElementById("miningCommoditySelect").addEventListener("change", function () {
-      var uuid = this.value;
-      state.selectedMiningLoadoutId = null;
-      state.editingMiningLoadout = null;
-      if (!uuid) {
-        state.selectedMiningCommodity = null;
-        document.getElementById("addMiningLoadoutButton").disabled = true;
-        renderSelectedMiningCommodity();
-        renderMiningLoadoutControls();
-        return;
-      }
-      loadMiningCommodityDetail(uuid).catch(function (error) {
+      selectMiningCommodityForUi(this.value, "MINING_LOADOUTS").catch(function (error) {
         setMiningNotice("Commodity betöltési hiba: " + error.message, "error");
       });
     });
@@ -8263,6 +8620,10 @@
       rankUexRefineriesBySystem: rankUexRefineriesBySystem,
       buildUexRefineryRecommendations: buildUexRefineryRecommendations,
       summarizeUexMappings: summarizeUexMappings,
+      requiredNavigation: M61_REQUIRED_NAVIGATION,
+      filterMaterialIndex: m61FilterMaterialIndex,
+      auditNavigationDom: m61AuditNavigationDom,
+      runM61UiRegression: runM61UiRegression,
       isUexDatasetFresh: isUexDatasetFresh,
       hasUexLimitWarning: hasUexLimitWarning,
       syncUexRefineryDataset: syncUexRefineryDataset,

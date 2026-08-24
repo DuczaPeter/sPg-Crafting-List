@@ -15,7 +15,7 @@ Datum: 2026-08-22
 - RAM-alapu process log, lezart blokkonkenti sessionStorage iras.
 - Globalis `window.onerror` es `unhandledrejection` kezeles.
 - Standalone export builder beagyazott CSS-sel es tavoli fontimport nelkul.
-- Egykattintasos, tizenketlepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation-, M3 mining modell-, M4 backup- es M5 UEX rollback/ranking-ellenorzessel.
+- Egykattintasos, tizenharom lepeses `Technikai proba`, benne tranzakcios rollback-, determinisztikus M2 allocation-, M3 mining modell-, M4 backup-, M5 UEX rollback/ranking- es M6.1 UI completeness ellenorzessel.
 - M1 verziozott raw/normalizalt blueprint index- es reszlet-cache.
 - Lapozott Blueprint Browser, API-facetekkel es lusta teljes receptbetoltessel.
 - Globalis Quality batch inventory es sorrendezheto Crafting Card User Data.
@@ -29,6 +29,7 @@ Datum: 2026-08-22
 - Azonos normalizalt mining+refinery snapshot a Crafting Cardon es Combined Materialsben, M6 offline exporthoz elokeszitve.
 - Teljes standalone Crafting/Farm Card export slotonkenti Quality/allocation, mining, loadout es refinery adatokkal; a kozponti CSS beagyazva, kulso eroforras nelkul.
 - Egyetlen `Log masolasa` muvelettel exportalhato M1-M6 allapotcsomag.
+- Pontosan nyolc enabled felso navigacios cel; keresheto/kategorizalhato Material Database a meglevo mining/refinery/loadout modelleken, valamint kulon Mining Loadouts navigacio.
 
 ## Bizonyitott
 
@@ -53,6 +54,9 @@ Datum: 2026-08-22
 - Aktualis helyi in-app browser technikai proba: 12/12 PASS; UEX manual refresh es User Data fingerprint-megorzes; TTL cache-hit; commit rollback; Beryl Crafting/Combined azonos snapshot; desktop/390 px PASS; warning/error 0.
 - M6 automatizalt teljes regresszio: M1-M6 PASS, 14/14 standalone export eset; a tenyleges Chrome-export statikus offline eroforrasvizsgalata PASS.
 - Tiszta Chrome localhost M6 proba: 12/12 PASS; Game Data sync elott/utan `06df191d` User Data fingerprint; Crafting/Combined refinery snapshot tartalmilag azonos; konzol warning/error 0.
+- M6.1 `V001-C011`: teljes M1-M6 + 14 pontos UI regresszio PASS.
+- Valodi Chrome localhost M6.1: 8/8 navigacio, 72 commodity, mind a negy kategoria, Agricium API-metrikak/location/refinery/default loadout, loadout mentes+reload, 13/13 technikai proba, 390 px overflow nelkul es 0 konzol warning/error PASS.
+- M6.1 User Data fingerprint IndexedDB reload utan es Mining Game Data sync utan: `e6d8dec8` = `e6d8dec8`.
 
 ## Meg nem bizonyitott
 

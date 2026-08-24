@@ -197,3 +197,23 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Nem lett PASS-nak jelolve a kozvetlen Chrome `file://`, a tenyleges kikapcsolt internet melletti export-ujranyitas es a kulon Edge regresszio.
 - Elkeszult a kattintasonkenti `V1_RELEASE_GATE_CHECKLIST.md`, Chrome/Edge tesztadatokkal, PASS-feltetelekkel, hibabizonyitek-listaval es egyben visszakuldheto eredmenysablonnal.
 - Stabil commit, tag vagy release nem keszult; a release gate `manual-acceptance-pending`.
+
+### 2026-08-24T08:58:26 - V001-C011
+
+- Cel: M6.1 V1 UI completeness audit
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C011/test-summary.json`
+
+### M6.1 UI Completeness Audit es Chrome-kapu - 2026-08-24
+
+- Mi valtozott: a disabled `Material Database` es `Mining Loadouts` placeholder a meglevo M3/M5 modellek teljes UI-kapuja lett; a felso navigacio pontosan 8 enabled celt tartalmaz.
+- Material Database: 72 rekordos mining index, nev/UUID kereses, All/Ship/Vehicle/FPS/Harvestable kategoriak, radar/API metrikak, meglevo location- es refinery-rangsor, valamint mentett Default Loadout.
+- Mining Loadouts: a meglevo `userLoadouts` editor kulon felso navigaciot kapott, uj adatmodell nelkul.
+- Talalt/javitott hiba: simitott scroll alatt gyors navigacional minden masodik kattintas elveszhetett; determinisztikus `auto` scroll utan 8/8 valodi Chrome-kattintas PASS. A regi commodity detail-cache raw rekordbol M6.1 normalizalast kapott, igy az API `tier`/instability/resistance adatok friss halozati kenyszer nelkul megjelennek.
+- Automatizalt teszt: teljes M1-M6 es 14 M6.1 UI-eset PASS; `V001-C011` PASS.
+- Chrome localhost: 13/13 probe, Material Database kategoriak, Agricium, Prospector/Helix I/Brandt/BoreMax Default Loadout, IndexedDB reload, Game Data sync es 390 px PASS; fingerprint `e6d8dec8` maradt; konzol warning/error 0.
+- Dokumentacio: `docs/M6_1_REPORT.md`, frissitett `V1_RELEASE_GATE_CHECKLIST.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C011/browser-manual-summary.json`.
+- Nyitott: a stabil V1-et tovabbra is blokkolja a kezi Chrome `file://`, a valos offline export-ujranyitas es a kulon Edge regresszio. Stabil tag/release nem keszult.

@@ -1,0 +1,63 @@
+{
+  "cycleId": "V001-C011",
+  "status": "PASS",
+  "browser": "Google Chrome controlled through the user Chrome session",
+  "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+  "navigation": {
+    "expectedCount": 8,
+    "clickedCount": 8,
+    "disabledCount": 0,
+    "status": "PASS"
+  },
+  "materialDatabase": {
+    "commodityCount": 72,
+    "categoryCounts": {
+      "SHIP_MINING": 26,
+      "VEHICLE_MINING": 3,
+      "FPS_MINING": 4,
+      "HARVESTABLE": 12
+    },
+    "fixture": "Agricium (Ore) (UnrefinedOres)",
+    "radarSignature": 4000,
+    "rarity": "uncommon",
+    "raritySourceField": "tier",
+    "instability": 350,
+    "resistance": 0.5,
+    "status": "PASS"
+  },
+  "miningLoadout": {
+    "name": "M61 Browser Fixture",
+    "vehicle": "MISC Prospector",
+    "head": "Helix I Mining Laser",
+    "module": "Brandt Module",
+    "gadget": "BoreMax",
+    "default": true,
+    "indexedDbReload": "PASS"
+  },
+  "userData": {
+    "fingerprintAfterReload": "e6d8dec8",
+    "fingerprintAfterGameDataSync": "e6d8dec8",
+    "preserved": true
+  },
+  "technicalProbe": {
+    "passed": 13,
+    "total": 13,
+    "m61UiCompleteness": "PASS"
+  },
+  "responsive": {
+    "desktop": "PASS",
+    "viewport": "390x844",
+    "documentClientWidth": 375,
+    "documentScrollWidth": 375,
+    "status": "PASS"
+  },
+  "console": {
+    "warningErrorCount": 0,
+    "status": "PASS"
+  },
+  "releaseGatesNotCovered": [
+    "Chrome file://",
+    "standalone export offline reopen",
+    "Microsoft Edge regression"
+  ]
+}

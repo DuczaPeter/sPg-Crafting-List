@@ -91,6 +91,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m6.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "m61-ui-regression",
+      "level": "full-regression",
+      "description": "Runs M1-M6, then validates all 8 enabled V1 navigation targets, Material Database search/category/detail reuse, existing Mining Loadout UI/User Data wiring, UI audit markers, and responsive layout. Real click/reload/console proof is captured separately in Chrome.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-m61.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

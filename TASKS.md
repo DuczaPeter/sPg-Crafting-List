@@ -31,6 +31,8 @@
 - [x] M5.1: ot igazolt, verziozott `VERIFIED_CANONICAL_ALIAS`; nincs altalanos fuzzy vagy Construction-szoeldobas.
 - [x] M6 standalone export, referencia-UI es automatizalt M1-M6 release-candidate regresszio.
 - [x] Pontos, visszakuldheto kezi V1 release-gate checklist elkeszitese.
+- [x] M6.1 UI Completeness Audit: pontosan 8 enabled felso navigacio, hasznalhato Material Database es kulon Mining Loadouts kapu.
+- [x] M6.1 teljes M1-M6 + 14 pontos UI regresszio, Chrome 13/13, IndexedDB reload, fingerprint es 390 px ellenorzes.
 - [ ] Kozvetlen `file://` technikai proba aktualis Chrome-ban vagy Edge-ben.
 - [ ] Letoltott standalone export kulon, offline ujranyitasa.
 - [ ] Kulon Edge-regresszio.
@@ -45,6 +47,7 @@
 - [x] M3: mining adatok, location rangsor es loadoutok.
 - [x] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
 - [x] M5: UEX Refinery Data es naprendszerenkenti legjobb finomito.
+- [x] M6.1: V1 UI completeness audit es placeholder-feloldas a meglevo M3/M5 modellekkel.
 - [ ] M6 vegso acceptance: kezi Chrome `file://`, tenyleges offline export es kulon Edge gate PASS.
 - [ ] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
 - [x] M1 ellenorzes futtatasa a `TEST_COMMANDS.md` alapjan.
@@ -56,5 +59,5 @@
 
 ## Blokkolo problema
 
-- A fejlesztest nem blokkolja hiba, de a stabil V1 kiadast blokkolja a harom meg nem futtatott kezi release-gate.
+- Az M6.1 PASS, de a stabil V1 kiadast tovabbra is blokkolja a harom meg nem futtatott kezi release-gate.
 

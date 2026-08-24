@@ -3161,6 +3161,7 @@ code {
 }
 
 .spg-mining-toolbar,
+.spg-material-database-toolbar,
 .spg-loadout-toolbar,
 .spg-loadout-basics {
   display: grid;
@@ -3170,6 +3171,7 @@ code {
 }
 
 .spg-mining-toolbar label,
+.spg-material-database-toolbar label,
 .spg-loadout-toolbar label,
 .spg-loadout-basics label,
 .spg-mining-station label,
@@ -3181,6 +3183,7 @@ code {
 }
 
 .spg-mining-toolbar label > span,
+.spg-material-database-toolbar label > span,
 .spg-loadout-toolbar label > span,
 .spg-loadout-basics label > span,
 .spg-mining-station label > span,
@@ -3191,6 +3194,116 @@ code {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.spg-material-database-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.55fr) auto;
+}
+
+.spg-loadout-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto;
+}
+
+.spg-material-database-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.38fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.spg-material-database-results {
+  display: grid;
+  gap: 7px;
+  max-height: 720px;
+  padding-right: 5px;
+  overflow: auto;
+}
+
+.spg-material-database-result {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 66px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.spg-material-database-result.active {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+  background: rgba(24, 218, 255, 0.09);
+}
+
+.spg-material-database-result strong,
+.spg-material-database-result span,
+.spg-material-database-result small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spg-material-database-result span,
+.spg-material-database-result small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-material-database-detail {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: rgba(8, 15, 23, 0.58);
+}
+
+.spg-material-database-section {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.spg-material-database-section h3 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.spg-material-default-loadout {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-material-default-loadout-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(24, 218, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(5, 18, 28, 0.55);
+}
+
+.spg-material-default-loadout-heading span,
+.spg-material-default-loadout-equipment span,
+.spg-material-database-refinery small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spg-material-default-loadout-equipment {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.spg-material-default-loadout-equipment article {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(15, 23, 32, 0.58);
 }
 
 .spg-mining-summary {
@@ -3235,6 +3348,15 @@ code {
 
 .spg-system-card {
   padding: 14px;
+}
+
+.spg-refinery-system-card {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-refinery-system-card small {
+  color: var(--muted);
 }
 
 .spg-system-card h3,
@@ -4024,6 +4146,10 @@ code {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .spg-material-database-layout {
+    grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+  }
+
   .spg-refinery-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -4074,6 +4200,7 @@ code {
   }
 
   .spg-mining-toolbar,
+  .spg-material-database-toolbar,
   .spg-refinery-toolbar,
   .spg-loadout-toolbar,
   .spg-loadout-basics,
@@ -4082,6 +4209,19 @@ code {
   .spg-system-ranking,
   .spg-gadget-row {
     grid-template-columns: 1fr;
+  }
+
+  .spg-material-database-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-material-database-results {
+    max-height: 340px;
+  }
+
+  .spg-material-default-loadout-heading {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .spg-combined-summary,

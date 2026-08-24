@@ -113,3 +113,19 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a stabil kiadas megjelolesenek visszatartasara, a harom valos kornyezeti kapu kulon kezelesere es egy pontosan visszakuldheto tesztsablon letrehozasara.
 - Mely fajlokat vagy donteseket erintett: `V1_RELEASE_GATE_CHECKLIST.md`, `STATUS.md`, `TASKS.md`, `TEST_COMMANDS.md`, `VERSION.json` es `docs/TECHNICAL_BASELINE.md`.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## M6.1 projektfolytatas
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, az M6.1 V1 UI Completeness Audit megvalositasakor.
+- Mire segitett: a kotelezo inditasi fajlsorrend, haromsoros modositas elotti terv, celzott fajlolvasas, teljes regresszio, `V001-C011` ciklus es a stabil release visszatartasa.
+- Mely fajlokat vagy donteseket erintett: a fo HTML/CSS, `tools/run-m61-ui-tests.mjs`, `tools/validate-m61.ps1`, `tests/test-plan.json`, a release checklist, statusz- es jelentesfajlok, valamint a C011 artifact.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## Chrome M6.1 UI audit
+
+- Skill neve: `chrome:control-chrome`
+- Mikor hasznaltuk: `2026-08-24`, a valos localhost navigacio, Material Database, Mining Loadouts, IndexedDB es responsive ellenorzesekor.
+- Mire segitett: 8/8 valodi navigacios kattintas, a simitott gorgetes kattintasvesztesenek megtalalasa, 72 commodity es kategoriak, Agricium API-metrikak, Default Loadout mentes/reload, azonos `e6d8dec8` fingerprint, 13/13 technikai proba, 390 px es warning/error 0 bizonyitasa.
+- Mely fajlokat vagy donteseket erintett: `sPg Crafting List.html`, `Info/style.css`, `docs/M6_1_REPORT.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C011/browser-manual-summary.json`.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
