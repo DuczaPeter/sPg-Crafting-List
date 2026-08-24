@@ -1,0 +1,5 @@
+﻿{
+    "status":  "NOT_CAPTURED",
+    "captured":  false,
+    "reason":  "Base repair-cycle does not capture application logs. Enable the optional browser-diagnostics module for real capture."
+}

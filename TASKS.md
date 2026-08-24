@@ -2,7 +2,7 @@
 
 ## Aktualis
 
-### V002-dev egyfajlos alkalmazas
+### V002 stabil egyfajlos alkalmazas
 
 - [x] Kulso `Info/style.css` runtime-fugges auditja es biztonsagos migracios terv.
 - [x] Teljes CSS beagyazasa a `sPg Crafting List.html` fajlba.
@@ -13,7 +13,12 @@
 - [x] `V002-C001` teljes regresszios ciklus PASS.
 - [x] Valos Chrome localhost kiegeszito proba: 13/13 technikai proba, API/cache/reload/fingerprint es console error 0 PASS.
 - [x] Valos Chrome `file://` proba onallo Downloads-peldannyal: V002-dev schema 6, 13 PASS / 0 FAIL, export PASS, external stylesheet/resource false es diagnostic errors 0.
-- [x] V002 fejlesztesi riport es atadas; stabil V002 release most nem keszul.
+- [x] V002 fejlesztesi riport es atadas.
+- [x] `V002-C002` vegso teljes M1-M6.1 + C04 regresszio PASS.
+- [x] Elo Wiki JS-300 es UEX refinery API release-proba PASS.
+- [x] `releases/V002/` letrehozva pontosan egy futtathato HTML artifacttal.
+- [x] V002 single-file release validator, checksum es release dokumentacio PASS.
+- [x] Stabil V002 release commit es annotalt `V002` tag elkeszitese.
 
 - [x] Projekt celja es projekt tipusa pontosan rogzitve a `CODEX_START_HERE.md` fajlban.
 - [x] Fo belepesi fajl vagy inditasi struktura azonositva a `PROJECT_MAP.md` fajlban.
@@ -80,5 +85,5 @@
 
 ## Blokkolo problema
 
-- Nincs nyitott V002-dev fejlesztesi gate. A stabil V001 valtozatlan es visszaallithato; stabil V002 release/tag csak kulon felhasznaloi engedellyel keszulhet.
+- Nincs. A V002 stabil single-file release lezart; a V001 valtozatlan es visszaallithato.
 

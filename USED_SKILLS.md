@@ -185,3 +185,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a dokumentacios scope elkulonitesere, a korabbi `NOT TESTED` allapot bizonyitek-alapu PASS-ra modositasara, a V001 vedelmere es a stabil V002 release visszatartasara.
 - Mely fajlokat vagy donteseket erintett: V002 riport, statusz, feladatlista, verzioallapot, munkanaplo es V002-C001 browser-summary.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V002 stabil single-file release-zaras
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a kifejezetten engedelyezett stabil V002 commit/tag es egyfajlos release bundle lezarasakor.
+- Mire segitett: a V002-C002 teljes release-ciklus, a verzio-only stabil artifact, a V001 vedelme, az egyfajlos release-validacio es a tag csak minden PASS utani letrehozasa.
+- Mely fajlokat vagy donteseket erintett: `releases/V002/`, V002 release-validator/probe, `docs/V002_RELEASE_REPORT.md`, statusz/verzio/changelog/task/worklog es C002 artifact.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -115,6 +115,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-c04.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v002-release-regression",
+      "level": "full-regression",
+      "description": "Stable V002 gate: full regression, exactly one runtime HTML, checksum, live Wiki/UEX APIs, manual Chrome evidence, and unchanged V001.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v002-release.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

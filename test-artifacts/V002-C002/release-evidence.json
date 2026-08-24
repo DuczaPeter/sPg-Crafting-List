@@ -1,0 +1,42 @@
+{
+  "version": "V002",
+  "cycleId": "V002-C002",
+  "testedAt": "2026-08-24T12:43:36+02:00",
+  "automatedRegression": "PASS",
+  "singleFileReleaseGate": "PASS",
+  "releaseArtifact": {
+    "path": "releases/V002/sPg Crafting List.html",
+    "sha256": "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357",
+    "bytes": 489492,
+    "runtimeFilesRequired": [
+      "sPg Crafting List.html"
+    ],
+    "localSidecarFilesRequired": 0,
+    "versionOnlyTransform": true
+  },
+  "standaloneExport": "PASS",
+  "indexedDbUserDataCompatibility": "PASS",
+  "manualChromeFileGate": {
+    "status": "PASS",
+    "technicalBaselinePassed": 13,
+    "technicalBaselineFailed": 0,
+    "diagnosticErrorCount": 0
+  },
+  "chromeLocalhostApplicationWarningErrorCount": 0,
+  "liveApis": {
+    "wiki": {
+      "status": "PASS",
+      "httpStatus": 200,
+      "blueprint": "JS-300",
+      "recipeSlots": 3,
+      "scVersion": "4.9.0-LIVE.12232306"
+    },
+    "uex": {
+      "status": "PASS",
+      "httpStatus": 200,
+      "records": 215,
+      "authorizationHeaderSent": false
+    }
+  },
+  "v001Unchanged": true
+}

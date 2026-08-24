@@ -39,3 +39,10 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Az export ugyanazt az embedded CSS-forrast olvassa, ezert kulon base64 snapshot, CSSOM/fetch fallback es ketforrasos driftellenorzes nem marad.
 - A gyoker `Info/` referenciaanyag megmaradhat a repositoryban, de a felhasznalonak nem kell atadni.
 - A V001 tag, release commit es `releases/V001/` tartalma valtozatlan.
+
+## 2026-08-24 - V002 stabil single-file release-szabaly
+
+- A stabil V002 felhasznaloi runtime artifact pontosan egy `sPg Crafting List.html`; a `releases/V002/RELEASE.md` es `SHA256SUMS.txt` csak repository-dokumentacio.
+- Stabil V002-ben nincs `Info` mappa, kulon CSS/JavaScript, build-kovetelmeny vagy mas helyi sidecar.
+- A stabil HTML a tesztelt V002-dev forrastol csak a harom `V002-dev -> V002` futasideju verziojelolesben terhet el.
+- A `V002` tag csak teljes regresszio, valos Chrome `file://`, single-file gate, elo Wiki/UEX es valtozatlan V001 ellenorzes utan keszulhet.

@@ -22,8 +22,10 @@ A legutolso mukodo allapot ne vesszen el. Amit nem teszteltunk, azt nem nevezzuk
 
 ## Stabil kiadas
 
-A stabil, torteneti V001 ketfajlos bundle a `releases/V001/` mappaban talalhato. A V001 ottani `sPg Crafting List.html` es `Info/style.css` fajlja egyutt tartando; az integritasi ertekeket a `SHA256SUMS.txt` tartalmazza.
+A stabil V002 kiadas egyetlen futtathato fajlja:
 
-A kiadast a `V001` Git tag azonositja. A teljes acceptance es a ket elfogadott manualis release-waiver a `docs/V1_RELEASE_REPORT.md` fajlban olvashato.
+- `releases/V002/sPg Crafting List.html`
 
-A jelenlegi fejlesztesi cel a kulon `develop/V002` agon: `V002-dev` egyfajlos alkalmazas. Ez nem irja felul a V001 stabil kiadast.
+A V002 futasahoz sem az `Info` mappa, sem kulon CSS/JavaScript, sem a release-dokumentacio nem szukseges. A kiadast a `V002` Git tag azonositja; acceptance: `docs/V002_RELEASE_REPORT.md`.
+
+A torteneti V001 ketfajlos bundle es `V001` tag valtozatlanul megmaradt a `releases/V001/` mappaban.

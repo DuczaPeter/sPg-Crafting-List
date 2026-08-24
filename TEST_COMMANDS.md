@@ -184,6 +184,15 @@ V001 stabil bundle + teljes regresszio + hash-ellenorzes:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v001-release.ps1"
 ```
 
+V002 stabil single-file release generalasa es teljes kiadasi kapuja:
+
+```powershell
+node .\tools\create-v002-release.mjs
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v002-release.ps1"
+```
+
+A V002 release-kapu a teljes M1-M6.1 + C04 regresszio mellett pontosan egy futtathato HTML-t, nulla helyi sidecart, checksumot, elo Wiki/UEX API-t, manualis Chrome-bizonyitekot es valtozatlan V001 bundle-t kovetel.
+
 C04 repair-cycle:
 
 ```powershell

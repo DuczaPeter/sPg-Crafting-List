@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## V002-dev - Unreleased
+## V002 - 2026-08-24
 
 - A teljes alkalmazas CSS-e a `sPg Crafting List.html` fajlba kerult.
 - Megszunt a runtime `Info/style.css`, CSSOM/fetch/cache fallback es duplikalt base64 CSS snapshot.
@@ -8,6 +8,14 @@
 - A Google Fonts import megszunt; helyi rendszerfont fallback maradt.
 - A valos Chrome `file://` kezi gate onallo Downloads-peldannyal 13 PASS / 0 FAIL eredmennyel lezart.
 - A V001 stabil release es tag valtozatlan.
+
+### Acceptance
+
+- `V002-C002` teljes M1-M6.1 + C04 regresszio: PASS.
+- Single-file release gate: PASS; runtime artifact pontosan egy `sPg Crafting List.html`.
+- Standalone export, IndexedDB/User Data, Wiki API es UEX: PASS.
+- Chrome localhost application warning/error es `file://` diagnostic error: 0.
+- Release HTML: 489 492 byte; SHA-256 `de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357`.
 
 ## V001 - 2026-08-24
 

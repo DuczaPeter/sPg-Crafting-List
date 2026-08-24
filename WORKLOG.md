@@ -4,9 +4,9 @@ Idorendi munkanaplo. Uj bejegyzest mindig a friss bejegyzesek resz vegere adj ho
 
 ## Aktualis osszefoglalo
 
-- Jelenlegi allapot: `V002-dev` egyfajlos implementacio, teljes automatizalt regresszio, Chrome localhost es valos Chrome `file://` kezi gate PASS.
-- Utolso ismert jo allapot: `develop/V002`, commit `81e0a81`; a V001 tag es fagyasztott release valtozatlan.
-- Kovetkezo ajanlott lepes: csak kulon felhasznaloi engedellyel stabil V002 release-zaras; uj funkcio nincs folyamatban.
+- Jelenlegi allapot: `V002 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS`.
+- Utolso ismert jo allapot: `V002` annotalt tag; egyetlen runtime artifact `releases/V002/sPg Crafting List.html`.
+- Kovetkezo ajanlott lepes: nincs; uj fejleszteshez kulon celverzio/ciklus, tavoli pushhoz kulon engedely kell.
 - Archivalt regi naplo: nincs.
 
 ## Friss bejegyzesek
@@ -322,3 +322,24 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - A korabbi `NOT TESTED / AUTOMATION BLOCKED` V002 file-gate status bizonyitek alapjan PASS-ra valtozott. Az automatizalasi blokkolas torteneti megjegyzeskent megmaradt.
 - Zaras utani ellenorzes: teljes aktualis M1-M6.1 + C04 regresszio PASS; V001 fagyasztott bundle es SHA-256 validacio PASS.
 - Alkalmazasfunkcio nem valtozott; a V001 tag es fagyasztott release erintetlen. Stabil V002 release/tag ebben a korben nem keszul.
+
+### 2026-08-24T12:35:15 - V002-C002
+
+- Cel: V002 stable single-file release final regression
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V002-C002/test-summary.json`
+
+### V002 stabil single-file release - 2026-08-24
+
+- Felhasznaloi approval: a stabil V002 release commit es annotalt `V002` tag kifejezetten engedelyezve.
+- Vegso ciklus: `V002-C002`, teljes M1-M6.1 + C04 regresszio PASS.
+- Release artifact: `releases/V002/sPg Crafting List.html`, 489 492 byte, SHA-256 `de2d59b4...f2357`; runtime fajlok szama 1, helyi sidecar 0.
+- Stabil verzio: a tesztelt forrastol csak a harom `V002-dev -> V002` runtime-jelolesben ter el; funkcio, IndexedDB schema es User Data modell valtozatlan.
+- Elo API: Wiki JS-300 HTTP 200 / 3 slot; UEX HTTP 200 / 215 rekord, Authorization nelkul.
+- Browser acceptance: localhost warning/error 0; valos Chrome `file://` 13 PASS / 0 FAIL, standalone export PASS, diagnostic error 0.
+- V001: tag `b22dbc3c2ef0765e30aa3806537854298c873dff` es fagyasztott bundle valtozatlan.
+- Dokumentacio: `docs/V002_RELEASE_REPORT.md`, `releases/V002/RELEASE.md`, `SHA256SUMS.txt`; validator `tools/validate-v002-release.ps1`.
+- Tavoli push, publikacio vagy main merge nem tortent. Visszaallas: `V002` tag vagy az egyetlen release HTML; V001 kulon tovabbra is elerheto.

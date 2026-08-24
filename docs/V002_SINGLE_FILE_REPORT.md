@@ -83,3 +83,7 @@ Kezi bizonyitek:
 ## Vegso fejlesztesi statusz
 
 `V002-dev SINGLE-FILE IMPLEMENTATION – AUTOMATED PASS, CHROME LOCALHOST PASS, REAL CHROME file:// MANUAL GATE PASS.`
+
+## Stabil kiadas
+
+A felhasznalo a fejlesztesi acceptance utan engedelyezte a stabil V002 lezarast. A vegleges egyfajlos artifact: `releases/V002/sPg Crafting List.html`; release-riport: `docs/V002_RELEASE_REPORT.md`; statusz: `V002 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS`.
