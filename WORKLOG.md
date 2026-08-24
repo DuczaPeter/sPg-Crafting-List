@@ -216,4 +216,5 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Automatizalt teszt: teljes M1-M6 es 14 M6.1 UI-eset PASS; `V001-C011` PASS.
 - Chrome localhost: 13/13 probe, Material Database kategoriak, Agricium, Prospector/Helix I/Brandt/BoreMax Default Loadout, IndexedDB reload, Game Data sync es 390 px PASS; fingerprint `e6d8dec8` maradt; konzol warning/error 0.
 - Dokumentacio: `docs/M6_1_REPORT.md`, frissitett `V1_RELEASE_GATE_CHECKLIST.md`, `docs/TECHNICAL_BASELINE.md` es `test-artifacts/V001-C011/browser-manual-summary.json`.
+- Implementacios commit: `bb24bf9` (`feat: complete M6.1 UI audit`).
 - Nyitott: a stabil V1-et tovabbra is blokkolja a kezi Chrome `file://`, a valos offline export-ujranyitas es a kulon Edge regresszio. Stabil tag/release nem keszult.

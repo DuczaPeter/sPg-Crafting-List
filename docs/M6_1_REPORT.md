@@ -4,7 +4,7 @@ Datum: 2026-08-24
 Allapot: `PASS` fejlesztesi ciklusban; stabil V1 tovabbra sincs  
 Ciklus: `V001-C011`  
 Branch: `develop/V001`  
-Implementacios commit: `PENDING`
+Implementacios commit: `bb24bf9`
 
 ## Miert volt placeholder?
 
@@ -75,4 +75,3 @@ A Chrome gyors egymas utani kattintasprobaja feltarta, hogy a simitott gorgetes 
 - A tenylegesen letoltott standalone export kikapcsolt internet melletti ujranyitasa meg nincs lefuttatva.
 - A kulon Microsoft Edge regresszio meg nincs lefuttatva.
 - Stabil commit/tag/release nincs; ehhez a harom kezi kapu PASS es kulon kiadasi jovahagyas kell.
-
