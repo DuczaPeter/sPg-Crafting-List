@@ -354,3 +354,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Alkalmazaskod, `VERSION.json`, V002 tag es `releases/V002/` artifact nem valtozott. Tavoli push, uj release, tag vagy verzioemeles nem tortent.
 - Modositott dokumentacio: `README.md`, `README_HU.md`, `DISCORD_POST_HU.md`, `PROJECT_MAP.md`, `STATUS.md`, `TASKS.md`, `USED_SKILLS.md`, `WORKLOG.md`.
 - Nyitott ellenorzes nincs. Visszaallas: a kulon dokumentacios commit `git revert <commit>` paranccsal visszafordithato a stabil release erintese nelkul.
+
+### V002 GitHub tortenetintegracio es publikacio - 2026-08-24
+
+- Biztonsagi referenciak: `codex/backup-v002-local-11a554d` a korabbi helyi HEAD-re es `codex/backup-origin-main-de3d452` a korabbi tavoli `main` allapotra; egyik backup branch sem lett pusholva.
+- Audit: remote-only `index.html` es `sPg Crafring List.zip`; eltero kozos fajlok a regi V001 `README.md` es `README_HU.md`. Az `index.html` blobja azonos a stabil V002 release HTML-lel; a ZIP a stabil `b326aaff...` projektpillanatkep, uj alkalmazaskod nelkul.
+- Integration merge: `7b0104d260df1c5a0e77756f34d1c76f1e5b3e8d`, szulok `11a554d...` es `de3d452...`; mindket elozo tortenet megmaradt, a remote-only fajlok megorzodtek, a helyi V002 README-k lettek elsodlegesek.
+- A kozos integration HEAD normal fast-forward push-sal, force nelkul kerult a GitHub `main` branchre; a valtozatlan annotalt `V002` tag dereferalt commitja tovabbra is `b326aaff5838aafd5b1f13b16982c29a0e150e35`.
+- GitHub Release: `https://github.com/DuczaPeter/sPg-Crafting-List/releases/tag/V002`. A GitHub az asset szokozos nevet `sPg.Crafting.List.html` alakra normalizalta; az API `browser_download_url` kerult a README-kbe.
+- Visszatoltes: HTTP 200, 489 492 byte, SHA-256 `de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357` PASS.
+- Ellenorzes: V002 release validator, single-file gate, elo Wiki/UEX, Markdown-linkek, vedett fajl-diff es ancestry kapuk PASS; V001 es a stabil V002 HTML valtozatlan.
+- Visszaallas: a README dokumentacios commit `git revert <commit>` paranccsal visszafordithato; az integration elotti helyi/tavoli allapot a ket helyi backup branchrol elerheto.

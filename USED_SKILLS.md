@@ -201,3 +201,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a fagyasztott tag es release vedelmere, a celzott funkcionalis auditra, a dokumentacio-only scope megtartasara es a kulon dokumentacios commitra.
 - Mely fajlokat vagy donteseket erintett: `README.md`, `README_HU.md`, `DISCORD_POST_HU.md`, valamint a projektterkep, statusz, feladatlista es munkanaplo.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V002 GitHub tortenetintegracio es publikacio
+
+- Skillek neve: `uj-projekt`, `github-auth-duczapeter`.
+- Mikor hasznaltuk: `2026-08-24`, az egymastol fuggetlen helyi/tavoli tortenet auditjakor, biztonsagos merge-jenel, valamint a V002 tag/Release/asset es README-link publikalasakor.
+- Mire segitett: a stabil V001/V002 vedelmere, backup branchekre, force nelkuli ancestry- es fast-forward kapura, a `DuczaPeter` account/HTTPS hitelesitesere es az API-bol visszaolvasott valos asset URL hasznalatara.
+- Mely fajlokat vagy donteseket erintett: ket helyi backup branch, `codex/integrate-github-main-v002`, tavoli `main`, tavoli `V002` tag/Release, `README.md`, `README_HU.md` es a projekt statusznaploja.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

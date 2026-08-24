@@ -8,6 +8,11 @@
 - [x] Termeszetes magyar V002 README az angol dokumentacioval azonos tartalmi lefedettseggel.
 - [x] Tomor, kozvetlen magyar Discord hasznalati leiras.
 - [x] Dokumentacios linkek, regi ketfajlos telepitesi szovegek, Git diff es V002 tag/artifact integritas ellenorzese.
+- [x] A kulonallo helyi es GitHub `main` tortenet auditja es explicit, ket szulos integration merge-je.
+- [x] Normal fast-forward `main` push force nelkul.
+- [x] A valtozatlan annotalt `V002` tag es a stabil HTML GitHub Release publikacioja.
+- [x] A GitHub API `browser_download_url` visszaolvasasa es a visszatoltott asset SHA-256 ellenorzese.
+- [x] Kozvetlen V002 Release asset link az angol es magyar README tetejen es gyorsinditasaban.
 
 ### V002 stabil egyfajlos alkalmazas
 

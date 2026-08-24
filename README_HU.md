@@ -2,6 +2,10 @@
 
 English: [README.md](README.md) · Magyar: **README_HU.md**
 
+## V002 letöltése
+
+**[V002 letöltése – sPg Crafting List.html](https://github.com/DuczaPeter/sPg-Crafting-List/releases/download/V002/sPg.Crafting.List.html)**
+
 ## Mi az sPg Crafting List?
 
 Az sPg Crafting List egy helyben futó Star Citizen-tervezőeszköz crafting receptekhez, saját anyagkészlethez, Quality-alapú foglaláshoz, bányászati adatokhoz, mining loadoutokhoz és refinery ajánlásokhoz. Böngészőben működik, és az aktuális játékadatokat a helyben tárolt készleteddel és terveiddel kapcsolja össze.
@@ -16,7 +20,7 @@ A V002-ben az allocation csak tervezés: az anyagokat lefoglalja a megjelenítet
 
 ## Letöltés és indítás
 
-1. Töltsd le az [`sPg Crafting List.html`](releases/V002/sPg%20Crafting%20List.html) fájlt.
+1. Használd a [V002 közvetlen release-letöltését](https://github.com/DuczaPeter/sPg-Crafting-List/releases/download/V002/sPg.Crafting.List.html).
 2. Nyisd meg egy aktuális Google Chrome böngészőben.
 3. Kattints az `Adatok frissítése` gombra a játékadatok betöltéséhez vagy frissítéséhez.
 4. Használd a Blueprint Browsert vagy a többi modult.
