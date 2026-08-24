@@ -1,0 +1,23 @@
+{
+  "cycleId": "V001-C014",
+  "release": "V001",
+  "status": "PASS",
+  "automatedRegression": "PASS",
+  "suite": ["M1", "M2", "M3", "M4", "M5", "M5.1", "M6", "M6.1", "C04"],
+  "stableBundle": {
+    "html": "releases/V001/sPg Crafting List.html",
+    "htmlSha256": "c422c4dabb3f60378de4a28c441ee8a79c9e180b8bf5853d46ab02a64a6ec259",
+    "css": "releases/V001/Info/style.css",
+    "cssSha256": "463be3931f20cfa00649f8499dcdf4f8f6bd4e4195d5ac24bec0d0e4298e24bb",
+    "sourceTransformExact": true,
+    "functionalChange": false
+  },
+  "manual": {
+    "chromeC01C17": "PASS",
+    "standaloneO01O03O05O06": "PASS",
+    "O04": "NOT_TESTED_ACCEPTED_RELEASE_WAIVER",
+    "edgeE01E10": "NOT_TESTED_ACCEPTED_RELEASE_WAIVER",
+    "userDataLoss": false
+  },
+  "approval": "V1 STABLE RELEASE – APPROVED WITH ACCEPTED MANUAL TEST WAIVERS"
+}

@@ -1,0 +1,2 @@
+c422c4dabb3f60378de4a28c441ee8a79c9e180b8bf5853d46ab02a64a6ec259 *sPg Crafting List.html
+463be3931f20cfa00649f8499dcdf4f8f6bd4e4195d5ac24bec0d0e4298e24bb *Info/style.css

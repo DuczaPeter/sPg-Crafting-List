@@ -93,6 +93,15 @@ Gate 3 csak akkor `PASS`, ha **E01–E10 mind PASS**. Utána kapcsold vissza az 
 
 **Rogzitett eredmeny: NOT TESTED.** A felhasznalo nem kert kulon Edge manual acceptance-et; E01-E10 egyike sem minosul PASS-nak.
 
+## Release-waiver dontes – 2026-08-24
+
+A felhasznalo kifejezetten elfogadta a stabil V001 kiadashoz:
+
+- O04: `NOT TESTED – ACCEPTED RELEASE WAIVER`;
+- E01-E10: `NOT TESTED – ACCEPTED RELEASE WAIVER`.
+
+A pontok nem lettek PASS-ra atirva. A waiver csak azt jelenti, hogy a felhasznalo elfogadta a fennmarado kockazatot, es ezek hianya nem blokkolja a V001 kiadast. Vegso riport: `docs/V1_RELEASE_REPORT.md`.
+
 ## Mit küldj vissza egyben
 
 Másold a következő blokkot a válaszodba, és töltsd ki. Ha egy pont hibás, ne csak `FAIL`-t írj: add meg a checklist-azonosítót, a képernyőn látható pontos szöveget, a Console első releváns piros hibáját és a `Log másolása` releváns `ERROR`/`WARN` részletét. Teljes backupot vagy teljes személyes inventoryt ne küldj.

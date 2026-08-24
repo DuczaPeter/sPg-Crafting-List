@@ -1,6 +1,6 @@
 # V001 technikai baseline
 
-Datum: 2026-08-22
+Datum: 2026-08-24
 
 ## Megvalositva
 
@@ -60,15 +60,19 @@ Datum: 2026-08-22
 - M6.1 User Data fingerprint IndexedDB reload utan es Mining Game Data sync utan: `e6d8dec8` = `e6d8dec8`.
 - C04 modellregresszio: file protokollnal 0 CSSOM `cssRules` olvasas, 0 WARN, 80 617 byte centralis CSS/snapshot egyezes; localhost CSSOM utvonal megmaradt; `V001-C012` PASS.
 - C04 utani Chrome localhost: 13/13 technikai proba, 107 KiB standalone export, `e6d8dec8` fingerprint es 0 DevTools warning/error PASS.
+- Valos Chrome `file://` V1 gate: C01-C17 PASS; B/C/D User Data fingerprint mindharomszor `2667ea55`, User Data-vesztes nincs.
+- Standalone: O01-O03 es O05-O06 PASS; O04 `NOT TESTED – ACCEPTED RELEASE WAIVER`.
+- Edge E01-E10: `NOT TESTED – ACCEPTED RELEASE WAIVER`.
+- Vegso `V001-C014` teljes M1-M6.1 + C04 regresszio: PASS.
 
-## Meg nem bizonyitott
+## Elfogadott, meg nem bizonyitott pontok
 
-- Kozvetlen `file://` teljes Chrome/Edge proba: Chrome C01-C03 felhasznaloi PASS, de a C04 CSSOM-javitas utani kezi ujrateszt meg nyitott; Edge meg nem futott. Az automatizalt Chrome-felulet helyi fajl URL-t nem nyithat meg.
-- A bongeszo altal tenylegesen letoltott exportfajl kulon, kikapcsolt internet melletti ujranyitasa. A letoltott fajl letezik es statikusan PASS, de ez nem bizonyitja a valos offline bongeszos ujranyitast.
-- Edge kulon regresszio.
+- O04: a bongeszo altal letoltott export Windows-szintu internetlekapcsolas utani ujranyitasa nem futott; `NOT TESTED – ACCEPTED RELEASE WAIVER`.
+- Edge E01-E10 kulon kezi regresszio nem futott; `NOT TESTED – ACCEPTED RELEASE WAIVER`.
+- Ezek nem PASS eredmenyek. A felhasznalo kifejezetten elfogadta a fennmarado kockazatot a V001 stabil kiadashoz.
 
 ## Kezi file-kapu
 
 A teljes, kattintasonkenti eljaras es az egyben visszakuldheto eredmenysablon: `V1_RELEASE_GATE_CHECKLIST.md`.
 
-Amig ez nem tortent meg, a baseline fejlesztesi allapot, nem stabil kiadas.
+A V001 a `V001-C014` PASS es a dokumentalt release-waiverek alapjan stabil kiadas. Vegso riport: `docs/V1_RELEASE_REPORT.md`.

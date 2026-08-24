@@ -51,6 +51,8 @@
 - `docs/M6_1_REPORT.md`: a placeholder-ok oka, a meglevo M3/M5 modellek ujrahasznalata, a nyolc navigacios cel, Material Database/Mining Loadouts es Chrome audit bizonyitekai.
 - `docs/C04_FILE_EXPORT_REPAIR.md`: a CSSOM SecurityError oka, a generalt snapshot megoldas, hash, regresszio es a kezi C04 ujrateszt kapuja.
 - `docs/V1_PRE_RELEASE_ACCEPTANCE_REPORT.md`: a V001-C013 teljes automatizalt bizonyiteka, a Chrome manual PASS, az O04/Edge NOT TESTED allapot es a vegso release-candidate minosites.
+- `docs/V1_RELEASE_REPORT.md`: a V001 stabil approval, a C014 regresszio, az elfogadott manualis waiverek, a stabil bundle es a Git tag vegso riportja.
+- `CHANGELOG.md`: kiadott verzio funkcio- es acceptance-osszefoglaloja.
 - `BACKUP_RESTORE.md`: backup export/import, preview, migracio, snapshot es rollback rovid uzemeltetesi leirasa.
 - `tests/fixtures/`: JS-300, Hofstede-S1 es azonos materialt ket slotban tarto regresszios fixture.
 - `test-artifacts/V001-C001/`: az elso statikus es Chrome localhost baseline bizonyitekai.
@@ -65,6 +67,8 @@
 - `test-artifacts/V001-C011/`: az M6.1 teljes M1-M6 + 14 pontos UI regresszio es a valos Chrome kattintas/reload/fingerprint/responsive/konzol bizonyitekai.
 - `test-artifacts/V001-C012/`: a C04 CSS fallback teljes regresszio es localhost Chrome bizonyitekai; a valos file C04 ujrateszt `NOT_TESTED`.
 - `test-artifacts/V001-C013/`: a vegso M1-M6.1/C04 regresszio, pre-release evidence JSON es az automatikusan generalt, hash-ellenorzott JS-300 standalone export.
+- `test-artifacts/V001-C014/`: a stabil V001 kiadas elotti utolso teljes M1-M6.1/C04 regresszio bizonyiteka.
+- `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 
 ## Iranyito fajlok
 

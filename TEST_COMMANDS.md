@@ -173,6 +173,12 @@ Validalt standalone JS-300 exportartifact kiirasa (a 14 M6 ellenorzes utan byte-
 node .\tools\run-m6-tests.mjs --artifact="test-artifacts/V001-C013/standalone-js-300-automated.html"
 ```
 
+V001 stabil bundle + teljes regresszio + hash-ellenorzes:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v001-release.ps1"
+```
+
 C04 repair-cycle:
 
 ```powershell

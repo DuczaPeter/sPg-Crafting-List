@@ -39,8 +39,11 @@
 - [x] Kozvetlen `file://` technikai proba aktualis Chrome-ban: C01-C17 PASS.
 - [x] Vegso automatizalt M1-M6.1 + C04 regresszio, elo SC/UEX probe, CSS-drift es standalone exportartifact PASS (`V001-C013`).
 - [x] V1 pre-release acceptance report elkeszitese a manualis PASS/NOT TESTED allapotok valosaghu megorzesevel.
-- [ ] O04: letoltott standalone export Windows-szintu halozatlekapcsolas utani ujranyitasa (`NOT TESTED`, felhasznalo elutasitotta).
-- [ ] E01-E10: kulon Edge-regresszio (`NOT TESTED`, felhasznalo elutasitotta).
+- [x] O04 `NOT TESTED` allapot release-waiverkent kifejezetten elfogadva; a teszt nem lett PASS-ra atirva.
+- [x] E01-E10 `NOT TESTED` allapot release-waiverkent kifejezetten elfogadva; a tesztek nem lettek PASS-ra atirva.
+- [x] `V001-C014` vegso teljes regresszio PASS.
+- [x] Fagyasztott `releases/V001/` ketfajlos stabil bundle, SHA-256 manifest es release dokumentacio elkeszitve.
+- [x] V001 stabil release commit es `V001` tag engedelyezve es elkeszitve.
 
 ## Kovetkezo
 
@@ -53,8 +56,8 @@
 - [x] M4: Combined Materials, backup/restore preview es kibovitett diagnosztika.
 - [x] M5: UEX Refinery Data es naprendszerenkenti legjobb finomito.
 - [x] M6.1: V1 UI completeness audit es placeholder-feloldas a meglevo M3/M5 modellekkel.
-- [ ] M6 vegso acceptance: kezi Chrome `file://`, tenyleges offline export es kulon Edge gate PASS.
-- [ ] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
+- [x] M6 vegso acceptance: Chrome PASS; O04 es Edge NOT TESTED eredmeny elfogadott release-waiverrel lezart.
+- [x] A teljes V1.0 belso milestone-jainak vegrehajtasa a specifikacio funkcioinak elhagyasa nelkul.
 - [x] M1 ellenorzes futtatasa a `TEST_COMMANDS.md` alapjan.
 - [x] M1 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
 - [x] M2 `STATUS.md`, `WORKLOG.md` es jelentés frissitese.
@@ -64,5 +67,5 @@
 
 ## Blokkolo problema
 
-- A candidate automatizalt es Chrome gate-je PASS, de O04 es E01-E10 `NOT TESTED`; stabil V1 csak kulon release-waiver vagy a ket gate tenyleges PASS eredmenye utan dontheto el.
+- Nincs. O04 es E01-E10 tovabbra is `NOT TESTED`, de a felhasznalo ezek kockazatat kifejezett release-waiverrel elfogadta.
 

@@ -256,3 +256,22 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Uj automatikus JS-300 export: 92 083 byte, `89b3c196...21892c` SHA-256, embedded CSS, ervenyes snapshot JSON, kulso runtime/network dependency nelkul.
 - Dokumentacio: `docs/V1_PRE_RELEASE_ACCEPTANCE_REPORT.md`; bizonyitek: `test-artifacts/V001-C013/`.
 - Vegso allapot: release candidate, nem stabil V1. Release commit/tag/verzioemeles nem keszult; a kovetkezo lepes release-waiver dontes O04 es Edge kapurol.
+
+### 2026-08-24T11:26:14 - V001-C014
+
+- Cel: V1 stable release final regression
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V001-C014/test-summary.json`
+
+### V001 stabil release waiverrel - 2026-08-24
+
+- Felhasznaloi approval: O04 es Edge E01-E10 `NOT TESTED` eredmenye kifejezett release-waiver; egyik sem lett PASS-ra atirva.
+- Vegso automatizalt kapu: `V001-C014`, teljes M1-M6.1 + C04 regresszio PASS.
+- Stabil bundle: `releases/V001/sPg Crafting List.html` + `releases/V001/Info/style.css`; a forrastol csak a harom `V001-dev -> V001` verziofelirat ter el.
+- Integritas: HTML `c422c4da...c259`, CSS `463be393...e24bb`; teljes release-validator PASS.
+- Dokumentacio: `CHANGELOG.md`, `docs/V1_RELEASE_REPORT.md`, `releases/V001/RELEASE.md`, `SHA256SUMS.txt`, valamint frissitett statusz/verzio/checklist/baseline.
+- Vegso statusz: `V1 STABLE RELEASE – APPROVED WITH ACCEPTED MANUAL TEST WAIVERS`; release tag: `V001`.
+- Tavoli push, publikacio vagy main merge nem tortent. Visszaallas: `V001` tag vagy a fagyasztott `releases/V001/` bundle.

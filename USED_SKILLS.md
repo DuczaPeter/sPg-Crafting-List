@@ -153,3 +153,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: haromsoros scope-terv, tiszta munkafarol indulo `V001-C013` full-regression ciklus, explicit PASS/NOT TESTED szetvalasztas es a stabil release visszatartasa.
 - Mely fajlokat vagy donteseket erintett: `tools/run-m6-tests.mjs`, `TEST_COMMANDS.md`, `V1_RELEASE_GATE_CHECKLIST.md`, `docs/V1_PRE_RELEASE_ACCEPTANCE_REPORT.md`, statusz/naplo/verzio fajlok es a C013 artifactok.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V001 stabil release-zaras
+
+- Skill neve: `uj-projekt`
+- Mikor hasznaltuk: `2026-08-24`, a kifejezetten engedelyezett stabil V001 commit/tag es release-waiver dokumentalasanak zarasakor.
+- Mire segitett: a tiszta kiindulo munkafa, a `V001-C014` teljes release-regresszio, a fagyasztott stabil bundle, a visszaallithatosag es a stable tag csak PASS utani letrehozasa.
+- Mely fajlokat vagy donteseket erintett: `releases/V001/`, `CHANGELOG.md`, `docs/V1_RELEASE_REPORT.md`, waiver/checklist/baseline, release-validator, statusz/verzio/naplo es C014 artifact.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
