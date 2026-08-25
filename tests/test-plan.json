@@ -179,6 +179,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c007.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c008-detail-view-regression",
+      "level": "full-regression",
+      "description": "V003-C008 gate: same-file detail controller/router, five snapshot-backed detail types, verified Wiki web_url/slug links, invalid/old-cache/offline cases, standalone interactive detail, complete C001-C007 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c008.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

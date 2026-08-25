@@ -509,3 +509,23 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Kezi bizonyitek: a felhasznalo C006 valodi Chrome `file://` Crafting Card, quantity recalc, material hydration es standalone export probat PASS-kent jelentette; nem Codex automation.
 - V002: tag commit `b326aaff...150e35`, stabil HTML SHA `de2d59b4...9f2357`; valtozatlan. V003 tag/release es C008 nem keszult.
 - Visszaallas: a C007 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.
+
+### 2026-08-25T06:05:03 - V003-C008
+
+- Cel: Single-file Detail View + Star Citizen Wiki deep links
+- Tesztszint: full-regression
+- Eredmeny: PASS
+- Indok: Selected test command exited with code 0.
+- Checkpoint: not-requested
+- Artifact: `test-artifacts/V003-C008/test-summary.json`
+
+### V003-C008 Single-file Detail View + Star Citizen Wiki deep links - 2026-08-25
+
+- A C006 kattinthato hookok most ugyanazon HTML-en beluli blueprint/item, material, Radar Signature, mining es UEX refinery detailt nyitnak; a C001-C007 modellek es az Allocation Engine nem valtoztak.
+- A `c008DetailController` hash/history route-ot, reload-helyreallitast, bongeszo Visszat es invalid-target fallbacket kezel. A Chrome-proba talalta es javitotta, hogy a sajat `Vissza a Crafting Cardhoz` gomb detail-lancban csak egy lepest ment vissza; most a route-depth alapjan kozvetlenul a kartyahoz ter vissza.
+- Wiki resolver: exact API `web_url` -> auditalt API slug canonical -> `NO_PROVEN_WIKI_URL`; fuzzy/nevbol kepzett link nincs. Elo audit PASS: JS-300, Stileron, Beryl, Savrilium oldalak HTTP 200.
+- Standalone export: 13 snapshot-detail target, interaktiv item/material/radar/mining/refinery navigacio, history/reload/invalid fallback, embedded CSS/JS es 0 kulso runtime resource. API-hivas nincs; a bizonyitott Wiki link csak opcionális kulso kattintas.
+- Automatizalt: C008 celzott teszt/audit, C001-C007, teljes M1-M6.1 + C04, standalone es V002-integritas PASS. Repair-cycle: `test-artifacts/V003-C008/test-summary.json`.
+- Valodi Chrome localhost: Technical Probe 15/15; JS-300/Stileron/Beryl/Savrilium, Radar/Mining/Refinery, browser Back, sajat back, reload, invalid target es desktop vizualis layout PASS. Fingerprint `e6d8dec8 -> e6d8dec8`; main es standalone konzol warning/error 0.
+- Korabbi C007 valodi Chrome `file://` kapu: USER MANUAL PASS; a felhasznalo futtatta, nem Codex automation. V002 tag/artifact valtozatlan; V003 tag/release es C009 nem keszult.
+- Visszaallas: a C008 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.

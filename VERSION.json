@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C007",
-    "currentCycleId":  "V003-C007",
-    "lastSuccessfulCycle":  "V003-C007",
+    "currentCycle":  "C008",
+    "currentCycleId":  "V003-C008",
+    "lastSuccessfulCycle":  "V003-C008",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-24T22:30:00",
-    "currentCyclePurpose":  "Radar Signature Material Color System",
-    "currentCycleStartedAt":  "2026-08-24T22:00:00",
+    "lastUpdated":  "2026-08-25T06:09:02",
+    "currentCyclePurpose":  "Single-file Detail View + Star Citizen Wiki deep links",
+    "currentCycleStartedAt":  "2026-08-25T06:04:54",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C007 33-record canonical image color audit, shared resolver/UI/export, C001-C006 plus M1-M6.1+C04, standalone, Chrome localhost reload/console and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C007 RADAR SIGNATURE MATERIAL COLOR SYSTEM – AUTOMATED AND CHROME LOCALHOST PASS; C006 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C008 detail/router/Wiki audit, standalone snapshot details, full C001-C008 plus M1-M6.1+C04, Chrome localhost navigation/reload/invalid fallback/console and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C008 SINGLE-FILE DETAIL VIEW + WIKI DEEP LINKS – AUTOMATED AND CHROME LOCALHOST PASS; C007 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C007",
-                                "chromeLocalhostTechnicalProbe":  "C007 material color UI, Technical Probe, reload, export and console PASS",
+                                "cycle":  "V003-C008",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C008 main and standalone details, Back/history, reload, invalid fallback and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
-                                "userDataFingerprintBefore":  "52f14d76",
-                                "userDataFingerprintAfterReload":  "52f14d76",
+                                "userDataFingerprintBefore":  "e6d8dec8",
+                                "userDataFingerprintAfterReload":  "e6d8dec8",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -59,26 +59,26 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "V003-C008_NOT_STARTED"
+                                                           "nextCycle":  "V003-C009_NOT_STARTED"
                                                        },
                                 "finalCraftingCard":  {
-                                                           "viewModel":  "buildFinalCraftingCardViewModel",
-                                                           "sharedUiExportProjection":  true,
-                                                           "automaticIngredientHydration":  true,
-                                                           "offlineCached":  "PASS",
-                                                           "offlineUncached":  "UNAVAILABLE_OFFLINE_PASS",
-                                                           "freshOriginMaterials":  [
-                                                                                        "Stileron",
-                                                                                        "Beryl",
-                                                                                        "Savrilium"
-                                                                                    ],
-                                                           "requestedQuantity":  2,
-                                                           "maxCraftable":  3,
-                                                           "downloadedStandaloneBytes":  448917,
-                                                           "downloadedStandaloneSha256":  "a834c84801639057b9a7f3e6a14f8a5a881bd45562d411159c1d5a6ef52542fb",
-                                                           "externalRuntimeResources":  0,
-                                                           "nextDetailCycleImplemented":  false
-                                                       },
+                                                          "viewModel":  "buildFinalCraftingCardViewModel",
+                                                          "sharedUiExportProjection":  true,
+                                                          "automaticIngredientHydration":  true,
+                                                          "offlineCached":  "PASS",
+                                                          "offlineUncached":  "UNAVAILABLE_OFFLINE_PASS",
+                                                          "freshOriginMaterials":  [
+                                                                                       "Stileron",
+                                                                                       "Beryl",
+                                                                                       "Savrilium"
+                                                                                   ],
+                                                          "requestedQuantity":  2,
+                                                          "maxCraftable":  3,
+                                                          "downloadedStandaloneBytes":  448917,
+                                                          "downloadedStandaloneSha256":  "a834c84801639057b9a7f3e6a14f8a5a881bd45562d411159c1d5a6ef52542fb",
+                                                          "externalRuntimeResources":  0,
+                                                          "nextDetailCycleImplemented":  true
+                                                      },
                                 "radarSignature":  {
                                                        "registry":  "V003-C004-1",
                                                        "rawRecords":  72,
@@ -89,21 +89,44 @@
                                                        "sourceImageSha256":  "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6"
                                                    },
                                 "materialColor":  {
-                                                       "registry":  "V003-C007-1",
-                                                       "sourceImageSha256":  "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
-                                                       "verified":  33,
-                                                       "unmapped":  31,
-                                                       "sourcePixelChecks":  33,
-                                                       "resolver":  "resolveMaterialColor",
-                                                       "sharedConsumers":  [
-                                                                               "Crafting Card",
-                                                                               "My Materials",
-                                                                               "Combined Materials",
-                                                                               "Material Database",
-                                                                               "Standalone export"
-                                                                           ],
-                                                       "runtimeImageDependency":  0
-                                                   },
+                                                      "registry":  "V003-C007-1",
+                                                      "sourceImageSha256":  "f9c6e362a41bbbc28acbac984300d582a00bc4b79a7e9738f136e1da89cabdc6",
+                                                      "verified":  33,
+                                                      "unmapped":  31,
+                                                      "sourcePixelChecks":  33,
+                                                      "resolver":  "resolveMaterialColor",
+                                                      "sharedConsumers":  [
+                                                                              "Crafting Card",
+                                                                              "My Materials",
+                                                                              "Combined Materials",
+                                                                              "Material Database",
+                                                                              "Standalone export"
+                                                                          ],
+                                                      "runtimeImageDependency":  0
+                                                  },
+                                "detailView":  {
+                                                    "controller":  "c008DetailController",
+                                                    "route":  "#spg-detail=<kind>:<id>",
+                                                    "types":  [
+                                                                  "blueprint",
+                                                                  "material",
+                                                                  "radar",
+                                                                  "mining",
+                                                                  "refinery"
+                                                              ],
+                                                    "wikiResolutionOrder":  [
+                                                                                 "API_WEB_URL",
+                                                                                 "AUDITED_API_SLUG_CANONICAL",
+                                                                                 "NO_PROVEN_WIKI_URL"
+                                                                             ],
+                                                    "fuzzyWikiUrl":  false,
+                                                    "standaloneDetailTargets":  13,
+                                                    "standaloneExternalRuntimeResources":  0,
+                                                    "browserBack":  "PASS",
+                                                    "returnToCraftingCard":  "PASS",
+                                                    "reloadRoute":  "PASS",
+                                                    "invalidTargetFallback":  "PASS"
+                                                },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,
                                                  "shipNormalSpaceSeparated":  true,

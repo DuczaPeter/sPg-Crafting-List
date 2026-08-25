@@ -1,0 +1,57 @@
+﻿{
+    "projectVersion":  "V003-dev",
+    "cycle":  "C008",
+    "cycleId":  "V003-C008",
+    "status":  "PASS",
+    "statusReason":  "Selected test command exited with code 0.",
+    "purpose":  "Single-file Detail View + Star Citizen Wiki deep links",
+    "testLevel":  "full-regression",
+    "testId":  "v003-c008-detail-view-regression",
+    "testSource":  "test-plan",
+    "testExecutable":  "powershell.exe",
+    "testArguments":  [
+                          "-NoProfile",
+                          "-ExecutionPolicy",
+                          "Bypass",
+                          "-File",
+                          ".\\tools\\validate-v003-c008.ps1"
+                      ],
+    "testExitCode":  0,
+    "checkpoint":  "not-requested",
+    "checkpointCommit":  null,
+    "checkpointStagedFiles":  [
+
+                              ],
+    "branch":  "develop/V003",
+    "startedAt":  "2026-08-25T06:04:54",
+    "artifactDir":  "C:\\Users\\ganos\\OneDrive\\Munka\\Codex\\sPg Crafring List\\test-artifacts\\V003-C008",
+    "appLog":  "app-log.json",
+    "appLogCaptured":  false,
+    "browserConsole":  "browser-console.log",
+    "browserConsoleCaptured":  false,
+    "captureRequired":  false,
+    "appLogRequired":  false,
+    "browserConsoleRequired":  false,
+    "missingCaptures":  [
+
+                        ],
+    "testOutput":  "test-output.log",
+    "browserDiagnostics":  {
+                               "enabled":  false,
+                               "testId":  null,
+                               "configPath":  null,
+                               "status":  null,
+                               "browser":  null,
+                               "durationMs":  null,
+                               "consoleErrorCount":  null,
+                               "pageErrorCount":  null,
+                               "networkErrorCount":  null,
+                               "appErrorCount":  null,
+                               "screenshotPath":  null,
+                               "diagnosticExcerpt":  null,
+                               "primaryError":  null,
+                               "errorCode":  null,
+                               "failedStep":  null,
+                               "summary":  null
+                           }
+}

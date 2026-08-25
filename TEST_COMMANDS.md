@@ -295,6 +295,30 @@ C006 repair-cycle a teszttervbol:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "Final Crafting Card Layout + complete material snapshot hydration" -TestId v003-c006-final-card-regression
 ```
 
+V003-C008 Single-file Detail View + Wiki deep link teljes kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c008.ps1"
+```
+
+Csak a C008 detail/router/standalone fixture:
+
+```powershell
+node .\tools\run-v003-c008-tests.mjs --artifact="test-artifacts/V003-C008/standalone-js-300-detail-view.html"
+```
+
+Csak az elo, read-only Star Citizen Wiki deep-link audit:
+
+```powershell
+node .\tools\audit-v003-c008-wiki-links.mjs --output="test-artifacts/V003-C008/wiki-deep-link-audit.json"
+```
+
+C008 repair-cycle a teszttervbol:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-cycle.ps1" -TargetVersion V003 -Purpose "Single-file Detail View + Star Citizen Wiki deep links" -TestId v003-c008-detail-view-regression
+```
+
 V003-C007 Radar Signature Material Color System teljes kapu:
 
 ```powershell

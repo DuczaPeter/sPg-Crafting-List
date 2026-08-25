@@ -54,13 +54,20 @@
 - [x] `V003-C007` teljes C001-C006 + M1-M6.1 + C04, color audit, standalone es V002-integritas regresszio PASS.
 - [x] Valodi Chrome localhost color/UI/reload/technical probe PASS; fingerprint `52f14d76`, konzol warning/error 0. A letoltott export statikusan ervenyes, kulso runtime resource 0.
 - [x] A korabbi C006 valodi Chrome `file://` Crafting Card/quantity/hydration/export eredmeny USER MANUAL PASS-kent rogzitve; nem Codex automation.
+- [x] `V003-C008`: ugyanazon egyfajlos HTML-en beluli blueprint/item, material, Radar Signature, mining es UEX refinery reszletnezet.
+- [x] Kattinthato C006 hookok, hash/history route, bongeszo Vissza, sajat `Vissza a Crafting Cardhoz`, reload-helyreallitas es explicit invalid-target fallback.
+- [x] Wiki deep link sorrend: exact API `web_url`, majd csak auditalt API slug; fuzzy vagy nevbol talalt URL nincs, bizonyitek nelkul nincs link.
+- [x] Standalone export 13 elore renderelt, snapshot-alapu interaktiv detaillel; API fetch es kulso runtime resource 0.
+- [x] `V003-C008` teljes C001-C008 + M1-M6.1 + C04, elo Wiki link audit, standalone es V002-integritas regresszio PASS.
+- [x] Valodi Chrome localhost: 15/15 technical probe, main/standalone navigation+reload+invalid fallback, fingerprint `e6d8dec8`, konzol warning/error 0 PASS.
+- [x] C007 valodi Chrome `file://` eredmeny USER MANUAL PASS-kent dokumentalva; nem Codex automation.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
 
 - [x] `V003-C006`: kozos final-card adatkontraktus, card-first layout es elokeszitett detail hookok; blueprint/item nev, Size, Class/Type, Grade, Crafting Time, requested quantity, max craftable, slot/material mennyisegek, inventory/hiany/maradek, Quality rule, Mining+UEX snapshot es curated Radar.
 - [x] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
-- [ ] `V003-C008`: kattinthato blueprint/material/mining/refinery/radar elemek es ugyanazon egyfajlos HTML-en beluli reszletnezet; teljes Top-3, spawn, occurrence, Quality, provider, forras, refinery es Wiki deep link.
+- [x] `V003-C008`: kattinthato blueprint/material/mining/refinery/radar elemek es ugyanazon egyfajlos HTML-en beluli reszletnezet; teljes Top-3, spawn, occurrence, Quality, provider, forras, refinery es Wiki deep link.
 - [ ] `V003-C009`: default nezet tisztitasa Crafting Card + szukseges user UI szintre; baseline/debug/raw/log es fejlesztoi eszkozok Advanced/Diagnostics ala.
 - [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.
 

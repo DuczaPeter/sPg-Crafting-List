@@ -273,3 +273,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C007 scope, a fagyasztott V002 vedelme, a haromsoros terv es teljes regresszios kapu, valamint a valodi Chrome renderelt szinek, technical probe, fingerprint es konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 material color modell/CSS/fogyasztok/export, C007 audit/teszt/validator/riport/artifact es projekt statuszfajlok; V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C008 Single-file Detail View + Wiki deep links
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a same-HTML detail router, bizonyitott Wiki deep link, offline standalone detail es valodi Chrome localhost regresszio soran.
+- Mire segitett: a C008 repair-cycle es V002 vedelem megtartasara, valamint a JS-300/material/radar/mining/refinery kattintasok, history/reload/invalid route, 15/15 Technical Probe, valtozatlan fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 detail modell/controller/UI/export, C008 Wiki audit/teszt/validator/riport/artifact es projekt statuszfajlok; V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

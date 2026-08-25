@@ -1,0 +1,66 @@
+{
+  "cycle": "V003-C008",
+  "status": "PASS",
+  "environment": {
+    "browser": "Google Chrome (connected user browser)",
+    "protocol": "http:",
+    "url": "http://127.0.0.1:4177/sPg%20Crafting%20List.html",
+    "automation": "Codex Chrome control"
+  },
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 15,
+    "failed": 0
+  },
+  "mainApplication": {
+    "blueprintDetail": "PASS",
+    "materialDetails": [
+      "Stileron",
+      "Beryl",
+      "Savrilium"
+    ],
+    "radarDetail": "PASS",
+    "miningDetail": "PASS",
+    "refineryDetail": "PASS",
+    "stileronMissingRefineryState": "PASS",
+    "browserBack": "PASS",
+    "returnToCraftingCardButton": "PASS",
+    "detailRouteReload": "PASS",
+    "invalidTargetFallback": "PASS",
+    "visualLayout": "PASS"
+  },
+  "standaloneExport": {
+    "artifact": "test-artifacts/V003-C008/standalone-js-300-detail-view.html",
+    "blueprintDetail": "PASS",
+    "materialDetail": "PASS",
+    "radarDetail": "PASS",
+    "miningDetail": "PASS",
+    "refineryDetail": "PASS",
+    "browserBack": "PASS",
+    "returnToCraftingCardButton": "PASS",
+    "detailRouteReload": "PASS",
+    "invalidTargetFallback": "PASS",
+    "externalRuntimeResources": 0
+  },
+  "userData": {
+    "fingerprintBefore": "e6d8dec8",
+    "fingerprintAfter": "e6d8dec8",
+    "loss": false
+  },
+  "console": {
+    "mainApplicationWarningErrorCount": 0,
+    "standaloneWarningErrorCount": 0
+  },
+  "priorC007ManualFileGateEvidence": {
+    "status": "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
+    "protocol": "file:",
+    "reportedChecks": [
+      "direct file runtime",
+      "IndexedDB",
+      "Star Citizen Wiki API",
+      "V003 location-ranking rule",
+      "M3 mining model",
+      "standalone export"
+    ]
+  }
+}

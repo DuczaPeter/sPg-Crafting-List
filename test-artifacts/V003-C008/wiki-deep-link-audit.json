@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "auditedAt": "2026-08-25T04:08:08.756Z",
+  "dataSource": "Star Citizen Wiki API",
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "blueprint": {
+    "uuid": "9585b0dc-b660-4e2a-9136-0092af1e72c1",
+    "apiWebUrl": "https://api.star-citizen.wiki/blueprints/js-300?version=4.9.0-LIVE.12232306",
+    "outputItemWebUrl": "https://api.star-citizen.wiki/items/b1c89d89-d408-4998-9b17-76986d78a9dd?version=4.9.0-LIVE.12232306"
+  },
+  "item": {
+    "uuid": "b1c89d89-d408-4998-9b17-76986d78a9dd",
+    "slug": "js-300",
+    "webUrl": "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+    "page": {
+      "status": 200,
+      "finalUrl": "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+      "contentType": "text/html; charset=utf-8"
+    }
+  },
+  "commodities": [
+    {
+      "name": "Stileron",
+      "uuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "slug": "stileron-ore",
+      "ingredientWebUrl": "https://api.star-citizen.wiki/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.9.0-LIVE.12232306",
+      "canonicalWebUrl": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.9.0-LIVE.12232306",
+      "page": {
+        "status": 200,
+        "finalUrl": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.9.0-LIVE.12232306",
+        "contentType": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "name": "Beryl",
+      "uuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+      "slug": "beryl",
+      "ingredientWebUrl": "https://api.star-citizen.wiki/commodities/eb503701-389a-48a1-af28-eb7374009d5d?version=4.9.0-LIVE.12232306",
+      "canonicalWebUrl": "https://api.star-citizen.wiki/commodities/beryl?version=4.9.0-LIVE.12232306",
+      "page": {
+        "status": 200,
+        "finalUrl": "https://api.star-citizen.wiki/commodities/beryl?version=4.9.0-LIVE.12232306",
+        "contentType": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "name": "Savrilium",
+      "uuid": "d76ea7ef-5116-488c-93d3-71e02bada13d",
+      "slug": "savrilium-ore",
+      "ingredientWebUrl": "https://api.star-citizen.wiki/commodities/d76ea7ef-5116-488c-93d3-71e02bada13d?version=4.9.0-LIVE.12232306",
+      "canonicalWebUrl": "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.9.0-LIVE.12232306",
+      "page": {
+        "status": 200,
+        "finalUrl": "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.9.0-LIVE.12232306",
+        "contentType": "text/html; charset=utf-8"
+      }
+    }
+  ],
+  "resolutionOrder": [
+    "API_WEB_URL",
+    "AUDITED_API_SLUG_CANONICAL",
+    "NO_PROVEN_WIKI_URL"
+  ],
+  "fuzzyOrNameGuessing": false
+}

@@ -100,3 +100,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Bizonyitek nelkul `UNMAPPED_COLOR` neutralis fallback jar; a status diagnosztikaban megmarad, de a normal UI nem ir ki kulon UNKNOWN COLOR szoveget.
 - Crafting Card, Radar accent, My Materials, Combined Materials, Material Database es standalone export ugyanazt a resolvert es generic CSS-valtozokat hasznalja.
 - Stabil V003 release/tag es V003-C008 tovabbra sincs engedelyezve.
+
+## 2026-08-25 - V003-C008 single-file detail route es Wiki deep link
+
+- Blueprint/item, material, Radar Signature, mining es refinery reszlet ugyanabban a `sPg Crafting List.html` fajlban nyilik meg; kulon runtime oldal vagy sidecar nincs.
+- A belso route `#spg-detail=<tipus>:<azonosito>`; a bongeszo Vissza/reload es a sajat kartyahoz visszatero gomb determinisztikusan kezelt. Ervenytelen cel explicit fallbacket kap, nem okoz crasht.
+- Wiki link csak exact API `web_url` alapjan vagy elozetesen auditalt, API-bol szarmazo sluggal keszulhet. Nevbol kepzett/fuzzy URL tilos; bizonyitek nelkul `NO_PROVEN_WIKI_URL` es nincs link.
+- A standalone export ugyanazt a detail modellt hasznalja, de minden reszletet az embedded snapshotbol renderel; runtime API fetch es kulso eroforras nincs. A Wiki link opcionlis internetes felhasznaloi muvelet.
+- A C001-C007 ranking, grouping, naming, Radar, color, allocation es hydration modellje nem valtozik. Stabil V003 release/tag es V003-C009 tovabbra sincs engedelyezve.
