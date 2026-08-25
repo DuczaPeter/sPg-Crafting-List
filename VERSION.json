@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C008.1",
-    "currentCycleId":  "V003-C008.1",
-    "lastSuccessfulCycle":  "V003-C008.1",
+    "currentCycle":  "C009",
+    "currentCycleId":  "V003-C009",
+    "lastSuccessfulCycle":  "V003-C009",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-25T06:30:09+02:00",
-    "currentCyclePurpose":  "Public Wiki deep-link correction",
-    "currentCycleStartedAt":  "2026-08-25T06:15:00+02:00",
+    "lastUpdated":  "2026-08-25T07:04:18+02:00",
+    "currentCyclePurpose":  "Final Main View + exact Crafting Card reference + API deep-link correction",
+    "currentCycleStartedAt":  "2026-08-25T06:32:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C008.1 exact public MediaWiki audit, separate public/API resolvers and actions, snapshot/standalone parity, full C001-C008 plus M1-M6.1+C04, Chrome localhost Back/reload/console/fingerprint and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C008.1 PUBLIC WIKI DEEP-LINK CORRECTION – AUTOMATED AND CHROME LOCALHOST PASS; C007 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C009 reference-aligned main/card UI, exact source-record API links, no public Wiki user action, compact system mining/refinery and curated Radar projection, standalone parity, full C001-C008.1 plus M1-M6.1+C04, Chrome localhost Back/reload/console/fingerprint and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C009 FINAL MAIN VIEW – AUTOMATED AND CHROME LOCALHOST PASS; PRIOR USER MANUAL REAL CHROME file:// EVIDENCE RECORDED AS NOT CODEX AUTOMATION; USER VISUAL ACCEPTANCE PENDING; STABLE RELEASE NOT APPROVED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,8 +40,8 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C008.1",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C008.1 public/API link parity, main and standalone Back/reload and console PASS",
+                                "cycle":  "V003-C009",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C009 main/card layout, exact API links, main/detail Back/reload, responsive and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
                                 "userDataFingerprintBefore":  "d7be3ccc",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "V003-C009_NOT_STARTED"
+                                                           "nextCycle":  "USER_VISUAL_CHECK_REQUIRED_C010_NOT_STARTED"
                                                        },
                                 "finalCraftingCard":  {
                                                           "viewModel":  "buildFinalCraftingCardViewModel",
@@ -129,6 +129,15 @@
                                                                                    "Stileron",
                                                                                    "Savrilium"
                                                                                ],
+                                                    "publicWikiUserActionRendered":  false,
+                                                    "itemApiResolver":  "resolveItemApiDeepLink",
+                                                    "materialApiResolver":  "resolveMaterialApiDeepLink",
+                                                    "exactApiUrls":  {
+                                                                         "JS-300":  "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+                                                                         "Stileron":  "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.9.0-LIVE.12232306",
+                                                                         "Beryl":  "https://api.star-citizen.wiki/commodities/beryl-raw?version=4.9.0-LIVE.12232306",
+                                                                         "Savrilium":  "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.9.0-LIVE.12232306"
+                                                                     },
                                                     "fuzzyWikiUrl":  false,
                                                     "standaloneDetailTargets":  13,
                                                     "standaloneExternalRuntimeResources":  0,
@@ -137,6 +146,28 @@
                                                     "reloadRoute":  "PASS",
                                                     "invalidTargetFallback":  "PASS"
                                                 },
+                                "finalMainCard":  {
+                                                       "referenceImagesTracked":  [
+                                                                                       "Info/A fö nézet.png",
+                                                                                       "Info/A Crafting card.png"
+                                                                                   ],
+                                                       "defaultVisiblePanels":  [
+                                                                                    "blueprintBrowserPanel",
+                                                                                    "craftingCardsPanel"
+                                                                                ],
+                                                       "desktopColumns":  2,
+                                                       "mobileColumns":  1,
+                                                       "craftTime":  "15:00",
+                                                       "quantityEditable":  true,
+                                                       "cartUsesExistingDuplicateModel":  true,
+                                                       "radarRegistryOnly":  true,
+                                                       "topMiningPerSystem":  true,
+                                                       "topRefineryPerSystem":  true,
+                                                       "standaloneParity":  true,
+                                                       "standaloneRuntimeFetch":  false,
+                                                       "screenshot":  "test-artifacts/V003-C009/chrome-main-view.png",
+                                                       "userVisualAcceptance":  "PENDING"
+                                                   },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,
                                                  "shipNormalSpaceSeparated":  true,

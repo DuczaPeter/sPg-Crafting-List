@@ -191,9 +191,17 @@
     {
       "id": "v003-c0081-public-wiki-regression",
       "level": "full-regression",
-      "description": "V003-C008.1 gate: exact public MediaWiki title/redirect proof, separate public Wiki and API resolvers/actions, snapshot-backed standalone parity, no blind public URL generation, complete C001-C008 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "description": "V003-C008.1 historical audit gate: exact public MediaWiki title/redirect proof remains internal, exact API resolver remains active, no public Wiki user action renders after C009, snapshot-backed standalone parity, complete C001-C008 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0081.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c009-final-main-card-regression",
+      "level": "full-regression",
+      "description": "V003-C009 gate: exact reference-aligned Blueprint Browser/Crafting Card main view, source-record-only item/material API links, compact slot and inventory rows, curated Radar chips, per-system top mining/refinery snapshots, standalone parity, C001-C008.1 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c009.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],

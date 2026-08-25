@@ -22,7 +22,7 @@ for (const marker of [
   "NO_PROVEN_PUBLIC_WIKI_URL",
   "SOURCE_EXACT_PUBLIC_WIKI_URL",
   "MEDIAWIKI_EXACT_TITLE",
-  "API adatlap megnyitása"
+  "API adatlap"
 ]) {
   assert.ok(appHtml.includes(marker), `A C008.1 alkalmazásmarker hiányzik: ${marker}`);
 }
@@ -51,9 +51,9 @@ for (const requirement of snapshot.requirements) {
   assert.match(requirement.materialDetails.apiWikiLink.url, /^https:\/\/api\.star-citizen\.wiki\//);
 }
 
-assert.match(standalone, /href="https:\/\/star-citizen\.wiki\/JS-300"[^>]*>Megnyitás a Star Citizen Wiki-ben<\/a>/);
-assert.match(standalone, /href="https:\/\/star-citizen\.wiki\/Beryl"[^>]*>Megnyitás a Star Citizen Wiki-ben<\/a>/);
-assert.match(standalone, /href="https:\/\/api\.star-citizen\.wiki\/[^"]+"[^>]*>API adatlap megnyitása<\/a>/);
+assert.doesNotMatch(standalone, /href="https:\/\/star-citizen\.wiki\//);
+assert.doesNotMatch(standalone, /Megnyitás a Star Citizen Wiki-ben/);
+assert.match(standalone, /href="https:\/\/api\.star-citizen\.wiki\/[^"]+"[^>]*>API adatlap<\/a>/);
 assert.doesNotMatch(standalone, /href="https:\/\/api\.star-citizen\.wiki[^"]*"[^>]*>Megnyitás a Star Citizen Wiki-ben<\/a>/);
 assert.doesNotMatch(standalone, /href="https:\/\/star-citizen\.wiki\/(?:Stileron|Savrilium)[^"]*"/);
 assert.doesNotMatch(standalone, /fetch\s*\(/i);

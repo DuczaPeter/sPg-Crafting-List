@@ -337,6 +337,19 @@ Csak a C008.1 public/API host-, felirat-, snapshot- es standalone celteszt:
 node .\tools\run-v003-c0081-tests.mjs --standalone="test-artifacts/V003-C008.1/standalone-js-300-detail-view.html"
 ```
 
+V003-C009 referencia-alapu fo nezet, exact source API link es standalone kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c009.ps1"
+```
+
+Celzott exact elo API audit es C009 standalone/UI fixture:
+
+```powershell
+node .\tools\audit-v003-c009-api-links.mjs --output="test-artifacts/V003-C009/exact-api-link-audit.json"
+node .\tools\run-v003-c009-tests.mjs --artifact="test-artifacts/V003-C009/standalone-js-300-final-card.html"
+```
+
 V003-C007 Radar Signature Material Color System teljes kapu:
 
 ```powershell
@@ -425,4 +438,5 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-c006-final-card-regression`: JS-300 final card header es slotprojekcio, quantity/max, HP_MIN_500/FIXED/shortage, cache/offline hydration, harom teljes Radar/Mining/UEX snapshot, kozos standalone view-model, C001-C005/M1-M6.1/C04 es V002-integritas.
 - `v003-c007-material-color-regression`: 33 exact Wiki UUID-s source-pixelaudit, 31 neutralis `UNMAPPED_COLOR`, kozos Crafting/My Materials/Combined/Material Database/export resolver, JS-300 exact szinek, standalone, C001-C006/M1-M6.1/C04 es V002-integritas.
 - `v003-c0081-public-wiki-regression`: exact public MediaWiki title/redirect audit, kulon public/API resolver es UI action, snapshot/standalone parity, tiltott host/felirat keveredes es nevbol generalt public URL kizárasa, teljes C001-C008/M1-M6.1/C04 es V002-integritas.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`, `test-artifacts/V003-C007/`.
+- `v003-c009-final-main-card-regression`: ket kovetett referencia-PNG, default Blueprint Browser + kompakt Crafting Card, exact source-record item/material API linkek, public Wiki user action 0, per-system top mining/refinery, VERIFIED Radar chips, standalone parity, teljes C001-C008.1/M1-M6.1/C04 es V002-integritas.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`, `test-artifacts/V003-C007/`, `test-artifacts/V003-C008/`, `test-artifacts/V003-C008.1/`, `test-artifacts/V003-C009/`.

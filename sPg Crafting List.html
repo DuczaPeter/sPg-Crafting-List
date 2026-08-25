@@ -4399,6 +4399,331 @@ body[data-spg-detail-active="true"] > .spg-export-page {
   display: none;
 }
 
+/* V003-C009 final user main view and compact reference-aligned Crafting Card. */
+
+.spg-main-layout > .panel {
+  display: none;
+}
+
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel,
+body[data-active-module="craftingListNav"] #craftingCardsPanel,
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel,
+body[data-active-module="myMaterialsNav"] #myMaterialsPanel,
+body[data-active-module="materialDatabaseNav"] #miningPanel,
+body[data-active-module="miningLoadoutsNav"] #miningPanel,
+body[data-active-module="refineryNav"] #refineryPanel,
+body[data-active-module="combinedMaterialsNav"] #combinedMaterialsPanel,
+body[data-active-module="dataSettingsNav"] #dataSettingsPanel,
+body[data-active-module="dataSettingsNav"] .spg-baseline-panel,
+body[data-active-module="dataSettingsNav"] .spg-blueprint-panel,
+body[data-active-module="dataSettingsNav"] .spg-roadmap-panel {
+  display: block;
+}
+
+body[data-active-module="craftingListNav"] .spg-main-layout {
+  grid-template-columns: minmax(300px, 0.72fr) minmax(520px, 1.28fr);
+  align-items: start;
+}
+
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel {
+  grid-column: 1;
+  position: sticky;
+  top: 12px;
+}
+
+body[data-active-module="craftingListNav"] #craftingCardsPanel {
+  grid-column: 2;
+  order: 0;
+}
+
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-toolbar,
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-layout {
+  grid-template-columns: 1fr;
+}
+
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-results {
+  max-height: 440px;
+}
+
+.spg-blueprint-result[aria-current="true"] {
+  border-color: var(--accent-strong);
+  background: rgba(255, 179, 0, 0.1);
+}
+
+.spg-c009-card-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.spg-c009-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.spg-c009-item-meta span,
+.spg-c009-craft-time,
+.spg-c009-radar-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid rgba(24, 218, 255, 0.28);
+  border-radius: 8px;
+  color: #dcecff;
+  background: rgba(4, 15, 24, 0.78);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.spg-c009-title-row,
+.spg-c009-card-actions,
+.spg-c009-quantity-row,
+.spg-c009-detail-actions,
+.spg-c009-radar-values {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.spg-c009-item-api-link,
+.spg-c009-material-api-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.spg-export-detail-title.spg-c009-item-api-link {
+  display: inline-block;
+  margin: 2px 8px 8px 0;
+  color: #eef7ff;
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: clamp(30px, 6vw, 54px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+}
+
+.spg-c009-item-api-link:hover,
+.spg-c009-item-api-link:focus-visible,
+.spg-c009-material-api-link:hover,
+.spg-c009-material-api-link:focus-visible {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.spg-c009-title-row h3 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+}
+
+.spg-c009-card-actions {
+  justify-content: flex-end;
+}
+
+.spg-c009-cart-button {
+  min-width: 42px;
+  padding: 0 10px;
+  font-size: 18px;
+}
+
+.spg-c009-quantity-row {
+  justify-content: space-between;
+  margin: 12px 18px;
+  padding: 10px 12px;
+  border: 1px solid rgba(156, 113, 255, 0.34);
+  border-radius: 12px;
+  background: rgba(22, 13, 42, 0.35);
+}
+
+.spg-c009-quantity-row label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.spg-c009-quantity-row input {
+  width: 82px;
+  min-height: 36px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.spg-c009-recipe-header,
+.spg-c009-recipe-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.8fr) minmax(150px, 1fr) minmax(100px, 0.62fr) minmax(120px, 0.72fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.spg-c009-recipe-header {
+  padding: 0 14px 8px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.spg-c009-recipe-row {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 139, 36, 0.34);
+  border-radius: 10px;
+  background: rgba(20, 16, 13, 0.34);
+}
+
+.spg-c009-recipe-row > span,
+.spg-c009-recipe-row > strong,
+.spg-c009-recipe-row > a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.spg-c009-per-craft,
+.spg-c009-inventory {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.spg-c009-inventory {
+  color: #9dccff;
+}
+
+.spg-c009-material-snapshot {
+  display: grid;
+  gap: 8px;
+  margin-top: 9px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--spg-material-accent, rgba(24, 218, 255, 0.2)) 62%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--spg-material-background, rgba(5, 18, 28, 0.46)) 55%, rgba(5, 18, 28, 0.72));
+  box-shadow: inset 3px 0 0 var(--spg-material-accent, transparent);
+}
+
+.spg-c009-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.spg-c009-intelligence-group {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid rgba(24, 218, 255, 0.14);
+  border-radius: 9px;
+  background: rgba(2, 12, 20, 0.5);
+}
+
+.spg-c009-intelligence-group h4 {
+  margin: 0 0 7px;
+  color: #eef7ff;
+  font-size: 12px;
+}
+
+.spg-c009-system-row {
+  display: grid;
+  gap: 2px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(24, 218, 255, 0.1);
+  font-size: 11px;
+}
+
+.spg-c009-system-row:first-of-type {
+  border-top: 0;
+}
+
+.spg-c009-system-row small {
+  color: var(--muted);
+}
+
+.spg-c009-radar-chip {
+  min-height: 24px;
+  padding: 2px 7px;
+  color: #98ecff;
+  border-color: rgba(24, 218, 255, 0.38);
+  font-variant-numeric: tabular-nums;
+}
+
+.spg-c009-advanced {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(24, 218, 255, 0.12);
+}
+
+.spg-c009-advanced > summary {
+  cursor: pointer;
+  color: #9cecff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.spg-export-c009-card {
+  display: grid;
+  gap: 12px;
+}
+
+.spg-export-c009-requirements {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-export-c009-requirement {
+  padding: 12px;
+  border: 1px solid rgba(255, 139, 36, 0.34);
+  border-radius: 12px;
+  background: rgba(5, 18, 28, 0.56);
+}
+
+@media (max-width: 1120px) {
+  body[data-active-module="craftingListNav"] .spg-main-layout {
+    grid-template-columns: minmax(260px, 0.78fr) minmax(430px, 1.22fr);
+  }
+
+  .spg-c009-intelligence-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  body[data-active-module="craftingListNav"] .spg-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-active-module="craftingListNav"] #blueprintBrowserPanel,
+  body[data-active-module="craftingListNav"] #craftingCardsPanel {
+    grid-column: 1;
+    position: static;
+  }
+
+  .spg-c009-card-heading,
+  .spg-c009-recipe-header,
+  .spg-c009-recipe-row {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-c009-recipe-header {
+    display: none;
+  }
+
+  .spg-c009-per-craft,
+  .spg-c009-inventory {
+    text-align: left;
+  }
+
+  .spg-c009-card-actions {
+    justify-content: flex-start;
+  }
+}
+
 @media print {
   body {
     background: #0f1720;
@@ -4728,7 +5053,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
 }
   </style>
 </head>
-<body>
+<body data-active-module="craftingListNav" data-active-module-target="craftingCardsPanel">
   <div class="spg-app-shell">
     <header class="spg-app-header">
       <div>
@@ -10465,8 +10790,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         };
         var hydrationState = state.materialIntelligenceHydrationByWikiUuid.get(commodity.uuid) || null;
         var materialSource = detail || commodity;
-        var materialApiWikiLink = resolveWikiApiDeepLink({
-          resourceType: "commodities",
+        var materialApiWikiLink = resolveMaterialApiDeepLink({
           exactUrls: [materialSource.webUrl, commodity.webUrl],
           slug: materialSource.slug || commodity.slug || null,
           slugVerifiedByApi: Boolean(materialSource.slug || commodity.slug),
@@ -11211,6 +11535,13 @@ body[data-spg-detail-active="true"] > .spg-export-page {
 
     function renderBlueprintBrowserResults() {
       var results = visibleBlueprintIndex();
+      if (state.normalizedBlueprint) {
+        results = results.slice().sort(function (left, right) {
+          var leftSelected = left.uuid === state.normalizedBlueprint.uuid ? 0 : 1;
+          var rightSelected = right.uuid === state.normalizedBlueprint.uuid ? 0 : 1;
+          return leftSelected - rightSelected;
+        });
+      }
       var container = document.getElementById("blueprintBrowserResults");
       container.replaceChildren();
       setText("blueprintResultCount", results.length + (results.length > 100 ? " · első 100" : ""));
@@ -11226,6 +11557,9 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         button.type = "button";
         button.className = "spg-blueprint-result";
         button.dataset.blueprintUuid = record.uuid;
+        if (state.normalizedBlueprint && state.normalizedBlueprint.uuid === record.uuid) {
+          button.setAttribute("aria-current", "true");
+        }
         var title = document.createElement("strong");
         title.textContent = record.outputName;
         var meta = document.createElement("span");
@@ -11351,6 +11685,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         state.normalizedBlueprint = normalized;
         renderBlueprint(normalized);
         renderBlueprintBrowserDetail(normalized, cacheOrigin);
+        renderBlueprintBrowserResults();
         document.getElementById("addCurrentBlueprintButton").disabled = false;
         updateKnownMaterials();
         await updateCacheDiagnostics();
@@ -11838,6 +12173,123 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       return container;
     }
 
+    function createC009ApiLink(label, apiWikiLink, className) {
+      var url = c009SafeApiUrl(apiWikiLink);
+      if (!url) {
+        var unavailable = document.createElement("span");
+        unavailable.className = className || "spg-muted";
+        unavailable.textContent = label;
+        unavailable.title = "Ehhez a rekordhoz nincs exact API web_url.";
+        return unavailable;
+      }
+      var link = document.createElement("a");
+      link.className = className || "spg-c009-material-api-link";
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = label;
+      link.title = "API adatlap";
+      return link;
+    }
+
+    function renderC009MaterialSnapshot(view) {
+      var snapshot = view || {};
+      var container = document.createElement("section");
+      var materialName = snapshot.materialName || "Material";
+      var commodityUuid = snapshot.commodityUuid || snapshot.materialUuid || "";
+      var mining = snapshot.mining || {};
+      var refinery = snapshot.refinery || {};
+      container.className = "spg-c009-material-snapshot";
+      container.dataset.materialName = materialName;
+      applyMaterialColor(container, commodityUuid, materialName, { radar: true });
+
+      var grid = document.createElement("div");
+      grid.className = "spg-c009-intelligence-grid";
+      var miningGroup = document.createElement("section");
+      miningGroup.className = "spg-c009-intelligence-group";
+      var miningHeading = document.createElement("h4");
+      miningHeading.textContent = "Rendszerenkénti legjobb Mining";
+      miningGroup.append(miningHeading);
+      var miningRows = c009TopMiningMethods(mining);
+      if (!miningRows.length) {
+        var noMining = document.createElement("p");
+        noMining.className = "spg-muted";
+        noMining.textContent = snapshot.miningStatusText || "Nincs elérhető mining helyadat.";
+        miningGroup.append(noMining);
+      } else {
+        miningRows.forEach(function (system) {
+          var row = document.createElement("div");
+          row.className = "spg-c009-system-row";
+          var title = document.createElement("strong");
+          title.textContent = String(system.system || "Ismeretlen rendszer").replace(/ System$/, "");
+          var location = document.createElement("span");
+          location.textContent = system.methods.map(function (method) {
+            return method.tierDisplayLabel || method.locationLabel || "Ismeretlen farmhely";
+          }).join(" · ");
+          var metrics = document.createElement("small");
+          metrics.textContent = system.methods.map(function (method) {
+            return formatMiningMethodLabel(method.method) + " · Spawn " + formatMiningMetric(method.spawn, "%") + " · Occurrence " + formatMiningMetric(method.occurrence, "%") + " · " + formatMiningQualityProfile(method.qualityProfile);
+          }).join(" | ");
+          row.append(title, location, metrics);
+          miningGroup.append(row);
+        });
+      }
+
+      var refineryGroup = document.createElement("section");
+      refineryGroup.className = "spg-c009-intelligence-group";
+      var refineryHeading = document.createElement("h4");
+      refineryHeading.textContent = "Rendszerenkénti legjobb UEX Refinery";
+      refineryGroup.append(refineryHeading);
+      if (refinery.status === "AVAILABLE" && (refinery.systems || []).length) {
+        refinery.systems.forEach(function (system) {
+          var row = document.createElement("div");
+          row.className = "spg-c009-system-row";
+          var title = document.createElement("strong");
+          title.textContent = system.starSystemName + " · " + formatRefineryBonus(system.rankingValue);
+          var terminals = document.createElement("span");
+          terminals.textContent = (system.terminals || []).map(function (terminal) { return terminal.terminalName; }).join(" / ");
+          var tie = document.createElement("small");
+          tie.textContent = (system.tieCount || 1) > 1 ? system.tieCount + " azonos legjobb refinery" : "Egyetlen legjobb refinery";
+          row.append(title, terminals, tie);
+          refineryGroup.append(row);
+        });
+      } else {
+        var noRefinery = document.createElement("p");
+        noRefinery.className = "spg-muted";
+        noRefinery.textContent = "Nincs biztonságos refinery adat";
+        refineryGroup.append(noRefinery);
+      }
+      grid.append(miningGroup, refineryGroup);
+
+      var radar = document.createElement("div");
+      radar.className = "spg-c009-radar-values";
+      var radarLabel = createPreparedDetailButton("Radar Signature", "radar", commodityUuid, "spg-intelligence-trigger");
+      radar.append(radarLabel);
+      var radarValues = c009RadarValues(mining);
+      if (radarValues.length) {
+        radarValues.forEach(function (value) {
+          var chip = document.createElement("span");
+          chip.className = "spg-c009-radar-chip";
+          chip.textContent = value.toLocaleString("hu-HU");
+          radar.append(chip);
+        });
+      } else {
+        var noRadar = document.createElement("strong");
+        noRadar.textContent = "Nincs radar adat";
+        radar.append(noRadar);
+      }
+
+      var actions = document.createElement("div");
+      actions.className = "spg-c009-detail-actions";
+      actions.append(
+        createPreparedDetailButton("Material részlet", "material", commodityUuid),
+        createPreparedDetailButton("Mining Top-3", "mining", commodityUuid),
+        createPreparedDetailButton("UEX részlet", "refinery", commodityUuid)
+      );
+      container.append(grid, radar, actions);
+      return container;
+    }
+
     function renderCombinedMaterials() {
       var groups = state.combinedMaterials || [];
       var missingGroups = groups.filter(function (group) { return group.missingUnits > 0; });
@@ -12072,18 +12524,34 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       var article = document.createElement("article");
       article.className = "spg-card-requirement";
       article.dataset.status = allocation ? allocation.status : "PENDING";
-      var heading = document.createElement("div");
-      heading.className = "spg-card-requirement-heading";
-      var title = document.createElement("div");
+      var row = document.createElement("div");
+      row.className = "spg-c009-recipe-row";
       var slot = document.createElement("span");
       slot.className = "spg-recipe-slot";
       slot.textContent = requirement.recipeSlotName;
       var materialName = view.materialName || resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material");
-      var material = createPreparedDetailButton(materialName, "material", view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, "spg-material-token spg-material-token-accent-pending");
+      var material = createC009ApiLink(materialName, view.materialDetails && view.materialDetails.apiWikiLink, "spg-material-token spg-material-token-accent-pending spg-c009-material-api-link");
       material.dataset.materialUuid = requirement.ingredientUuid || "";
       material.dataset.materialName = materialName;
       applyMaterialColor(material, view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, materialName);
-      title.append(slot, material);
+      var perCraft = document.createElement("strong");
+      perCraft.className = "spg-c009-per-craft";
+      perCraft.textContent = formatInventoryUnits(requirement.unit, view.perCraftUnits === undefined ? requirement.requiredQuantityUnits : view.perCraftUnits);
+      var inventory = document.createElement("strong");
+      inventory.className = "spg-c009-inventory";
+      inventory.textContent = formatInventoryUnits(requirement.unit, view.suitableInventoryUnits === undefined ? (allocation ? allocation.allocatedUnits : 0) : view.suitableInventoryUnits);
+      row.append(slot, material, perCraft, inventory);
+      article.append(row, renderC009MaterialSnapshot(Object.keys(view).length ? view : (allocation ? allocation.materialIntelligence : null)));
+
+      var advanced = document.createElement("details");
+      advanced.className = "spg-c009-advanced";
+      var advancedSummary = document.createElement("summary");
+      advancedSummary.textContent = "Quality, allocation és batch részletek";
+      advanced.append(advancedSummary);
+      var heading = document.createElement("div");
+      heading.className = "spg-card-requirement-heading";
+      var title = document.createElement("div");
+      title.append(createPreparedDetailButton(materialName + " belső részlet", "material", view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, "spg-intelligence-trigger"));
       var slotStrategies = card.slotStrategies || {};
       var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
       var ruleBadge = document.createElement("span");
@@ -12092,7 +12560,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         ? "Q500+ elég"
         : (qualityRule.mode === M2_QUALITY_RULES.TARGET_Q ? "Target Q" + qualityRule.targetQuality + "+" : qualityRule.mode);
       heading.append(title, ruleBadge);
-      article.append(heading);
+      advanced.append(heading);
 
       if (qualityRule.configurable) {
         var strategyRow = document.createElement("div");
@@ -12125,7 +12593,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           });
         });
         strategyRow.append(select, target);
-        article.append(strategyRow);
+        advanced.append(strategyRow);
       } else {
         var qualityNotice = document.createElement("p");
         qualityNotice.className = "spg-quality-notice";
@@ -12134,7 +12602,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           : (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN
             ? "Quality hatás ellenőrizendő – a rendszer nem találgat és nem foglal batch-et."
             : "Integrity-only input – Q500 feletti legalacsonyabb megfelelő Quality fogy először.");
-        article.append(qualityNotice);
+        advanced.append(qualityNotice);
       }
 
       var values = document.createElement("div");
@@ -12160,8 +12628,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         item.append(label, content);
         values.append(item);
       });
-      article.append(values);
-      article.append(renderMaterialIntelligenceSnapshot(Object.keys(view).length ? view : (allocation ? allocation.materialIntelligence : null)));
+      advanced.append(values);
 
       if (allocation && allocation.allocatedBatches.length) {
         var allocated = document.createElement("p");
@@ -12169,14 +12636,15 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         allocated.textContent = "Batch-ek: " + allocation.allocatedBatches.map(function (item) {
           return (item.quality == null ? "Q?" : "Q" + item.quality) + " · " + formatInventoryUnits(requirement.unit, item.allocatedUnits);
         }).join("; ");
-        article.append(allocated);
+        advanced.append(allocated);
       }
       if (allocation && allocation.bottleneck) {
         var bottleneck = document.createElement("p");
         bottleneck.className = "spg-bottleneck";
         bottleneck.textContent = "Szűk keresztmetszet: " + resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material") + " / " + requirement.recipeSlotName;
-        article.append(bottleneck);
+        advanced.append(bottleneck);
       }
+      article.append(advanced);
       return article;
     }
 
@@ -12226,35 +12694,44 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         article.dataset.cardOrder = String(index);
         article.dataset.satisfied = cardResult && cardResult.satisfied ? "true" : "false";
         var heading = document.createElement("div");
-        heading.className = "spg-crafting-card-heading";
+        heading.className = "spg-crafting-card-heading spg-c009-card-heading";
         var title = document.createElement("div");
         var priority = document.createElement("span");
         priority.className = "eyebrow";
         priority.textContent = "Prioritás " + (index + 1);
-        var name = createPreparedDetailButton(cardViewModel.card.outputName, "blueprint", card.blueprintUuid, "spg-card-detail-trigger");
+        var name = createC009ApiLink(cardViewModel.card.outputName, cardViewModel.card.apiWikiLink, "spg-card-detail-trigger spg-c009-item-api-link");
         var nameHeading = document.createElement("h3");
         nameHeading.textContent = cardViewModel.card.outputName;
         name.replaceChildren(nameHeading);
         var headerMeta = document.createElement("div");
-        headerMeta.className = "spg-card-header-meta";
+        headerMeta.className = "spg-c009-item-meta";
         [
-          ["Size", cardViewModel.card.outputSize],
-          ["Class", cardViewModel.card.outputClass],
-          ["Type", cardViewModel.card.outputType],
-          ["Grade", cardViewModel.card.outputGrade],
-          ["Crafting Time", m6FormatCraftTime(cardViewModel.card.craftTimeSeconds)]
+          "S" + cardViewModel.card.outputSize,
+          cardViewModel.card.outputClass,
+          cardViewModel.card.outputType,
+          cardViewModel.card.outputGrade
         ].forEach(function (entry) {
           var item = document.createElement("span");
-          var label = document.createElement("small");
-          label.textContent = entry[0];
-          var value = document.createElement("strong");
-          value.textContent = entry[1] || "Nincs adat";
-          item.append(label, value);
+          item.textContent = entry || "Nincs adat";
           headerMeta.append(item);
         });
-        title.append(priority, name, headerMeta);
+        var titleRow = document.createElement("div");
+        titleRow.className = "spg-c009-title-row";
+        titleRow.append(name, createPreparedDetailButton("Belső részlet", "blueprint", card.blueprintUuid, "spg-intelligence-trigger"));
+        title.append(priority, headerMeta, titleRow);
         var actions = document.createElement("div");
-        actions.className = "spg-inline-actions";
+        actions.className = "spg-c009-card-actions";
+        var craftTime = document.createElement("span");
+        craftTime.className = "spg-c009-craft-time";
+        craftTime.textContent = "◷ " + c009FormatCraftTime(cardViewModel.card.craftTimeSeconds);
+        craftTime.title = "Crafting Time";
+        var management = document.createElement("details");
+        management.className = "spg-c009-advanced";
+        var managementSummary = document.createElement("summary");
+        managementSummary.textContent = "Kártyaműveletek";
+        var managementActions = document.createElement("div");
+        managementActions.className = "spg-inline-actions";
+        management.append(managementSummary, managementActions);
         [["↑", "Feljebb", index > 0, -1], ["↓", "Lejjebb", index < state.craftingCards.length - 1, 1]].forEach(function (action) {
           var button = document.createElement("button");
           button.type = "button";
@@ -12267,12 +12744,14 @@ body[data-spg-detail-active="true"] > .spg-export-page {
               setNotice("Kártyasorrend mentési hiba: " + error.message, "error");
             });
           });
-          actions.append(button);
+          managementActions.append(button);
         });
         var duplicate = document.createElement("button");
         duplicate.type = "button";
-        duplicate.textContent = "+ Crafting List";
+        duplicate.textContent = "🛒";
+        duplicate.className = "spg-c009-cart-button";
         duplicate.title = "Még egy példány hozzáadása a Crafting Listhez";
+        duplicate.setAttribute("aria-label", card.outputName + " hozzáadása új Crafting Cardként");
         duplicate.addEventListener("click", function () {
           duplicateCraftingCard(card.id).catch(function (error) { setNotice("Duplikálási hiba: " + error.message, "error"); });
         });
@@ -12301,12 +12780,13 @@ body[data-spg-detail-active="true"] > .spg-export-page {
             exportButton.disabled = false;
           });
         });
-        actions.append(exportButton, duplicate, collapse, remove);
+        managementActions.append(exportButton, collapse, remove);
+        actions.append(craftTime, duplicate, management);
         heading.append(title, actions);
         article.append(heading);
 
         var controls = document.createElement("div");
-        controls.className = "spg-card-controls";
+        controls.className = "spg-c009-quantity-row";
         var quantityLabel = document.createElement("label");
         var quantityText = document.createElement("span");
         quantityText.textContent = "Gyártani akarok";
@@ -12338,6 +12818,14 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         if (!card.collapsed) {
           var requirements = document.createElement("div");
           requirements.className = "spg-card-requirements";
+          var recipeHeader = document.createElement("div");
+          recipeHeader.className = "spg-c009-recipe-header";
+          ["Recipe Slot", "Material", "1 darabhoz", "Megfelelő készlet"].forEach(function (label) {
+            var cell = document.createElement("span");
+            cell.textContent = label;
+            recipeHeader.append(cell);
+          });
+          requirements.append(recipeHeader);
           card.requirements.forEach(function (requirement) {
             var allocation = cardResult && cardResult.requirements.find(function (item) {
               return item.recipeSlotId === requirement.id;
@@ -13409,6 +13897,48 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       return minutes ? minutes + " perc " + remainder + " mp" : remainder + " mp";
     }
 
+    function c009FormatCraftTime(seconds) {
+      if (!Number.isFinite(Number(seconds))) {
+        return "--:--";
+      }
+      var total = Math.max(0, Math.round(Number(seconds)));
+      var minutes = Math.floor(total / 60);
+      var remainder = total % 60;
+      return String(minutes).padStart(2, "0") + ":" + String(remainder).padStart(2, "0");
+    }
+
+    function c009RadarValues(mining) {
+      var source = mining || {};
+      if (source.radarSignatureStatus !== "VERIFIED") {
+        return [];
+      }
+      return Array.from(new Set([source.radarSignature].concat(source.radarSignatureClusterSignatures || [])
+        .map(Number)
+        .filter(function (value) { return Number.isFinite(value) && value > 0; })))
+        .sort(function (a, b) { return a - b; });
+    }
+
+    function c009TopMiningMethods(mining) {
+      var rows = [];
+      (mining && mining.systems || []).forEach(function (system) {
+        if (system.status !== "AVAILABLE") { return; }
+        var methods = (system.methods || []).filter(function (method) {
+          return Number(method.rankingTier || method.rankPosition || 1) === 1;
+        });
+        if (!methods.length && (system.methods || []).length) {
+          methods = [system.methods[0]];
+        }
+        if (methods.length) {
+          rows.push({ system: system.system, methods: methods });
+        }
+      });
+      return rows;
+    }
+
+    function c009SafeApiUrl(link) {
+      return link && link.status === "AVAILABLE" && c008IsWikiApiUrl(link.url) ? link.url : null;
+    }
+
     /* C008_DETAIL_MODEL_START */
     var C008_DETAIL_TYPES = Object.freeze(["blueprint", "material", "radar", "mining", "refinery"]);
     var C008_WIKI_API_ORIGIN = "https://api.star-citizen.wiki";
@@ -13538,6 +14068,28 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       };
     }
 
+    function resolveItemApiDeepLink(input) {
+      var source = input || {};
+      return resolveWikiApiDeepLink({
+        resourceType: "items",
+        exactUrls: Array.isArray(source.exactUrls) ? source.exactUrls : [source.webUrl],
+        slug: source.slug,
+        slugVerifiedByApi: source.slugVerifiedByApi === true,
+        gameVersion: source.gameVersion
+      });
+    }
+
+    function resolveMaterialApiDeepLink(input) {
+      var source = input || {};
+      return resolveWikiApiDeepLink({
+        resourceType: "commodities",
+        exactUrls: Array.isArray(source.exactUrls) ? source.exactUrls : [source.webUrl],
+        slug: source.slug,
+        slugVerifiedByApi: source.slugVerifiedByApi === true,
+        gameVersion: source.gameVersion
+      });
+    }
+
     function c008DetailKindLabel(kind) {
       return {
         blueprint: "Item / Blueprint",
@@ -13643,19 +14195,17 @@ body[data-spg-detail-active="true"] > .spg-export-page {
     }
 
     function c008RenderPublicWikiAction(publicWikiLink) {
-      return publicWikiLink && publicWikiLink.resolutionStatus === "VERIFIED" && c008IsPublicWikiUrl(publicWikiLink.publicWikiUrl || publicWikiLink.url)
-        ? '<a class="spg-detail-wiki-link" href="' + m6EscapeHtml(publicWikiLink.publicWikiUrl || publicWikiLink.url) + '" target="_blank" rel="noopener noreferrer">Megnyitás a Star Citizen Wiki-ben</a>'
-        : '';
+      return '';
     }
 
     function c008RenderWikiApiAction(apiWikiLink) {
       return apiWikiLink && apiWikiLink.status === "AVAILABLE" && c008IsWikiApiUrl(apiWikiLink.url)
-        ? '<details class="spg-detail-advanced"><summary>Advanced / forrásadat</summary><p><a class="spg-detail-wiki-link" href="' + m6EscapeHtml(apiWikiLink.url) + '" target="_blank" rel="noopener noreferrer">API adatlap megnyitása</a></p></details>'
+        ? '<a class="spg-detail-wiki-link" href="' + m6EscapeHtml(apiWikiLink.url) + '" target="_blank" rel="noopener noreferrer">API adatlap</a>'
         : '';
     }
 
     function c008RenderDetailContent(model) {
-      return c008RenderDetailMarkup(model) + c008RenderWikiApiAction(model && model.apiWikiLink);
+      return c008RenderDetailMarkup(model);
     }
 
     function c008RenderRelatedButton(label, kind, id) {
@@ -13778,7 +14328,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
     function c008RenderStandaloneDetailViews(snapshot) {
       var panels = c008CollectDetailTargets(snapshot).map(function (target) {
         var model = resolveC008DetailModel(snapshot, target.kind, target.id);
-        return '<article class="spg-detail-panel" data-spg-detail-panel="true" data-detail-kind="' + m6EscapeHtml(target.kind) + '" data-detail-id="' + m6EscapeHtml(target.id) + '" hidden><header class="spg-detail-heading"><div><p class="eyebrow">' + m6EscapeHtml(c008DetailKindLabel(target.kind)) + '</p><h2>' + m6EscapeHtml(model.title) + '</h2><p class="spg-detail-source-note">Forrás: ' + m6EscapeHtml(model.sourceLabel) + ' · offline detail a helyi export snapshotból</p></div><div>' + c008RenderPublicWikiAction(model.publicWikiLink) + '</div></header><div class="spg-detail-content">' + c008RenderDetailContent(model) + '</div></article>';
+        return '<article class="spg-detail-panel" data-spg-detail-panel="true" data-detail-kind="' + m6EscapeHtml(target.kind) + '" data-detail-id="' + m6EscapeHtml(target.id) + '" hidden><header class="spg-detail-heading"><div><p class="eyebrow">' + m6EscapeHtml(c008DetailKindLabel(target.kind)) + '</p><h2>' + m6EscapeHtml(model.title) + '</h2><p class="spg-detail-source-note">Forrás: ' + m6EscapeHtml(model.sourceLabel) + ' · offline detail a helyi export snapshotból</p></div><div>' + c008RenderWikiApiAction(model.apiWikiLink) + '</div></header><div class="spg-detail-content">' + c008RenderDetailContent(model) + '</div></article>';
       }).join("");
       return '<section id="spg-standalone-detail" class="spg-detail-view" aria-label="Standalone részletnézet" hidden><div class="spg-detail-toolbar"><button id="spg-standalone-detail-back" type="button">← Vissza a Crafting Cardhoz</button><span class="spg-badge spg-badge-neutral">Offline snapshot detail</span></div>' + panels + '<article id="spg-standalone-detail-error" class="spg-detail-panel" hidden><div class="spg-detail-error"><strong>A részlet nem található.</strong><p>A link érvénytelen, vagy ez az export snapshot nem tartalmazza az adatot.</p></div></article></section>';
     }
@@ -13832,12 +14382,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         var intelligenceMaterial = intelligence && intelligence.material ? intelligence.material : null;
         var materialTargetUuid = allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid;
         var materialApiWikiLink = intelligenceMaterial && intelligenceMaterial.apiWikiLink
-          ? intelligenceMaterial.apiWikiLink
-          : resolveWikiApiDeepLink({
-            resourceType: "commodities",
-            exactUrls: [requirement.materialWebUrl],
-            gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null
-          });
+          ? resolveMaterialApiDeepLink({ exactUrls: [intelligenceMaterial.apiWikiLink.url, intelligenceMaterial.webUrl], slug: intelligenceMaterial.slug, slugVerifiedByApi: Boolean(intelligenceMaterial.slug), gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null })
+          : resolveMaterialApiDeepLink({ exactUrls: [requirement.materialWebUrl], gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null });
         var materialPublicWikiLink = intelligenceMaterial && intelligenceMaterial.publicWikiLink
           ? intelligenceMaterial.publicWikiLink
           : resolvePublicWikiDeepLink({
@@ -13972,8 +14518,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           missingData: missingData
         }
       };
-      snapshot.card.apiWikiLink = resolveWikiApiDeepLink({
-        resourceType: "items",
+      snapshot.card.apiWikiLink = resolveItemApiDeepLink({
         exactUrls: [outputPresentation.webUrl, blueprint.outputWebUrl, card.outputWebUrl],
         slug: outputPresentation.slug || null,
         slugVerifiedByApi: Boolean(outputPresentation.slug),
@@ -14104,6 +14649,54 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       ].join("");
     }
 
+    function c009RenderApiAnchor(label, apiWikiLink, className) {
+      var url = c009SafeApiUrl(apiWikiLink);
+      return url
+        ? '<a class="' + m6EscapeHtml(className || "spg-c009-material-api-link") + '" href="' + m6EscapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + m6EscapeHtml(label) + '</a>'
+        : '<span class="spg-muted" title="Nincs exact API web_url">' + m6EscapeHtml(label) + '</span>';
+    }
+
+    function c009RenderStandaloneSnapshot(requirement) {
+      var mining = requirement.mining || {};
+      var refinery = requirement.refinery || {};
+      var miningRows = c009TopMiningMethods(mining).map(function (system) {
+        return '<div class="spg-c009-system-row"><strong>' + m6EscapeHtml(String(system.system || "Ismeretlen rendszer").replace(/ System$/, "")) + '</strong><span>' + m6EscapeHtml(system.methods.map(function (method) { return method.tierDisplayLabel || method.locationLabel || "Ismeretlen farmhely"; }).join(" · ")) + '</span><small>' + m6EscapeHtml(system.methods.map(function (method) { return formatMiningMethodLabel(method.method) + " · Spawn " + m6FormatMetric(method.spawn, "%") + " · Occurrence " + m6FormatMetric(method.occurrence, "%") + " · " + m6FormatQualityProfile(method.qualityProfile); }).join(" | ")) + '</small></div>';
+      }).join("") || '<p class="spg-muted">' + m6EscapeHtml(requirement.miningStatusText || "Nincs elérhető mining helyadat.") + '</p>';
+      var refineryRows = refinery.status === "AVAILABLE" && (refinery.systems || []).length
+        ? refinery.systems.map(function (system) {
+          return '<div class="spg-c009-system-row"><strong>' + m6EscapeHtml(system.starSystemName + " · " + c008FormatRefineryBonus(system.rankingValue)) + '</strong><span>' + m6EscapeHtml((system.terminals || []).map(function (terminal) { return terminal.terminalName; }).join(" / ")) + '</span><small>' + m6EscapeHtml((system.tieCount || 1) > 1 ? system.tieCount + " azonos legjobb refinery" : "Egyetlen legjobb refinery") + '</small></div>';
+        }).join("")
+        : '<p class="spg-muted">Nincs biztonságos refinery adat</p>';
+      var radarValues = c009RadarValues(mining);
+      var radar = radarValues.length
+        ? radarValues.map(function (value) { return '<span class="spg-c009-radar-chip">' + m6EscapeHtml(value.toLocaleString("hu-HU")) + '</span>'; }).join("")
+        : '<strong>Nincs radar adat</strong>';
+      var targetId = requirement.commodityUuid || requirement.materialUuid;
+      return [
+        '<div class="spg-c009-material-snapshot" data-material-name="', m6EscapeHtml(requirement.materialName), '" style="', m6EscapeHtml(materialColorInlineStyle(requirement.materialColor || resolveMaterialColor(targetId, requirement.materialName))), '">',
+        '<div class="spg-c009-intelligence-grid">',
+        '<section class="spg-c009-intelligence-group"><h4>Rendszerenkénti legjobb Mining</h4>', miningRows, '</section>',
+        '<section class="spg-c009-intelligence-group"><h4>Rendszerenkénti legjobb UEX Refinery</h4>', refineryRows, '</section>',
+        '</div>',
+        '<div class="spg-c009-radar-values"><button type="button" class="spg-intelligence-trigger" data-detail-kind="radar" data-detail-id="', m6EscapeHtml(targetId), '">Radar Signature</button>', radar, '</div>',
+        '<div class="spg-c009-detail-actions"><button type="button" data-detail-kind="material" data-detail-id="', m6EscapeHtml(targetId), '">Material részlet</button><button type="button" data-detail-kind="mining" data-detail-id="', m6EscapeHtml(targetId), '">Mining Top-3</button><button type="button" data-detail-kind="refinery" data-detail-id="', m6EscapeHtml(targetId), '">UEX részlet</button></div>',
+        '</div>'
+      ].join("");
+    }
+
+    function c009RenderStandaloneRequirement(requirement) {
+      return [
+        '<article class="spg-export-c009-requirement" data-status="', m6EscapeHtml(requirement.status), '">',
+        '<div class="spg-c009-recipe-row"><span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span>',
+        c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-material-token spg-material-color-token spg-c009-material-api-link"),
+        '<strong class="spg-c009-per-craft">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong>',
+        '<strong class="spg-c009-inventory">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong></div>',
+        c009RenderStandaloneSnapshot(requirement),
+        '<details class="spg-c009-advanced"><summary>Quality, allocation, batch és teljes farm/loadout részletek</summary>', m6RenderRequirement(requirement), '</details>',
+        '</article>'
+      ].join("");
+    }
+
     function m6RenderStandaloneHtml(snapshot, cssText) {
       var snapshotJson = JSON.stringify(snapshot).replace(/</g, "\\u003c");
       var missingData = snapshot.summary.missingData.length
@@ -14117,8 +14710,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
         '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
         '<main class="spg-export-page">',
-        '<header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><button type="button" class="spg-export-detail-title" data-detail-kind="blueprint" data-detail-id="', m6EscapeHtml(snapshot.card.blueprintUuid || ""), '"><h1>', m6EscapeHtml(snapshot.card.outputName), '</h1></button>',
-        '<p>', m6EscapeHtml(snapshot.card.outputClass), ' · ', m6EscapeHtml(snapshot.card.outputType), ' · Grade ', m6EscapeHtml(snapshot.card.outputGrade), '</p></div>',
+        '<header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><div class="spg-c009-item-meta"><span>S', m6EscapeHtml(snapshot.card.outputSize), '</span><span>', m6EscapeHtml(snapshot.card.outputClass), '</span><span>', m6EscapeHtml(snapshot.card.outputType), '</span><span>', m6EscapeHtml(snapshot.card.outputGrade), '</span></div>',
+        c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-export-detail-title spg-c009-item-api-link"), '<button type="button" class="spg-intelligence-trigger" data-detail-kind="blueprint" data-detail-id="', m6EscapeHtml(snapshot.card.blueprintUuid || ""), '">Belső részlet</button><span class="spg-c009-craft-time">◷ ', m6EscapeHtml(c009FormatCraftTime(snapshot.card.craftTimeSeconds)), '</span></div>',
         '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "Terv teljesíthető" : "Hiány van", '</span></header>',
         '<section class="spg-export-overview">',
         '<span><small>Size</small><strong>', m6EscapeHtml(snapshot.card.outputSize), '</strong></span>',
@@ -14131,8 +14724,9 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         '<span><small>Recipe Slot</small><strong>', m6EscapeHtml(snapshot.summary.ingredientCount), '</strong></span>',
         '</section>',
         missingData,
-        '<section class="spg-export-section"><div class="spg-export-section-title"><p class="eyebrow">Recipe Slot szintű terv</p><h2>Ingredients</h2></div>',
-        '<div class="spg-export-ingredient-grid">', snapshot.requirements.map(m6RenderRequirement).join(""), '</div></section>',
+        '<section class="spg-export-section spg-export-c009-card"><div class="spg-export-section-title"><p class="eyebrow">Recipe Slot szintű terv</p><h2>Ingredients</h2></div>',
+        '<div class="spg-c009-recipe-header"><span>Recipe Slot</span><span>Material</span><span>1 darabhoz</span><span>Megfelelő készlet</span></div>',
+        '<div class="spg-export-c009-requirements">', snapshot.requirements.map(c009RenderStandaloneRequirement).join(""), '</div></section>',
         '<footer class="spg-export-meta">',
         '<span><strong>Generated by:</strong> ', m6EscapeHtml(snapshot.generatedBy), '</span>',
         '<span><strong>SC Data Version:</strong> ', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</span>',
@@ -14200,7 +14794,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         document.getElementById("spgDetailTitle").textContent = model.title || "Részletnézet";
         document.getElementById("spgDetailSource").textContent = "Forrás: " + (model.sourceLabel || "Helyi snapshot") + " · a belső detail offline is a cache/snapshot adatait használja";
         document.getElementById("spgDetailContent").innerHTML = c008RenderDetailContent(model);
-        wikiAction.innerHTML = c008RenderPublicWikiAction(model.publicWikiLink);
+        wikiAction.innerHTML = c008RenderWikiApiAction(model.apiWikiLink);
         setBadge(document.getElementById("spgDetailRouteStatus"), model.status === "AVAILABLE" ? "PASS" : "FAIL", model.status === "AVAILABLE" ? "Belső detail" : "Érvénytelen cél");
         panel.hidden = false;
         document.body.dataset.spgDetailActive = "true";
@@ -14499,6 +15093,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
 
     async function runM61UiRegression() {
       var navigation = m61AuditNavigationDom();
+      var previousNavigationId = document.body.dataset.activeModule || "craftingListNav";
       navigation.forEach(function (entry) {
         document.getElementById(entry.id).click();
         assert(document.body.dataset.activeModule === entry.id, "A kattintás nem aktiválta ezt a modult: " + entry.label);
@@ -14523,6 +15118,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         assert(document.getElementById("materialDatabaseRefinery").children.length > 0, "A refinery nézet üres.");
       }
       assert(Boolean(document.getElementById("miningLoadoutForm")), "A meglévő Mining Loadout editor nem érhető el.");
+      var previousNavigation = M61_REQUIRED_NAVIGATION.find(function (entry) { return entry.id === previousNavigationId; }) || M61_REQUIRED_NAVIGATION[0];
+      navigateToPanel(previousNavigation.id, previousNavigation.targetId, null);
       document.body.dataset.m61UiRegression = "PASS";
       return {
         status: "PASS",
@@ -15315,14 +15912,14 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           navigationButton.removeAttribute("aria-current");
         }
       });
+      document.body.dataset.activeModule = navId;
+      document.body.dataset.activeModuleTarget = targetId;
       var target = document.getElementById(targetId);
       target.scrollIntoView({ behavior: "auto", block: "start" });
       var focusTarget = focusId ? document.getElementById(focusId) : null;
       if (focusTarget && !focusTarget.disabled) {
         focusTarget.focus({ preventScroll: true });
       }
-      document.body.dataset.activeModule = navId;
-      document.body.dataset.activeModuleTarget = targetId;
       logger.event("INFO", "M61_NAVIGATION", "V1 fő navigáció célja megnyílt.", { navId: navId, targetId: targetId });
     }
     M61_REQUIRED_NAVIGATION.forEach(function (item) {
@@ -15572,6 +16169,11 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       renderStandaloneHtml: m6RenderStandaloneHtml,
       resolvePublicWikiDeepLink: resolvePublicWikiDeepLink,
       resolveWikiApiDeepLink: resolveWikiApiDeepLink,
+      resolveItemApiDeepLink: resolveItemApiDeepLink,
+      resolveMaterialApiDeepLink: resolveMaterialApiDeepLink,
+      c009RadarValues: c009RadarValues,
+      c009TopMiningMethods: c009TopMiningMethods,
+      c009FormatCraftTime: c009FormatCraftTime,
       resolveDetailModel: resolveC008DetailModel,
       renderDetailMarkup: c008RenderDetailMarkup,
       renderDetailContent: c008RenderDetailContent,

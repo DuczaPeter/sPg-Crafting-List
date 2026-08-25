@@ -539,3 +539,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Automatizalt C008.1 celteszt + C001-C008 + M1-M6.1 + C04 + standalone + V002-integritas PASS.
 - Valodi Chrome localhost: 15/15, ot detailtipus public/API paritas, main/standalone Back+reload, fingerprint `d7be3ccc -> d7be3ccc`, konzol WARN/ERROR 0.
 - V002 valtozatlan; V003 tag/release es C009 nem keszult. Visszaallas: a C008.1 commit revertje vagy a fagyasztott V002 tag/release.
+
+### V003-C009 Final Main View + exact Crafting Card reference - 2026-08-25
+
+- Scope: a ket felhasznaloi referencia-PNG kovetese informacios hierarchiaban; default Blueprint Browser + kompakt aktualis Crafting Card. C001-C008.1 uzleti logika, router, allocation, Back/reload es V002 valtozatlan.
+- Exact source link: `resolveItemApiDeepLink()` es `resolveMaterialApiDeepLink()` csak source `web_url` vagy API-verified slug alapjan. JS-300/Stileron/Beryl Raw/Savrilium elo API audit PASS; nevbol kepzett/fuzzy URL nincs.
+- Public Wiki user action: normal es standalone UI-bol eltavolitva; a regi public resolver csak belso torteneti/audit celra maradt. Az `API adatlap` kulon, pontos link.
+- Kartya: S1/Military/Power Plant/A, `15:00`, meglevo duplikacio-modellt hasznalo kosar, editable quantity, kompakt slot/per-one/keszlet, rendszerenkenti top mining/refinery es VERIFIED Radar chipek.
+- Standalone: ugyanaz a final-card snapshot, exact API action, 0 public Wiki action, embedded CSS/JS, runtime fetch es kulso runtime dependency 0; PASS.
+- Automatizalt kapu: C009 celteszt, teljes C001-C008.1 + M1-M6.1 + C04 es fagyasztott V002-integritas PASS. Artifact: `test-artifacts/V003-C009/`.
+- Valodi Chrome localhost: Technical Probe 15/15; desktop es 390 px layout, detail Back/reload, quantity roundtrip PASS; fingerprint `d7be3ccc -> d7be3ccc`; konzol warning/error 0.
+- Korabbi `file://` bizonyitek: USER MANUAL PASS, nem Codex automation. V003 release/tag nem keszult, C010 nem indult. Visszaallas: a C009 commit revertje vagy a fagyasztott V002 tag/release.

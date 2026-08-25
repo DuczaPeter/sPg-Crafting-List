@@ -54,7 +54,7 @@ const publicWikiUrls = {
 };
 const materialWikiUrls = {
   Stileron: `https://api.star-citizen.wiki/commodities/stileron-ore?version=${version}`,
-  Beryl: `https://api.star-citizen.wiki/commodities/beryl?version=${version}`,
+  Beryl: `https://api.star-citizen.wiki/commodities/beryl-raw?version=${version}`,
   Savrilium: `https://api.star-citizen.wiki/commodities/savrilium-ore?version=${version}`
 };
 
@@ -296,11 +296,9 @@ assert.equal(oldCacheWiki.origin, "AUDITED_API_SLUG_CANONICAL");
 assert.equal(model.resolveWikiApiDeepLink({ resourceType: "commodities" }).origin, "NO_PROVEN_WIKI_API_URL");
 
 const js300PublicAction = model.renderPublicWikiAction(itemDetail.publicWikiLink);
-assert.match(js300PublicAction, /href="https:\/\/star-citizen\.wiki\/JS-300"/);
-assert.match(js300PublicAction, />Megnyitás a Star Citizen Wiki-ben</);
-assert.doesNotMatch(js300PublicAction, /api\.star-citizen\.wiki/);
+assert.equal(js300PublicAction, "", "A public Wiki audit nem renderelhet user-facing műveletet C009-től.");
 const apiAction = model.renderWikiApiAction(itemDetail.apiWikiLink);
-assert.match(apiAction, />API adatlap megnyitása</);
+assert.match(apiAction, />API adatlap</);
 assert.match(apiAction, /href="https:\/\/api\.star-citizen\.wiki\/items\/js-300\?/);
 assert.doesNotMatch(apiAction, />Megnyitás a Star Citizen Wiki-ben</);
 assert.equal(model.renderPublicWikiAction(model.resolveWikiApiDeepLink({ resourceType: "items", exactUrls: [itemWikiUrl] })), "");
@@ -316,7 +314,7 @@ for (const marker of [
   "history.pushState", "window.addEventListener(\"popstate\"", "window.addEventListener(\"hashchange\"",
   "spgDetailDepth", "history.go(-depth)",
   "Nincs biztonságos UEX refinery adat", "API_RAW_NOT_USER_FACING", itemWikiUrl,
-  publicWikiUrls["JS-300"], publicWikiUrls.Beryl, "API adatlap megnyitása"
+  "API adatlap"
 ]) {
   assert.ok(exported.includes(marker), `A standalone detail exportból hiányzik: ${marker}`);
 }
@@ -325,7 +323,8 @@ assert.doesNotMatch(exported, /<(?:link|script|img|source)[^>]+(?:href|src)=["']
 assert.doesNotMatch(exported, /fetch\s*\(/i);
 assert.ok(exported.includes('type="application/json" id="spg-export-snapshot"'));
 assert.ok(exported.includes("offline detail a helyi export snapshotból"));
-assert.equal((exported.match(/Megnyitás a Star Citizen Wiki-ben/g) || []).length, 5, "Csak JS-300 és a négy Beryl detail kap public Wiki gombot.");
+assert.equal((exported.match(/Megnyitás a Star Citizen Wiki-ben/g) || []).length, 0, "Public Wiki gomb maradt a user-facing standalone nézetben.");
+assert.doesNotMatch(exported, /href="https:\/\/star-citizen\.wiki\//, "Public Wiki link maradt a user-facing standalone nézetben.");
 assert.doesNotMatch(exported, /href="https:\/\/api\.star-citizen\.wiki[^"]*"[^>]*>Megnyitás a Star Citizen Wiki-ben</);
 assert.doesNotMatch(exported, /href="https:\/\/star-citizen\.wiki\/(?:Stileron|Savrilium)/);
 if (artifactPath) {

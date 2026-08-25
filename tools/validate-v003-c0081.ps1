@@ -33,11 +33,8 @@ try {
 
     $standalonePath = Join-Path $projectRoot ($standaloneRelativePath -replace '/', '\')
     $standalone = Get-Content -Raw -LiteralPath $standalonePath
-    if ($standalone -match 'href="https://api\.star-citizen\.wiki[^"]*"[^>]*>Megnyitas a Star Citizen Wiki-ben') {
-        throw 'API host jelent meg public Wiki felirattal a standalone exportban.'
-    }
-    if ($standalone -match 'href="https://star-citizen\.wiki/(?:Stileron|Savrilium)') {
-        throw 'Nem bizonyitott materialhoz public Wiki URL generalt a standalone export.'
+    if ($standalone -match 'Megnyit.s a Star Citizen Wiki-ben' -or $standalone -match 'href="https://star-citizen\.wiki/') {
+        throw 'Public Wiki user-facing link maradt a standalone exportban.'
     }
     if ($standalone -match 'fetch\s*\(') {
         throw 'A standalone export runtime fetch-et tartalmaz.'

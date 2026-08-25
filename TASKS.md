@@ -66,6 +66,12 @@
 - [x] Hydrated/output snapshot public feloldasi metadata es ugyanennek standalone felhasznalasa runtime fetch nelkul.
 - [x] `V003-C008.1` celteszt, teljes C001-C008 + M1-M6.1 + C04, standalone es V002-integritas regresszio PASS.
 - [x] C008.1 valodi Chrome localhost: 15/15, ot detailtipus linkparitas, main/standalone Back+reload, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
+- [x] `V003-C009`: a ket referencia-PNG repositoryban kovetett forras; default fo nezet csak Blueprint Browser + aktualis Crafting Card, desktop ketoszlopos es mobil egymas alatti elrendezessel.
+- [x] C009 kompakt JS-300 kartya: S1/Military/Power Plant/A, `15:00`, meglevo duplikacio-modellt hasznalo kosar, szerkesztheto quantity, slotonkenti per-one mennyiseg es felhasznalhato keszlet.
+- [x] C009 source-record-only exact API linkek: JS-300, Stileron, Beryl Raw es Savrilium; public Wiki gomb nincs normal vagy standalone user UI-ban.
+- [x] Rendszerenkenti legjobb mining/refinery snapshot, csak VERIFIED registrybol szarmazo Radar chipek es ugyanazon C008 belso detail controller a normal es standalone kartyaban.
+- [x] `V003-C009` celteszt, teljes C001-C008.1 + M1-M6.1 + C04, elo exact API audit, standalone es V002-integritas regresszio PASS.
+- [x] C009 valodi Chrome localhost: 15/15 Technical Probe, desktop+390 px, Back/reload, quantity roundtrip, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -73,7 +79,7 @@
 - [x] `V003-C006`: kozos final-card adatkontraktus, card-first layout es elokeszitett detail hookok; blueprint/item nev, Size, Class/Type, Grade, Crafting Time, requested quantity, max craftable, slot/material mennyisegek, inventory/hiany/maradek, Quality rule, Mining+UEX snapshot es curated Radar.
 - [x] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
 - [x] `V003-C008` + `V003-C008.1`: kattinthato blueprint/material/mining/refinery/radar reszletnezet, bizonyitott public Wiki-cikk es kulon API-adatlap.
-- [ ] `V003-C009`: default nezet tisztitasa Crafting Card + szukseges user UI szintre; baseline/debug/raw/log es fejlesztoi eszkozok Advanced/Diagnostics ala.
+- [x] `V003-C009`: referencia-alapu default Blueprint Browser + kompakt Crafting Card, exact forras-API linkek, rendszerenkenti mining/refinery es curated Radar; standalone parityval.
 - [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio
