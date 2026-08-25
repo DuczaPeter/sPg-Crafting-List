@@ -562,3 +562,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Valodi Chrome localhost: 15/15 Technical Probe; desktop es 390 px egyoszlopos tulcsordulasmentes layout; main/standalone detail Back+reload; quantity `1 -> 2 -> 1`; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
 - Screenshotok: `test-artifacts/V003-C010/chrome-final-main-view.png` es `chrome-final-mobile.png` (helyi, Git-ignore). V003 release/tag es C011 nem keszult.
 - Visszaallas: a C010 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.
+
+### V003-C010.1 Compact Mining/Refinery projection + C010 evidence repair - 2026-08-25
+
+- Audit: branch `develop/V003`; eredeti C010 commit `a4a442a20bcac95a2bc1c449c09d69cdf2fd180f`; indulaskor tiszta munkafa. A `docs/V003_C010_REPORT.md` a valodi C010 eredmenyhez tartozik, ezt explicit commit/evidence megjegyzessel rogzitettuk; V002 dokumentumot nem neveztunk at.
+- Mining: a C010 korabbi elso top-tier kivalasztasa maradt. Egy bizonyitott C002 family/group csak sajat labelt mutat; tobb, ugyanazon tierben exact azonos rank tuple-ju kulon group determinisztikus elso labelt es `(+N azonos legjobb)` jelolest kap. A NORMAL/SPACE top tierjei nem mosodnak ossze.
+- Refinery: `c010FriendlyRefineryLabel()` eltavolitja a bizonyitott `Refinement Processing/Center -` prezentacios prefixet es az ismert rendszer-zarojelet. Csak a rendszer `rankingValue` exact nyertesei szamitanak; egy nyertesnel nev, tobbnel `elso (+N azonos legjobb)`. A raw UEX terminalnevek valtozatlanul a snapshot/detailben maradnak.
+- Valos Chrome cache: Stileron Mining `Pyro: Bloom (+4 azonos legjobb)`, refinery unresolved; Beryl Mining `Stanton: Wala`, refinery `Stanton: ARC-L1 (+4 azonos legjobb)` es `Nyx: Levski`; Savrilium Mining `Nyx: Glaciem Ring (+1 azonos legjobb)`, refinery `Stanton: MIC-L5` es `Nyx: Levski`.
+- Automatizalt: `validate-v003-c0101.ps1` teljes C001-C010 + M1-M6.1 + C04, exact API audit, standalone es V002-integritas PASS. Celteszt bizonyitja a family labelt, kulon mining tie-t, harom refinery nevnormalizalast, exact tie-countot es alacsonyabb rang kizárasat.
+- Chrome localhost: Technical Probe 15/15; main/standalone compact parity; detail reload es browser Back; 390 px oldal-tulcsordulas 0; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
+- Screenshot: `test-artifacts/V003-C010.1/chrome-final-main-view.png` (helyi, Git-ignore). Stabil V003 release/tag es C011 nem keszult.
+- Visszaallas: a C010.1 commit revertje; stabil fallback a valtozatlan `V002` tag/release.

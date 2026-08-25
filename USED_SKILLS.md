@@ -305,3 +305,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C010 scope es a fagyasztott V002 vedelme, a haromsoros terv es teljes regresszios kapu megtartasara; valamint a valos 15/15 Technical Probe, quantity input es probe-kompatibilitasi hibak felismeresere/javitasara, a responsive vizualis bizonyitekra, a Back/reload, fingerprint es tiszta konzol igazolasara.
 - Mely fajlokat vagy donteseket erintett: V003 default/main Final Card UI, preview quantity, standalone C010 projekcio, Technical Probe C010-kompatibilitas, C009 torteneti teszt, C010 teszt/validator/riport/artifact es projekt statuszfajlok; stabil V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C010.1 Compact Mining/Refinery projection
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a szuk compact presentation javitas, teljes repair-cycle es valodi Chrome localhost/parity/responsive/konzol ellenorzes soran.
+- Mire segitett: a C010 elrendezes es C001-C010 modellek vedelmere, a haromsoros terv es teljes regresszios kapu megtartasara, valamint a valos NORMAL/SPACE osszemosasi hatar felismeresere es a renderelt kompakt eredmeny bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 Final Card kozos main/standalone Mining/Refinery presentation helper, C010.1 teszt/validator/riport/artifact es projekt statuszfajlok; stabil V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -78,6 +78,9 @@
 - [x] C010 standalone parity: egy kompakt Final Card, exact API linkek, belso Mining/Refinery/Radar detail, embedded CSS/JS, runtime fetch es kulso runtime resource 0.
 - [x] `V003-C010` celteszt, teljes C001-C010 + M1-M6.1 + C04, elo exact API audit, standalone es V002-integritas regresszio PASS.
 - [x] C010 valodi Chrome localhost: 15/15 Technical Probe, kulon Crafting List, main/standalone Back+reload, quantity `1 -> 2 -> 1`, 390 px, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
+- [x] `V003-C010.1`: Final Card-only compact Mining/Refinery projection; egy bizonyitott nyertes csoport neve, tobb exact tie eseten determinisztikus elso `(+N azonos legjobb)` jeloles, `+N további` es terminal-nevfal nelkul.
+- [x] C010.1 megorzi a C001 NORMAL/SPACE szetvalasztast es a C010 elso top-tier kivalasztasat; alacsonyabb refinery `value_month` rekord nem szamolhato tie-kent, raw snapshot es C008 detail valtozatlan.
+- [x] `V003-C010.1` celteszt + teljes C001-C010/M1-M6.1/C04 + standalone + Chrome localhost + 390 px + Back/reload + fingerprint + console + V002-integritas PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -87,6 +90,7 @@
 - [x] `V003-C008` + `V003-C008.1`: kattinthato blueprint/material/mining/refinery/radar reszletnezet, bizonyitott public Wiki-cikk es kulon API-adatlap.
 - [x] `V003-C009`: referencia-alapu default Blueprint Browser + kompakt Crafting Card, exact forras-API linkek, rendszerenkenti mining/refinery es curated Radar; standalone parityval.
 - [x] `V003-C010`: tiszta default Final Card, kulon tobbkartyas Crafting List, azonos kompakt standalone kartya, teljes single-file es browser regresszio; felhasznaloi vizualis acceptance meg nyitott.
+- [x] `V003-C010.1`: a C010 elrendezes valtoztatasa nelkul rovid Mining/Refinery nyertesprojekcio es javitott C010/C010.1 bizonyitek.
 - [ ] C011 nincs elinditva; kovetkezo fejlesztes csak uj felhasznaloi utasitassal.
 
 ### V002 GitHub- es Discord-dokumentacio

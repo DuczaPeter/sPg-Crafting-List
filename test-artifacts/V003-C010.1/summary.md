@@ -1,0 +1,22 @@
+# V003-C010.1 test summary
+
+- Result: `PASS`
+- Branch: `develop/V003`
+- Original C010 commit: `a4a442a20bcac95a2bc1c449c09d69cdf2fd180f`
+- Full validator: `tools/validate-v003-c0101.ps1`
+- Regression: C001-C010 + M1-M6.1 + C04 `PASS`
+- Targeted compact Mining/Refinery presentation: `PASS`
+- Lower-ranked refinery excluded from exact tie count: `PASS`
+- Main/standalone shared projection: `PASS`
+- Standalone bytes: `208245`
+- Standalone SHA-256: `53a8e8c4c1f4f7bb0f34eea4dd9ccb0c8c1391e0ce4e5b53d5f386b6634811d2`
+- Standalone runtime fetch/external resources: `0 / 0`
+- Chrome localhost Technical Probe: `15 PASS / 0 FAIL`
+- Chrome detail reload + browser Back: `PASS`
+- Chrome 390 px horizontal overflow: `0`
+- Chrome main/standalone console warning/error: `0 / 0`
+- User Data fingerprint: `d7be3ccc -> d7be3ccc`
+- V002 tag commit: `b326aaff5838aafd5b1f13b16982c29a0e150e35`
+- V002 HTML SHA-256: `de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357`
+- V003 release/tag: `NOT CREATED`
+- C011: `NOT STARTED`

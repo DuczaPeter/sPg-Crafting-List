@@ -2,6 +2,7 @@
 
 - Cycle: `V003-C010`
 - Branch: `develop/V003`
+- Original C010 commit: `a4a442a20bcac95a2bc1c449c09d69cdf2fd180f`
 - Status: `AUTOMATED PASS + CHROME LOCALHOST PASS; USER VISUAL ACCEPTANCE PENDING`
 - Stable baseline: `V002` unchanged
 
@@ -65,6 +66,10 @@ Legacy allocation/source evidence remains available only in a collapsed Advanced
 - Frozen V002 tag commit `b326aaff5838aafd5b1f13b16982c29a0e150e35` and release HTML SHA-256 `de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357`: unchanged.
 
 The earlier real Chrome `file://` result remains recorded as `USER MANUAL PASS_NOT_CODEX_AUTOMATION`; C010 itself was verified by Codex on localhost, not as a new `file://` automation claim.
+
+## Evidence audit correction
+
+This document was re-audited during `V003-C010.1`. It describes the actual C010 implementation and its original commit above; it is not a renamed or reused V002 release report. The frozen V002 report, tag and release artifact remain separate and unchanged. C010.1 presentation-only results are recorded in `docs/V003_C0101_REPORT.md`.
 
 ## Artifacts
 

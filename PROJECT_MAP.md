@@ -53,6 +53,9 @@
 - V003-C010 exact Final Card kapu: `tools/validate-v003-c010.ps1`; default Browser + egy Final Card, kulon Crafting List, kompakt standalone, C001-C010/M1-M6.1/C04 es V002-integritas.
 - V003-C010 celzott teszt: `tools/run-v003-c010-tests.mjs`; 3 recipe-sor, 3 materialblokk, 8 curated Radar chip, exact API linkek, detail-celok es 0 kulso standalone runtime eroforras.
 - V003-C010 riport: `docs/V003_C010_REPORT.md`; layout, quantity/allocation, standalone, Chrome desktop/mobile/Back/reload/konzol/fingerprint es V002-integritas bizonyitek.
+- V003-C010.1 kapu: `tools/validate-v003-c0101.ps1`; C010 teljes kapu + compact Mining/Refinery celteszt, standalone es V002-integritas.
+- V003-C010.1 celteszt: `tools/run-v003-c0101-tests.mjs`; family/single/multi-group mining, refinery friendly label, exact tie-count, alacsonyabb rang kizárasa es standalone parity.
+- V003-C010.1 riport: `docs/V003_C0101_REPORT.md`; eredeti C010 audit, compact szabalyok, valos Chrome eredmeny, standalone es V002-integritas.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -74,6 +77,7 @@
 - `docs/V003_C008_1_PUBLIC_WIKI_REPORT.md`: a public Wiki/API linkkorrekcio, exact MediaWiki audit, snapshot contract, standalone es C008.1 acceptance.
 - `docs/V003_C009_REPORT.md`: a referencia-alapu main view, exact source API linkek, kompakt kartya es C009 acceptance.
 - `docs/V003_C010_REPORT.md`: a tiszta Final Card-only default nezet, kulon Crafting List, kompakt standalone es C010 Chrome/regresszios acceptance.
+- `docs/V003_C0101_REPORT.md`: a C010.1 compact Mining/Refinery prezentacios korrekcio es a C010 evidence audit.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -114,6 +118,7 @@
 - `test-artifacts/V003-C008.1/`: public MediaWiki exact-title audit, korrigalt standalone snapshot es valodi Chrome localhost evidence.
 - `test-artifacts/V003-C009/`: exact API audit, referencia-alapu standalone kartya, summary es Chrome screenshot.
 - `test-artifacts/V003-C010/`: exact API audit, kompakt standalone Final Card, PASS summary es helyi Chrome desktop/mobile screenshot.
+- `test-artifacts/V003-C010.1/`: exact API audit, compact standalone Final Card, PASS summary es helyi Chrome screenshot.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

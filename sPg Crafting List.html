@@ -14624,6 +14624,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         .sort(function (a, b) { return a - b; });
     }
 
+    /* C010_COMPACT_PRESENTATION_START */
     function c009TopMiningMethods(mining) {
       var rows = [];
       (mining && mining.systems || []).forEach(function (system) {
@@ -14656,18 +14657,98 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       return ordered;
     }
 
+    function c010StablePresentationCompare(left, right) {
+      return String(left.label || "").localeCompare(String(right.label || ""), "hu")
+        || String(left.key || "").localeCompare(String(right.key || ""), "en");
+    }
+
+    function c010MiningPresentationGroups(method) {
+      var source = method || {};
+      var presentation = source.presentation || {};
+      var groups = Array.isArray(presentation.groups) ? presentation.groups : [];
+      var normalized = groups.map(function (group, index) {
+        var label = String(group && group.label || "").trim();
+        if (!label) { return null; }
+        return {
+          key: String(group.key || [source.environment || "UNKNOWN", label, index].join("::")),
+          label: label
+        };
+      }).filter(Boolean);
+      if (normalized.length) {
+        return normalized.sort(c010StablePresentationCompare);
+      }
+      var fallback = String(source.locationLabel || source.tierDisplayLabel || "").trim();
+      return fallback ? [{
+        key: ["LEGACY", source.environment || "UNKNOWN", fallback].join("::"),
+        label: fallback
+      }] : [];
+    }
+
+    function c010CompactMiningLabel(methods) {
+      var groups = [];
+      (methods || []).forEach(function (method) {
+        groups = groups.concat(c010MiningPresentationGroups(method));
+      });
+      groups.sort(c010StablePresentationCompare);
+      if (!groups.length) {
+        return "Ismeretlen farmhely";
+      }
+      return groups[0].label + (groups.length > 1 ? " (+" + (groups.length - 1) + " azonos legjobb)" : "");
+    }
+
     function c010MiningSummary(mining) {
       var available = new Map();
       c009TopMiningMethods(mining || {}).forEach(function (system) {
         var name = c010NormalizeSystemName(system.system);
-        var method = (system.methods || [])[0] || null;
-        if (method) {
-          available.set(name, method.tierDisplayLabel || method.locationLabel || "Ismeretlen farmhely");
+        var methods = system.methods || [];
+        if (methods.length) {
+          available.set(name, c010CompactMiningLabel([methods[0]]));
         }
       });
       return c010OrderedSystemNames(Array.from(available.keys())).map(function (system) {
         return { system: system, status: available.has(system) ? "AVAILABLE" : "NO_DATA", label: available.get(system) || "Nincs adat" };
       });
+    }
+
+    function c010FriendlyRefineryLabel(value) {
+      var original = String(value || "").trim();
+      if (!original) { return ""; }
+      var friendly = original.replace(/^Refinement\s+(?:Processing|Center)\s*-\s*/i, "");
+      friendly = friendly.replace(/\s+\((?:Stanton|Pyro|Nyx)(?:\s+System)?\)\s*$/i, "").trim();
+      return friendly || original;
+    }
+
+    function c010BestRefineryTerminals(system) {
+      var source = system || {};
+      var terminals = (source.terminals || []).slice();
+      var rankingValue = Number(source.rankingValue);
+      if (Number.isFinite(rankingValue)) {
+        var exactWinners = terminals.filter(function (terminal) {
+          var value = Number(terminal && (terminal.valueMonth != null ? terminal.valueMonth : terminal.value_month));
+          return Number.isFinite(value) && value === rankingValue;
+        });
+        if (exactWinners.length) {
+          terminals = exactWinners;
+        }
+      }
+      return terminals.sort(function (left, right) {
+        var leftFriendly = c010FriendlyRefineryLabel(left && left.terminalName);
+        var rightFriendly = c010FriendlyRefineryLabel(right && right.terminalName);
+        return leftFriendly.localeCompare(rightFriendly, "hu")
+          || String(left && left.terminalName || "").localeCompare(String(right && right.terminalName || ""), "en")
+          || String(left && (left.terminalId || left.id) || "").localeCompare(String(right && (right.terminalId || right.id) || ""), "en");
+      });
+    }
+
+    function c010CompactRefinerySystem(system) {
+      var terminals = c010BestRefineryTerminals(system);
+      if (!terminals.length) { return null; }
+      var first = c010FriendlyRefineryLabel(terminals[0].terminalName) || "Ismeretlen refinery";
+      return {
+        label: first + (terminals.length > 1 ? " (+" + (terminals.length - 1) + " azonos legjobb)" : ""),
+        tieCount: terminals.length,
+        rawTerminalNames: terminals.map(function (terminal) { return terminal.terminalName; })
+      };
     }
 
     function c010RefinerySummary(refinery) {
@@ -14678,19 +14759,27 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       var available = new Map();
       (source.systems || []).forEach(function (system) {
         var name = c010NormalizeSystemName(system.starSystemName);
-        var terminals = (system.terminals || []).map(function (terminal) { return terminal.terminalName; }).filter(Boolean);
-        if (terminals.length) {
-          available.set(name, terminals.join(" / "));
+        var compact = c010CompactRefinerySystem(system);
+        if (compact) {
+          available.set(name, compact);
         }
       });
       return {
         status: "AVAILABLE",
         message: null,
         rows: c010OrderedSystemNames(Array.from(available.keys())).map(function (system) {
-          return { system: system, status: available.has(system) ? "AVAILABLE" : "NO_DATA", label: available.get(system) || "Nincs adat" };
+          var compact = available.get(system) || null;
+          return {
+            system: system,
+            status: compact ? "AVAILABLE" : "NO_DATA",
+            label: compact ? compact.label : "Nincs adat",
+            tieCount: compact ? compact.tieCount : 0,
+            rawTerminalNames: compact ? compact.rawTerminalNames.slice() : []
+          };
         })
       };
     }
+    /* C010_COMPACT_PRESENTATION_END */
 
     function c009SafeApiUrl(link) {
       return link && link.status === "AVAILABLE" && c008IsWikiApiUrl(link.url) ? link.url : null;
@@ -16995,7 +17084,12 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       c009TopMiningMethods: c009TopMiningMethods,
       c009FormatCraftTime: c009FormatCraftTime,
       c010OrderedSystemNames: c010OrderedSystemNames,
+      c010MiningPresentationGroups: c010MiningPresentationGroups,
+      c010CompactMiningLabel: c010CompactMiningLabel,
       c010MiningSummary: c010MiningSummary,
+      c010FriendlyRefineryLabel: c010FriendlyRefineryLabel,
+      c010BestRefineryTerminals: c010BestRefineryTerminals,
+      c010CompactRefinerySystem: c010CompactRefinerySystem,
       c010RefinerySummary: c010RefinerySummary,
       buildC010PreviewCard: buildC010PreviewCard,
       prepareC010FinalCraftingCard: prepareC010FinalCraftingCard,

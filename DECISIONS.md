@@ -116,3 +116,10 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Public Wiki URL fuzzy, reszleges vagy canonical nevbol vakon kepzett talalattal nem hozhato letre. Bizonyitek nelkul `NO_PROVEN_PUBLIC_WIKI_URL`, es a normal UI-ban nincs public Wiki gomb.
 - A feloldott public Wiki metadata a hydrated/output snapshot resze, a standalone nem futtat runtime MediaWiki/API keresest.
 - JS-300 es Beryl public oldala VERIFIED; Stileron es Savrilium jelenleg bizonyitek nelkul marad. C009 es stabil V003 release/tag tovabbra sincs engedelyezve.
+
+## 2026-08-25 - V003-C010.1 compact nyertesprojekcio
+
+- A Final Card nem listazza a teljes nyers mining/refinery tie-keszletet. A raw lista es a rangsorolasi bizonyitek a snapshotban es a C008 detailben marad.
+- Miningnel a C010 korabbi, determinisztikus elso top-tier kivalasztasa marad. Egy C002 presentation group sajat labelt kap; ugyanazon kivalasztott tier tobb exact azonos rank tuple-ju groupja `elso (+N azonos legjobb)` formaban jelenik meg. A NORMAL/SPACE tier nem olvaszthato ossze.
+- Refinerynel a rendszer `rankingValue` exact nyertesei szamitanak. A megjelenites determinisztikus elso friendly terminalnev, tobb nyertesnel `(+N azonos legjobb)`; alacsonyabb rang nem szamolhato bele.
+- A `Refinement Processing -` es `Refinement Center -` prefix, valamint az ismert rendszer-zarojelek csak a C010 prezentacios labelbol tunnek el; a raw UEX terminalnev nem modosul.
