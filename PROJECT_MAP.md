@@ -49,6 +49,10 @@
 - V003-C008 detail kapu: `tools/validate-v003-c008.ps1`; elo Wiki deep-link audit, celzott same-HTML/standalone detail teszt, teljes C001-C007 + M1-M6.1 + C04 es V002-integritas.
 - V003-C008 celzott teszt/audit: `tools/run-v003-c008-tests.mjs` es `tools/audit-v003-c008-wiki-links.mjs`; ot detail tipus, history/reload/invalid modell, exact URL-forras es offline standalone bizonyitek.
 - V003-C008 riport: `docs/V003_C008_DETAIL_VIEW_REPORT.md`; route/controller, adattartalom, Wiki URL-hierarchia, standalone parity, Chrome es V002-integritas.
+- V003-C009 exact API/main-card kapu: `tools/validate-v003-c009.ps1`; source-record-only item/material API audit, referencia-alapu main/card projekcio, C001-C008.1 regresszio es V002-integritas.
+- V003-C010 exact Final Card kapu: `tools/validate-v003-c010.ps1`; default Browser + egy Final Card, kulon Crafting List, kompakt standalone, C001-C010/M1-M6.1/C04 es V002-integritas.
+- V003-C010 celzott teszt: `tools/run-v003-c010-tests.mjs`; 3 recipe-sor, 3 materialblokk, 8 curated Radar chip, exact API linkek, detail-celok es 0 kulso standalone runtime eroforras.
+- V003-C010 riport: `docs/V003_C010_REPORT.md`; layout, quantity/allocation, standalone, Chrome desktop/mobile/Back/reload/konzol/fingerprint es V002-integritas bizonyitek.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -68,6 +72,8 @@
 - `docs/V003_C006_FINAL_CARD_REPORT.md`: a final Crafting Card adatkontraktus, automatikus ingredient hydration, kozos UI/export projekcio es C006 acceptance.
 - `docs/V003_C008_DETAIL_VIEW_REPORT.md`: a same-HTML detail controller, ot reszlettipus, Wiki URL-hierarchia, offline standalone parity es C008 acceptance.
 - `docs/V003_C008_1_PUBLIC_WIKI_REPORT.md`: a public Wiki/API linkkorrekcio, exact MediaWiki audit, snapshot contract, standalone es C008.1 acceptance.
+- `docs/V003_C009_REPORT.md`: a referencia-alapu main view, exact source API linkek, kompakt kartya es C009 acceptance.
+- `docs/V003_C010_REPORT.md`: a tiszta Final Card-only default nezet, kulon Crafting List, kompakt standalone es C010 Chrome/regresszios acceptance.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -106,6 +112,8 @@
 - `test-artifacts/V003-C007/`: material color pixelaudit, teljes regresszios summary, Chrome evidence es standalone artifact.
 - `test-artifacts/V003-C008/`: Wiki deep-link audit, detail/standalone artifact, repair-cycle summary es valodi Chrome localhost evidence.
 - `test-artifacts/V003-C008.1/`: public MediaWiki exact-title audit, korrigalt standalone snapshot es valodi Chrome localhost evidence.
+- `test-artifacts/V003-C009/`: exact API audit, referencia-alapu standalone kartya, summary es Chrome screenshot.
+- `test-artifacts/V003-C010/`: exact API audit, kompakt standalone Final Card, PASS summary es helyi Chrome desktop/mobile screenshot.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

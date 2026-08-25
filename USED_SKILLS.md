@@ -297,3 +297,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C009 scope, a fagyasztott V002 vedelme es teljes regresszios kapu megtartasara; valamint a desktop/390 px layout, exact DOM linkek, Technical Probe, Back/reload, quantity, fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 main/Crafting Card UI es standalone projection, C008.1 torteneti teszt elvarasok, C009 audit/teszt/validator/riport/artifact es projekt statuszfajlok; stabil V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C010 Exact Final Crafting Card + clean main view
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a default Browser + egy Final Card szetvalasztas, kompakt standalone projekcio, teljes cikluskapu es valodi Chrome localhost desktop/mobile/detail/quantity/konzol ellenorzes soran.
+- Mire segitett: a szuk C010 scope es a fagyasztott V002 vedelme, a haromsoros terv es teljes regresszios kapu megtartasara; valamint a valos 15/15 Technical Probe, quantity input es probe-kompatibilitasi hibak felismeresere/javitasara, a responsive vizualis bizonyitekra, a Back/reload, fingerprint es tiszta konzol igazolasara.
+- Mely fajlokat vagy donteseket erintett: V003 default/main Final Card UI, preview quantity, standalone C010 projekcio, Technical Probe C010-kompatibilitas, C009 torteneti teszt, C010 teszt/validator/riport/artifact es projekt statuszfajlok; stabil V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

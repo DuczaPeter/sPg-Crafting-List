@@ -550,3 +550,15 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Automatizalt kapu: C009 celteszt, teljes C001-C008.1 + M1-M6.1 + C04 es fagyasztott V002-integritas PASS. Artifact: `test-artifacts/V003-C009/`.
 - Valodi Chrome localhost: Technical Probe 15/15; desktop es 390 px layout, detail Back/reload, quantity roundtrip PASS; fingerprint `d7be3ccc -> d7be3ccc`; konzol warning/error 0.
 - Korabbi `file://` bizonyitek: USER MANUAL PASS, nem Codex automation. V003 release/tag nem keszult, C010 nem indult. Visszaallas: a C009 commit revertje vagy a fagyasztott V002 tag/release.
+
+### V003-C010 Exact Final Crafting Card + clean user-facing main view - 2026-08-25
+
+- Scope: default bal Blueprint Browser + jobb egyetlen Final Crafting Card; a teljes tobbkartyas Crafting List kulon navigacios modul. C001-C009 ranking/hydration/allocation/Radar/color/API/detail logika es V002 valtozatlan.
+- Kartya: S1/Military/A, 15:00, kosar, compact editable `1 DB`, Allocation Engine max, harom slot/material/per-one/stock sor es materialonkenti tomor Mining/Refinery/Radar blokk Stanton -> Pyro -> Nyx sorrendben.
+- UI tisztitas: a normal Final Cardbol eltunt a Crafting List modulfejlec, active/admin/prioritas/batch/status/dashboard zaj; a funkciok a kulon Crafting Listben megmaradtak.
+- Chrome altal talalt javitasok: a quantity `input` esemenyre is debounced ujraszamol; a Technical Probe a C010 strukturaban recipe/detail/snapshot bizonyitekot ellenoriz a regi nagy exportfejlec mellett.
+- Standalone: egy kompakt Final Card, 3 recipe-sor, 3 materialblokk, 8 curated Radar chip, exact API linkek, belso Mining/Refinery/Radar detail, embedded CSS/JS, runtime fetch es kulso runtime resource 0.
+- Automatizalt: `validate-v003-c010.ps1` PASS; teljes C001-C010 + M1-M6.1 + C04, elo API audit, standalone es V002-integritas zold.
+- Valodi Chrome localhost: 15/15 Technical Probe; desktop es 390 px egyoszlopos tulcsordulasmentes layout; main/standalone detail Back+reload; quantity `1 -> 2 -> 1`; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
+- Screenshotok: `test-artifacts/V003-C010/chrome-final-main-view.png` es `chrome-final-mobile.png` (helyi, Git-ignore). V003 release/tag es C011 nem keszult.
+- Visszaallas: a C010 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.

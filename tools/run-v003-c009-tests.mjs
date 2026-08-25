@@ -13,9 +13,6 @@ const appHtml = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.h
 const standalone = fs.readFileSync(standalonePath, "utf8");
 
 for (const marker of [
-  'data-active-module="craftingListNav"',
-  'body[data-active-module="craftingListNav"] #blueprintBrowserPanel',
-  'body[data-active-module="craftingListNav"] #craftingCardsPanel',
   "function resolveItemApiDeepLink",
   "function resolveMaterialApiDeepLink",
   "function c009RadarValues",
@@ -67,17 +64,22 @@ for (const requirement of snapshot.requirements) {
   }
 }
 
-for (const marker of [
-  "15:00", "Recipe Slot", "Megfelelő készlet", "Rendszerenkénti legjobb Mining",
-  "Rendszerenkénti legjobb UEX Refinery", "Radar Signature", "Mining Top-3",
-  "Mining / Farm helyek", "UEX refinery ajánló", "Mining loadout", "API adatlap"
-]) {
+for (const marker of ["15:00", "Mining / Farm helyek", "UEX refinery ajánló", "Mining loadout", "API adatlap"]) {
   assert.ok(standalone.includes(marker), `A standalone C009 kártyából hiányzik: ${marker}`);
+}
+if (standalone.includes("spg-c010-final-card")) {
+  for (const marker of ["2 DB", "Max: 3 DB", "Mining", "Refinery", "Radar", "spg-c010-recipe-row", "spg-c010-material"]) {
+    assert.ok(standalone.includes(marker), `A C010-cel korrigált C009 projekcióból hiányzik: ${marker}`);
+  }
+} else {
+  for (const marker of ["Recipe Slot", "Megfelelő készlet", "Rendszerenkénti legjobb Mining", "Rendszerenkénti legjobb UEX Refinery", "Radar Signature", "Mining Top-3"]) {
+    assert.ok(standalone.includes(marker), `A történeti C009 projekcióból hiányzik: ${marker}`);
+  }
 }
 for (const url of [snapshot.card.apiWikiLink.url, ...Object.values(expectedMaterials).map((record) => record.url)]) {
   assert.ok(standalone.includes(`href="${url}" target="_blank" rel="noopener noreferrer"`), `Hiányzó exact API link: ${url}`);
 }
-assert.ok((standalone.match(/spg-c009-radar-chip/g) || []).length >= 4, "A Radar Signature chip megjelenítés hiányos.");
+assert.ok((standalone.match(/spg-c0(?:09|10)-radar-chip/g) || []).length >= 4, "A Radar Signature chip megjelenítés hiányos.");
 assert.doesNotMatch(standalone, /Megnyitás a Star Citizen Wiki-ben/);
 assert.doesNotMatch(standalone, /href="https:\/\/star-citizen\.wiki\//);
 assert.doesNotMatch(standalone, /<(?:link|script|img|source)[^>]+(?:href|src)=["']https?:/i);

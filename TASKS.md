@@ -72,6 +72,12 @@
 - [x] Rendszerenkenti legjobb mining/refinery snapshot, csak VERIFIED registrybol szarmazo Radar chipek es ugyanazon C008 belso detail controller a normal es standalone kartyaban.
 - [x] `V003-C009` celteszt, teljes C001-C008.1 + M1-M6.1 + C04, elo exact API audit, standalone es V002-integritas regresszio PASS.
 - [x] C009 valodi Chrome localhost: 15/15 Technical Probe, desktop+390 px, Back/reload, quantity roundtrip, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
+- [x] `V003-C010`: default nezetben bal Blueprint Browser es jobb egyetlen, nem perzisztalt Final Crafting Card; a teljes tobbkartyas Crafting List csak kulon navigacios modul.
+- [x] C010 exact kartya-kompozicio: S1/Military/A, 15:00, kosar, editable quantity, kompakt max, harom slot/material/per-one/stock sor es harom semleges material intelligence blokk.
+- [x] Final Card rendszersorrend Stanton -> Pyro -> Nyx, rendszerenkenti egy best mining/refinery tier-group, spawn/occurrence/Quality dashboard nelkul; nyolc exact curated Radar chip.
+- [x] C010 standalone parity: egy kompakt Final Card, exact API linkek, belso Mining/Refinery/Radar detail, embedded CSS/JS, runtime fetch es kulso runtime resource 0.
+- [x] `V003-C010` celteszt, teljes C001-C010 + M1-M6.1 + C04, elo exact API audit, standalone es V002-integritas regresszio PASS.
+- [x] C010 valodi Chrome localhost: 15/15 Technical Probe, kulon Crafting List, main/standalone Back+reload, quantity `1 -> 2 -> 1`, 390 px, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -80,7 +86,8 @@
 - [x] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
 - [x] `V003-C008` + `V003-C008.1`: kattinthato blueprint/material/mining/refinery/radar reszletnezet, bizonyitott public Wiki-cikk es kulon API-adatlap.
 - [x] `V003-C009`: referencia-alapu default Blueprint Browser + kompakt Crafting Card, exact forras-API linkek, rendszerenkenti mining/refinery es curated Radar; standalone parityval.
-- [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.
+- [x] `V003-C010`: tiszta default Final Card, kulon tobbkartyas Crafting List, azonos kompakt standalone kartya, teljes single-file es browser regresszio; felhasznaloi vizualis acceptance meg nyitott.
+- [ ] C011 nincs elinditva; kovetkezo fejlesztes csak uj felhasznaloi utasitassal.
 
 ### V002 GitHub- es Discord-dokumentacio
 

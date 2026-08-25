@@ -4724,6 +4724,404 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
   }
 }
 
+/* V003-C010 exact Final Crafting Card composition. The full Crafting List stays a separate module. */
+
+body[data-active-module="craftingListNav"] #blueprintBrowserPanel {
+  display: none;
+}
+
+body[data-active-module="craftingListNav"] #craftingCardsPanel {
+  display: block;
+  grid-column: 1 / -1;
+}
+
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel,
+body[data-active-module="blueprintBrowserNav"] #finalCraftingCardPanel {
+  display: block;
+}
+
+body[data-active-module="blueprintBrowserNav"] .spg-main-layout {
+  grid-template-columns: minmax(300px, 0.72fr) minmax(520px, 1.28fr);
+  align-items: start;
+}
+
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel {
+  grid-column: 1;
+  position: sticky;
+  top: 12px;
+}
+
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-browser-toolbar,
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-browser-layout {
+  grid-template-columns: 1fr;
+}
+
+body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-browser-results {
+  max-height: 440px;
+}
+
+#finalCraftingCardPanel {
+  grid-column: 2;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.spg-c010-final-empty {
+  margin: 0;
+  padding: 22px;
+  border: 1px dashed rgba(24, 218, 255, 0.34);
+  border-radius: 16px;
+  color: var(--muted);
+  background: rgba(5, 18, 28, 0.58);
+}
+
+.spg-c010-final-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(24, 218, 255, 0.52);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(10, 24, 37, 0.98), rgba(3, 12, 20, 0.98));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+}
+
+.spg-c010-topline,
+.spg-c010-titleline,
+.spg-c010-time-cart,
+.spg-c010-quantity,
+.spg-c010-material-heading,
+.spg-c010-intelligence-line,
+.spg-c010-radar-line {
+  display: flex;
+  align-items: center;
+}
+
+.spg-c010-topline,
+.spg-c010-titleline {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spg-c010-meta,
+.spg-c010-time-cart,
+.spg-c010-quantity,
+.spg-c010-system-links,
+.spg-c010-radar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.spg-c010-meta span,
+.spg-c010-craft-time,
+.spg-c010-quantity-box,
+.spg-c010-max {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 9px;
+  border: 1px solid rgba(24, 218, 255, 0.3);
+  border-radius: 8px;
+  color: #e9f6ff;
+  background: rgba(3, 12, 20, 0.76);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.spg-c010-meta span:last-child,
+.spg-c010-quantity-box {
+  border-color: rgba(255, 118, 173, 0.62);
+}
+
+.spg-c010-craft-time {
+  border-color: rgba(255, 179, 0, 0.62);
+  color: #ffd36b;
+  font-size: 16px;
+}
+
+.spg-c010-cart {
+  min-width: 38px;
+  min-height: 34px;
+  padding: 4px 9px;
+  border-color: rgba(255, 118, 173, 0.62);
+  font-size: 18px;
+}
+
+.spg-c010-titleline {
+  align-items: flex-end;
+}
+
+.spg-c010-item-api-link {
+  min-width: 0;
+  color: #eef7ff;
+  text-decoration: none;
+}
+
+.spg-c010-item-api-link h2 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.spg-c010-standalone-card > .spg-c010-titleline > .spg-c010-item-api-link {
+  font-family: "Orbitron", "Roboto", Arial, sans-serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.spg-c010-item-api-link:hover,
+.spg-c010-item-api-link:focus-visible {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.spg-c010-quantity {
+  justify-content: flex-end;
+}
+
+.spg-c010-quantity-box {
+  gap: 4px;
+  color: #f4eaff;
+  font-size: 15px;
+}
+
+.spg-c010-quantity-box input {
+  width: 48px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: right;
+}
+
+.spg-c010-max {
+  border-color: rgba(156, 113, 255, 0.44);
+  color: #d8caff;
+}
+
+.spg-c010-recipe {
+  overflow: hidden;
+  border: 1px solid rgba(255, 139, 36, 0.56);
+  border-radius: 12px;
+  background: rgba(18, 13, 10, 0.48);
+}
+
+.spg-c010-recipe-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(110px, 0.86fr) auto minmax(92px, 0.58fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding: 7px 10px;
+  border-top: 1px solid rgba(255, 139, 36, 0.18);
+}
+
+.spg-c010-recipe-row:first-child {
+  border-top: 0;
+}
+
+.spg-c010-recipe-row > * {
+  min-width: 0;
+}
+
+.spg-c010-recipe-row .spg-recipe-slot {
+  color: #c7dcf0;
+  font-weight: 800;
+}
+
+.spg-c010-material-link {
+  justify-self: start;
+  padding: 3px 7px;
+  border: 1px solid var(--spg-material-accent, rgba(24, 218, 255, 0.4));
+  border-radius: 6px;
+  color: var(--spg-material-foreground, #eef7ff);
+  background: var(--spg-material-background, rgba(5, 18, 28, 0.68));
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.spg-c010-per-one {
+  color: #ffd3a7;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.spg-c010-stock {
+  display: grid;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.spg-c010-stock strong {
+  color: #9dccff;
+}
+
+.spg-c010-stock small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.spg-c010-stock[data-status="SHORTAGE"] small {
+  color: #ff9b9b;
+}
+
+.spg-c010-material-list {
+  display: grid;
+  gap: 7px;
+}
+
+.spg-c010-material {
+  display: grid;
+  gap: 5px;
+  padding: 8px 10px;
+  border: 1px solid rgba(24, 218, 255, 0.17);
+  border-radius: 10px;
+  background: rgba(3, 12, 20, 0.48);
+}
+
+.spg-c010-material-heading {
+  justify-content: flex-start;
+}
+
+.spg-c010-intelligence-line,
+.spg-c010-radar-line {
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.spg-c010-intelligence-line > strong,
+.spg-c010-radar-line > strong {
+  flex: 0 0 58px;
+  padding-top: 3px;
+  color: #9cecff;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.spg-c010-system-links {
+  min-width: 0;
+  gap: 3px 6px;
+}
+
+.spg-c010-inline-detail,
+.spg-c010-radar-chip {
+  min-height: 0;
+  padding: 2px 5px;
+  border: 0;
+  color: #dcecff;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.spg-c010-inline-detail:hover,
+.spg-c010-inline-detail:focus-visible {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.spg-c010-system-missing {
+  padding: 2px 5px;
+  color: var(--muted);
+}
+
+.spg-c010-system-separator {
+  color: rgba(156, 236, 255, 0.38);
+}
+
+.spg-c010-radar-chip {
+  border: 1px solid var(--spg-material-accent, rgba(24, 218, 255, 0.38));
+  border-radius: 999px;
+  color: var(--spg-material-foreground, #98ecff);
+  background: var(--spg-material-background, rgba(4, 15, 24, 0.78));
+  font-variant-numeric: tabular-nums;
+}
+
+.spg-c010-standalone-card {
+  width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.spg-c010-standalone-advanced {
+  width: min(900px, 100%);
+  margin: 14px auto 0;
+  color: var(--muted);
+}
+
+.spg-c010-standalone-advanced > summary {
+  cursor: pointer;
+  font-size: 12px;
+}
+
+@media (max-width: 1120px) {
+  body[data-active-module="blueprintBrowserNav"] .spg-main-layout {
+    grid-template-columns: minmax(260px, 0.78fr) minmax(430px, 1.22fr);
+  }
+}
+
+@media (max-width: 820px) {
+  body[data-active-module="blueprintBrowserNav"] .spg-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel,
+  body[data-active-module="blueprintBrowserNav"] #finalCraftingCardPanel {
+    grid-column: 1;
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .spg-c010-final-card {
+    padding: 10px;
+  }
+
+  .spg-c010-titleline {
+    align-items: flex-start;
+  }
+
+  .spg-c010-item-api-link h2 {
+    font-size: 32px;
+  }
+
+  .spg-c010-recipe-row {
+    grid-template-columns: minmax(94px, 1.1fr) minmax(76px, 0.9fr) auto;
+    gap: 6px;
+  }
+
+  .spg-c010-stock {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 7px;
+  }
+
+  .spg-c010-intelligence-line,
+  .spg-c010-radar-line {
+    display: grid;
+  }
+
+  .spg-c010-intelligence-line > strong,
+  .spg-c010-radar-line > strong {
+    flex-basis: auto;
+  }
+}
+
 @media print {
   body {
     background: #0f1720;
@@ -5053,7 +5451,7 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
 }
   </style>
 </head>
-<body data-active-module="craftingListNav" data-active-module-target="craftingCardsPanel">
+<body data-active-module="blueprintBrowserNav" data-active-module-target="blueprintBrowserPanel">
   <div class="spg-app-shell">
     <header class="spg-app-header">
       <div>
@@ -5099,8 +5497,8 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
     </section>
 
     <nav class="spg-module-nav" aria-label="V1.0 alkalmazásrészek">
-      <button id="craftingListNav" type="button" class="active" aria-current="page">Crafting List</button>
-      <button id="blueprintBrowserNav" type="button">Blueprint Browser</button>
+      <button id="craftingListNav" type="button">Crafting List</button>
+      <button id="blueprintBrowserNav" type="button" class="active" aria-current="page">Blueprint Browser</button>
       <button id="myMaterialsNav" type="button">My Materials</button>
       <button id="materialDatabaseNav" type="button">Material Database</button>
       <button id="miningLoadoutsNav" type="button">Mining Loadouts</button>
@@ -5147,6 +5545,12 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
           <aside id="blueprintBrowserDetail" class="spg-browser-detail" aria-live="polite">
             <p class="spg-muted">Válassz blueprintet a teljes, slotonkénti recept lusta betöltéséhez.</p>
           </aside>
+        </div>
+      </section>
+
+      <section id="finalCraftingCardPanel" class="panel spg-c010-final-panel" aria-label="Kiválasztott blueprint Final Crafting Card">
+        <div id="finalCraftingCardPreview" aria-live="polite">
+          <p class="spg-c010-final-empty">Válassz blueprintet a bal oldali listából a Final Crafting Card megjelenítéséhez.</p>
         </div>
       </section>
 
@@ -5614,7 +6018,10 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       },
       userDataReady: false,
       cssText: null,
-      lastProbe: null
+      lastProbe: null,
+      finalCardPreview: null,
+      finalCardPreviewAllocation: null,
+      finalCardQuantity: 1
     };
 
     function nowIso() {
@@ -11683,10 +12090,15 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
           });
         }
         state.normalizedBlueprint = normalized;
+        state.finalCardQuantity = 1;
+        state.finalCardPreview = null;
+        state.finalCardPreviewAllocation = null;
+        renderC010FinalCraftingCard();
         renderBlueprint(normalized);
         renderBlueprintBrowserDetail(normalized, cacheOrigin);
         renderBlueprintBrowserResults();
         document.getElementById("addCurrentBlueprintButton").disabled = false;
+        await prepareC010FinalCraftingCard({ resetQuantity: true });
         updateKnownMaterials();
         await updateCacheDiagnostics();
         updateEnvironmentUi();
@@ -11998,6 +12410,68 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       };
     }
 
+    function buildC010PreviewCard(blueprint, quantity) {
+      if (!blueprint) { return null; }
+      var card = buildCraftingCard(blueprint);
+      card.id = "final-preview::" + blueprint.uuid;
+      card.order = 0;
+      card.quantity = Math.max(1, Math.round(Number(quantity) || 1));
+      card.createdAt = null;
+      card.updatedAt = null;
+      return card;
+    }
+
+    function recalculateC010FinalCraftingCard() {
+      var card = state.finalCardPreview;
+      if (!card) {
+        state.finalCardPreviewAllocation = null;
+        renderC010FinalCraftingCard();
+        return null;
+      }
+      card.quantity = Math.max(1, Math.round(Number(state.finalCardQuantity) || 1));
+      var allocation = allocateCardsDeterministically([card], state.materialBatches);
+      if (allocation.cards && allocation.cards[0]) {
+        attachExportMaterialIntelligence(card, allocation.cards[0]);
+      }
+      state.finalCardPreviewAllocation = allocation;
+      renderC010FinalCraftingCard();
+      return allocation;
+    }
+
+    async function prepareC010FinalCraftingCard(options) {
+      var settings = options || {};
+      if (!state.normalizedBlueprint) {
+        state.finalCardPreview = null;
+        state.finalCardPreviewAllocation = null;
+        renderC010FinalCraftingCard();
+        return null;
+      }
+      var blueprintChanged = !state.finalCardPreview || state.finalCardPreview.blueprintUuid !== state.normalizedBlueprint.uuid;
+      if (settings.resetQuantity === true || blueprintChanged) {
+        state.finalCardQuantity = 1;
+      }
+      var card = buildC010PreviewCard(state.normalizedBlueprint, state.finalCardQuantity);
+      state.finalCardPreview = card;
+      await Promise.all([
+        ensureMaterialIntelligenceHydrated([card]),
+        ensureCraftingOutputPresentationHydrated([card])
+      ]);
+      recalculateC010FinalCraftingCard();
+      return card;
+    }
+
+    async function addC010FinalCardToCraftingList() {
+      if (!state.normalizedBlueprint || !state.finalCardPreview) {
+        throw new Error("Nincs kiválasztott Final Crafting Card.");
+      }
+      var card = buildCraftingCard(state.normalizedBlueprint);
+      card.quantity = Math.max(1, Math.round(Number(state.finalCardQuantity) || 1));
+      await persistCraftingCards(state.craftingCards.concat(card), "CARD_ADD_FROM_FINAL_PREVIEW");
+      setNotice(card.outputName + " · " + card.quantity + " db hozzáadva a Crafting Listhez.", "success");
+      navigateToPanel("craftingListNav", "craftingCardsPanel", "addCurrentBlueprintButton");
+      return card;
+    }
+
     function normalizeStoredCraftingCard(card, fallbackOrder) {
       var normalized = Object.assign({}, card);
       normalized.order = Number.isInteger(Number(card.order)) ? Number(card.order) : fallbackOrder;
@@ -12190,6 +12664,235 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       link.textContent = label;
       link.title = "API adatlap";
       return link;
+    }
+
+    function appendC010SystemSummary(container, titleText, rows, detailKind, targetId, unavailableMessage) {
+      var line = document.createElement("div");
+      line.className = "spg-c010-intelligence-line";
+      var title = document.createElement("strong");
+      title.textContent = titleText;
+      var links = document.createElement("div");
+      links.className = "spg-c010-system-links";
+      if (unavailableMessage) {
+        var unavailable = document.createElement("span");
+        unavailable.className = "spg-c010-system-missing";
+        unavailable.textContent = unavailableMessage;
+        links.append(unavailable);
+      } else {
+        (rows || []).forEach(function (row, index) {
+          if (index > 0) {
+            var separator = document.createElement("span");
+            separator.className = "spg-c010-system-separator";
+            separator.textContent = "·";
+            links.append(separator);
+          }
+          if (row.status === "AVAILABLE") {
+            links.append(createPreparedDetailButton(row.system + ": " + row.label, detailKind, targetId, "spg-c010-inline-detail"));
+          } else {
+            var missing = document.createElement("span");
+            missing.className = "spg-c010-system-missing";
+            missing.textContent = row.system + ": Nincs adat";
+            links.append(missing);
+          }
+        });
+      }
+      line.append(title, links);
+      container.append(line);
+    }
+
+    function renderC010MaterialIntelligence(view) {
+      var snapshot = view || {};
+      var materialName = snapshot.materialName || "Material";
+      var commodityUuid = snapshot.commodityUuid || snapshot.materialUuid || "";
+      var container = document.createElement("section");
+      container.className = "spg-c010-material";
+      container.dataset.materialName = materialName;
+
+      var heading = document.createElement("div");
+      heading.className = "spg-c010-material-heading";
+      var materialLink = createC009ApiLink(materialName, snapshot.materialDetails && snapshot.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link");
+      applyMaterialColor(materialLink, commodityUuid, materialName, { label: true });
+      heading.append(materialLink);
+      container.append(heading);
+
+      appendC010SystemSummary(container, "Mining", c010MiningSummary(snapshot.mining), "mining", commodityUuid, null);
+      var refinery = c010RefinerySummary(snapshot.refinery);
+      appendC010SystemSummary(container, "Refinery", refinery.rows, "refinery", commodityUuid, refinery.message);
+
+      var radarLine = document.createElement("div");
+      radarLine.className = "spg-c010-radar-line";
+      var radarTitle = document.createElement("strong");
+      radarTitle.textContent = "Radar";
+      var chips = document.createElement("div");
+      chips.className = "spg-c010-radar-chips";
+      var values = c009RadarValues(snapshot.mining);
+      if (values.length) {
+        values.forEach(function (value) {
+          var chip = createPreparedDetailButton(value.toLocaleString("hu-HU"), "radar", commodityUuid, "spg-c010-radar-chip");
+          applyMaterialColor(chip, commodityUuid, materialName, { radar: true });
+          chips.append(chip);
+        });
+      } else {
+        var noRadar = document.createElement("span");
+        noRadar.className = "spg-c010-system-missing";
+        noRadar.textContent = "Nincs radar adat";
+        chips.append(noRadar);
+      }
+      radarLine.append(radarTitle, chips);
+      container.append(radarLine);
+      return container;
+    }
+
+    function renderC010RecipeRow(requirement) {
+      var row = document.createElement("div");
+      row.className = "spg-c010-recipe-row";
+      row.dataset.status = requirement.status || "PENDING";
+      var slot = document.createElement("span");
+      slot.className = "spg-recipe-slot";
+      slot.textContent = requirement.recipeSlotName;
+      var material = createC009ApiLink(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link");
+      applyMaterialColor(material, requirement.commodityUuid || requirement.materialUuid, requirement.materialName, { label: true });
+      var perOne = document.createElement("strong");
+      perOne.className = "spg-c010-per-one";
+      perOne.textContent = formatInventoryUnits(requirement.unit, requirement.perCraftUnits);
+      var stock = document.createElement("span");
+      var shortage = Number(requirement.shortageUnits || 0);
+      stock.className = "spg-c010-stock";
+      stock.dataset.status = shortage > 0 ? "SHORTAGE" : "AVAILABLE";
+      var stockValue = document.createElement("strong");
+      stockValue.textContent = formatInventoryUnits(requirement.unit, requirement.suitableInventoryUnits);
+      var stockState = document.createElement("small");
+      stockState.textContent = shortage > 0
+        ? "Hiány: " + formatInventoryUnits(requirement.unit, shortage)
+        : "Marad: " + formatInventoryUnits(requirement.unit, requirement.remainingUnits || 0);
+      stock.append(stockValue, stockState);
+      row.append(slot, material, perOne, stock);
+      return row;
+    }
+
+    function renderC010FinalCraftingCard() {
+      var container = document.getElementById("finalCraftingCardPreview");
+      if (!container) { return; }
+      container.replaceChildren();
+      var card = state.finalCardPreview;
+      var allocation = state.finalCardPreviewAllocation;
+      var cardResult = card && allocation && allocation.cards ? allocation.cards.find(function (result) { return result.cardId === card.id; }) : null;
+      if (!card || !cardResult) {
+        var empty = document.createElement("p");
+        empty.className = "spg-c010-final-empty";
+        empty.textContent = state.normalizedBlueprint
+          ? "A Final Crafting Card adatpillanatképe betöltés alatt…"
+          : "Válassz blueprintet a bal oldali listából a Final Crafting Card megjelenítéséhez.";
+        container.append(empty);
+        document.body.dataset.c010FinalCardReady = "false";
+        return;
+      }
+      var viewModel = buildFinalCraftingCardViewModel({
+        appName: APP.name,
+        generatedAt: nowIso(),
+        scDataVersion: card.gameVersion,
+        card: card,
+        cardResult: cardResult,
+        blueprint: state.normalizedBlueprint || {},
+        outputPresentation: state.craftingOutputPresentationByUuid.get(card.outputUuid) || null,
+        trace: allocation.trace || []
+      });
+
+      var article = document.createElement("article");
+      article.className = "spg-c010-final-card";
+      article.dataset.finalCardOnly = "true";
+      article.dataset.blueprintUuid = card.blueprintUuid;
+
+      var top = document.createElement("div");
+      top.className = "spg-c010-topline";
+      var meta = document.createElement("div");
+      meta.className = "spg-c010-meta";
+      ["S" + viewModel.card.outputSize, viewModel.card.outputClass, viewModel.card.outputGrade].forEach(function (value) {
+        var token = document.createElement("span");
+        token.textContent = value || "Nincs adat";
+        meta.append(token);
+      });
+      var timeCart = document.createElement("div");
+      timeCart.className = "spg-c010-time-cart";
+      var craftTime = document.createElement("span");
+      craftTime.className = "spg-c010-craft-time";
+      craftTime.textContent = "◷ " + c009FormatCraftTime(viewModel.card.craftTimeSeconds);
+      craftTime.title = "Crafting Time";
+      var cart = document.createElement("button");
+      cart.type = "button";
+      cart.className = "spg-c010-cart";
+      cart.textContent = "🛒";
+      cart.title = "Hozzáadás a teljes Crafting Listhez";
+      cart.setAttribute("aria-label", viewModel.card.outputName + " hozzáadása a Crafting Listhez");
+      cart.addEventListener("click", function () {
+        cart.disabled = true;
+        addC010FinalCardToCraftingList().catch(function (error) {
+          setNotice("Crafting List hozzáadási hiba: " + error.message, "error");
+          cart.disabled = false;
+        });
+      });
+      timeCart.append(craftTime, cart);
+      top.append(meta, timeCart);
+
+      var titleline = document.createElement("div");
+      titleline.className = "spg-c010-titleline";
+      var itemLink = createC009ApiLink(viewModel.card.outputName, viewModel.card.apiWikiLink, "spg-c010-item-api-link");
+      var itemHeading = document.createElement("h2");
+      itemHeading.textContent = viewModel.card.outputName;
+      itemLink.replaceChildren(itemHeading);
+      var quantityGroup = document.createElement("div");
+      quantityGroup.className = "spg-c010-quantity";
+      var quantityBox = document.createElement("label");
+      quantityBox.className = "spg-c010-quantity-box";
+      quantityBox.title = "Gyártani akarok";
+      var quantity = document.createElement("input");
+      quantity.type = "number";
+      quantity.min = "1";
+      quantity.step = "1";
+      quantity.value = String(viewModel.card.requestedQuantity);
+      quantity.setAttribute("aria-label", viewModel.card.outputName + " – gyártani akarok");
+      var quantityRecalcTimer = null;
+      quantity.addEventListener("input", function () {
+        state.finalCardQuantity = Math.max(1, Math.round(Number(quantity.value) || 1));
+        document.body.dataset.c010FinalCardQuantity = String(state.finalCardQuantity);
+        if (quantityRecalcTimer !== null) {
+          clearTimeout(quantityRecalcTimer);
+        }
+        quantityRecalcTimer = setTimeout(function () {
+          quantityRecalcTimer = null;
+          recalculateC010FinalCraftingCard();
+        }, 250);
+      });
+      quantity.addEventListener("change", function () {
+        if (quantityRecalcTimer !== null) {
+          clearTimeout(quantityRecalcTimer);
+          quantityRecalcTimer = null;
+        }
+        state.finalCardQuantity = Math.max(1, Math.round(Number(quantity.value) || 1));
+        recalculateC010FinalCraftingCard();
+      });
+      var unit = document.createElement("span");
+      unit.textContent = "DB";
+      quantityBox.append(quantity, unit);
+      var maximum = document.createElement("span");
+      maximum.className = "spg-c010-max";
+      maximum.textContent = "Max: " + viewModel.card.maxCraftable + " DB";
+      quantityGroup.append(quantityBox, maximum);
+      titleline.append(itemLink, quantityGroup);
+
+      var recipe = document.createElement("section");
+      recipe.className = "spg-c010-recipe";
+      viewModel.requirements.forEach(function (requirement) { recipe.append(renderC010RecipeRow(requirement)); });
+
+      var materials = document.createElement("div");
+      materials.className = "spg-c010-material-list";
+      viewModel.requirements.forEach(function (requirement) { materials.append(renderC010MaterialIntelligence(requirement)); });
+      article.append(top, titleline, recipe, materials);
+      container.append(article);
+      document.body.dataset.c010FinalCardReady = "true";
+      document.body.dataset.c010FinalCardBlueprint = viewModel.card.outputName;
+      document.body.dataset.c010FinalCardQuantity = String(viewModel.card.requestedQuantity);
+      document.body.dataset.c010FinalCardMax = String(viewModel.card.maxCraftable);
     }
 
     function renderC009MaterialSnapshot(view) {
@@ -12872,6 +13575,9 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
             return { key: group.key, requiredUnits: group.requiredUnits, reservedUnits: group.reservedUnits, missingUnits: group.missingUnits };
           })
         });
+      }
+      if (state.finalCardPreview) {
+        recalculateC010FinalCraftingCard();
       }
       renderCraftingCards();
       renderMaterialInventory();
@@ -13935,6 +14641,57 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       return rows;
     }
 
+    var C010_PREFERRED_SYSTEM_ORDER = Object.freeze(["Stanton", "Pyro", "Nyx"]);
+
+    function c010NormalizeSystemName(value) {
+      return String(value || "").replace(/ System$/i, "").trim() || "Ismeretlen rendszer";
+    }
+
+    function c010OrderedSystemNames(names) {
+      var unique = Array.from(new Set((names || []).map(c010NormalizeSystemName).filter(Boolean)));
+      var ordered = C010_PREFERRED_SYSTEM_ORDER.slice();
+      unique.filter(function (name) { return ordered.indexOf(name) === -1; }).sort(function (left, right) {
+        return left.localeCompare(right, "hu");
+      }).forEach(function (name) { ordered.push(name); });
+      return ordered;
+    }
+
+    function c010MiningSummary(mining) {
+      var available = new Map();
+      c009TopMiningMethods(mining || {}).forEach(function (system) {
+        var name = c010NormalizeSystemName(system.system);
+        var method = (system.methods || [])[0] || null;
+        if (method) {
+          available.set(name, method.tierDisplayLabel || method.locationLabel || "Ismeretlen farmhely");
+        }
+      });
+      return c010OrderedSystemNames(Array.from(available.keys())).map(function (system) {
+        return { system: system, status: available.has(system) ? "AVAILABLE" : "NO_DATA", label: available.get(system) || "Nincs adat" };
+      });
+    }
+
+    function c010RefinerySummary(refinery) {
+      var source = refinery || {};
+      if (source.status !== "AVAILABLE") {
+        return { status: "UNSAFE", rows: [], message: "Nincs biztonságos refinery adat" };
+      }
+      var available = new Map();
+      (source.systems || []).forEach(function (system) {
+        var name = c010NormalizeSystemName(system.starSystemName);
+        var terminals = (system.terminals || []).map(function (terminal) { return terminal.terminalName; }).filter(Boolean);
+        if (terminals.length) {
+          available.set(name, terminals.join(" / "));
+        }
+      });
+      return {
+        status: "AVAILABLE",
+        message: null,
+        rows: c010OrderedSystemNames(Array.from(available.keys())).map(function (system) {
+          return { system: system, status: available.has(system) ? "AVAILABLE" : "NO_DATA", label: available.get(system) || "Nincs adat" };
+        })
+      };
+    }
+
     function c009SafeApiUrl(link) {
       return link && link.status === "AVAILABLE" && c008IsWikiApiUrl(link.url) ? link.url : null;
     }
@@ -14697,22 +15454,64 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       ].join("");
     }
 
+    function c010RenderStandaloneSystemSummary(title, rows, detailKind, targetId, unavailableMessage) {
+      var content = unavailableMessage
+        ? '<span class="spg-c010-system-missing">' + m6EscapeHtml(unavailableMessage) + '</span>'
+        : (rows || []).map(function (row, index) {
+          var separator = index > 0 ? '<span class="spg-c010-system-separator">·</span>' : '';
+          var label = row.system + ": " + row.label;
+          return separator + (row.status === "AVAILABLE"
+            ? '<button type="button" class="spg-c010-inline-detail" data-detail-kind="' + m6EscapeHtml(detailKind) + '" data-detail-id="' + m6EscapeHtml(targetId) + '">' + m6EscapeHtml(label) + '</button>'
+            : '<span class="spg-c010-system-missing">' + m6EscapeHtml(row.system + ": Nincs adat") + '</span>');
+        }).join("");
+      return '<div class="spg-c010-intelligence-line"><strong>' + m6EscapeHtml(title) + '</strong><div class="spg-c010-system-links">' + content + '</div></div>';
+    }
+
+    function c010RenderStandaloneMaterial(requirement) {
+      var targetId = requirement.commodityUuid || requirement.materialUuid;
+      var color = requirement.materialColor || resolveMaterialColor(targetId, requirement.materialName);
+      var colorStyle = materialColorInlineStyle(color);
+      var refinery = c010RefinerySummary(requirement.refinery);
+      var radarValues = c009RadarValues(requirement.mining);
+      var radar = radarValues.length
+        ? radarValues.map(function (value) {
+          return '<button type="button" class="spg-c010-radar-chip" style="' + m6EscapeHtml(colorStyle) + '" data-detail-kind="radar" data-detail-id="' + m6EscapeHtml(targetId) + '">' + m6EscapeHtml(value.toLocaleString("hu-HU")) + '</button>';
+        }).join("")
+        : '<span class="spg-c010-system-missing">Nincs radar adat</span>';
+      return [
+        '<section class="spg-c010-material" data-material-name="', m6EscapeHtml(requirement.materialName), '">',
+        '<div class="spg-c010-material-heading">', c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link"), '</div>',
+        c010RenderStandaloneSystemSummary("Mining", c010MiningSummary(requirement.mining), "mining", targetId, null),
+        c010RenderStandaloneSystemSummary("Refinery", refinery.rows, "refinery", targetId, refinery.message),
+        '<div class="spg-c010-radar-line"><strong>Radar</strong><div class="spg-c010-radar-chips">', radar, '</div></div>',
+        '</section>'
+      ].join("").replace(/class="spg-c010-material-link spg-c009-material-api-link"/g, 'class="spg-c010-material-link spg-c009-material-api-link" style="' + m6EscapeHtml(colorStyle) + '"');
+    }
+
+    function c010RenderStandaloneRecipeRow(requirement) {
+      var targetId = requirement.commodityUuid || requirement.materialUuid;
+      var colorStyle = materialColorInlineStyle(requirement.materialColor || resolveMaterialColor(targetId, requirement.materialName));
+      var shortage = Number(requirement.shortageUnits || 0);
+      var stockState = shortage > 0
+        ? "Hiány: " + m6FormatUnits(requirement.unit, shortage)
+        : "Marad: " + m6FormatUnits(requirement.unit, requirement.remainingUnits || 0);
+      return [
+        '<div class="spg-c010-recipe-row" data-status="', m6EscapeHtml(requirement.status || "PENDING"), '">',
+        '<span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span>',
+        c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link").replace('class="spg-c010-material-link spg-c009-material-api-link"', 'class="spg-c010-material-link spg-c009-material-api-link" style="' + m6EscapeHtml(colorStyle) + '"'),
+        '<strong class="spg-c010-per-one">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong>',
+        '<span class="spg-c010-stock" data-status="', shortage > 0 ? "SHORTAGE" : "AVAILABLE", '"><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong><small>', m6EscapeHtml(stockState), '</small></span>',
+        '</div>'
+      ].join("");
+    }
+
     function m6RenderStandaloneHtml(snapshot, cssText) {
       var snapshotJson = JSON.stringify(snapshot).replace(/</g, "\\u003c");
       var missingData = snapshot.summary.missingData.length
         ? '<section class="spg-export-warning"><h2>Hiányzó / ellenőrizendő adatok</h2><ul>' + snapshot.summary.missingData.map(function (item) { return '<li>' + m6EscapeHtml(item) + '</li>'; }).join("") + '</ul></section>'
         : '';
-      return [
-        '<!doctype html><html lang="hu"><head><meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        '<meta name="generator" content="sPg Crafting List">',
-        '<title>', m6EscapeHtml(snapshot.generatedBy + " – " + snapshot.card.outputName), '</title>',
-        '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
-        '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
-        '<main class="spg-export-page">',
-        '<header class="spg-export-hero"><div><p class="eyebrow">Standalone Crafting / Farm Card</p><div class="spg-c009-item-meta"><span>S', m6EscapeHtml(snapshot.card.outputSize), '</span><span>', m6EscapeHtml(snapshot.card.outputClass), '</span><span>', m6EscapeHtml(snapshot.card.outputType), '</span><span>', m6EscapeHtml(snapshot.card.outputGrade), '</span></div>',
-        c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-export-detail-title spg-c009-item-api-link"), '<button type="button" class="spg-intelligence-trigger" data-detail-kind="blueprint" data-detail-id="', m6EscapeHtml(snapshot.card.blueprintUuid || ""), '">Belső részlet</button><span class="spg-c009-craft-time">◷ ', m6EscapeHtml(c009FormatCraftTime(snapshot.card.craftTimeSeconds)), '</span></div>',
-        '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "Terv teljesíthető" : "Hiány van", '</span></header>',
+      var advancedOverview = [
+        '<details class="spg-c010-standalone-advanced"><summary>Advanced / allocation és forrásadat</summary>',
         '<section class="spg-export-overview">',
         '<span><small>Size</small><strong>', m6EscapeHtml(snapshot.card.outputSize), '</strong></span>',
         '<span><small>Class</small><strong>', m6EscapeHtml(snapshot.card.outputClass), '</strong></span>',
@@ -14722,11 +15521,25 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
         '<span><small>Maximum készletből</small><strong>', m6EscapeHtml(snapshot.card.maxCraftable), ' db</strong></span>',
         '<span><small>Craft time</small><strong>', m6EscapeHtml(m6FormatCraftTime(snapshot.card.craftTimeSeconds)), '</strong></span>',
         '<span><small>Recipe Slot</small><strong>', m6EscapeHtml(snapshot.summary.ingredientCount), '</strong></span>',
-        '</section>',
-        missingData,
-        '<section class="spg-export-section spg-export-c009-card"><div class="spg-export-section-title"><p class="eyebrow">Recipe Slot szintű terv</p><h2>Ingredients</h2></div>',
-        '<div class="spg-c009-recipe-header"><span>Recipe Slot</span><span>Material</span><span>1 darabhoz</span><span>Megfelelő készlet</span></div>',
-        '<div class="spg-export-c009-requirements">', snapshot.requirements.map(c009RenderStandaloneRequirement).join(""), '</div></section>',
+        '</section>', missingData,
+        '<div class="spg-export-c010-advanced-requirements">', snapshot.requirements.map(m6RenderRequirement).join(""), '</div>',
+        '</details>'
+      ].join("");
+      return [
+        '<!doctype html><html lang="hu"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        '<meta name="generator" content="sPg Crafting List">',
+        '<title>', m6EscapeHtml(snapshot.generatedBy + " – " + snapshot.card.outputName), '</title>',
+        '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
+        '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
+        '<main class="spg-export-page">',
+        '<article class="spg-c010-final-card spg-c010-standalone-card" data-final-card-only="true">',
+        '<div class="spg-c010-topline"><div class="spg-c010-meta"><span>S', m6EscapeHtml(snapshot.card.outputSize), '</span><span>', m6EscapeHtml(snapshot.card.outputClass), '</span><span>', m6EscapeHtml(snapshot.card.outputGrade), '</span></div><div class="spg-c010-time-cart"><span class="spg-c010-craft-time">◷ ', m6EscapeHtml(c009FormatCraftTime(snapshot.card.craftTimeSeconds)), '</span></div></div>',
+        '<div class="spg-c010-titleline">', c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-c010-item-api-link"), '<div class="spg-c010-quantity"><span class="spg-c010-quantity-box">', m6EscapeHtml(snapshot.card.requestedQuantity), ' DB</span><span class="spg-c010-max">Max: ', m6EscapeHtml(snapshot.card.maxCraftable), ' DB</span></div></div>',
+        '<section class="spg-c010-recipe">', snapshot.requirements.map(c010RenderStandaloneRecipeRow).join(""), '</section>',
+        '<div class="spg-c010-material-list">', snapshot.requirements.map(c010RenderStandaloneMaterial).join(""), '</div>',
+        '</article>',
+        advancedOverview,
         '<footer class="spg-export-meta">',
         '<span><strong>Generated by:</strong> ', m6EscapeHtml(snapshot.generatedBy), '</span>',
         '<span><strong>SC Data Version:</strong> ', m6EscapeHtml(snapshot.scDataVersion || "Nincs API-adat"), '</span>',
@@ -15093,7 +15906,7 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
 
     async function runM61UiRegression() {
       var navigation = m61AuditNavigationDom();
-      var previousNavigationId = document.body.dataset.activeModule || "craftingListNav";
+      var previousNavigationId = document.body.dataset.activeModule || "blueprintBrowserNav";
       navigation.forEach(function (entry) {
         document.getElementById(entry.id).click();
         assert(document.body.dataset.activeModule === entry.id, "A kattintás nem aktiválta ezt a modult: " + entry.label);
@@ -15426,10 +16239,11 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
         assert(/<style>[\s\S]+<\/style>/i.test(html), "Az exportból hiányzik a beágyazott CSS.");
         assert(html.indexOf("Star Citizen Wiki API") !== -1, "Az export metaadata hiányos.");
         assert(html.indexOf('data-spg-standalone-export="true"') !== -1, "Az export standalone azonosítója hiányzik.");
-        assert(html.indexOf("Recipe Slot szintű terv") !== -1, "Az exportból hiányzik a slot-szintű terv.");
-        assert(html.indexOf("Mining / Farm helyek") !== -1, "Az exportból hiányzik a farmhelyszín szekció.");
-        assert(html.indexOf("UEX refinery ajánló") !== -1, "Az exportból hiányzik a refinery szekció.");
-        assert(html.indexOf("Mining loadout") !== -1, "Az exportból hiányzik a loadout szekció.");
+        var hasC010FinalCard = html.indexOf('data-final-card-only="true"') !== -1;
+        assert(html.indexOf("Recipe Slot szintű terv") !== -1 || (hasC010FinalCard && html.indexOf("spg-c010-recipe-row") !== -1), "Az exportból hiányzik a slot-szintű terv.");
+        assert(html.indexOf("Mining / Farm helyek") !== -1 || (hasC010FinalCard && html.indexOf('data-detail-kind="mining"') !== -1), "Az exportból hiányzik a farmhelyszín szekció.");
+        assert(html.indexOf("UEX refinery ajánló") !== -1 || (hasC010FinalCard && html.indexOf('data-detail-kind="refinery"') !== -1), "Az exportból hiányzik a refinery szekció.");
+        assert(html.indexOf("Mining loadout") !== -1 || (hasC010FinalCard && html.indexOf('"selectedLoadout"') !== -1), "Az exportból hiányzik a loadout snapshotmező.");
         assert(!/<(?:link|script|img|source)[^>]+(?:href|src)=["']https?:/i.test(html), "Az export külső hálózati erőforrást tartalmaz.");
         return Math.round(byteLength(html) / 1024) + " KiB · teljes offline kártya · nincs külső erőforrás";
       });
@@ -15810,6 +16624,12 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
           await selectDefaultMiningCommodity();
         }
 
+        if (state.normalizedBlueprint) {
+          await prepareC010FinalCraftingCard({ resetQuantity: true });
+        } else {
+          renderC010FinalCraftingCard();
+        }
+
         updateEnvironmentUi();
         c008DetailController.restore();
         document.body.dataset.appReady = "true";
@@ -16174,6 +16994,13 @@ body[data-active-module="craftingListNav"] #blueprintBrowserPanel .spg-browser-r
       c009RadarValues: c009RadarValues,
       c009TopMiningMethods: c009TopMiningMethods,
       c009FormatCraftTime: c009FormatCraftTime,
+      c010OrderedSystemNames: c010OrderedSystemNames,
+      c010MiningSummary: c010MiningSummary,
+      c010RefinerySummary: c010RefinerySummary,
+      buildC010PreviewCard: buildC010PreviewCard,
+      prepareC010FinalCraftingCard: prepareC010FinalCraftingCard,
+      recalculateC010FinalCraftingCard: recalculateC010FinalCraftingCard,
+      renderC010FinalCraftingCard: renderC010FinalCraftingCard,
       resolveDetailModel: resolveC008DetailModel,
       renderDetailMarkup: c008RenderDetailMarkup,
       renderDetailContent: c008RenderDetailContent,
