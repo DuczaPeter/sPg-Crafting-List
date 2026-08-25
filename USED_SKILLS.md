@@ -321,3 +321,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C010.1 Final Card es uzleti modellek vedelmere, a haromsoros scope megtartasara, valamint a belso listascroll, 15/15 Technical Probe, detail Back/reload, fingerprint es nulla konzolhiba bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 Blueprint Browser normal fo UI/CSS, C011 teszt/validator/report/artifact es projekt statuszfajlok; stabil V002 es V003 uzleti modellek nem valtoztak.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C012 Crafting List Final Crafting Card visual parity
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a közös Final Card renderer, többkártyás prioritás/expanded állapot, source-card detail route, teljes cikluskapu és valódi Chrome 1920/1366/390 + 10-kártyás stressz ellenőrzése során.
+- Mire segített: a C012 szűk scope, a C013/release tiltás és a fagyasztott V002 védelmének megtartására; valamint a valós quantity/reload, prioritás, detail Back/reload, responsive overflow, fingerprint és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: V003 Crafting List/Final Card presentation és detail route kontextus, C012 teszt/validator/report/artifact és projekt státuszfájlok; a skillfájlok és V002 nem változtak.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

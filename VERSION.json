@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C011",
-    "currentCycleId":  "V003-C011",
-    "lastSuccessfulCycle":  "V003-C011",
+    "currentCycle":  "C012",
+    "currentCycleId":  "V003-C012",
+    "lastSuccessfulCycle":  "V003-C012",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-25T10:28:38+02:00",
-    "currentCyclePurpose":  "Final user-facing Blueprint Browser cleanup + visual reference lock",
-    "currentCycleStartedAt":  "2026-08-25T09:55:00+02:00",
+    "lastUpdated":  "2026-08-25T11:18:36+02:00",
+    "currentCyclePurpose":  "Crafting List Final Crafting Card visual parity, compact priority management and source-card detail return",
+    "currentCycleStartedAt":  "2026-08-25T10:31:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C011 normal Blueprint Browser technical detail removal, retained normalized model, viewport-aware list scroll, locked references, unchanged Final Card/standalone, full C001-C010.1 plus M1-M6.1+C04, Chrome 15/15, 1920/1366/390, Back/reload/console/fingerprint and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C011 FINAL USER-FACING UI CLEANUP – AUTOMATED AND CHROME LOCALHOST PASS; USER VISUAL REVIEW PENDING; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C012 shared canonical Final Card renderer for Blueprint Browser and Crafting List, compact priority/action management, persisted expanded/collapsed and quantity state, source-card-aware detail return, 3/10-card responsive stress, standalone, full C001-C011 plus M1-M6.1+C04, Chrome 15/15, console/fingerprint and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C012 CRAFTING LIST FINAL CARD VISUAL PARITY – AUTOMATED AND CHROME LOCALHOST PASS; USER VISUAL REVIEW PENDING; C013 AND STABLE RELEASE NOT STARTED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C011",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; no main Blueprint technical detail, Final Card/standalone parity, 1920x1080 + 1366x768 + 390x844, detail Back/reload and console PASS",
+                                "cycle":  "V003-C012",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; shared Browser/List Final Card renderer, 3-card and 10-card Crafting List, 1920x1080 + 1366x768 + 390x844, source-card detail Back/reload and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
-                                "userDataFingerprintBefore":  "d7be3ccc",
-                                "userDataFingerprintAfterReload":  "d7be3ccc",
+                                "userDataFingerprintBefore":  "78b870b4",
+                                "userDataFingerprintAfterReload":  "78b870b4",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "USER_VISUAL_REVIEW_REQUIRED_AFTER_C011"
+                                                           "nextCycle":  "USER_VISUAL_REVIEW_REQUIRED_AFTER_C012"
                                                        },
                                 "finalCraftingCard":  {
                                                           "viewModel":  "buildFinalCraftingCardViewModel",
@@ -174,8 +174,25 @@
                                                                        ],
                                                        "blueprintTechnicalDetailVisibleCount":  0,
                                                        "technicalModelRetained":  true,
-                                                       "userVisualAcceptance":  "PENDING_USER_REVIEW_C011"
+                                                       "userVisualAcceptance":  "PENDING_USER_REVIEW_C012"
                                                    },
+                                "craftingListFinalCardParity":  {
+                                                                     "sharedRenderer":  "renderFinalCraftingCardContent",
+                                                                     "canonicalViewModel":  "buildFinalCraftingCardViewModel",
+                                                                     "threeCardModel":  "2 expanded / 1 collapsed",
+                                                                     "tenCardStress":  "2 expanded / 8 collapsed",
+                                                                     "priorityAllocationSwap":  "PASS",
+                                                                     "quantityPersistence":  "PASS",
+                                                                     "sourceCardDetailReturn":  "PASS",
+                                                                     "desktopOverflow":  0,
+                                                                     "mobileOverflow":  0,
+                                                                     "screenshots":  [
+                                                                                          "test-artifacts/V003-C012/chrome-crafting-list-3-cards-1920x1080.png",
+                                                                                          "test-artifacts/V003-C012/chrome-crafting-list-1366x768.png",
+                                                                                          "test-artifacts/V003-C012/chrome-crafting-list-mobile-card-390x844.png",
+                                                                                          "test-artifacts/V003-C012/chrome-crafting-list-10-card-stress-1920x1080.png"
+                                                                                      ]
+                                                                 },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,
                                                  "shipNormalSpaceSeparated":  true,

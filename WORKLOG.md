@@ -584,3 +584,13 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: Technical Probe 15/15; 1920x1080, 1366x768, 390x844; detail visible count 0; scroll/horizontal overflow PASS; C008 detail Back+reload PASS; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
 - Screenshotok: `test-artifacts/V003-C011/chrome-desktop-1920x1080.png`, `chrome-desktop-1366x768.png`, `chrome-mobile-390x844.png` (helyi, Git-ignore).
 - V003 release/tag nem keszult. Visszaallas: a C011 commit revertje; stabil fallback a valtozatlan V002 tag/release.
+
+### V003-C012 Crafting List Final Crafting Card visual parity - 2026-08-25
+
+- Scope: a teljes Crafting List vizualis és interakciós összehangolása a C011-ben lezárt Final Crafting Carddal; allocation, hydration, ranking/grouping, Radar/UEX modellek, C008 detailtartalom, standalone adatmodell és V002 változatlan.
+- A Browser és a Crafting List közös `buildFinalCraftingCardViewModel()` + `renderFinalCraftingCardContent()` útvonalat használ. A listás kártya csak kompakt PRIORITÁS/műveletsort és expanded/collapsed/Quality vezérlést ad hozzá.
+- A quantity debounced input-mentést kapott; a C008 route a forráskártyát és forrásmodult is tárolja, reload után helyreáll, a browser Back pedig a megfelelő listakártyához tér vissza.
+- Automatizált: `validate-v003-c012.ps1` PASS; 3 kártya 2/1 nyitott-zárt modellel, 10 kártya 2/8 stresszel, prioritás/allocation swap, standalone, single-file, teljes C001-C011 + M1-M6.1 + C04 és V002-integritás zöld.
+- Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, quantity `2/1/1`, 1920/1366/390 és 10-kártyás horizontal overflow 0; source FR-66 detail reload+Back PASS; fingerprint `78b870b4 -> 78b870b4`; WARN/ERROR 0.
+- Screenshotok: `test-artifacts/V003-C012/chrome-crafting-list-3-cards-1920x1080.png`, `chrome-crafting-list-1366x768.png`, `chrome-crafting-list-mobile-card-390x844.png`, `chrome-crafting-list-10-card-stress-1920x1080.png`.
+- V003 release/tag és C013 nem készült. Visszaállás: a C012 commit revertje; stabil fallback a változatlan V002 tag/release.

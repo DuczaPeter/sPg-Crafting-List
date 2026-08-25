@@ -227,6 +227,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c011.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c012-crafting-list-final-card-parity",
+      "level": "full-regression",
+      "description": "V003-C012 gate: shared Final Crafting Card DOM renderer for Blueprint Browser and Crafting List, canonical view-model, compact priority management, persisted expanded/collapsed state, source-card-aware C008 details, three-card and ten-card stress fixtures, allocation-priority swap, complete C001-C011 plus M1-M6.1/C04 regression, standalone parity, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c012.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

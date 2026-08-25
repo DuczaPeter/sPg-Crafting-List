@@ -467,3 +467,18 @@ Csak a C011 fo UI/reference/model/standalone celteszt:
 ```powershell
 node .\tools\run-v003-c011-tests.mjs --standalone="test-artifacts/V003-C011/standalone-js-300-final-card.html"
 ```
+
+V003-C012 teljes kapu (közös Final Card renderer, többkártyás Crafting List, prioritás/detail/standalone és teljes regresszió):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c012.ps1"
+```
+
+Csak a C012 háromkártyás/tízkártyás, expanded/collapsed, prioritás és forráskártya-detail célteszt:
+
+```powershell
+node .\tools\run-v003-c012-tests.mjs --standalone="test-artifacts/V003-C012/standalone-js-300-final-card.html"
+```
+
+- `v003-c012-crafting-list-final-card-parity`: közös `buildFinalCraftingCardViewModel()` + `renderFinalCraftingCardContent()`, kompakt priority/action fej, 3 és 10 kártya, expanded/collapsed, allocation-prioritáscsere, source-card detail, standalone/single-file és teljes C001-C011/M1-M6.1/C04/V002-integritás.
+- C012 artifactok: `test-artifacts/V003-C012/`.

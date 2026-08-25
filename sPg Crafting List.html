@@ -4961,12 +4961,36 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
 }
 
 .spg-c010-intelligence-line > strong,
-.spg-c010-radar-line > strong {
+.spg-c010-radar-line > strong,
+.spg-c010-intelligence-title {
   flex: 0 0 58px;
   padding-top: 3px;
   color: #9cecff;
   font-size: 11px;
   text-transform: uppercase;
+}
+
+.spg-c010-intelligence-title {
+  width: auto;
+  min-height: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-weight: 900;
+  text-align: left;
+}
+
+.spg-c010-intelligence-title:hover,
+.spg-c010-intelligence-title:focus-visible {
+  transform: none;
+  color: var(--accent-strong);
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .spg-c010-system-links {
@@ -5078,8 +5102,248 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
   }
 
   .spg-c010-intelligence-line > strong,
-  .spg-c010-radar-line > strong {
+  .spg-c010-radar-line > strong,
+  .spg-c010-intelligence-title {
     flex-basis: auto;
+  }
+}
+
+/* V003-C012 Crafting List parity: shared Final Crafting Card content with compact list management. */
+
+body[data-active-module="craftingListNav"] #craftingCardsPanel {
+  overflow-x: clip;
+}
+
+body[data-active-module="craftingListNav"] #craftingCardsPanel .spg-section-heading {
+  margin-bottom: 4px;
+}
+
+body[data-active-module="craftingListNav"] #craftingCardsPanel .spg-m2-heading-actions {
+  align-items: center;
+  margin: 6px 0 8px;
+}
+
+body[data-active-module="craftingListNav"] #addCurrentBlueprintButton {
+  min-height: 32px;
+  padding: 4px 10px;
+  border-color: rgba(156, 236, 255, 0.24);
+  color: var(--muted);
+  background: rgba(3, 12, 20, 0.48);
+  font-size: 11px;
+}
+
+body[data-active-module="craftingListNav"] .spg-allocation-summary {
+  display: block;
+  margin: 0 0 12px;
+}
+
+.spg-c012-list-summary {
+  margin: 0;
+  color: #9cecff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.spg-crafting-card-list {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.spg-c012-list-card {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(24, 218, 255, 0.38);
+  border-radius: 17px;
+  background: rgba(2, 10, 18, 0.84);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
+}
+
+.spg-c012-list-card[data-satisfied="true"] {
+  border-color: rgba(77, 218, 154, 0.45);
+}
+
+.spg-c012-list-card[data-satisfied="false"] {
+  border-color: rgba(255, 112, 126, 0.44);
+}
+
+.spg-c012-management {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(24, 218, 255, 0.18);
+  background: rgba(3, 12, 20, 0.88);
+}
+
+.spg-c012-priority {
+  flex: 0 0 auto;
+  color: #9cecff;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.spg-c012-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.spg-c012-actions button {
+  min-height: 28px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.spg-c012-actions button.danger {
+  border-color: rgba(255, 112, 126, 0.48);
+  color: #ffc3ca;
+}
+
+.spg-c012-final-card {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.spg-c012-final-card .spg-c010-item-api-link h2 {
+  font-size: clamp(30px, 4.5vw, 48px);
+}
+
+.spg-c012-stock-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 9px;
+  border: 1px solid rgba(77, 218, 154, 0.42);
+  border-radius: 8px;
+  color: #91f2c4;
+  background: rgba(8, 38, 31, 0.55);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.spg-c012-stock-status[data-status="FAIL"] {
+  border-color: rgba(255, 112, 126, 0.46);
+  color: #ffc3ca;
+  background: rgba(56, 17, 25, 0.48);
+}
+
+.spg-c012-list-card[data-collapsed="true"] .spg-c012-final-card {
+  gap: 7px;
+  padding: 10px;
+  background: linear-gradient(145deg, rgba(10, 24, 37, 0.92), rgba(3, 12, 20, 0.94));
+}
+
+.spg-c012-list-card[data-collapsed="true"] .spg-c012-final-card .spg-c010-item-api-link h2 {
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.spg-c012-list-card[data-collapsed="true"] .spg-c012-expanded-action {
+  display: none;
+}
+
+.spg-c012-quality-controls {
+  margin: 0 12px 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(156, 113, 255, 0.26);
+  border-radius: 10px;
+  color: var(--muted);
+  background: rgba(5, 12, 25, 0.62);
+}
+
+.spg-c012-quality-controls > summary {
+  cursor: pointer;
+  color: #d8caff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.spg-c012-quality-row {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(150px, auto) minmax(180px, auto);
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid rgba(156, 113, 255, 0.15);
+}
+
+.spg-c012-quality-row:first-of-type {
+  margin-top: 8px;
+}
+
+.spg-c012-quality-row > div:first-child,
+.spg-c012-quality-editor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.spg-c012-quality-editor select,
+.spg-c012-quality-editor input {
+  min-height: 30px;
+  padding: 3px 7px;
+  font-size: 11px;
+}
+
+.spg-c012-quality-editor input {
+  width: 76px;
+}
+
+.spg-c012-quality-allocation {
+  color: #b8cce0;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  body[data-active-module="craftingListNav"] #craftingCardsPanel .spg-m2-heading-actions,
+  .spg-c012-management {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .spg-c012-actions {
+    justify-content: flex-start;
+  }
+
+  .spg-c012-quality-row {
+    grid-template-columns: 1fr;
+  }
+
+  .spg-c012-quality-allocation {
+    text-align: left;
+  }
+}
+
+@media (max-width: 560px) {
+  .spg-crafting-card-list {
+    gap: 9px;
+  }
+
+  .spg-c012-list-card,
+  .spg-c012-final-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .spg-c012-actions button {
+    flex: 0 0 auto;
+  }
+
+  .spg-c012-final-card .spg-c010-titleline {
+    display: grid;
+    gap: 8px;
+  }
+
+  .spg-c012-final-card .spg-c010-quantity {
+    justify-content: flex-start;
   }
 }
 
@@ -5521,7 +5785,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         </div>
         <div class="spg-m2-heading-actions">
           <p class="spg-muted">A legfelső kártya foglal először. Az allocation csak terv, a készletet nem csökkenti véglegesen.</p>
-          <button id="addCurrentBlueprintButton" type="button" disabled>Megnyitott blueprint hozzáadása</button>
+          <button id="addCurrentBlueprintButton" type="button" disabled>Aktuális blueprint hozzáadása (fallback)</button>
         </div>
         <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
         <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
@@ -12447,21 +12711,10 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       if (!result || !result.cards.length) {
         return;
       }
-      var values = [
-        ["Aktív kártya", result.summary.cardCount],
-        ["Recipe slot", result.summary.requirementCount],
-        ["Nem teljesített", result.summary.unsatisfiedRequirementCount],
-        ["Tervezett batch-foglalás", result.batchUsage.filter(function (batch) { return batch.reservedUnits > 0; }).length]
-      ];
-      values.forEach(function (value) {
-        var item = document.createElement("div");
-        var label = document.createElement("span");
-        label.textContent = value[0];
-        var content = document.createElement("strong");
-        content.textContent = String(value[1]);
-        item.append(label, content);
-        container.append(item);
-      });
+      var summary = document.createElement("p");
+      summary.className = "spg-c012-list-summary";
+      summary.textContent = result.summary.cardCount + " kártya · " + result.summary.requirementCount + " recipe slot · " + result.summary.unsatisfiedRequirementCount + " hiányos";
+      container.append(summary);
     }
 
     function combinedQualityLabel(usage) {
@@ -12474,20 +12727,33 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       return usage.qualityRule;
     }
 
-    function emitPreparedDetailAction(kind, id, label) {
-      document.dispatchEvent(new CustomEvent("spg:detail-request", { detail: { kind: kind, id: id, label: label } }));
+    function emitPreparedDetailAction(kind, id, label, context) {
+      var detailContext = context || {};
+      document.dispatchEvent(new CustomEvent("spg:detail-request", { detail: {
+        kind: kind,
+        id: id,
+        label: label,
+        sourceCardId: detailContext.sourceCardId || null,
+        sourceModule: detailContext.sourceModule || null
+      } }));
     }
 
-    function createPreparedDetailButton(label, kind, id, className) {
+    function createPreparedDetailButton(label, kind, id, className, context) {
       var button = document.createElement("button");
       button.type = "button";
       button.className = className || "spg-intelligence-trigger";
       button.textContent = label;
       button.dataset.detailKind = kind;
       button.dataset.detailId = id || "";
+      if (context && context.sourceCardId) {
+        button.dataset.detailSourceCardId = context.sourceCardId;
+      }
+      if (context && context.sourceModule) {
+        button.dataset.detailSourceModule = context.sourceModule;
+      }
       button.title = "Részletes nézet megnyitása";
       button.addEventListener("click", function () {
-        emitPreparedDetailAction(kind, id, label);
+        emitPreparedDetailAction(kind, id, label, context);
       });
       return button;
     }
@@ -12586,11 +12852,10 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       return link;
     }
 
-    function appendC010SystemSummary(container, titleText, rows, detailKind, targetId, unavailableMessage) {
+    function appendC010SystemSummary(container, titleText, rows, detailKind, targetId, unavailableMessage, detailContext) {
       var line = document.createElement("div");
       line.className = "spg-c010-intelligence-line";
-      var title = document.createElement("strong");
-      title.textContent = titleText;
+      var title = createPreparedDetailButton(titleText, detailKind, targetId, "spg-c010-intelligence-title", detailContext);
       var links = document.createElement("div");
       links.className = "spg-c010-system-links";
       if (unavailableMessage) {
@@ -12607,7 +12872,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
             links.append(separator);
           }
           if (row.status === "AVAILABLE") {
-            links.append(createPreparedDetailButton(row.system + ": " + row.label, detailKind, targetId, "spg-c010-inline-detail"));
+            links.append(createPreparedDetailButton(row.system + ": " + row.label, detailKind, targetId, "spg-c010-inline-detail", detailContext));
           } else {
             var missing = document.createElement("span");
             missing.className = "spg-c010-system-missing";
@@ -12620,8 +12885,10 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       container.append(line);
     }
 
-    function renderC010MaterialIntelligence(view) {
+    function renderC010MaterialIntelligence(view, options) {
       var snapshot = view || {};
+      var settings = options || {};
+      var detailContext = settings.detailContext || null;
       var materialName = snapshot.materialName || "Material";
       var commodityUuid = snapshot.commodityUuid || snapshot.materialUuid || "";
       var container = document.createElement("section");
@@ -12635,20 +12902,19 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       heading.append(materialLink);
       container.append(heading);
 
-      appendC010SystemSummary(container, "Mining", c010MiningSummary(snapshot.mining), "mining", commodityUuid, null);
+      appendC010SystemSummary(container, "Mining", c010MiningSummary(snapshot.mining), "mining", commodityUuid, null, detailContext);
       var refinery = c010RefinerySummary(snapshot.refinery);
-      appendC010SystemSummary(container, "Refinery", refinery.rows, "refinery", commodityUuid, refinery.message);
+      appendC010SystemSummary(container, "Refinery", refinery.rows, "refinery", commodityUuid, refinery.message, detailContext);
 
       var radarLine = document.createElement("div");
       radarLine.className = "spg-c010-radar-line";
-      var radarTitle = document.createElement("strong");
-      radarTitle.textContent = "Radar";
+      var radarTitle = createPreparedDetailButton("Radar", "radar", commodityUuid, "spg-c010-intelligence-title", detailContext);
       var chips = document.createElement("div");
       chips.className = "spg-c010-radar-chips";
       var values = c009RadarValues(snapshot.mining);
       if (values.length) {
         values.forEach(function (value) {
-          var chip = createPreparedDetailButton(value.toLocaleString("hu-HU"), "radar", commodityUuid, "spg-c010-radar-chip");
+          var chip = createPreparedDetailButton(value.toLocaleString("hu-HU"), "radar", commodityUuid, "spg-c010-radar-chip", detailContext);
           applyMaterialColor(chip, commodityUuid, materialName, { radar: true });
           chips.append(chip);
         });
@@ -12690,6 +12956,113 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       return row;
     }
 
+    function renderFinalCraftingCardContent(viewModel, options) {
+      var settings = options || {};
+      var detailContext = settings.detailContext || null;
+      var article = document.createElement("article");
+      article.className = "spg-c010-final-card" + (settings.className ? " " + settings.className : "");
+      article.dataset.finalCardOnly = "true";
+      article.dataset.finalCardContext = settings.context || "browser";
+      article.dataset.blueprintUuid = settings.blueprintUuid || viewModel.card.blueprintUuid || "";
+      article.dataset.cardId = settings.cardId || viewModel.card.id || "";
+      article.dataset.collapsed = settings.collapsed === true ? "true" : "false";
+
+      var top = document.createElement("div");
+      top.className = "spg-c010-topline";
+      var meta = document.createElement("div");
+      meta.className = "spg-c010-meta";
+      var sizeLabel = viewModel.card.outputSize && viewModel.card.outputSize !== "Nincs adat" ? "S" + viewModel.card.outputSize : "Nincs adat";
+      var metaValues = [sizeLabel, viewModel.card.outputClass];
+      if (settings.includeOutputType === true) {
+        metaValues.push(viewModel.card.outputType);
+      }
+      metaValues.push(viewModel.card.outputGrade);
+      metaValues.forEach(function (value) {
+        var token = document.createElement("span");
+        token.textContent = value || "Nincs adat";
+        meta.append(token);
+      });
+      var timeCart = document.createElement("div");
+      timeCart.className = "spg-c010-time-cart";
+      var craftTime = document.createElement("span");
+      craftTime.className = "spg-c010-craft-time";
+      craftTime.textContent = "◷ " + c009FormatCraftTime(viewModel.card.craftTimeSeconds);
+      craftTime.title = "Crafting Time";
+      timeCart.append(craftTime);
+      if (typeof settings.onCart === "function") {
+        var cart = document.createElement("button");
+        cart.type = "button";
+        cart.className = "spg-c010-cart";
+        cart.textContent = "🛒";
+        cart.title = "Hozzáadás a teljes Crafting Listhez";
+        cart.setAttribute("aria-label", viewModel.card.outputName + " hozzáadása a Crafting Listhez");
+        cart.addEventListener("click", function () { settings.onCart(cart); });
+        timeCart.append(cart);
+      }
+      top.append(meta, timeCart);
+
+      var titleline = document.createElement("div");
+      titleline.className = "spg-c010-titleline";
+      var itemLink = createC009ApiLink(viewModel.card.outputName, viewModel.card.apiWikiLink, "spg-c010-item-api-link");
+      var itemHeading = document.createElement("h2");
+      itemHeading.textContent = viewModel.card.outputName;
+      itemLink.replaceChildren(itemHeading);
+      var quantityGroup = document.createElement("div");
+      quantityGroup.className = "spg-c010-quantity";
+      var quantityBox = document.createElement(settings.quantityEditable === false ? "span" : "label");
+      quantityBox.className = "spg-c010-quantity-box";
+      quantityBox.title = "Gyártani akarok";
+      if (settings.quantityEditable === false) {
+        quantityBox.textContent = viewModel.card.requestedQuantity + " DB";
+      } else {
+        var quantity = document.createElement("input");
+        quantity.type = "number";
+        quantity.min = "1";
+        quantity.step = "1";
+        quantity.value = String(viewModel.card.requestedQuantity);
+        quantity.setAttribute("aria-label", viewModel.card.outputName + " – gyártani akarok");
+        quantity.addEventListener("input", function () {
+          if (typeof settings.onQuantityInput === "function") {
+            settings.onQuantityInput(Math.max(1, Math.round(Number(quantity.value) || 1)), quantity);
+          }
+        });
+        quantity.addEventListener("change", function () {
+          if (typeof settings.onQuantityChange === "function") {
+            settings.onQuantityChange(Math.max(1, Math.round(Number(quantity.value) || 1)), quantity);
+          }
+        });
+        var unit = document.createElement("span");
+        unit.textContent = "DB";
+        quantityBox.append(quantity, unit);
+      }
+      var maximum = document.createElement("span");
+      maximum.className = "spg-c010-max";
+      maximum.textContent = "Max: " + viewModel.card.maxCraftable + " DB";
+      quantityGroup.append(quantityBox, maximum);
+      if (settings.stockStatusText) {
+        var status = document.createElement("span");
+        status.className = "spg-c012-stock-status";
+        status.dataset.status = viewModel.card.satisfied ? "PASS" : "FAIL";
+        status.textContent = settings.stockStatusText;
+        quantityGroup.append(status);
+      }
+      titleline.append(itemLink, quantityGroup);
+      article.append(top, titleline);
+
+      if (settings.collapsed !== true) {
+        var recipe = document.createElement("section");
+        recipe.className = "spg-c010-recipe";
+        viewModel.requirements.forEach(function (requirement) { recipe.append(renderC010RecipeRow(requirement)); });
+        var materials = document.createElement("div");
+        materials.className = "spg-c010-material-list";
+        viewModel.requirements.forEach(function (requirement) {
+          materials.append(renderC010MaterialIntelligence(requirement, { detailContext: detailContext }));
+        });
+        article.append(recipe, materials);
+      }
+      return article;
+    }
+
     function renderC010FinalCraftingCard() {
       var container = document.getElementById("finalCraftingCardPreview");
       if (!container) { return; }
@@ -12717,98 +13090,37 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         outputPresentation: state.craftingOutputPresentationByUuid.get(card.outputUuid) || null,
         trace: allocation.trace || []
       });
-
-      var article = document.createElement("article");
-      article.className = "spg-c010-final-card";
-      article.dataset.finalCardOnly = "true";
-      article.dataset.blueprintUuid = card.blueprintUuid;
-
-      var top = document.createElement("div");
-      top.className = "spg-c010-topline";
-      var meta = document.createElement("div");
-      meta.className = "spg-c010-meta";
-      ["S" + viewModel.card.outputSize, viewModel.card.outputClass, viewModel.card.outputGrade].forEach(function (value) {
-        var token = document.createElement("span");
-        token.textContent = value || "Nincs adat";
-        meta.append(token);
-      });
-      var timeCart = document.createElement("div");
-      timeCart.className = "spg-c010-time-cart";
-      var craftTime = document.createElement("span");
-      craftTime.className = "spg-c010-craft-time";
-      craftTime.textContent = "◷ " + c009FormatCraftTime(viewModel.card.craftTimeSeconds);
-      craftTime.title = "Crafting Time";
-      var cart = document.createElement("button");
-      cart.type = "button";
-      cart.className = "spg-c010-cart";
-      cart.textContent = "🛒";
-      cart.title = "Hozzáadás a teljes Crafting Listhez";
-      cart.setAttribute("aria-label", viewModel.card.outputName + " hozzáadása a Crafting Listhez");
-      cart.addEventListener("click", function () {
-        cart.disabled = true;
-        addC010FinalCardToCraftingList().catch(function (error) {
-          setNotice("Crafting List hozzáadási hiba: " + error.message, "error");
-          cart.disabled = false;
-        });
-      });
-      timeCart.append(craftTime, cart);
-      top.append(meta, timeCart);
-
-      var titleline = document.createElement("div");
-      titleline.className = "spg-c010-titleline";
-      var itemLink = createC009ApiLink(viewModel.card.outputName, viewModel.card.apiWikiLink, "spg-c010-item-api-link");
-      var itemHeading = document.createElement("h2");
-      itemHeading.textContent = viewModel.card.outputName;
-      itemLink.replaceChildren(itemHeading);
-      var quantityGroup = document.createElement("div");
-      quantityGroup.className = "spg-c010-quantity";
-      var quantityBox = document.createElement("label");
-      quantityBox.className = "spg-c010-quantity-box";
-      quantityBox.title = "Gyártani akarok";
-      var quantity = document.createElement("input");
-      quantity.type = "number";
-      quantity.min = "1";
-      quantity.step = "1";
-      quantity.value = String(viewModel.card.requestedQuantity);
-      quantity.setAttribute("aria-label", viewModel.card.outputName + " – gyártani akarok");
       var quantityRecalcTimer = null;
-      quantity.addEventListener("input", function () {
-        state.finalCardQuantity = Math.max(1, Math.round(Number(quantity.value) || 1));
-        document.body.dataset.c010FinalCardQuantity = String(state.finalCardQuantity);
-        if (quantityRecalcTimer !== null) {
-          clearTimeout(quantityRecalcTimer);
-        }
-        quantityRecalcTimer = setTimeout(function () {
-          quantityRecalcTimer = null;
+      container.append(renderFinalCraftingCardContent(viewModel, {
+        context: "blueprint-browser",
+        cardId: card.id,
+        blueprintUuid: card.blueprintUuid,
+        detailContext: { sourceCardId: card.id, sourceModule: "blueprintBrowserNav" },
+        onCart: function (cart) {
+          cart.disabled = true;
+          addC010FinalCardToCraftingList().catch(function (error) {
+            setNotice("Crafting List hozzáadási hiba: " + error.message, "error");
+            cart.disabled = false;
+          });
+        },
+        onQuantityInput: function (value) {
+          state.finalCardQuantity = value;
+          document.body.dataset.c010FinalCardQuantity = String(value);
+          if (quantityRecalcTimer !== null) { clearTimeout(quantityRecalcTimer); }
+          quantityRecalcTimer = setTimeout(function () {
+            quantityRecalcTimer = null;
+            recalculateC010FinalCraftingCard();
+          }, 250);
+        },
+        onQuantityChange: function (value) {
+          if (quantityRecalcTimer !== null) {
+            clearTimeout(quantityRecalcTimer);
+            quantityRecalcTimer = null;
+          }
+          state.finalCardQuantity = value;
           recalculateC010FinalCraftingCard();
-        }, 250);
-      });
-      quantity.addEventListener("change", function () {
-        if (quantityRecalcTimer !== null) {
-          clearTimeout(quantityRecalcTimer);
-          quantityRecalcTimer = null;
         }
-        state.finalCardQuantity = Math.max(1, Math.round(Number(quantity.value) || 1));
-        recalculateC010FinalCraftingCard();
-      });
-      var unit = document.createElement("span");
-      unit.textContent = "DB";
-      quantityBox.append(quantity, unit);
-      var maximum = document.createElement("span");
-      maximum.className = "spg-c010-max";
-      maximum.textContent = "Max: " + viewModel.card.maxCraftable + " DB";
-      quantityGroup.append(quantityBox, maximum);
-      titleline.append(itemLink, quantityGroup);
-
-      var recipe = document.createElement("section");
-      recipe.className = "spg-c010-recipe";
-      viewModel.requirements.forEach(function (requirement) { recipe.append(renderC010RecipeRow(requirement)); });
-
-      var materials = document.createElement("div");
-      materials.className = "spg-c010-material-list";
-      viewModel.requirements.forEach(function (requirement) { materials.append(renderC010MaterialIntelligence(requirement)); });
-      article.append(top, titleline, recipe, materials);
-      container.append(article);
+      }));
       document.body.dataset.c010FinalCardReady = "true";
       document.body.dataset.c010FinalCardBlueprint = viewModel.card.outputName;
       document.body.dataset.c010FinalCardQuantity = String(viewModel.card.requestedQuantity);
@@ -13271,6 +13583,88 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       return article;
     }
 
+    function renderCraftingCardQualityControls(card, cardResult, cardViewModel) {
+      var details = document.createElement("details");
+      details.className = "spg-c012-quality-controls";
+      var summary = document.createElement("summary");
+      summary.textContent = "Advanced / Quality és batch beállítások";
+      details.append(summary);
+      (card.requirements || []).forEach(function (requirement) {
+        var allocation = cardResult && cardResult.requirements.find(function (item) { return item.recipeSlotId === requirement.id; });
+        var requirementView = cardViewModel.requirements.find(function (item) { return item.recipeSlotId === requirement.id; }) || {};
+        var qualityRule = resolveRequirementQualityRule(requirement, (card.slotStrategies || {})[requirement.id]);
+        var row = document.createElement("div");
+        row.className = "spg-c012-quality-row";
+        var identity = document.createElement("div");
+        var title = document.createElement("strong");
+        title.textContent = requirement.recipeSlotName + " · " + (requirementView.materialName || requirement.materialName);
+        var badge = document.createElement("span");
+        badge.className = "spg-badge spg-badge-" + (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
+        badge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500
+          ? "Q500+ elég"
+          : (qualityRule.mode === M2_QUALITY_RULES.TARGET_Q ? "Target Q" + qualityRule.targetQuality + "+" : qualityRule.mode);
+        identity.append(title, badge);
+        var editor = document.createElement("div");
+        editor.className = "spg-c012-quality-editor";
+        if (qualityRule.configurable) {
+          var select = document.createElement("select");
+          select.setAttribute("aria-label", requirement.recipeSlotName + " Quality stratégia");
+          [[M2_QUALITY_RULES.HIGHEST_Q, "Highest Q"], [M2_QUALITY_RULES.TARGET_Q, "Target Q"]].forEach(function (optionData) {
+            var option = document.createElement("option");
+            option.value = optionData[0];
+            option.textContent = optionData[1];
+            select.append(option);
+          });
+          select.value = qualityRule.mode;
+          var target = document.createElement("input");
+          target.type = "number";
+          target.min = "0";
+          target.max = "1000";
+          target.step = "1";
+          target.setAttribute("aria-label", requirement.recipeSlotName + " Target Q");
+          target.value = String(((card.slotStrategies || {})[requirement.id] && card.slotStrategies[requirement.id].targetQuality) || 850);
+          target.hidden = qualityRule.mode !== M2_QUALITY_RULES.TARGET_Q;
+          select.addEventListener("change", function () {
+            updateCardStrategy(card.id, requirement.id, select.value, Number(target.value)).catch(function (error) {
+              setNotice("Quality stratégia mentési hiba: " + error.message, "error");
+            });
+          });
+          target.addEventListener("change", function () {
+            updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, Number(target.value)).catch(function (error) {
+              setNotice("Target Q mentési hiba: " + error.message, "error");
+            });
+          });
+          editor.append(select, target);
+        } else {
+          var notice = document.createElement("small");
+          notice.textContent = qualityRule.mode === M2_QUALITY_RULES.FIXED
+            ? "Fixed input – nincs Quality-stratégia."
+            : (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "UNKNOWN – a rendszer nem találgat." : "Integrity-only – Q500+ legalacsonyabb megfelelő batch.");
+          editor.append(notice);
+        }
+        var allocationText = document.createElement("small");
+        var shortage = Number(requirementView.shortageUnits || 0);
+        allocationText.className = "spg-c012-quality-allocation";
+        allocationText.textContent = "Lefoglalt " + formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0) + " · " +
+          (shortage > 0 ? "hiány " + formatInventoryUnits(requirement.unit, shortage) : "marad " + formatInventoryUnits(requirement.unit, requirementView.remainingUnits || 0));
+        row.append(identity, editor, allocationText);
+        details.append(row);
+      });
+      return details;
+    }
+
+    function createC012CardAction(label, title, handler, disabled, className) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.title = title;
+      button.setAttribute("aria-label", title);
+      button.disabled = disabled === true;
+      button.className = className || "";
+      button.addEventListener("click", handler);
+      return button;
+    }
+
     function renderCraftingCards() {
       setBadge(
         document.getElementById("craftingCardCount"),
@@ -13278,13 +13672,9 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         state.craftingCards.length + " kártya"
       );
       var resultByCard = new Map();
-      var traceBySlot = new Map();
       if (state.allocationResult) {
         state.allocationResult.cards.forEach(function (cardResult) {
           resultByCard.set(cardResult.cardId, cardResult);
-        });
-        state.allocationResult.trace.forEach(function (trace) {
-          traceBySlot.set(trace.cardId + "::" + trace.recipeSlotId, trace);
         });
       }
       var container = document.getElementById("craftingCardList");
@@ -13298,7 +13688,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         return;
       }
       state.craftingCards.forEach(function (card, index) {
-        var cardResult = resultByCard.get(card.id);
+        var cardResult = resultByCard.get(card.id) || { requirements: [], bottleneckSlotIds: [], maxCraftable: 0, satisfied: false };
         var cardTrace = state.allocationResult ? state.allocationResult.trace.filter(function (trace) { return trace.cardId === card.id; }) : [];
         var cardViewModel = buildFinalCraftingCardViewModel({
           appName: APP.name,
@@ -13310,157 +13700,93 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
           outputPresentation: state.craftingOutputPresentationByUuid.get(card.outputUuid) || null,
           trace: cardTrace
         });
-        var article = document.createElement("article");
-        article.className = "spg-crafting-card";
-        article.dataset.cardViewModel = "V003-C006";
-        article.dataset.cardId = card.id;
-        article.dataset.cardOrder = String(index);
-        article.dataset.satisfied = cardResult && cardResult.satisfied ? "true" : "false";
-        var heading = document.createElement("div");
-        heading.className = "spg-crafting-card-heading spg-c009-card-heading";
-        var title = document.createElement("div");
-        var priority = document.createElement("span");
-        priority.className = "eyebrow";
-        priority.textContent = "Prioritás " + (index + 1);
-        var name = createC009ApiLink(cardViewModel.card.outputName, cardViewModel.card.apiWikiLink, "spg-card-detail-trigger spg-c009-item-api-link");
-        var nameHeading = document.createElement("h3");
-        nameHeading.textContent = cardViewModel.card.outputName;
-        name.replaceChildren(nameHeading);
-        var headerMeta = document.createElement("div");
-        headerMeta.className = "spg-c009-item-meta";
-        [
-          "S" + cardViewModel.card.outputSize,
-          cardViewModel.card.outputClass,
-          cardViewModel.card.outputType,
-          cardViewModel.card.outputGrade
-        ].forEach(function (entry) {
-          var item = document.createElement("span");
-          item.textContent = entry || "Nincs adat";
-          headerMeta.append(item);
-        });
-        var titleRow = document.createElement("div");
-        titleRow.className = "spg-c009-title-row";
-        titleRow.append(name, createPreparedDetailButton("Belső részlet", "blueprint", card.blueprintUuid, "spg-intelligence-trigger"));
-        title.append(priority, headerMeta, titleRow);
-        var actions = document.createElement("div");
-        actions.className = "spg-c009-card-actions";
-        var craftTime = document.createElement("span");
-        craftTime.className = "spg-c009-craft-time";
-        craftTime.textContent = "◷ " + c009FormatCraftTime(cardViewModel.card.craftTimeSeconds);
-        craftTime.title = "Crafting Time";
-        var management = document.createElement("details");
-        management.className = "spg-c009-advanced";
-        var managementSummary = document.createElement("summary");
-        managementSummary.textContent = "Kártyaműveletek";
+        var wrapper = document.createElement("article");
+        wrapper.className = "spg-crafting-card spg-c012-list-card";
+        wrapper.dataset.cardViewModel = "V003-C012";
+        wrapper.dataset.cardId = card.id;
+        wrapper.dataset.cardOrder = String(index);
+        wrapper.dataset.priority = String(index + 1);
+        wrapper.dataset.satisfied = cardResult.satisfied ? "true" : "false";
+        wrapper.dataset.collapsed = card.collapsed ? "true" : "false";
+        wrapper.tabIndex = -1;
+
+        var management = document.createElement("header");
+        management.className = "spg-c012-management";
+        management.setAttribute("aria-label", "Kártyaműveletek");
+        var priority = document.createElement("strong");
+        priority.className = "spg-c012-priority";
+        priority.textContent = "PRIORITÁS " + (index + 1);
         var managementActions = document.createElement("div");
-        managementActions.className = "spg-inline-actions";
-        management.append(managementSummary, managementActions);
-        [["↑", "Feljebb", index > 0, -1], ["↓", "Lejjebb", index < state.craftingCards.length - 1, 1]].forEach(function (action) {
-          var button = document.createElement("button");
-          button.type = "button";
-          button.textContent = action[0];
-          button.title = action[1];
-          button.setAttribute("aria-label", card.outputName + " " + action[1]);
-          button.disabled = !action[2];
-          button.addEventListener("click", function () {
-            moveCraftingCard(card.id, action[3]).catch(function (error) {
-              setNotice("Kártyasorrend mentési hiba: " + error.message, "error");
+        managementActions.className = "spg-c012-actions";
+        managementActions.append(
+          createC012CardAction("↑", card.outputName + " feljebb", function () {
+            moveCraftingCard(card.id, -1).catch(function (error) { setNotice("Kártyasorrend mentési hiba: " + error.message, "error"); });
+          }, index === 0),
+          createC012CardAction("↓", card.outputName + " lejjebb", function () {
+            moveCraftingCard(card.id, 1).catch(function (error) { setNotice("Kártyasorrend mentési hiba: " + error.message, "error"); });
+          }, index === state.craftingCards.length - 1),
+          createC012CardAction("Részlet", card.outputName + " belső részlet", function () {
+            emitPreparedDetailAction("blueprint", card.blueprintUuid, card.outputName, { sourceCardId: card.id, sourceModule: "craftingListNav" });
+          }),
+          createC012CardAction("Duplikálás", card.outputName + " duplikálása", function () {
+            duplicateCraftingCard(card.id).catch(function (error) { setNotice("Duplikálási hiba: " + error.message, "error"); });
+          }, false, "spg-c012-expanded-action"),
+          createC012CardAction("Export", card.outputName + " standalone HTML export", function (event) {
+            var exportButton = event.currentTarget;
+            exportButton.disabled = true;
+            downloadStandaloneExport(card.id).catch(function () { return null; }).finally(function () { exportButton.disabled = false; });
+          }, false, "spg-c012-expanded-action spg-c012-export-action"),
+          createC012CardAction(card.collapsed ? "Kinyitás" : "Összecsukás", card.outputName + (card.collapsed ? " kinyitása" : " összecsukása"), function () {
+            updateCraftingCard(card.id, function (updated) { updated.collapsed = !updated.collapsed; }, "CARD_COLLAPSE").catch(function (error) {
+              setNotice("Kártyaállapot mentési hiba: " + error.message, "error");
             });
-          });
-          managementActions.append(button);
-        });
-        var duplicate = document.createElement("button");
-        duplicate.type = "button";
-        duplicate.textContent = "🛒";
-        duplicate.className = "spg-c009-cart-button";
-        duplicate.title = "Még egy példány hozzáadása a Crafting Listhez";
-        duplicate.setAttribute("aria-label", card.outputName + " hozzáadása új Crafting Cardként");
-        duplicate.addEventListener("click", function () {
-          duplicateCraftingCard(card.id).catch(function (error) { setNotice("Duplikálási hiba: " + error.message, "error"); });
-        });
-        var collapse = document.createElement("button");
-        collapse.type = "button";
-        collapse.textContent = card.collapsed ? "Kinyitás" : "Összecsukás";
-        collapse.addEventListener("click", function () {
-          updateCraftingCard(card.id, function (updated) { updated.collapsed = !updated.collapsed; }, "CARD_COLLAPSE").catch(function (error) {
-            setNotice("Kártyaállapot mentési hiba: " + error.message, "error");
-          });
-        });
-        var remove = document.createElement("button");
-        remove.type = "button";
-        remove.textContent = "Törlés";
-        remove.addEventListener("click", function () {
-          deleteCraftingCard(card.id).catch(function (error) { setNotice("Kártyatörlési hiba: " + error.message, "error"); });
-        });
-        var exportButton = document.createElement("button");
-        exportButton.type = "button";
-        exportButton.textContent = "Export HTML";
-        exportButton.className = "primary";
-        exportButton.dataset.exportCardId = card.id;
-        exportButton.addEventListener("click", function () {
-          exportButton.disabled = true;
-          downloadStandaloneExport(card.id).catch(function () { return null; }).finally(function () {
-            exportButton.disabled = false;
-          });
-        });
-        managementActions.append(exportButton, collapse, remove);
-        actions.append(craftTime, duplicate, management);
-        heading.append(title, actions);
-        article.append(heading);
+          }),
+          createC012CardAction("Törlés", card.outputName + " törlése", function () {
+            deleteCraftingCard(card.id).catch(function (error) { setNotice("Kártyatörlési hiba: " + error.message, "error"); });
+          }, false, "danger")
+        );
+        managementActions.querySelector(".spg-c012-export-action").dataset.exportCardId = card.id;
+        management.append(priority, managementActions);
 
-        var controls = document.createElement("div");
-        controls.className = "spg-c009-quantity-row";
-        var quantityLabel = document.createElement("label");
-        var quantityText = document.createElement("span");
-        quantityText.textContent = "Gyártani akarok";
-        var quantity = document.createElement("input");
-        quantity.type = "number";
-        quantity.min = "1";
-        quantity.step = "1";
-        quantity.value = String(card.quantity);
-        quantity.setAttribute("aria-label", card.outputName + " gyártási mennyiség");
-        quantity.addEventListener("change", function () {
-          updateCraftingCard(card.id, function (updated) {
-            updated.quantity = Math.max(1, Math.round(Number(quantity.value) || 1));
-          }, "CARD_QUANTITY").catch(function (error) { setNotice("Mennyiség mentési hiba: " + error.message, "error"); });
+        var quantityPersistTimer = null;
+        var finalCard = renderFinalCraftingCardContent(cardViewModel, {
+          context: "crafting-list",
+          className: "spg-c012-final-card",
+          cardId: card.id,
+          blueprintUuid: card.blueprintUuid,
+          collapsed: card.collapsed,
+          includeOutputType: true,
+          stockStatusText: cardResult.satisfied ? "Készlet rendben" : "Hiány van",
+          detailContext: { sourceCardId: card.id, sourceModule: "craftingListNav" },
+          onQuantityInput: function (value) {
+            if (quantityPersistTimer !== null) { clearTimeout(quantityPersistTimer); }
+            quantityPersistTimer = setTimeout(function () {
+              quantityPersistTimer = null;
+              updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY").catch(function (error) {
+                setNotice("Mennyiség mentési hiba: " + error.message, "error");
+              });
+            }, 350);
+          },
+          onQuantityChange: function (value) {
+            if (quantityPersistTimer !== null) {
+              clearTimeout(quantityPersistTimer);
+              quantityPersistTimer = null;
+            }
+            updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY").catch(function (error) {
+              setNotice("Mennyiség mentési hiba: " + error.message, "error");
+            });
+          }
         });
-        quantityLabel.append(quantityText, quantity);
-        var maximum = document.createElement("div");
-        maximum.className = "spg-card-maximum";
-        var maximumLabel = document.createElement("span");
-        maximumLabel.textContent = "Készletből maximálisan gyártható";
-        var maximumValue = document.createElement("strong");
-        maximumValue.textContent = String(cardViewModel.card.maxCraftable) + " db";
-        maximum.append(maximumLabel, maximumValue);
-        var status = document.createElement("span");
-        status.className = "spg-badge spg-badge-" + (cardResult && cardResult.satisfied ? "pass" : "fail");
-        status.textContent = cardResult && cardResult.satisfied ? "Terv teljesíthető" : "Hiány van";
-        controls.append(quantityLabel, maximum, status);
-        article.append(controls);
-
+        wrapper.append(management, finalCard);
         if (!card.collapsed) {
-          var requirements = document.createElement("div");
-          requirements.className = "spg-card-requirements";
-          var recipeHeader = document.createElement("div");
-          recipeHeader.className = "spg-c009-recipe-header";
-          ["Recipe Slot", "Material", "1 darabhoz", "Megfelelő készlet"].forEach(function (label) {
-            var cell = document.createElement("span");
-            cell.textContent = label;
-            recipeHeader.append(cell);
-          });
-          requirements.append(recipeHeader);
-          card.requirements.forEach(function (requirement) {
-            var allocation = cardResult && cardResult.requirements.find(function (item) {
-              return item.recipeSlotId === requirement.id;
-            });
-            var trace = traceBySlot.get(card.id + "::" + requirement.id);
-            var requirementViewModel = cardViewModel.requirements.find(function (item) { return item.recipeSlotId === requirement.id; });
-            requirements.append(renderRequirementAllocation(card, requirement, allocation, trace, requirementViewModel));
-          });
-          article.append(requirements);
+          wrapper.append(renderCraftingCardQualityControls(card, cardResult, cardViewModel));
         }
-        container.append(article);
+        container.append(wrapper);
       });
+      document.body.dataset.c012CraftingCardCount = String(state.craftingCards.length);
+      document.body.dataset.c012ExpandedCardCount = String(state.craftingCards.filter(function (card) { return !card.collapsed; }).length);
+      document.body.dataset.c012CollapsedCardCount = String(state.craftingCards.filter(function (card) { return card.collapsed; }).length);
+      document.body.dataset.c012SharedRenderer = "renderFinalCraftingCardContent";
       renderAllocationSummary();
     }
 
@@ -15473,7 +15799,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
             ? '<button type="button" class="spg-c010-inline-detail" data-detail-kind="' + m6EscapeHtml(detailKind) + '" data-detail-id="' + m6EscapeHtml(targetId) + '">' + m6EscapeHtml(label) + '</button>'
             : '<span class="spg-c010-system-missing">' + m6EscapeHtml(row.system + ": Nincs adat") + '</span>');
         }).join("");
-      return '<div class="spg-c010-intelligence-line"><strong>' + m6EscapeHtml(title) + '</strong><div class="spg-c010-system-links">' + content + '</div></div>';
+      return '<div class="spg-c010-intelligence-line"><button type="button" class="spg-c010-intelligence-title" data-detail-kind="' + m6EscapeHtml(detailKind) + '" data-detail-id="' + m6EscapeHtml(targetId) + '">' + m6EscapeHtml(title) + '</button><div class="spg-c010-system-links">' + content + '</div></div>';
     }
 
     function c010RenderStandaloneMaterial(requirement) {
@@ -15492,7 +15818,7 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         '<div class="spg-c010-material-heading">', c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link"), '</div>',
         c010RenderStandaloneSystemSummary("Mining", c010MiningSummary(requirement.mining), "mining", targetId, null),
         c010RenderStandaloneSystemSummary("Refinery", refinery.rows, "refinery", targetId, refinery.message),
-        '<div class="spg-c010-radar-line"><strong>Radar</strong><div class="spg-c010-radar-chips">', radar, '</div></div>',
+        '<div class="spg-c010-radar-line"><button type="button" class="spg-c010-intelligence-title" data-detail-kind="radar" data-detail-id="', m6EscapeHtml(targetId), '">Radar</button><div class="spg-c010-radar-chips">', radar, '</div></div>',
         '</section>'
       ].join("").replace(/class="spg-c010-material-link spg-c009-material-api-link"/g, 'class="spg-c010-material-link spg-c009-material-api-link" style="' + m6EscapeHtml(colorStyle) + '"');
     }
@@ -15564,12 +15890,27 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
     }
     /* M6_STANDALONE_EXPORT_MODEL_END */
 
-    function c008BuildLiveSnapshotForTarget(kind, id) {
+    function c008BuildLiveSnapshotForTarget(kind, id, preferredCardId) {
       var cards = state.craftingCards.slice().sort(function (a, b) { return a.order - b.order || a.id.localeCompare(b.id); });
+      if (state.finalCardPreview && !cards.some(function (card) { return card.id === state.finalCardPreview.id; })) {
+        if (preferredCardId === state.finalCardPreview.id) {
+          cards.unshift(state.finalCardPreview);
+        } else {
+          cards.push(state.finalCardPreview);
+        }
+      }
+      if (preferredCardId) {
+        cards.sort(function (a, b) {
+          return Number(b.id === preferredCardId) - Number(a.id === preferredCardId) || a.order - b.order || a.id.localeCompare(b.id);
+        });
+      }
       var resultByCard = new Map((state.allocationResult && state.allocationResult.cards || []).map(function (result) {
         return [result.cardId, result];
       }));
-      var trace = state.allocationResult && state.allocationResult.trace || [];
+      if (state.finalCardPreviewAllocation && state.finalCardPreviewAllocation.cards) {
+        state.finalCardPreviewAllocation.cards.forEach(function (result) { resultByCard.set(result.cardId, result); });
+      }
+      var trace = (state.allocationResult && state.allocationResult.trace || []).concat(state.finalCardPreviewAllocation && state.finalCardPreviewAllocation.trace || []);
       var fallback = null;
       for (var index = 0; index < cards.length; index += 1) {
         var card = cards[index];
@@ -15595,15 +15936,23 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
     var c008DetailController = (function () {
       var returnFocus = null;
 
-      function routeHash(kind, id) {
-        return "#spg-detail=" + encodeURIComponent(kind) + ":" + encodeURIComponent(id);
+      function routeHash(kind, id, sourceCardId, sourceModule) {
+        var route = "#spg-detail=" + encodeURIComponent(kind) + ":" + encodeURIComponent(id);
+        if (sourceCardId) { route += "&spg-source-card=" + encodeURIComponent(sourceCardId); }
+        if (sourceModule) { route += "&spg-source-module=" + encodeURIComponent(sourceModule); }
+        return route;
       }
 
       function parseRoute() {
-        var match = String(location.hash || "").match(/^#spg-detail=([^:]+):(.+)$/);
+        var match = String(location.hash || "").match(/^#spg-detail=([^:]+):([^&]+)(?:&spg-source-card=([^&]*))?(?:&spg-source-module=([^&]*))?$/);
         if (!match) { return null; }
         try {
-          return { kind: decodeURIComponent(match[1]), id: decodeURIComponent(match[2]) };
+          return {
+            kind: decodeURIComponent(match[1]),
+            id: decodeURIComponent(match[2]),
+            sourceCardId: match[3] ? decodeURIComponent(match[3]) : null,
+            sourceModule: match[4] ? decodeURIComponent(match[4]) : null
+          };
         } catch (error) {
           return null;
         }
@@ -15629,18 +15978,29 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
 
       function open(kind, id, options) {
         var settings = options || {};
-        var snapshot = c008BuildLiveSnapshotForTarget(kind, id);
+        var historyDetail = history.state && history.state.spgDetail || {};
+        var sourceCardId = settings.sourceCardId || historyDetail.sourceCardId || null;
+        var sourceModule = settings.sourceModule || historyDetail.sourceModule || document.body.dataset.activeModule || null;
+        var snapshot = c008BuildLiveSnapshotForTarget(kind, id, sourceCardId);
         var model = resolveC008DetailModel(snapshot, kind, id);
+        if (sourceModule && document.body.dataset.activeModule !== sourceModule) {
+          var sourceNavigation = M61_REQUIRED_NAVIGATION.find(function (entry) { return entry.id === sourceModule; });
+          if (sourceNavigation) {
+            navigateToPanel(sourceNavigation.id, sourceNavigation.targetId, null);
+          }
+        }
         if (!returnFocus && document.activeElement instanceof HTMLElement) {
           returnFocus = document.activeElement;
         }
         render(model);
+        document.body.dataset.spgDetailSourceCardId = sourceCardId || "";
+        document.body.dataset.spgDetailSourceModule = sourceModule || "";
         if (settings.pushHistory !== false) {
           try {
             var previousDepth = Number(history.state && history.state.spgDetailDepth) || 0;
-            history.pushState({ spgDetail: { kind: kind, id: id }, spgDetailDepth: previousDepth + 1 }, "", routeHash(kind, id));
+            history.pushState({ spgDetail: { kind: kind, id: id, sourceCardId: sourceCardId, sourceModule: sourceModule }, spgDetailDepth: previousDepth + 1 }, "", routeHash(kind, id, sourceCardId, sourceModule));
           } catch (error) {
-            location.hash = routeHash(kind, id).slice(1);
+            location.hash = routeHash(kind, id, sourceCardId, sourceModule).slice(1);
           }
         }
         logger.event(model.status === "AVAILABLE" ? "INFO" : "WARN", model.status === "AVAILABLE" ? "C008_DETAIL_OPENED" : "C008_DETAIL_INVALID_TARGET", model.status === "AVAILABLE" ? "A belső single-file detail nézet megnyílt." : "A detail route célja nem található.", {
@@ -15650,20 +16010,38 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
           publicWikiStatus: model.publicWikiLink && model.publicWikiLink.resolutionStatus,
           publicWikiOrigin: model.publicWikiLink && model.publicWikiLink.resolutionOrigin,
           apiWikiStatus: model.apiWikiLink && model.apiWikiLink.status,
-          apiWikiOrigin: model.apiWikiLink && model.apiWikiLink.origin
+          apiWikiOrigin: model.apiWikiLink && model.apiWikiLink.origin,
+          sourceCardId: sourceCardId,
+          sourceModule: sourceModule
         });
         return model;
       }
 
       function close() {
         var panel = document.getElementById("spgDetailView");
+        var sourceCardId = document.body.dataset.spgDetailSourceCardId || null;
+        var returnedCardId = null;
         panel.hidden = true;
         delete document.body.dataset.spgDetailActive;
         delete document.body.dataset.spgDetailKind;
         delete document.body.dataset.spgDetailId;
+        delete document.body.dataset.spgDetailSourceCardId;
+        delete document.body.dataset.spgDetailSourceModule;
         document.body.dataset.spgDetailStatus = "CLOSED";
-        if (returnFocus && document.documentElement.contains(returnFocus)) {
+        var returnFocusCard = returnFocus && returnFocus.closest ? returnFocus.closest(".spg-c012-list-card") : null;
+        if (returnFocus && document.documentElement.contains(returnFocus) && (!sourceCardId || returnFocusCard)) {
           returnFocus.focus({ preventScroll: true });
+          returnedCardId = returnFocusCard ? returnFocusCard.dataset.cardId : null;
+        } else if (sourceCardId) {
+          var sourceCard = Array.from(document.querySelectorAll(".spg-c012-list-card")).find(function (card) { return card.dataset.cardId === sourceCardId; });
+          if (sourceCard) {
+            sourceCard.focus({ preventScroll: true });
+            sourceCard.scrollIntoView({ behavior: "auto", block: "start" });
+            returnedCardId = sourceCard.dataset.cardId;
+          }
+        }
+        if (sourceCardId || returnedCardId) {
+          document.body.dataset.spgDetailReturnedCardId = returnedCardId || "";
         }
         returnFocus = null;
       }
@@ -15689,7 +16067,12 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       function restore() {
         var route = parseRoute();
         if (route) {
-          return open(route.kind, route.id, { pushHistory: false });
+          var detailState = history.state && history.state.spgDetail || {};
+          return open(route.kind, route.id, {
+            pushHistory: false,
+            sourceCardId: route.sourceCardId || detailState.sourceCardId || null,
+            sourceModule: route.sourceModule || detailState.sourceModule || null
+          });
         }
         close();
         return null;
@@ -15708,13 +16091,19 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
 
     document.addEventListener("spg:detail-request", function (event) {
       var detail = event && event.detail || {};
-      c008DetailController.open(detail.kind, detail.id);
+      c008DetailController.open(detail.kind, detail.id, {
+        sourceCardId: detail.sourceCardId || null,
+        sourceModule: detail.sourceModule || null
+      });
     });
 
     document.getElementById("spgDetailContent").addEventListener("click", function (event) {
       var trigger = event.target.closest && event.target.closest("button[data-detail-kind][data-detail-id]");
       if (!trigger) { return; }
-      emitPreparedDetailAction(trigger.dataset.detailKind, trigger.dataset.detailId, trigger.textContent.trim());
+      emitPreparedDetailAction(trigger.dataset.detailKind, trigger.dataset.detailId, trigger.textContent.trim(), {
+        sourceCardId: trigger.dataset.detailSourceCardId || null,
+        sourceModule: trigger.dataset.detailSourceModule || null
+      });
     });
 
     document.getElementById("spgDetailBackButton").addEventListener("click", function () {

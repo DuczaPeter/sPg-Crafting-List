@@ -131,3 +131,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - UUID, SC-verzio, source, fetchedAt es recipe slot technikai adat nem torolheto: a modellben, diagnosztikaban vagy Data / Settings alatt megmarad.
 - A blueprint talalati lista sajat fuggoleges scrollt hasznal; a C010.1 Final Card es minden uzleti modell erintetlen.
 - Stabil V003 release/tag tovabbra is csak kulon felhasznaloi jovahagyassal keszulhet.
+
+## 2026-08-25 - V003-C012 Crafting List Final Card paritas
+
+- A Blueprint Browser és a Crafting List Final Card megjelenítése egyetlen kanonikus `buildFinalCraftingCardViewModel()` + `renderFinalCraftingCardContent()` útvonalat használ; a listás kontextus csak kezelőréteget adhat hozzá, külön recipe/material/mining/refinery/radar renderert nem.
+- Az expanded/collapsed és quantity állapot User Data, ezért reload után megmarad. A kártyasorrend marad az Allocation Engine foglalási prioritása.
+- A C008 detail route listás megnyitáskor a forráskártya és forrásmodul azonosítóját is tárolja. Ez prezentációs/navigációs kontextus; a detail adatmodell és a ranking/allocation nem változik.
+- A standalone export a kanonikus view-modelt használja és nem kap külön runtime adatforrást vagy külső erőforrást.
+- Stabil V003 release/tag és C013 továbbra is csak külön felhasználói utasításra indulhat.

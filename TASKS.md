@@ -85,6 +85,9 @@
 - [x] A blueprint lista viewportfuggo belso scrollt kapott; 1920x1080, 1366x768 es 390x844 mereten horizontal overflow 0.
 - [x] A ket final UI referencia-PNG SHA-zar alatt; az arva embedded fontszoveg eltavolitva, kulso CSS/font runtime-fugges tovabbra sincs.
 - [x] `V003-C011` celteszt + teljes C001-C010.1/M1-M6.1/C04 + standalone + Chrome 15/15 + Back/reload + fingerprint + console + V002-integritas PASS.
+- [x] `V003-C012`: a teljes Crafting List ugyanazt a kanonikus Final Card view-modelt es kozos DOM renderert hasznalja, mint a Blueprint Browser; a management csak kompakt priority/action fejlec.
+- [x] C012 expanded/collapsed perzisztencia, quantity/max, prioritas/allocation, forraskartya-aware C008 detail, 3- es 10-kartyas responsive stressz, standalone es teljes regresszio PASS.
+- [x] C012 valodi Chrome localhost: 15/15 Technical Probe, 1920/1366/390, horizontal overflow 0, detail reload+Back a forraskartyahoz, fingerprint `78b870b4`, konzol WARN/ERROR 0.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -96,6 +99,7 @@
 - [x] `V003-C010`: tiszta default Final Card, kulon tobbkartyas Crafting List, azonos kompakt standalone kartya, teljes single-file es browser regresszio; felhasznaloi vizualis acceptance meg nyitott.
 - [x] `V003-C010.1`: a C010 elrendezes valtoztatasa nelkul rovid Mining/Refinery nyertesprojekcio es javitott C010/C010.1 bizonyitek.
 - [x] `V003-C011`: vegleges user-facing fo UI cleanup es reference lock; felhasznaloi vizualis ellenorzesre atadva.
+- [x] `V003-C012`: Crafting List Final Card visual parity, tobbkartyas prioritas/expanded-state es source-card detail return; felhasznaloi vizualis ellenorzesre atadva.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio
