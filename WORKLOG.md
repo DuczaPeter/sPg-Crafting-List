@@ -529,3 +529,13 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Valodi Chrome localhost: Technical Probe 15/15; JS-300/Stileron/Beryl/Savrilium, Radar/Mining/Refinery, browser Back, sajat back, reload, invalid target es desktop vizualis layout PASS. Fingerprint `e6d8dec8 -> e6d8dec8`; main es standalone konzol warning/error 0.
 - Korabbi C007 valodi Chrome `file://` kapu: USER MANUAL PASS; a felhasznalo futtatta, nem Codex automation. V002 tag/artifact valtozatlan; V003 tag/release es C009 nem keszult.
 - Visszaallas: a C008 commit revertje; stabil visszaallasi alap a valtozatlan `V002` tag/release.
+
+### V003-C008.1 Public Wiki deep-link correction - 2026-08-25
+
+- Scope: csak a C008 publikus Wiki/API link szetvalasztasa; router, detailtartalom, Back/reload, ranking/allocation es C009 valtozatlan.
+- `resolvePublicWikiDeepLink()` kizarolag exact `star-citizen.wiki` forras-URLt vagy elo MediaWiki exact title/redirect audittal rogzitett rekordot fogad el. `resolveWikiApiDeepLink()` kulon kezeli az API-adatlapot.
+- Elo audit: JS-300 page ID 11992 es Beryl page ID 12236 VERIFIED; Stileron es Savrilium exact title hianyzik, statuszuk `NO_PROVEN_PUBLIC_WIKI_URL`.
+- Snapshot contract: target UUID, canonical nev, public URL, resolution status/origin es verifiedAt. Standalone ezt hasznalja, runtime fetch es kulso dependency 0.
+- Automatizalt C008.1 celteszt + C001-C008 + M1-M6.1 + C04 + standalone + V002-integritas PASS.
+- Valodi Chrome localhost: 15/15, ot detailtipus public/API paritas, main/standalone Back+reload, fingerprint `d7be3ccc -> d7be3ccc`, konzol WARN/ERROR 0.
+- V002 valtozatlan; V003 tag/release es C009 nem keszult. Visszaallas: a C008.1 commit revertje vagy a fagyasztott V002 tag/release.

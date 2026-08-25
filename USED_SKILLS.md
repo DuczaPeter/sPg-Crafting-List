@@ -281,3 +281,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C008 repair-cycle es V002 vedelem megtartasara, valamint a JS-300/material/radar/mining/refinery kattintasok, history/reload/invalid route, 15/15 Technical Probe, valtozatlan fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 detail modell/controller/UI/export, C008 Wiki audit/teszt/validator/riport/artifact es projekt statuszfajlok; V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C008.1 Public Wiki deep-link correction
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a public Wiki/API resolver szetvalasztasa, exact MediaWiki audit, teljes cikluskapu es valodi Chrome localhost ellenorzes soran.
+- Mire segitett: a szuk korrekcios scope es fagyasztott V002 vedelmere, a teljes regresszios kapura, valamint az ot detailtipus, main/standalone Back+reload, fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 detail snapshot/UI/export linkmodell, C008/C008.1 teszt/validator/audit/riport/artifact es projekt statuszfajlok; C009 es stabil release nem indult.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

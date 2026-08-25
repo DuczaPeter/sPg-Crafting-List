@@ -108,3 +108,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Wiki link csak exact API `web_url` alapjan vagy elozetesen auditalt, API-bol szarmazo sluggal keszulhet. Nevbol kepzett/fuzzy URL tilos; bizonyitek nelkul `NO_PROVEN_WIKI_URL` es nincs link.
 - A standalone export ugyanazt a detail modellt hasznalja, de minden reszletet az embedded snapshotbol renderel; runtime API fetch es kulso eroforras nincs. A Wiki link opcionlis internetes felhasznaloi muvelet.
 - A C001-C007 ranking, grouping, naming, Radar, color, allocation es hydration modellje nem valtozik. Stabil V003 release/tag es V003-C009 tovabbra sincs engedelyezve.
+
+## 2026-08-25 - V003-C008.1 public Wiki es API linkhatar
+
+- A `Megnyitás a Star Citizen Wiki-ben` muvelet csak `https://star-citizen.wiki/` hoston levo, exact forrasbol vagy MediaWiki exact title/redirect audittal bizonyitott cikkre mutathat.
+- A `https://api.star-citizen.wiki` host kizarolag a kulon `API adatlap megnyitása` muvelethez hasznalhato; a ket linktipus neve es resolvere nem moshato ossze.
+- Public Wiki URL fuzzy, reszleges vagy canonical nevbol vakon kepzett talalattal nem hozhato letre. Bizonyitek nelkul `NO_PROVEN_PUBLIC_WIKI_URL`, es a normal UI-ban nincs public Wiki gomb.
+- A feloldott public Wiki metadata a hydrated/output snapshot resze, a standalone nem futtat runtime MediaWiki/API keresest.
+- JS-300 es Beryl public oldala VERIFIED; Stileron es Savrilium jelenleg bizonyitek nelkul marad. C009 es stabil V003 release/tag tovabbra sincs engedelyezve.

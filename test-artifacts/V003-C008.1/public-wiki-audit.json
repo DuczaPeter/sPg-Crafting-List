@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "auditedAt": "2026-08-25T04:33:54.328Z",
+  "resolverPolicy": "EXACT_TITLE_OR_REDIRECT_ONLY",
+  "fuzzyMatching": false,
+  "queryUrl": "https://star-citizen.wiki/api.php?action=query&format=json&formatversion=2&redirects=1&titles=JS-300%7CBeryl%7CStileron%7CSavrilium",
+  "records": [
+    {
+      "canonicalName": "JS-300",
+      "resolutionStatus": "VERIFIED",
+      "resolutionOrigin": "MEDIAWIKI_EXACT_TITLE",
+      "publicWikiUrl": "https://star-citizen.wiki/JS-300",
+      "pageId": 11992
+    },
+    {
+      "canonicalName": "Beryl",
+      "resolutionStatus": "VERIFIED",
+      "resolutionOrigin": "MEDIAWIKI_EXACT_TITLE",
+      "publicWikiUrl": "https://star-citizen.wiki/Beryl",
+      "pageId": 12236
+    },
+    {
+      "canonicalName": "Stileron",
+      "resolutionStatus": "NO_PROVEN_PUBLIC_WIKI_URL",
+      "resolutionOrigin": "MEDIAWIKI_EXACT_TITLE_NOT_FOUND",
+      "publicWikiUrl": null,
+      "pageId": null
+    },
+    {
+      "canonicalName": "Savrilium",
+      "resolutionStatus": "NO_PROVEN_PUBLIC_WIKI_URL",
+      "resolutionOrigin": "MEDIAWIKI_EXACT_TITLE_NOT_FOUND",
+      "publicWikiUrl": null,
+      "pageId": null
+    }
+  ]
+}

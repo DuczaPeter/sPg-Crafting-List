@@ -10465,12 +10465,17 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         };
         var hydrationState = state.materialIntelligenceHydrationByWikiUuid.get(commodity.uuid) || null;
         var materialSource = detail || commodity;
-        var materialWikiLink = resolveWikiDeepLink({
+        var materialApiWikiLink = resolveWikiApiDeepLink({
           resourceType: "commodities",
           exactUrls: [materialSource.webUrl, commodity.webUrl],
           slug: materialSource.slug || commodity.slug || null,
           slugVerifiedByApi: Boolean(materialSource.slug || commodity.slug),
           gameVersion: state.gameVersion ? state.gameVersion.code : null
+        });
+        var materialCanonicalName = resolveMaterialDisplayName(materialSource, "Ismeretlen material");
+        var materialPublicWikiLink = resolvePublicWikiDeepLink({
+          targetUuid: commodity.uuid,
+          canonicalName: materialCanonicalName
         });
         intelligence.set(commodity.uuid, {
           snapshotSchemaVersion: 1,
@@ -10480,10 +10485,11 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           scVersion: state.gameVersion ? state.gameVersion.code : null,
           material: {
             uuid: commodity.uuid,
-            canonicalName: resolveMaterialDisplayName(materialSource, "Ismeretlen material"),
+            canonicalName: materialCanonicalName,
             slug: materialSource.slug || commodity.slug || null,
             webUrl: materialSource.webUrl || commodity.webUrl || null,
-            wikiLink: materialWikiLink,
+            apiWikiLink: materialApiWikiLink,
+            publicWikiLink: materialPublicWikiLink,
             categories: (materialSource.categories || commodity.categories || []).slice(),
             rarity: materialSource.rarity === undefined ? null : materialSource.rarity,
             raritySourceField: materialSource.raritySourceField || "UNKNOWN",
@@ -13405,9 +13411,94 @@ body[data-spg-detail-active="true"] > .spg-export-page {
 
     /* C008_DETAIL_MODEL_START */
     var C008_DETAIL_TYPES = Object.freeze(["blueprint", "material", "radar", "mining", "refinery"]);
-    var C008_WIKI_ORIGIN = "https://api.star-citizen.wiki";
+    var C008_WIKI_API_ORIGIN = "https://api.star-citizen.wiki";
+    var C008_PUBLIC_WIKI_ORIGIN = "https://star-citizen.wiki";
+    var C008_PUBLIC_WIKI_VERIFIED_AT = "2026-08-25T04:24:48.744Z";
+    var C008_PUBLIC_WIKI_REGISTRY = Object.freeze([
+      Object.freeze({
+        canonicalName: "JS-300",
+        targetUuids: Object.freeze(["b1c89d89-d408-4998-9b17-76986d78a9dd", "9585b0dc-b660-4e2a-9136-0092af1e72c1"]),
+        publicWikiUrl: "https://star-citizen.wiki/JS-300",
+        resolutionStatus: "VERIFIED",
+        resolutionOrigin: "MEDIAWIKI_EXACT_TITLE",
+        verifiedAt: C008_PUBLIC_WIKI_VERIFIED_AT
+      }),
+      Object.freeze({
+        canonicalName: "Beryl",
+        targetUuids: Object.freeze(["93c8b7df-d6ac-4b4f-a115-b0e3afc238b8", "eb503701-389a-48a1-af28-eb7374009d5d"]),
+        publicWikiUrl: "https://star-citizen.wiki/Beryl",
+        resolutionStatus: "VERIFIED",
+        resolutionOrigin: "MEDIAWIKI_EXACT_TITLE",
+        verifiedAt: C008_PUBLIC_WIKI_VERIFIED_AT
+      }),
+      Object.freeze({
+        canonicalName: "Stileron",
+        targetUuids: Object.freeze(["32bafbd4-c52a-476d-b31c-97c4b3102471", "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4"]),
+        publicWikiUrl: null,
+        resolutionStatus: "NO_PROVEN_PUBLIC_WIKI_URL",
+        resolutionOrigin: "MEDIAWIKI_EXACT_TITLE_NOT_FOUND",
+        verifiedAt: C008_PUBLIC_WIKI_VERIFIED_AT
+      }),
+      Object.freeze({
+        canonicalName: "Savrilium",
+        targetUuids: Object.freeze(["d76ea7ef-5116-488c-93d3-71e02bada13d", "4a47cad8-0271-4048-b19b-d9b52521fc20"]),
+        publicWikiUrl: null,
+        resolutionStatus: "NO_PROVEN_PUBLIC_WIKI_URL",
+        resolutionOrigin: "MEDIAWIKI_EXACT_TITLE_NOT_FOUND",
+        verifiedAt: C008_PUBLIC_WIKI_VERIFIED_AT
+      })
+    ]);
 
-    function resolveWikiDeepLink(input) {
+    function c008IsPublicWikiUrl(value) {
+      return /^https:\/\/star-citizen\.wiki\/[^?#\s]+(?:[?#][^\s]*)?$/i.test(String(value || "").trim());
+    }
+
+    function c008IsWikiApiUrl(value) {
+      return /^https:\/\/api\.star-citizen\.wiki\/(?:items|commodities|blueprints)\/[^?#\s]+(?:\?[^#\s]*)?$/i.test(String(value || "").trim());
+    }
+
+    function resolvePublicWikiDeepLink(input) {
+      var source = input || {};
+      var targetUuid = String(source.targetUuid || "").trim() || null;
+      var canonicalName = String(source.canonicalName || "").trim();
+      var sourceUrl = String(source.publicWikiUrl || "").trim();
+      if (source.publicWikiVerified === true && c008IsPublicWikiUrl(sourceUrl)) {
+        return {
+          status: "VERIFIED",
+          targetUuid: targetUuid,
+          canonicalName: canonicalName || null,
+          publicWikiUrl: sourceUrl,
+          url: sourceUrl,
+          resolutionStatus: "VERIFIED",
+          resolutionOrigin: "SOURCE_EXACT_PUBLIC_WIKI_URL",
+          origin: "SOURCE_EXACT_PUBLIC_WIKI_URL",
+          verifiedAt: source.verifiedAt || C008_PUBLIC_WIKI_VERIFIED_AT,
+          requiresInternet: true
+        };
+      }
+      var exactByUuid = targetUuid ? C008_PUBLIC_WIKI_REGISTRY.find(function (record) {
+        return record.targetUuids.indexOf(targetUuid) !== -1;
+      }) : null;
+      var exactByTitle = !exactByUuid && canonicalName ? C008_PUBLIC_WIKI_REGISTRY.find(function (record) {
+        return record.canonicalName === canonicalName;
+      }) : null;
+      var record = exactByUuid || exactByTitle || null;
+      var verified = Boolean(record && record.resolutionStatus === "VERIFIED" && c008IsPublicWikiUrl(record.publicWikiUrl));
+      return {
+        status: verified ? "VERIFIED" : "NO_PROVEN_PUBLIC_WIKI_URL",
+        targetUuid: targetUuid,
+        canonicalName: canonicalName || (record && record.canonicalName) || null,
+        publicWikiUrl: verified ? record.publicWikiUrl : null,
+        url: verified ? record.publicWikiUrl : null,
+        resolutionStatus: verified ? "VERIFIED" : "NO_PROVEN_PUBLIC_WIKI_URL",
+        resolutionOrigin: record ? record.resolutionOrigin : "NO_EXACT_PUBLIC_WIKI_MATCH",
+        origin: record ? record.resolutionOrigin : "NO_EXACT_PUBLIC_WIKI_MATCH",
+        verifiedAt: record ? record.verifiedAt : null,
+        requiresInternet: true
+      };
+    }
+
+    function resolveWikiApiDeepLink(input) {
       var source = input || {};
       var resourceType = String(source.resourceType || "").toLowerCase();
       var allowedType = ["items", "commodities", "blueprints"].indexOf(resourceType) !== -1;
@@ -13432,7 +13523,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         var version = String(source.gameVersion || "").trim();
         return {
           status: "AVAILABLE",
-          url: C008_WIKI_ORIGIN + "/" + resourceType + "/" + encodeURIComponent(slug) + (version ? "?version=" + encodeURIComponent(version) : ""),
+          url: C008_WIKI_API_ORIGIN + "/" + resourceType + "/" + encodeURIComponent(slug) + (version ? "?version=" + encodeURIComponent(version) : ""),
           origin: "AUDITED_API_SLUG_CANONICAL",
           resourceType: resourceType,
           requiresInternet: true
@@ -13441,7 +13532,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       return {
         status: "UNAVAILABLE",
         url: null,
-        origin: "NO_PROVEN_WIKI_URL",
+        origin: "NO_PROVEN_WIKI_API_URL",
         resourceType: allowedType ? resourceType : null,
         requiresInternet: true
       };
@@ -13489,14 +13580,14 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       var kind = String(requestedKind || "").toLowerCase();
       var id = String(requestedId || "");
       if (C008_DETAIL_TYPES.indexOf(kind) === -1) {
-        return { status: "INVALID_TARGET", kind: kind || "unknown", id: id, title: "Ismeretlen részlettípus", sourceLabel: "Helyi snapshot", wikiLink: resolveWikiDeepLink({}), snapshot: snapshot || null };
+        return { status: "INVALID_TARGET", kind: kind || "unknown", id: id, title: "Ismeretlen részlettípus", sourceLabel: "Helyi snapshot", publicWikiLink: resolvePublicWikiDeepLink({}), apiWikiLink: resolveWikiApiDeepLink({}), snapshot: snapshot || null };
       }
       if (!snapshot || !snapshot.card) {
-        return { status: "MISSING_SNAPSHOT", kind: kind, id: id, title: "A részletadat nem érhető el", sourceLabel: "Helyi snapshot", wikiLink: resolveWikiDeepLink({}), snapshot: null };
+        return { status: "MISSING_SNAPSHOT", kind: kind, id: id, title: "A részletadat nem érhető el", sourceLabel: "Helyi snapshot", publicWikiLink: resolvePublicWikiDeepLink({}), apiWikiLink: resolveWikiApiDeepLink({}), snapshot: null };
       }
       if (kind === "blueprint") {
         if (!id || String(snapshot.card.blueprintUuid || "") !== id) {
-          return { status: "INVALID_TARGET", kind: kind, id: id, title: "A blueprint nem található", sourceLabel: "Helyi snapshot", wikiLink: resolveWikiDeepLink({}), snapshot: snapshot };
+          return { status: "INVALID_TARGET", kind: kind, id: id, title: "A blueprint nem található", sourceLabel: "Helyi snapshot", publicWikiLink: resolvePublicWikiDeepLink({}), apiWikiLink: resolveWikiApiDeepLink({}), snapshot: snapshot };
         }
         return {
           status: "AVAILABLE",
@@ -13504,7 +13595,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           id: id,
           title: snapshot.card.outputName,
           sourceLabel: "Star Citizen Wiki API · " + (snapshot.scDataVersion || "ismeretlen SC verzió"),
-          wikiLink: snapshot.card.wikiLink || resolveWikiDeepLink({}),
+          publicWikiLink: snapshot.card.publicWikiLink || resolvePublicWikiDeepLink({}),
+          apiWikiLink: snapshot.card.apiWikiLink || resolveWikiApiDeepLink({}),
           card: snapshot.card,
           requirements: snapshot.requirements || [],
           snapshot: snapshot
@@ -13512,7 +13604,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       }
       var requirement = (snapshot.requirements || []).find(function (candidate) { return c008RequirementMatches(candidate, id); }) || null;
       if (!requirement) {
-        return { status: "INVALID_TARGET", kind: kind, id: id, title: "A materialrészlet nem található", sourceLabel: "Helyi snapshot", wikiLink: resolveWikiDeepLink({}), snapshot: snapshot };
+        return { status: "INVALID_TARGET", kind: kind, id: id, title: "A materialrészlet nem található", sourceLabel: "Helyi snapshot", publicWikiLink: resolvePublicWikiDeepLink({}), apiWikiLink: resolveWikiApiDeepLink({}), snapshot: snapshot };
       }
       var materialDetails = requirement.materialDetails || {};
       var mining = requirement.mining || {};
@@ -13524,7 +13616,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         id: id,
         title: requirement.materialName + (kind === "material" ? "" : " · " + c008DetailKindLabel(kind)),
         sourceLabel: kind === "refinery" ? "UEX Corp API · value_month" : "Star Citizen Wiki API · " + (snapshot.scDataVersion || "ismeretlen SC verzió"),
-        wikiLink: materialDetails.wikiLink || resolveWikiDeepLink({}),
+        publicWikiLink: materialDetails.publicWikiLink || resolvePublicWikiDeepLink({}),
+        apiWikiLink: materialDetails.apiWikiLink || resolveWikiApiDeepLink({}),
         requirement: requirement,
         material: {
           uuid: requirement.commodityUuid || requirement.materialUuid,
@@ -13549,10 +13642,20 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       return '<span class="spg-detail-fact' + (extraClass ? " " + m6EscapeHtml(extraClass) : "") + '"><small>' + m6EscapeHtml(label) + '</small><strong>' + m6EscapeHtml(value === null || value === undefined || value === "" ? "Nincs adat" : value) + '</strong></span>';
     }
 
-    function c008RenderWikiAction(wikiLink) {
-      return wikiLink && wikiLink.status === "AVAILABLE"
-        ? '<a class="spg-detail-wiki-link" href="' + m6EscapeHtml(wikiLink.url) + '" target="_blank" rel="noopener noreferrer">Megnyitás a Star Citizen Wiki-ben</a>'
-        : '<span class="spg-muted">Nincs bizonyított Wiki deep link.</span>';
+    function c008RenderPublicWikiAction(publicWikiLink) {
+      return publicWikiLink && publicWikiLink.resolutionStatus === "VERIFIED" && c008IsPublicWikiUrl(publicWikiLink.publicWikiUrl || publicWikiLink.url)
+        ? '<a class="spg-detail-wiki-link" href="' + m6EscapeHtml(publicWikiLink.publicWikiUrl || publicWikiLink.url) + '" target="_blank" rel="noopener noreferrer">Megnyitás a Star Citizen Wiki-ben</a>'
+        : '';
+    }
+
+    function c008RenderWikiApiAction(apiWikiLink) {
+      return apiWikiLink && apiWikiLink.status === "AVAILABLE" && c008IsWikiApiUrl(apiWikiLink.url)
+        ? '<details class="spg-detail-advanced"><summary>Advanced / forrásadat</summary><p><a class="spg-detail-wiki-link" href="' + m6EscapeHtml(apiWikiLink.url) + '" target="_blank" rel="noopener noreferrer">API adatlap megnyitása</a></p></details>'
+        : '';
+    }
+
+    function c008RenderDetailContent(model) {
+      return c008RenderDetailMarkup(model) + c008RenderWikiApiAction(model && model.apiWikiLink);
     }
 
     function c008RenderRelatedButton(label, kind, id) {
@@ -13675,7 +13778,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
     function c008RenderStandaloneDetailViews(snapshot) {
       var panels = c008CollectDetailTargets(snapshot).map(function (target) {
         var model = resolveC008DetailModel(snapshot, target.kind, target.id);
-        return '<article class="spg-detail-panel" data-spg-detail-panel="true" data-detail-kind="' + m6EscapeHtml(target.kind) + '" data-detail-id="' + m6EscapeHtml(target.id) + '" hidden><header class="spg-detail-heading"><div><p class="eyebrow">' + m6EscapeHtml(c008DetailKindLabel(target.kind)) + '</p><h2>' + m6EscapeHtml(model.title) + '</h2><p class="spg-detail-source-note">Forrás: ' + m6EscapeHtml(model.sourceLabel) + ' · offline detail a helyi export snapshotból</p></div><div>' + c008RenderWikiAction(model.wikiLink) + '</div></header><div class="spg-detail-content">' + c008RenderDetailMarkup(model) + '</div></article>';
+        return '<article class="spg-detail-panel" data-spg-detail-panel="true" data-detail-kind="' + m6EscapeHtml(target.kind) + '" data-detail-id="' + m6EscapeHtml(target.id) + '" hidden><header class="spg-detail-heading"><div><p class="eyebrow">' + m6EscapeHtml(c008DetailKindLabel(target.kind)) + '</p><h2>' + m6EscapeHtml(model.title) + '</h2><p class="spg-detail-source-note">Forrás: ' + m6EscapeHtml(model.sourceLabel) + ' · offline detail a helyi export snapshotból</p></div><div>' + c008RenderPublicWikiAction(model.publicWikiLink) + '</div></header><div class="spg-detail-content">' + c008RenderDetailContent(model) + '</div></article>';
       }).join("");
       return '<section id="spg-standalone-detail" class="spg-detail-view" aria-label="Standalone részletnézet" hidden><div class="spg-detail-toolbar"><button id="spg-standalone-detail-back" type="button">← Vissza a Crafting Cardhoz</button><span class="spg-badge spg-badge-neutral">Offline snapshot detail</span></div>' + panels + '<article id="spg-standalone-detail-error" class="spg-detail-panel" hidden><div class="spg-detail-error"><strong>A részlet nem található.</strong><p>A link érvénytelen, vagy ez az export snapshot nem tartalmazza az adatot.</p></div></article></section>';
     }
@@ -13727,12 +13830,19 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         var mining = intelligence && intelligence.mining ? intelligence.mining : null;
         var refinery = intelligence && intelligence.refinery ? intelligence.refinery : null;
         var intelligenceMaterial = intelligence && intelligence.material ? intelligence.material : null;
-        var materialWikiLink = intelligenceMaterial && intelligenceMaterial.wikiLink
-          ? intelligenceMaterial.wikiLink
-          : resolveWikiDeepLink({
+        var materialTargetUuid = allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid;
+        var materialApiWikiLink = intelligenceMaterial && intelligenceMaterial.apiWikiLink
+          ? intelligenceMaterial.apiWikiLink
+          : resolveWikiApiDeepLink({
             resourceType: "commodities",
             exactUrls: [requirement.materialWebUrl],
             gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null
+          });
+        var materialPublicWikiLink = intelligenceMaterial && intelligenceMaterial.publicWikiLink
+          ? intelligenceMaterial.publicWikiLink
+          : resolvePublicWikiDeepLink({
+            targetUuid: materialTargetUuid,
+            canonicalName: materialDisplayName
           });
         var loadouts = intelligence && Array.isArray(intelligence.loadouts) ? intelligence.loadouts : [];
         var selectedLoadout = loadouts.find(function (loadout) { return loadout.default; }) || loadouts[0] || null;
@@ -13766,12 +13876,13 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           commodityUuid: allocation.commodityUuid || requirement.commodityUuid || null,
           materialName: materialDisplayName,
           materialColor: materialColor,
-          materialDetails: intelligenceMaterial ? Object.assign({}, intelligenceMaterial, { wikiLink: materialWikiLink }) : {
-            uuid: allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid,
+          materialDetails: intelligenceMaterial ? Object.assign({}, intelligenceMaterial, { apiWikiLink: materialApiWikiLink, publicWikiLink: materialPublicWikiLink }) : {
+            uuid: materialTargetUuid,
             canonicalName: materialDisplayName,
             slug: null,
             webUrl: requirement.materialWebUrl || null,
-            wikiLink: materialWikiLink,
+            apiWikiLink: materialApiWikiLink,
+            publicWikiLink: materialPublicWikiLink,
             categories: mining && Array.isArray(mining.methods) ? mining.methods.slice() : [],
             rarity: null,
             raritySourceField: "UNKNOWN",
@@ -13835,6 +13946,7 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           id: card.id,
           priority: Number(card.order || 0) + 1,
           blueprintUuid: card.blueprintUuid || blueprint.uuid || null,
+          outputUuid: card.outputUuid || blueprint.outputUuid || outputPresentation.uuid || null,
           outputName: card.outputName || blueprint.outputName || "Ismeretlen output",
           outputType: outputPresentation.typeLabel || card.outputTypeLabel || blueprint.outputTypeLabel || card.outputType || blueprint.outputType || "Nincs adat",
           outputSubType: outputPresentation.subTypeLabel || blueprint.outputSubTypeLabel || "Nincs adat",
@@ -13860,14 +13972,18 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           missingData: missingData
         }
       };
-      snapshot.card.wikiLink = resolveWikiDeepLink({
+      snapshot.card.apiWikiLink = resolveWikiApiDeepLink({
         resourceType: "items",
         exactUrls: [outputPresentation.webUrl, blueprint.outputWebUrl, card.outputWebUrl],
         slug: outputPresentation.slug || null,
         slugVerifiedByApi: Boolean(outputPresentation.slug),
         gameVersion: snapshot.scDataVersion
       });
-      snapshot.card.blueprintWikiLink = resolveWikiDeepLink({
+      snapshot.card.publicWikiLink = resolvePublicWikiDeepLink({
+        targetUuid: snapshot.card.outputUuid || snapshot.card.blueprintUuid,
+        canonicalName: snapshot.card.outputName
+      });
+      snapshot.card.blueprintApiWikiLink = resolveWikiApiDeepLink({
         resourceType: "blueprints",
         exactUrls: [blueprint.webUrl, card.blueprintWebUrl],
         slug: blueprint.key && /^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(blueprint.key) ? blueprint.key.toLowerCase() : null,
@@ -14083,8 +14199,8 @@ body[data-spg-detail-active="true"] > .spg-export-page {
         document.getElementById("spgDetailKind").textContent = c008DetailKindLabel(model.kind);
         document.getElementById("spgDetailTitle").textContent = model.title || "Részletnézet";
         document.getElementById("spgDetailSource").textContent = "Forrás: " + (model.sourceLabel || "Helyi snapshot") + " · a belső detail offline is a cache/snapshot adatait használja";
-        document.getElementById("spgDetailContent").innerHTML = c008RenderDetailMarkup(model);
-        wikiAction.innerHTML = c008RenderWikiAction(model.wikiLink);
+        document.getElementById("spgDetailContent").innerHTML = c008RenderDetailContent(model);
+        wikiAction.innerHTML = c008RenderPublicWikiAction(model.publicWikiLink);
         setBadge(document.getElementById("spgDetailRouteStatus"), model.status === "AVAILABLE" ? "PASS" : "FAIL", model.status === "AVAILABLE" ? "Belső detail" : "Érvénytelen cél");
         panel.hidden = false;
         document.body.dataset.spgDetailActive = "true";
@@ -14115,8 +14231,10 @@ body[data-spg-detail-active="true"] > .spg-export-page {
           kind: kind,
           id: id,
           status: model.status,
-          wikiLinkStatus: model.wikiLink && model.wikiLink.status,
-          wikiLinkOrigin: model.wikiLink && model.wikiLink.origin
+          publicWikiStatus: model.publicWikiLink && model.publicWikiLink.resolutionStatus,
+          publicWikiOrigin: model.publicWikiLink && model.publicWikiLink.resolutionOrigin,
+          apiWikiStatus: model.apiWikiLink && model.apiWikiLink.status,
+          apiWikiOrigin: model.apiWikiLink && model.apiWikiLink.origin
         });
         return model;
       }
@@ -15452,9 +15570,13 @@ body[data-spg-detail-active="true"] > .spg-export-page {
       buildStandaloneSnapshot: m6BuildStandaloneSnapshot,
       buildFinalCraftingCardViewModel: buildFinalCraftingCardViewModel,
       renderStandaloneHtml: m6RenderStandaloneHtml,
-      resolveWikiDeepLink: resolveWikiDeepLink,
+      resolvePublicWikiDeepLink: resolvePublicWikiDeepLink,
+      resolveWikiApiDeepLink: resolveWikiApiDeepLink,
       resolveDetailModel: resolveC008DetailModel,
       renderDetailMarkup: c008RenderDetailMarkup,
+      renderDetailContent: c008RenderDetailContent,
+      renderPublicWikiAction: c008RenderPublicWikiAction,
+      renderWikiApiAction: c008RenderWikiApiAction,
       collectDetailTargets: c008CollectDetailTargets,
       detailController: c008DetailController,
       detailTypes: C008_DETAIL_TYPES,

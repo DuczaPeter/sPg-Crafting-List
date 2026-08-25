@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C008",
-    "currentCycleId":  "V003-C008",
-    "lastSuccessfulCycle":  "V003-C008",
+    "currentCycle":  "C008.1",
+    "currentCycleId":  "V003-C008.1",
+    "lastSuccessfulCycle":  "V003-C008.1",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-25T06:09:02",
-    "currentCyclePurpose":  "Single-file Detail View + Star Citizen Wiki deep links",
-    "currentCycleStartedAt":  "2026-08-25T06:04:54",
+    "lastUpdated":  "2026-08-25T06:30:09+02:00",
+    "currentCyclePurpose":  "Public Wiki deep-link correction",
+    "currentCycleStartedAt":  "2026-08-25T06:15:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C008 detail/router/Wiki audit, standalone snapshot details, full C001-C008 plus M1-M6.1+C04, Chrome localhost navigation/reload/invalid fallback/console and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C008 SINGLE-FILE DETAIL VIEW + WIKI DEEP LINKS – AUTOMATED AND CHROME LOCALHOST PASS; C007 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C008.1 exact public MediaWiki audit, separate public/API resolvers and actions, snapshot/standalone parity, full C001-C008 plus M1-M6.1+C04, Chrome localhost Back/reload/console/fingerprint and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C008.1 PUBLIC WIKI DEEP-LINK CORRECTION – AUTOMATED AND CHROME LOCALHOST PASS; C007 USER MANUAL REAL CHROME file:// EVIDENCE RECORDED; STABLE RELEASE NOT APPROVED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C008",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C008 main and standalone details, Back/history, reload, invalid fallback and console PASS",
+                                "cycle":  "V003-C008.1",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C008.1 public/API link parity, main and standalone Back/reload and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
-                                "userDataFingerprintBefore":  "e6d8dec8",
-                                "userDataFingerprintAfterReload":  "e6d8dec8",
+                                "userDataFingerprintBefore":  "d7be3ccc",
+                                "userDataFingerprintAfterReload":  "d7be3ccc",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -114,11 +114,21 @@
                                                                   "mining",
                                                                   "refinery"
                                                               ],
-                                                    "wikiResolutionOrder":  [
-                                                                                 "API_WEB_URL",
-                                                                                 "AUDITED_API_SLUG_CANONICAL",
-                                                                                 "NO_PROVEN_WIKI_URL"
-                                                                             ],
+                                                    "publicWikiResolver":  "resolvePublicWikiDeepLink",
+                                                    "apiWikiResolver":  "resolveWikiApiDeepLink",
+                                                    "publicWikiResolutionOrder":  [
+                                                                                       "SOURCE_EXACT_PUBLIC_WIKI_URL",
+                                                                                       "MEDIAWIKI_EXACT_TITLE_OR_REDIRECT",
+                                                                                       "NO_PROVEN_PUBLIC_WIKI_URL"
+                                                                                   ],
+                                                    "publicWikiVerified":  [
+                                                                                "JS-300",
+                                                                                "Beryl"
+                                                                            ],
+                                                    "publicWikiUnavailable":  [
+                                                                                   "Stileron",
+                                                                                   "Savrilium"
+                                                                               ],
                                                     "fuzzyWikiUrl":  false,
                                                     "standaloneDetailTargets":  13,
                                                     "standaloneExternalRuntimeResources":  0,

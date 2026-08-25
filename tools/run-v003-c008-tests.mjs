@@ -32,9 +32,13 @@ globalThis.__C008__ = {
   allocateCardsDeterministically,
   buildFinalCraftingCardViewModel,
   renderStandalone: m6RenderStandaloneHtml,
-  resolveWikiDeepLink,
+  resolvePublicWikiDeepLink,
+  resolveWikiApiDeepLink,
   resolveDetailModel: resolveC008DetailModel,
   renderDetailMarkup: c008RenderDetailMarkup,
+  renderDetailContent: c008RenderDetailContent,
+  renderPublicWikiAction: c008RenderPublicWikiAction,
+  renderWikiApiAction: c008RenderWikiApiAction,
   collectDetailTargets: c008CollectDetailTargets,
   detailTypes: C008_DETAIL_TYPES
 };`, context, { filename: "spg-v003-c008-model.js" });
@@ -44,23 +48,41 @@ assert.deepEqual(JSON.parse(JSON.stringify(model.detailTypes)), ["blueprint", "m
 
 const version = "4.9.0-LIVE.12232306";
 const itemWikiUrl = `https://api.star-citizen.wiki/items/js-300?version=${version}`;
+const publicWikiUrls = {
+  "JS-300": "https://star-citizen.wiki/JS-300",
+  Beryl: "https://star-citizen.wiki/Beryl"
+};
 const materialWikiUrls = {
   Stileron: `https://api.star-citizen.wiki/commodities/stileron-ore?version=${version}`,
   Beryl: `https://api.star-citizen.wiki/commodities/beryl?version=${version}`,
   Savrilium: `https://api.star-citizen.wiki/commodities/savrilium-ore?version=${version}`
 };
 
-const exact = model.resolveWikiDeepLink({ resourceType: "items", exactUrls: [itemWikiUrl] });
+const exact = model.resolveWikiApiDeepLink({ resourceType: "items", exactUrls: [itemWikiUrl] });
 assert.equal(exact.status, "AVAILABLE");
 assert.equal(exact.origin, "API_WEB_URL");
 assert.equal(exact.url, itemWikiUrl);
-const slugFallback = model.resolveWikiDeepLink({ resourceType: "commodities", slug: "stileron-ore", slugVerifiedByApi: true, gameVersion: version });
+const slugFallback = model.resolveWikiApiDeepLink({ resourceType: "commodities", slug: "stileron-ore", slugVerifiedByApi: true, gameVersion: version });
 assert.equal(slugFallback.status, "AVAILABLE");
 assert.equal(slugFallback.origin, "AUDITED_API_SLUG_CANONICAL");
 assert.equal(slugFallback.url, materialWikiUrls.Stileron);
-assert.equal(model.resolveWikiDeepLink({ resourceType: "commodities", slug: "guessed material", slugVerifiedByApi: true }).status, "UNAVAILABLE");
-assert.equal(model.resolveWikiDeepLink({ resourceType: "commodities", exactUrls: ["https://example.invalid/commodities/stileron"] }).status, "UNAVAILABLE");
-assert.equal(model.resolveWikiDeepLink({ resourceType: "commodities", slug: "stileron-ore", slugVerifiedByApi: false }).status, "UNAVAILABLE");
+assert.equal(model.resolveWikiApiDeepLink({ resourceType: "commodities", slug: "guessed material", slugVerifiedByApi: true }).status, "UNAVAILABLE");
+assert.equal(model.resolveWikiApiDeepLink({ resourceType: "commodities", exactUrls: ["https://example.invalid/commodities/stileron"] }).status, "UNAVAILABLE");
+assert.equal(model.resolveWikiApiDeepLink({ resourceType: "commodities", slug: "stileron-ore", slugVerifiedByApi: false }).status, "UNAVAILABLE");
+
+const js300Public = model.resolvePublicWikiDeepLink({ targetUuid: "b1c89d89-d408-4998-9b17-76986d78a9dd", canonicalName: "JS-300" });
+assert.equal(js300Public.resolutionStatus, "VERIFIED");
+assert.equal(js300Public.publicWikiUrl, publicWikiUrls["JS-300"]);
+const berylPublic = model.resolvePublicWikiDeepLink({ targetUuid: "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8", canonicalName: "Beryl" });
+assert.equal(berylPublic.publicWikiUrl, publicWikiUrls.Beryl);
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Stileron" }).resolutionStatus, "NO_PROVEN_PUBLIC_WIKI_URL");
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Savrilium" }).resolutionStatus, "NO_PROVEN_PUBLIC_WIKI_URL");
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Guessed Material" }).publicWikiUrl, null);
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Bery" }).publicWikiUrl, null);
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Beryl", publicWikiUrl: "https://api.star-citizen.wiki/commodities/beryl", publicWikiVerified: true }).publicWikiUrl, publicWikiUrls.Beryl);
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "JS-300", publicWikiUrl: publicWikiUrls["JS-300"], publicWikiVerified: true, verifiedAt: "2026-08-25T04:24:48.744Z" }).resolutionOrigin, "SOURCE_EXACT_PUBLIC_WIKI_URL");
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Unknown", publicWikiUrl: "https://api.star-citizen.wiki/items/unknown", publicWikiVerified: true }).publicWikiUrl, null);
+assert.equal(model.resolvePublicWikiDeepLink({ canonicalName: "Unknown", publicWikiUrl: "https://star-citizen.wiki/Unknown", publicWikiVerified: false }).publicWikiUrl, null);
 
 const rawBlueprint = JSON.parse(fs.readFileSync(path.join(projectDirectory, "tests", "fixtures", "js-300-blueprint.json"), "utf8"));
 rawBlueprint.output_item_web_url = itemWikiUrl;
@@ -187,7 +209,8 @@ cardResult.requirements.forEach((requirement) => {
       canonicalName: name,
       slug: name === "Stileron" ? "stileron-ore" : (name === "Savrilium" ? "savrilium-ore" : "beryl"),
       webUrl: materialWikiUrls[name],
-      wikiLink: model.resolveWikiDeepLink({ resourceType: "commodities", exactUrls: [materialWikiUrls[name]] }),
+      apiWikiLink: model.resolveWikiApiDeepLink({ resourceType: "commodities", exactUrls: [materialWikiUrls[name]] }),
+      publicWikiLink: model.resolvePublicWikiDeepLink({ targetUuid: sourceRequirement.commodityUuid, canonicalName: name }),
       categories: ["SHIP_MINING"],
       rarity: name === "Beryl" ? "Common" : "Rare",
       raritySourceField: "tier",
@@ -212,7 +235,9 @@ const snapshot = model.buildFinalCraftingCardViewModel({
   trace: allocation.trace
 });
 
-assert.equal(snapshot.card.wikiLink.url, itemWikiUrl);
+assert.equal(snapshot.card.apiWikiLink.url, itemWikiUrl);
+assert.equal(snapshot.card.publicWikiLink.publicWikiUrl, publicWikiUrls["JS-300"]);
+assert.equal(snapshot.card.publicWikiLink.targetUuid, blueprint.outputUuid);
 const itemDetail = model.resolveDetailModel(snapshot, "blueprint", blueprint.uuid);
 assert.equal(itemDetail.status, "AVAILABLE");
 assert.equal(itemDetail.title, "JS-300");
@@ -226,7 +251,13 @@ for (const requirement of snapshot.requirements) {
   const id = requirement.commodityUuid || requirement.materialUuid;
   const materialDetail = model.resolveDetailModel(snapshot, "material", id);
   assert.equal(materialDetail.status, "AVAILABLE", `${requirement.materialName} material detail`);
-  assert.equal(materialDetail.wikiLink.url, materialWikiUrls[requirement.materialName]);
+  assert.equal(materialDetail.apiWikiLink.url, materialWikiUrls[requirement.materialName]);
+  if (requirement.materialName === "Beryl") {
+    assert.equal(materialDetail.publicWikiLink.publicWikiUrl, publicWikiUrls.Beryl);
+  } else {
+    assert.equal(materialDetail.publicWikiLink.resolutionStatus, "NO_PROVEN_PUBLIC_WIKI_URL");
+    assert.equal(materialDetail.publicWikiLink.publicWikiUrl, null);
+  }
   const materialMarkup = model.renderDetailMarkup(materialDetail);
   for (const marker of ["Mining category", "Curated Radar", "Quality tartomány", "Rarity", "Instability", "Resistance", "Top-3 farmhely", "UEX Refinery rendszerenként"]) {
     assert.ok(materialMarkup.includes(marker), `${requirement.materialName} material detailből hiányzik: ${marker}`);
@@ -260,9 +291,20 @@ assert.ok(model.renderDetailMarkup(model.resolveDetailModel(unmappedRadarSnapsho
 
 assert.equal(model.resolveDetailModel(snapshot, "material", "missing-target").status, "INVALID_TARGET");
 assert.ok(model.renderDetailMarkup(model.resolveDetailModel(snapshot, "invalid-kind", "x")).includes("részlet nem nyitható"));
-const oldCacheWiki = model.resolveWikiDeepLink({ resourceType: "commodities", slug: "beryl", slugVerifiedByApi: true, gameVersion: version });
+const oldCacheWiki = model.resolveWikiApiDeepLink({ resourceType: "commodities", slug: "beryl", slugVerifiedByApi: true, gameVersion: version });
 assert.equal(oldCacheWiki.origin, "AUDITED_API_SLUG_CANONICAL");
-assert.equal(model.resolveWikiDeepLink({ resourceType: "commodities" }).origin, "NO_PROVEN_WIKI_URL");
+assert.equal(model.resolveWikiApiDeepLink({ resourceType: "commodities" }).origin, "NO_PROVEN_WIKI_API_URL");
+
+const js300PublicAction = model.renderPublicWikiAction(itemDetail.publicWikiLink);
+assert.match(js300PublicAction, /href="https:\/\/star-citizen\.wiki\/JS-300"/);
+assert.match(js300PublicAction, />Megnyitás a Star Citizen Wiki-ben</);
+assert.doesNotMatch(js300PublicAction, /api\.star-citizen\.wiki/);
+const apiAction = model.renderWikiApiAction(itemDetail.apiWikiLink);
+assert.match(apiAction, />API adatlap megnyitása</);
+assert.match(apiAction, /href="https:\/\/api\.star-citizen\.wiki\/items\/js-300\?/);
+assert.doesNotMatch(apiAction, />Megnyitás a Star Citizen Wiki-ben</);
+assert.equal(model.renderPublicWikiAction(model.resolveWikiApiDeepLink({ resourceType: "items", exactUrls: [itemWikiUrl] })), "");
+assert.equal(model.renderPublicWikiAction(model.resolvePublicWikiDeepLink({ canonicalName: "Stileron" })), "");
 
 const targets = JSON.parse(JSON.stringify(model.collectDetailTargets(snapshot)));
 assert.equal(targets.length, 13);
@@ -273,7 +315,8 @@ for (const marker of [
   'data-detail-kind="mining"', 'data-detail-kind="refinery"', 'target="_blank" rel="noopener noreferrer"',
   "history.pushState", "window.addEventListener(\"popstate\"", "window.addEventListener(\"hashchange\"",
   "spgDetailDepth", "history.go(-depth)",
-  "Nincs biztonságos UEX refinery adat", "API_RAW_NOT_USER_FACING", itemWikiUrl
+  "Nincs biztonságos UEX refinery adat", "API_RAW_NOT_USER_FACING", itemWikiUrl,
+  publicWikiUrls["JS-300"], publicWikiUrls.Beryl, "API adatlap megnyitása"
 ]) {
   assert.ok(exported.includes(marker), `A standalone detail exportból hiányzik: ${marker}`);
 }
@@ -282,6 +325,9 @@ assert.doesNotMatch(exported, /<(?:link|script|img|source)[^>]+(?:href|src)=["']
 assert.doesNotMatch(exported, /fetch\s*\(/i);
 assert.ok(exported.includes('type="application/json" id="spg-export-snapshot"'));
 assert.ok(exported.includes("offline detail a helyi export snapshotból"));
+assert.equal((exported.match(/Megnyitás a Star Citizen Wiki-ben/g) || []).length, 5, "Csak JS-300 és a négy Beryl detail kap public Wiki gombot.");
+assert.doesNotMatch(exported, /href="https:\/\/api\.star-citizen\.wiki[^"]*"[^>]*>Megnyitás a Star Citizen Wiki-ben</);
+assert.doesNotMatch(exported, /href="https:\/\/star-citizen\.wiki\/(?:Stileron|Savrilium)/);
 if (artifactPath) {
   fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
   fs.writeFileSync(artifactPath, exported, "utf8");
@@ -289,7 +335,7 @@ if (artifactPath) {
 
 for (const marker of [
   'id="spgDetailView"', 'id="spgDetailBackButton"', 'spg:detail-request',
-  "var c008DetailController", "function resolveWikiDeepLink", "function resolveC008DetailModel",
+  "var c008DetailController", "function resolvePublicWikiDeepLink", "function resolveWikiApiDeepLink", "function resolveC008DetailModel",
   "history.pushState", "spgDetailDepth", "history.go(-depth)", "popstate", "hashchange", "c008DetailController.restore()"
 ]) {
   assert.ok(htmlSource.includes(marker), `A fő alkalmazás C008 route/controller marker hiányzik: ${marker}`);
@@ -299,8 +345,10 @@ console.log("V003_C008_DETAIL_VIEW_TEST_PASS");
 console.log(JSON.stringify({
   detailController: "c008DetailController",
   detailTypes: JSON.parse(JSON.stringify(model.detailTypes)),
-  wikiResolver: "resolveWikiDeepLink",
-  js300ItemWiki: snapshot.card.wikiLink,
+  publicWikiResolver: "resolvePublicWikiDeepLink",
+  apiWikiResolver: "resolveWikiApiDeepLink",
+  js300PublicWiki: snapshot.card.publicWikiLink,
+  js300ApiWiki: snapshot.card.apiWikiLink,
   detailTargets: targets.length,
   materials: snapshot.requirements.map((requirement) => requirement.materialName),
   stileronUex: "MAPPING_UNRESOLVED_PASS",

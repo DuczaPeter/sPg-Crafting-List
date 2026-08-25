@@ -67,6 +67,7 @@
 - `docs/V003_C004_RADAR_TOP3_REPORT.md`: a forraskep-alapu radar registry, Wiki API_RAW mezohatar, Top-3 dense rank, SCMDB audit, Chrome es regresszios bizonyitek.
 - `docs/V003_C006_FINAL_CARD_REPORT.md`: a final Crafting Card adatkontraktus, automatikus ingredient hydration, kozos UI/export projekcio es C006 acceptance.
 - `docs/V003_C008_DETAIL_VIEW_REPORT.md`: a same-HTML detail controller, ot reszlettipus, Wiki URL-hierarchia, offline standalone parity es C008 acceptance.
+- `docs/V003_C008_1_PUBLIC_WIKI_REPORT.md`: a public Wiki/API linkkorrekcio, exact MediaWiki audit, snapshot contract, standalone es C008.1 acceptance.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -104,6 +105,7 @@
 - `test-artifacts/V003-C006/`: a final Crafting Card teljes regresszios summaryja, Chrome evidence es standalone artifactja.
 - `test-artifacts/V003-C007/`: material color pixelaudit, teljes regresszios summary, Chrome evidence es standalone artifact.
 - `test-artifacts/V003-C008/`: Wiki deep-link audit, detail/standalone artifact, repair-cycle summary es valodi Chrome localhost evidence.
+- `test-artifacts/V003-C008.1/`: public MediaWiki exact-title audit, korrigalt standalone snapshot es valodi Chrome localhost evidence.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

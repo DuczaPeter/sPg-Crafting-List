@@ -61,13 +61,18 @@
 - [x] `V003-C008` teljes C001-C008 + M1-M6.1 + C04, elo Wiki link audit, standalone es V002-integritas regresszio PASS.
 - [x] Valodi Chrome localhost: 15/15 technical probe, main/standalone navigation+reload+invalid fallback, fingerprint `e6d8dec8`, konzol warning/error 0 PASS.
 - [x] C007 valodi Chrome `file://` eredmeny USER MANUAL PASS-kent dokumentalva; nem Codex automation.
+- [x] `V003-C008.1`: kulon public Wiki es API resolver/action; public felirat alatt csak exact `star-citizen.wiki` host, API-adatlap kulon Advanced muveletkent.
+- [x] Exact MediaWiki title/redirect audit: JS-300 es Beryl VERIFIED; Stileron es Savrilium `NO_PROVEN_PUBLIC_WIKI_URL`; nevbol kepzett/fuzzy public URL nincs.
+- [x] Hydrated/output snapshot public feloldasi metadata es ugyanennek standalone felhasznalasa runtime fetch nelkul.
+- [x] `V003-C008.1` celteszt, teljes C001-C008 + M1-M6.1 + C04, standalone es V002-integritas regresszio PASS.
+- [x] C008.1 valodi Chrome localhost: 15/15, ot detailtipus linkparitas, main/standalone Back+reload, fingerprint `d7be3ccc`, konzol warning/error 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
 
 - [x] `V003-C006`: kozos final-card adatkontraktus, card-first layout es elokeszitett detail hookok; blueprint/item nev, Size, Class/Type, Grade, Crafting Time, requested quantity, max craftable, slot/material mennyisegek, inventory/hiany/maradek, Quality rule, Mining+UEX snapshot es curated Radar.
 - [x] `V003-C007`: card-first alapnezet es a Radar PNG-bol bizonyitott material vizualis identitas; nevszin, chip background es border/accent csak igazolt mappinggel, kulonben neutralis fallback.
-- [x] `V003-C008`: kattinthato blueprint/material/mining/refinery/radar elemek es ugyanazon egyfajlos HTML-en beluli reszletnezet; teljes Top-3, spawn, occurrence, Quality, provider, forras, refinery es Wiki deep link.
+- [x] `V003-C008` + `V003-C008.1`: kattinthato blueprint/material/mining/refinery/radar reszletnezet, bizonyitott public Wiki-cikk es kulon API-adatlap.
 - [ ] `V003-C009`: default nezet tisztitasa Crafting Card + szukseges user UI szintre; baseline/debug/raw/log es fejlesztoi eszkozok Advanced/Diagnostics ala.
 - [ ] `V003-C010`: standalone export atallitasa ugyanarra a tiszta kartya-modellre, teljes single-file es browser regresszio, manual acceptance elokeszites; stabil V003 release tovabbra is csak kulon jovahagyassal.
 

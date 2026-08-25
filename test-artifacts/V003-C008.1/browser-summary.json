@@ -1,0 +1,34 @@
+{
+  "cycle": "V003-C008.1",
+  "status": "PASS",
+  "testedAt": "2026-08-25T04:30:09.789Z",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:4177",
+  "technicalProbe": {
+    "passed": 15,
+    "failed": 0
+  },
+  "publicWiki": {
+    "js300": "https://star-citizen.wiki/JS-300",
+    "beryl": "https://star-citizen.wiki/Beryl",
+    "stileron": "NO_PROVEN_PUBLIC_WIKI_URL",
+    "savrilium": "NO_PROVEN_PUBLIC_WIKI_URL"
+  },
+  "apiActionsSeparate": true,
+  "detailTypesChecked": [
+    "blueprint",
+    "material",
+    "radar",
+    "mining",
+    "refinery"
+  ],
+  "mainBackReload": "PASS",
+  "standaloneBackReload": "PASS",
+  "fingerprintBeforeReload": "d7be3ccc",
+  "fingerprintAfterReload": "d7be3ccc",
+  "mainConsoleWarningErrorCount": 0,
+  "standaloneConsoleWarningErrorCount": 0,
+  "notClaimed": [
+    "REAL_FILE_PROTOCOL_AUTOMATION"
+  ]
+}

@@ -1,5 +1,7 @@
 # V003-C008 Detail View Report
 
+> A public Wiki gomb C008-ban meg dokumentalt API-host viselkedeset a `V003-C008.1` korrekcio felulirta. Az aktualis public Wiki/API szabaly: `docs/V003_C008_1_PUBLIC_WIKI_REPORT.md`.
+
 ## Eredmeny
 
 `V003-C008 – Single-file Detail View + Star Citizen Wiki deep links`: **PASS**.

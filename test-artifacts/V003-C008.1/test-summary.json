@@ -1,0 +1,29 @@
+{
+  "cycle": "V003-C008.1",
+  "purpose": "Public Wiki deep-link correction",
+  "status": "PASS",
+  "testLevel": "full-regression",
+  "testId": "v003-c0081-public-wiki-regression",
+  "validatedAt": "2026-08-25T04:30:09.789Z",
+  "automated": {
+    "publicWikiExactAudit": "PASS",
+    "publicApiSeparation": "PASS",
+    "snapshotStandaloneParity": "PASS",
+    "c001ThroughC008": "PASS",
+    "m1ThroughM61AndC04": "PASS",
+    "v002Integrity": "PASS"
+  },
+  "chromeLocalhost": {
+    "status": "PASS",
+    "technicalProbe": "15 PASS / 0 FAIL",
+    "mainBackReload": "PASS",
+    "standaloneBackReload": "PASS",
+    "fingerprintPreserved": true,
+    "consoleWarningErrorCount": 0
+  },
+  "release": {
+    "v003TagCreated": false,
+    "v003ReleaseCreated": false,
+    "c009Started": false
+  }
+}
