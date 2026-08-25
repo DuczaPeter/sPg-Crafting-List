@@ -313,3 +313,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C010 elrendezes es C001-C010 modellek vedelmere, a haromsoros terv es teljes regresszios kapu megtartasara, valamint a valos NORMAL/SPACE osszemosasi hatar felismeresere es a renderelt kompakt eredmeny bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 Final Card kozos main/standalone Mining/Refinery presentation helper, C010.1 teszt/validator/riport/artifact es projekt statuszfajlok; stabil V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C011 Final user-facing UI cleanup + reference lock
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-25`, a szuk fo UI cleanup, reference lock, teljes repair-cycle es valodi Chrome 1920/1366/390 responsive/standalone/konzol ellenorzes soran.
+- Mire segitett: a C010.1 Final Card es uzleti modellek vedelmere, a haromsoros scope megtartasara, valamint a belso listascroll, 15/15 Technical Probe, detail Back/reload, fingerprint es nulla konzolhiba bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 Blueprint Browser normal fo UI/CSS, C011 teszt/validator/report/artifact es projekt statuszfajlok; stabil V002 es V003 uzleti modellek nem valtoztak.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

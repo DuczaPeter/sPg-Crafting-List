@@ -219,6 +219,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0101.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c011-final-ui-cleanup-regression",
+      "level": "full-regression",
+      "description": "V003-C011 gate: locked visual references, no technical detail/cache block in the normal Blueprint Browser, retained normalized technical model, viewport-aware internal blueprint list scroll, unchanged Final Card/standalone projection, complete C001-C010.1 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c011.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

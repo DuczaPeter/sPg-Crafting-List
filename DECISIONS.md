@@ -123,3 +123,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Miningnel a C010 korabbi, determinisztikus elso top-tier kivalasztasa marad. Egy C002 presentation group sajat labelt kap; ugyanazon kivalasztott tier tobb exact azonos rank tuple-ju groupja `elso (+N azonos legjobb)` formaban jelenik meg. A NORMAL/SPACE tier nem olvaszthato ossze.
 - Refinerynel a rendszer `rankingValue` exact nyertesei szamitanak. A megjelenites determinisztikus elso friendly terminalnev, tobb nyertesnel `(+N azonos legjobb)`; alacsonyabb rang nem szamolhato bele.
 - A `Refinement Processing -` es `Refinement Center -` prefix, valamint az ismert rendszer-zarojelek csak a C010 prezentacios labelbol tunnek el; a raw UEX terminalnev nem modosul.
+
+## 2026-08-25 - V003-C011 vegleges fonezeti reference lock
+
+- A vegleges Blueprint Browser + Final Crafting Card vizualis acceptance referencia az `Info/A fö nézet.png` es `Info/A Crafting card.png`; a C011 celteszt mindket fajlt SHA-256-tal zarja.
+- A normal Blueprint Browser fonezet nem renderel technikai cache-adatlapot. Blueprint-kivalasztas csak a bal oldali kijelolest es a jobb oldali Final Crafting Cardot frissiti.
+- UUID, SC-verzio, source, fetchedAt es recipe slot technikai adat nem torolheto: a modellben, diagnosztikaban vagy Data / Settings alatt megmarad.
+- A blueprint talalati lista sajat fuggoleges scrollt hasznal; a C010.1 Final Card es minden uzleti modell erintetlen.
+- Stabil V003 release/tag tovabbra is csak kulon felhasznaloi jovahagyassal keszulhet.

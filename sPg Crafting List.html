@@ -8,8 +8,6 @@
   <title>sPg Crafting List</title>
   <link rel="icon" href="data:,">
   <style id="spgApplicationStyles" data-source="embedded">
-500;700;800&family=Roboto:wght@300;400;500;700;900&display=swap");
-
 :root {
   color-scheme: dark;
   --assignment-accent: #14d9ff;
@@ -2839,10 +2837,14 @@ label {
 
 .spg-browser-results {
   display: grid;
+  align-content: start;
   gap: 7px;
   max-height: 420px;
   padding-right: 5px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .spg-blueprint-result {
@@ -2864,52 +2866,6 @@ label {
 .spg-blueprint-result span {
   color: var(--muted);
   font-size: 11px;
-}
-
-.spg-browser-detail {
-  min-height: 160px;
-  padding: 14px;
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
-  background: rgba(15, 23, 32, 0.54);
-}
-
-.spg-browser-detail h3 {
-  margin: 3px 0 14px;
-  color: var(--ink);
-  font-size: 22px;
-}
-
-.spg-browser-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.spg-browser-detail-grid div {
-  min-width: 0;
-  padding: 9px 10px;
-  border: 1px solid rgba(24, 218, 255, 0.2);
-  border-radius: 9px;
-  background: rgba(5, 18, 28, 0.52);
-}
-
-.spg-browser-detail-grid span,
-.spg-browser-detail-grid strong {
-  display: block;
-  overflow-wrap: anywhere;
-}
-
-.spg-browser-detail-grid span {
-  margin-bottom: 3px;
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-}
-
-.spg-browser-detail-grid strong {
-  color: var(--ink);
-  font-size: 12px;
 }
 
 code {
@@ -4757,7 +4713,8 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
 }
 
 body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-browser-results {
-  max-height: 440px;
+  height: clamp(230px, calc(100vh - 530px), 620px);
+  max-height: none;
 }
 
 #finalCraftingCardPanel {
@@ -5084,6 +5041,10 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
     grid-column: 1;
     position: static;
   }
+
+  body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-browser-results {
+    height: min(360px, 48vh);
+  }
 }
 
 @media (max-width: 560px) {
@@ -5332,7 +5293,6 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
 
   .spg-browser-toolbar,
   .spg-browser-layout,
-  .spg-browser-detail-grid,
   .spg-batch-form,
   .spg-material-summary,
   .spg-allocation-summary,
@@ -5535,16 +5495,13 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
           Az index lapozva töltődik; a teljes recept csak egy blueprint megnyitásakor kerül a cache-be.
         </p>
         <div class="spg-browser-layout">
-          <div>
+          <div class="spg-browser-list">
             <div class="spg-browser-list-heading">
               <strong>Találatok</strong>
               <span id="blueprintResultCount">0</span>
             </div>
             <div id="blueprintBrowserResults" class="spg-browser-results" aria-live="polite"></div>
           </div>
-          <aside id="blueprintBrowserDetail" class="spg-browser-detail" aria-live="polite">
-            <p class="spg-muted">Válassz blueprintet a teljes, slotonkénti recept lusta betöltéséhez.</p>
-          </aside>
         </div>
       </section>
 
@@ -11981,42 +11938,6 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       });
     }
 
-    function appendDetailValue(container, label, value) {
-      var item = document.createElement("div");
-      var name = document.createElement("span");
-      name.textContent = label;
-      var content = document.createElement("strong");
-      content.textContent = value == null || value === "" ? "—" : String(value);
-      item.append(name, content);
-      container.append(item);
-    }
-
-    function renderBlueprintBrowserDetail(blueprint, cacheOrigin) {
-      var container = document.getElementById("blueprintBrowserDetail");
-      container.replaceChildren();
-      if (!blueprint) {
-        var empty = document.createElement("p");
-        empty.className = "spg-muted";
-        empty.textContent = "Válassz blueprintet a teljes recept lusta betöltéséhez.";
-        container.append(empty);
-        return;
-      }
-      var eyebrow = document.createElement("p");
-      eyebrow.className = "eyebrow";
-      eyebrow.textContent = cacheOrigin === "CACHE" ? "Részlet-cache" : "Friss API-adat";
-      var title = document.createElement("h3");
-      title.textContent = blueprint.outputName;
-      var grid = document.createElement("div");
-      grid.className = "spg-browser-detail-grid";
-      appendDetailValue(grid, "Blueprint UUID", blueprint.uuid);
-      appendDetailValue(grid, "SC-verzió", blueprint.gameVersion);
-      appendDetailValue(grid, "Output típus", blueprint.outputTypeLabel || blueprint.outputType);
-      appendDetailValue(grid, "Recipe slot", blueprint.recipeSlots.length);
-      appendDetailValue(grid, "Adatforrás", blueprint.provenance.dataSource);
-      appendDetailValue(grid, "Lekérés", formatTimestamp(blueprint.provenance.fetchedAt));
-      container.append(eyebrow, title, grid);
-    }
-
     async function loadBlueprintIndexFromCache(version) {
       var allRecords = await database.getAll("blueprintIndexCache");
       return allRecords.filter(function (record) {
@@ -12095,7 +12016,6 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
         state.finalCardPreviewAllocation = null;
         renderC010FinalCraftingCard();
         renderBlueprint(normalized);
-        renderBlueprintBrowserDetail(normalized, cacheOrigin);
         renderBlueprintBrowserResults();
         document.getElementById("addCurrentBlueprintButton").disabled = false;
         await prepareC010FinalCraftingCard({ resetQuantity: true });
@@ -16620,7 +16540,6 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
       if (blueprintRecord) {
         state.normalizedBlueprint = blueprintRecord;
         renderBlueprint(blueprintRecord);
-        renderBlueprintBrowserDetail(blueprintRecord, "CACHE");
         document.getElementById("addCurrentBlueprintButton").disabled = false;
       }
       if (miningDataset) {

@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "auditedAt": "2026-08-25T08:18:47.644Z",
+  "gameVersion": "4.9.0-LIVE.12232306",
+  "resolutionRule": "EXACT_SOURCE_RECORD_WEB_URL_ONLY",
+  "nameDerivedUrl": false,
+  "records": [
+    {
+      "type": "items",
+      "uuid": "b1c89d89-d408-4998-9b17-76986d78a9dd",
+      "name": "JS-300",
+      "slug": "js-300",
+      "webUrl": "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+      "sourceApiUrl": "https://api.star-citizen.wiki/api/items/b1c89d89-d408-4998-9b17-76986d78a9dd?version=4.9.0-LIVE.12232306"
+    },
+    {
+      "type": "commodities",
+      "uuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "name": "Stileron (Ore)",
+      "slug": "stileron-ore",
+      "webUrl": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.9.0-LIVE.12232306",
+      "sourceApiUrl": "https://api.star-citizen.wiki/api/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.9.0-LIVE.12232306"
+    },
+    {
+      "type": "commodities",
+      "uuid": "eb503701-389a-48a1-af28-eb7374009d5d",
+      "name": "Beryl (Raw)",
+      "slug": "beryl-raw",
+      "webUrl": "https://api.star-citizen.wiki/commodities/beryl-raw?version=4.9.0-LIVE.12232306",
+      "sourceApiUrl": "https://api.star-citizen.wiki/api/commodities/eb503701-389a-48a1-af28-eb7374009d5d?version=4.9.0-LIVE.12232306"
+    },
+    {
+      "type": "commodities",
+      "uuid": "d76ea7ef-5116-488c-93d3-71e02bada13d",
+      "name": "Savrilium (Ore)",
+      "slug": "savrilium-ore",
+      "webUrl": "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.9.0-LIVE.12232306",
+      "sourceApiUrl": "https://api.star-citizen.wiki/api/commodities/d76ea7ef-5116-488c-93d3-71e02bada13d?version=4.9.0-LIVE.12232306"
+    }
+  ]
+}

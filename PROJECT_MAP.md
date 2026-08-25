@@ -56,6 +56,9 @@
 - V003-C010.1 kapu: `tools/validate-v003-c0101.ps1`; C010 teljes kapu + compact Mining/Refinery celteszt, standalone es V002-integritas.
 - V003-C010.1 celteszt: `tools/run-v003-c0101-tests.mjs`; family/single/multi-group mining, refinery friendly label, exact tie-count, alacsonyabb rang kizárasa es standalone parity.
 - V003-C010.1 riport: `docs/V003_C0101_REPORT.md`; eredeti C010 audit, compact szabalyok, valos Chrome eredmeny, standalone es V002-integritas.
+- V003-C011 kapu: `tools/validate-v003-c011.ps1`; teljes C010.1 kapu, reference SHA-zar, fo Blueprint Browser technikai detail cleanup, modellmegorzes, standalone es V002-integritas.
+- V003-C011 celteszt: `tools/run-v003-c011-tests.mjs`; `RÉSZLET-CACHE` lathatosag 0, scroll/layout CSS, kivalasztas/Final Card frissites, technikai modellmegorzes es standalone 3/3/8 invarians.
+- V003-C011 riport: `docs/V003_C011_REPORT.md`; scope, referenciazar, Chrome meretek, fingerprint, konzol, standalone es V002 bizonyitek.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -78,6 +81,7 @@
 - `docs/V003_C009_REPORT.md`: a referencia-alapu main view, exact source API linkek, kompakt kartya es C009 acceptance.
 - `docs/V003_C010_REPORT.md`: a tiszta Final Card-only default nezet, kulon Crafting List, kompakt standalone es C010 Chrome/regresszios acceptance.
 - `docs/V003_C0101_REPORT.md`: a C010.1 compact Mining/Refinery prezentacios korrekcio es a C010 evidence audit.
+- `docs/V003_C011_REPORT.md`: a vegleges Blueprint Browser fo UI cleanup, vizualis referenciazar es Chrome/regresszios bizonyitek.
 - `docs/TECHNICAL_BASELINE.md`: a bizonyitott es meg nyitott technikai kapuk.
 - `V1_RELEASE_GATE_CHECKLIST.md`: a Chrome `file://`, tenyleges offline standalone export es kulon Edge release-gate kattintasonkenti kezi ellenorzese es visszakuldesi sablonja.
 - `docs/M1_REPORT.md`: endpointok, normalizalt modell, cache-tranzakcio, valos tesztadatok es M2 elotti nyitott pontok.
@@ -119,6 +123,7 @@
 - `test-artifacts/V003-C009/`: exact API audit, referencia-alapu standalone kartya, summary es Chrome screenshot.
 - `test-artifacts/V003-C010/`: exact API audit, kompakt standalone Final Card, PASS summary es helyi Chrome desktop/mobile screenshot.
 - `test-artifacts/V003-C010.1/`: exact API audit, compact standalone Final Card, PASS summary es helyi Chrome screenshot.
+- `test-artifacts/V003-C011/`: exact API audit, standalone Final Card, PASS summary es helyi Git-ignore 1920/1366/mobile Chrome screenshotok.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

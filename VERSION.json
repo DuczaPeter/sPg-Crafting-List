@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C010.1",
-    "currentCycleId":  "V003-C010.1",
-    "lastSuccessfulCycle":  "V003-C010.1",
+    "currentCycle":  "C011",
+    "currentCycleId":  "V003-C011",
+    "lastSuccessfulCycle":  "V003-C011",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-25T09:51:22+02:00",
-    "currentCyclePurpose":  "Final Card compact Mining/Refinery projection + C010 evidence repair",
-    "currentCycleStartedAt":  "2026-08-25T09:30:00+02:00",
+    "lastUpdated":  "2026-08-25T10:28:38+02:00",
+    "currentCyclePurpose":  "Final user-facing Blueprint Browser cleanup + visual reference lock",
+    "currentCycleStartedAt":  "2026-08-25T09:55:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C010.1 compact deterministic Mining/Refinery winner projection, corrected C010 evidence, shared standalone parity, full C001-C010 plus M1-M6.1+C04, Chrome localhost 15/15, responsive/Back/reload/console/fingerprint and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C010.1 COMPACT PRESENTATION – AUTOMATED AND CHROME LOCALHOST PASS; PRIOR USER MANUAL REAL CHROME file:// EVIDENCE RECORDED AS NOT CODEX AUTOMATION; USER VISUAL ACCEPTANCE PENDING; STABLE RELEASE NOT APPROVED.",
+    "currentCycleStatusReason":  "V003-C011 normal Blueprint Browser technical detail removal, retained normalized model, viewport-aware list scroll, locked references, unchanged Final Card/standalone, full C001-C010.1 plus M1-M6.1+C04, Chrome 15/15, 1920/1366/390, Back/reload/console/fingerprint and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C011 FINAL USER-FACING UI CLEANUP – AUTOMATED AND CHROME LOCALHOST PASS; USER VISUAL REVIEW PENDING; STABLE RELEASE NOT APPROVED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,8 +40,8 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C010.1",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; C010.1 compact Mining/Refinery main/standalone parity, detail Back/reload, 390 px responsive and console PASS",
+                                "cycle":  "V003-C011",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; no main Blueprint technical detail, Final Card/standalone parity, 1920x1080 + 1366x768 + 390x844, detail Back/reload and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
                                 "userDataFingerprintBefore":  "d7be3ccc",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "USER_VISUAL_CHECK_REQUIRED_C011_NOT_STARTED"
+                                                           "nextCycle":  "USER_VISUAL_REVIEW_REQUIRED_AFTER_C011"
                                                        },
                                 "finalCraftingCard":  {
                                                           "viewModel":  "buildFinalCraftingCardViewModel",
@@ -166,8 +166,15 @@
                                                        "topRefineryPerSystem":  true,
                                                        "standaloneParity":  true,
                                                        "standaloneRuntimeFetch":  false,
-                                                       "screenshot":  "test-artifacts/V003-C010.1/chrome-final-main-view.png",
-                                                       "userVisualAcceptance":  "PENDING"
+                                                       "screenshot":  "test-artifacts/V003-C011/chrome-desktop-1920x1080.png",
+                                                       "screenshots":  [
+                                                                           "test-artifacts/V003-C011/chrome-desktop-1920x1080.png",
+                                                                           "test-artifacts/V003-C011/chrome-desktop-1366x768.png",
+                                                                           "test-artifacts/V003-C011/chrome-mobile-390x844.png"
+                                                                       ],
+                                                       "blueprintTechnicalDetailVisibleCount":  0,
+                                                       "technicalModelRetained":  true,
+                                                       "userVisualAcceptance":  "PENDING_USER_REVIEW_C011"
                                                    },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,

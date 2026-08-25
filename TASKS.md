@@ -81,6 +81,10 @@
 - [x] `V003-C010.1`: Final Card-only compact Mining/Refinery projection; egy bizonyitott nyertes csoport neve, tobb exact tie eseten determinisztikus elso `(+N azonos legjobb)` jeloles, `+N további` es terminal-nevfal nelkul.
 - [x] C010.1 megorzi a C001 NORMAL/SPACE szetvalasztast es a C010 elso top-tier kivalasztasat; alacsonyabb refinery `value_month` rekord nem szamolhato tie-kent, raw snapshot es C008 detail valtozatlan.
 - [x] `V003-C010.1` celteszt + teljes C001-C010/M1-M6.1/C04 + standalone + Chrome localhost + 390 px + Back/reload + fingerprint + console + V002-integritas PASS.
+- [x] `V003-C011`: a normal Blueprint Browser `RÉSZLET-CACHE`/technikai detail blokkja eltavolitva, a modelladat es Data / Settings diagnosztika megorizve.
+- [x] A blueprint lista viewportfuggo belso scrollt kapott; 1920x1080, 1366x768 es 390x844 mereten horizontal overflow 0.
+- [x] A ket final UI referencia-PNG SHA-zar alatt; az arva embedded fontszoveg eltavolitva, kulso CSS/font runtime-fugges tovabbra sincs.
+- [x] `V003-C011` celteszt + teljes C001-C010.1/M1-M6.1/C04 + standalone + Chrome 15/15 + Back/reload + fingerprint + console + V002-integritas PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -91,7 +95,8 @@
 - [x] `V003-C009`: referencia-alapu default Blueprint Browser + kompakt Crafting Card, exact forras-API linkek, rendszerenkenti mining/refinery es curated Radar; standalone parityval.
 - [x] `V003-C010`: tiszta default Final Card, kulon tobbkartyas Crafting List, azonos kompakt standalone kartya, teljes single-file es browser regresszio; felhasznaloi vizualis acceptance meg nyitott.
 - [x] `V003-C010.1`: a C010 elrendezes valtoztatasa nelkul rovid Mining/Refinery nyertesprojekcio es javitott C010/C010.1 bizonyitek.
-- [ ] C011 nincs elinditva; kovetkezo fejlesztes csak uj felhasznaloi utasitassal.
+- [x] `V003-C011`: vegleges user-facing fo UI cleanup es reference lock; felhasznaloi vizualis ellenorzesre atadva.
+- [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio
 

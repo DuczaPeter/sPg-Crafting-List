@@ -573,3 +573,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: Technical Probe 15/15; main/standalone compact parity; detail reload es browser Back; 390 px oldal-tulcsordulas 0; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
 - Screenshot: `test-artifacts/V003-C010.1/chrome-final-main-view.png` (helyi, Git-ignore). Stabil V003 release/tag es C011 nem keszult.
 - Visszaallas: a C010.1 commit revertje; stabil fallback a valtozatlan `V002` tag/release.
+
+### V003-C011 Final user-facing UI cleanup + reference lock - 2026-08-25
+
+- Scope: csak a normal Blueprint Browser fo UI; C010.1 Final Card, compact Mining/Refinery, Radar, exact API link, allocation, hydration, ranking/grouping, C008 detail, standalone modell es V002 valtozatlan.
+- A `blueprintBrowserDetail`/`renderBlueprintBrowserDetail()` technikai fonezeti utvonal kikerult. A normalizalt cache-modell UUID/verzio/output/slot/source/fetchedAt adatai megmaradtak, Data / Settings diagnosztika mukodik.
+- A listakontener viewportfuggo magassagot es sajat `overflow-y:auto` scrollt kapott; az arva embedded Roboto/font szovegtoredek eltavolitva, kulso runtime CSS/font 0.
+- Referenciazar: `Info/A fö nézet.png` SHA `cfd86011...689fa`, `Info/A Crafting card.png` SHA `2fbc9f4f...b2be5`.
+- Automatizalt: `validate-v003-c011.ps1` PASS; teljes C001-C010.1 + M1-M6.1 + C04, exact API audit, standalone 3/3/8 es V002-integritas zold.
+- Chrome localhost: Technical Probe 15/15; 1920x1080, 1366x768, 390x844; detail visible count 0; scroll/horizontal overflow PASS; C008 detail Back+reload PASS; fingerprint `d7be3ccc -> d7be3ccc`; main/standalone konzol warning/error 0.
+- Screenshotok: `test-artifacts/V003-C011/chrome-desktop-1920x1080.png`, `chrome-desktop-1366x768.png`, `chrome-mobile-390x844.png` (helyi, Git-ignore).
+- V003 release/tag nem keszult. Visszaallas: a C011 commit revertje; stabil fallback a valtozatlan V002 tag/release.
