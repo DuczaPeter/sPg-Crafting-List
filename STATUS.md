@@ -3,20 +3,20 @@
 - Projekt neve: `sPg Crafting List`
 - Rovid cel: `Star Citizen crafting-, inventory-, Quality-, mining- es loadout-tervezo helyi webalkalmazas elkeszitese.`
 - Projekt tipus: `egyfajlos helyi webalkalmazas: sPg Crafting List.html embedded CSS-sel es JavaScripttel`
-- Aktualis allapot: `V003-dev C012.1 – MATERIAL QUALITY PLANNER PASS`
+- Aktualis allapot: `V003-dev C012.2 – ACTIVE SC VERSION CONSISTENCY PASS`
 - Stabil verzio vagy baseline: `V002`
 - Stabil fajl, commit vagy tag: `releases/V002/sPg Crafting List.html; tag V002`
 - Aktualis fejlesztesi celverzio: `V003-dev`
-- Aktualis javitasi ciklus: `V003-C012.1`
-- Utolso sikeres ciklus: `V003-C012.1`
+- Aktualis javitasi ciklus: `V003-C012.2`
+- Utolso sikeres ciklus: `V003-C012.2`
 - Candidate vagy munkaverzio: `sPg Crafting List.html (V003-dev single-file munkaverzio)`
 - Aktualis branch: `develop/V003`
 - Utolso ellenorzesi szint: `PASS`
-- Kovetkezo kotelezo teszt: `felhasznaloi vizualis es mukodesi ellenorzes a C012.1 Quality Planner screenshotok alapjan`
-- Aktualis feladat: `C012.1 kozos effektív Quality policy es allocation-aware Combined Materials kor lezart`
+- Kovetkezo kotelezo teszt: `felhasznaloi ellenorzes a C012.2 aktivverzio-konzisztencia javitas utan`
+- Aktualis feladat: `C012.2 aktiv SC-verzio szerinti cache/projekcio/deep-link izolacio lezart`
 - Blokkolo problema: `nincs fejlesztesi blokkolo; stabil V003 release/tag nincs engedelyezve`
-- Kovetkezo lepes: `megallas felhasznaloi vizualis es mukodesi ellenorzeshez; C013 es stabil V003 release/tag nincs engedelyezve`
-- Utolso frissites: `2026-08-29T06:09:39+02:00`
+- Kovetkezo lepes: `megallas felhasznaloi ellenorzeshez; C013 es stabil V003 release/tag nincs engedelyezve`
+- Utolso frissites: `2026-08-29T11:03:22+02:00`
 
 ## Ellenorzesi igazsag
 
@@ -33,5 +33,8 @@ Csak azt jelold mukodonek vagy stabilnak, amit tenylegesen ellenoriztel.
 - C012 valodi Chrome localhost: JS-300/FR-66/XL-1 harom kartya, 2 expanded/1 collapsed, quantity `2/1/1`, sorrendmentes + visszaallitas, 1920x1080/1366x768/390x844 es 10-kartyas stressz horizontal overflow 0; Technical Probe 15/15, detail reload+Back a forras FR-66 kartyahoz, fingerprint `78b870b4 -> 78b870b4`, konzol WARN/ERROR 0.
 - C012.1 automatizalt: kozos `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()` a Final Card, Crafting List, Combined Materials, Allocation Engine es standalone szamara; RECIPE/TARGET_Q/HIGHEST_Q, FIXED/UNKNOWN vedelme, Quality-bucket no-double-count, priority/max, backup/restore es teljes C001-C012 + M1-M6.1 + C04 PASS.
 - C012.1 valodi Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, Stileron Q900 terv reload-perzisztencia, Combined detail reload+Back, 1920x1080/1366x768/390x844 horizontal overflow 0, fingerprint `c4a49ff0 -> c4a49ff0`, konzol WARN/ERROR 0.
+- C012.2 automatizalt: az aktiv SC-verzio a blueprint datasetbol kanonikus; normalized blueprint/output/mining projekcio es hydration exact verzio szerint izolalt, a regi cache megmarad, de nem szivarog az aktiv snapshotba. Two-version fixture, item/material deep link, source provenance, standalone es teljes C001-C012.1 + M1-M6.1 + C04 PASS.
+- C012.2 valodi Chrome localhost: aktiv/blueprint/mining verzio `4.10.0-LIVE.12519617`; main, Crafting List, C008 detail, refresh/reload es standalone link/source konzisztencia PASS; Technical Probe 15/15; fingerprint `36b67809 -> 36b67809`; konzol WARN/ERROR 0.
+- C012.2 felhasznaloi Chrome `file://`: `USER MANUAL FILE:// PASS`; a felhasznalo futtatta, nem Codex automation. A teljes technikai baseline PASS, standalone letrejott es megnyithato.
 - C007 valodi Chrome `file://`: `USER MANUAL PASS_NOT_CODEX_AUTOMATION`; a felhasznalo jelentette, nem Codex automation futtatta.
 - Stabil V002 tag commit `b326aaff...150e35` es HTML SHA-256 `de2d59b4...9f2357` valtozatlan; stabil V003 release/tag nem keszult.

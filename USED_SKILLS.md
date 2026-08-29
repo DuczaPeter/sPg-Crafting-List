@@ -337,3 +337,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C012.1 scope, a C013/release tiltás es a fagyasztott V002 vedelme megtartasara; valamint a valos Q900 reload-perzisztencia, Combined detail Back/reload, responsive overflow, fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 Quality policy/allocation/Combined UI es detail snapshot, C012.1 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C012.2 Active SC Version Consistency Repair
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-29`, az aktivverzio/cache/provenance audit, a szuk repair-cycle, a teljes regresszios kapu es a valodi Chrome localhost refresh/reload/detail/export/konzol ellenorzes soran.
+- Mire segitett: a C012.2 scope, a C013/release tiltasa es a fagyasztott V002 vedelme megtartasara; valamint az aktiv 4.10 dataset, exact API linkek, C008 reload/Back, letoltott standalone, fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 aktivverzio-resolver, normalized projekcio/hydration, API deep link es standalone snapshot, C012.2 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

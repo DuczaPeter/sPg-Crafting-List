@@ -148,3 +148,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A Combined Quality-bucket `Lefoglalva` erteke kizarolag a determinisztikus Allocation Engine reservation eredmenye lehet. Batch nem szamolhato tobbszor, bucket-sum nem haladhatja meg a tenyleges inventoryt.
 - A Combined detail a C008 router/renderer es a meglevo exact material API resolver bovítese; Mining/UEX/Radar nem kerul bele. A standalone csak a feloldott export-snapshotot hasznalja, runtime fetch nelkul.
 - Schema bump nem indokolt, mert a terv a meglevo backup/restore USER settings csatornajat hasznalja. Stabil V003 release/tag es C013 tovabbra is csak kulon felhasznaloi utasitasra indulhat.
+
+## 2026-08-29 - V003-C012.2 aktiv SC-verzio invarians
+
+- Az aktualis user-facing snapshot kanonikus SC-verzioja az aktiv blueprint dataset verzioja. Main, Crafting List, C008 detail, material intelligence es standalone ugyanazt a `resolveActiveScVersion()` eredmenyt hasznalja.
+- Raw es normalized cache-ek verzionkent megmaradhatnak. Aktualis projekcio/hydration csak exact aktivverzio-egyezessel fogyaszthat rekordot; UUID-egyezes onmagaban nem eleg.
+- Ha a mining dataset nem az aktiv SC-verziohoz tartozik, nem cimkezheto at aktualisnak: explicit cross-version block/status kell, majd a megfelelo verzio betoltese.
+- Exact API linknel a forrasbol bizonyitott host/path/slug marad, de a `version=` query az aktiv SC-verziohoz igazodik. Nevbol kepzett vagy fuzzy URL tovabbra is tilos.
+- Aktualis snapshot `scVersion`, material source `gameVersion`, mining source `gameVersion`, API link `version=` es standalone detail verzio egymassal azonos. Tudatos torteneti cross-version adat csak kulon statuszban jelenhet meg.
+- Stabil V003 release/tag es C013 tovabbra is csak kulon felhasznaloi utasitasra indulhat.

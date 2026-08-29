@@ -1,0 +1,29 @@
+{
+  "cycle": "V003-C012.2",
+  "runner": "CODEX_CHROME_LOCALHOST",
+  "protocol": "http:",
+  "url": "http://127.0.0.1:4177/",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "blueprintDatasetVersion": "4.10.0-LIVE.12519617",
+  "miningDatasetVersion": "4.10.0-LIVE.12519617",
+  "versionConsistency": "ACTIVE_VERSION_ALIGNED",
+  "technicalProbe": {
+    "passed": 15,
+    "failed": 0
+  },
+  "mainItemAndMaterialLinks": "PASS",
+  "craftingListItemLink": "PASS",
+  "detailReloadAndBack": "PASS",
+  "refreshVersionAlignment": "PASS",
+  "downloadedStandalone": {
+    "file": "sPg Crafting List - JS-300.html",
+    "bytes": 544768,
+    "snapshotVersion": "4.10.0-LIVE.12519617",
+    "itemAndMaterialLinks": "PASS",
+    "materialAndMiningSourceVersions": "PASS",
+    "externalRuntimeResource": false
+  },
+  "consoleWarningErrorCount": 0,
+  "userDataFingerprintBefore": "36b67809",
+  "userDataFingerprintAfterRefreshAndReload": "36b67809"
+}

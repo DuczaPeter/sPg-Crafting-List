@@ -243,6 +243,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0121.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0122-active-version-consistency",
+      "level": "full-regression",
+      "description": "V003-C012.2 gate: active SC version drives exact item/material API links, version-scoped blueprint/mining/output projections and provenance; VERSION_A remains cached but cannot leak into VERSION_B snapshots; standalone, complete C001-C012.1 plus M1-M6.1/C04 and frozen V002 integrity remain valid.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0122.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

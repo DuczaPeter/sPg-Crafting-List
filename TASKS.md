@@ -91,6 +91,10 @@
 - [x] `V003-C012.1`: exact material UUID-s RECIPE/TARGET_Q/HIGHEST_Q User Data terv es kozos effektív Quality policy a Final Card, Crafting List, Combined Materials, Allocation Engine es standalone szamara.
 - [x] C012.1 Quality-bucketek a valodi allocation reservationbol, batch double-count nelkul; Combined Quality+allocation detail, exact material API link es backup/restore kompatibilitas schema bump nelkul.
 - [x] C012.1 teljes C001-C012 + M1-M6.1 + C04 regresszio, Chrome 15/15, 1920/1366/390, detail Back/reload, fingerprint `c4a49ff0` es konzol WARN/ERROR 0 PASS.
+- [x] `V003-C012.2`: az aktiv blueprint dataset SC-verzioja a main/Crafting/detail/standalone API linkek, material intelligence es mining provenance kozos kanonikus verzioja.
+- [x] Verzios cache-izolacio: raw/normalized keyek megorzese mellett az aktiv projekcio es hydration exact SC-verziora szurt; regi cache nem szivarog az aktiv snapshotba.
+- [x] Ketverzios VERSION_A/VERSION_B fixture, 4.10 JS-300/Stileron/Beryl/Savrilium link/source invariant, standalone es teljes C001-C012.1 + M1-M6.1 + C04 regresszio PASS.
+- [x] C012.2 Chrome localhost 15/15, refresh/reload/detail/standalone, fingerprint `36b67809`, konzol WARN/ERROR 0; felhasznaloi valodi `file://` kapu `USER MANUAL FILE:// PASS` (nem Codex automation).
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -104,6 +108,7 @@
 - [x] `V003-C011`: vegleges user-facing fo UI cleanup es reference lock; felhasznaloi vizualis ellenorzesre atadva.
 - [x] `V003-C012`: Crafting List Final Card visual parity, tobbkartyas prioritas/expanded-state es source-card detail return; felhasznaloi vizualis ellenorzesre atadva.
 - [x] `V003-C012.1`: Material Quality Planner, effektív Recipe Quality felirat es allocation-aware Combined Materials; felhasznaloi vizualis es mukodesi ellenorzesre atadva.
+- [x] `V003-C012.2`: Active SC Version Consistency Repair; felhasznaloi ellenorzesre atadva, C013 nem indult.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio

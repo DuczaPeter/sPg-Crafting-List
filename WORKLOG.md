@@ -604,3 +604,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, Stileron Q900 reload-perzisztencia, Combined detail reload+Back, 1920/1366/390 horizontal overflow 0; fingerprint `c4a49ff0 -> c4a49ff0`; konzol WARN/ERROR 0.
 - Vizuális referencia: `Info/Combined Materials.png`, SHA `f1883eca...cb9be8f`; standalone 220 359 byte, SHA `f1eabe9a...c2a4bc`, kulso runtime fetch/resource 0.
 - V003 release/tag es C013 nem keszult. Visszaallas: a C012.1 commit revertje; stabil fallback a valtozatlan V002 tag/release.
+
+### V003-C012.2 Active SC Version Consistency Repair - 2026-08-29
+
+- Scope: a C012.1 valtozatlan funkcioi mellett az aktiv SC-verzio, normalized cache-projekcio, hydration, exact API deep link es standalone provenance konzisztenciaja; C013 es stabil V003 release/tag nem indult.
+- Gyokerok: a cache keyek versionedek voltak, de a teljes normalized store-bol UUID/slot szerint epulo projekcio tenyleges 4.9 rekordot is valaszthatott 4.10 aktiv snapshothoz. Emellett az exact forras `web_url` regi `version=` queryje es a perzisztalt kartya `gameVersion` prioritasa stale item linket tarthatott meg.
+- Javitas: `resolveActiveScVersion()`, exact-verzios record projection, verzio+UUID hydration key, cross-version block, aktiv queryt illeszto `resolveWikiApiDeepLink()`, aktivverzios export blueprint lookup es refresh utani mining/dataset alignment.
+- Celteszt: VERSION_A/VERSION_B azonos UUID-val; B link/source/snapshot PASS, A cache megmarad, A leakage nincs, standalone embedded/single-file/no-runtime-resource PASS.
+- Teljes `validate-v003-c0122.ps1`: C001-C012.1 + M1-M6.1 + C04 + C012.2 + V002-integritas PASS.
+- Valodi Chrome localhost: 15/15 Technical Probe; main/Crafting/C008/refresh/reload/standalone 4.10-konzisztens; fingerprint `36b67809 -> 36b67809`; WARN/ERROR 0.
+- Felhasznaloi bizonyitek: `USER MANUAL FILE:// PASS`; user-run, nem Codex automation; teljes technikai baseline PASS, standalone letrejott es megnyithato.
+- Visszaallas: a C012.2 commit revertje; stabil fallback a valtozatlan `V002` tag/release.

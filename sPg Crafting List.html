@@ -11174,6 +11174,55 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       };
     }
 
+    /* C0122_VERSION_CONSISTENCY_MODEL_START */
+    function c0122RecordScVersion(record) {
+      if (!record) { return null; }
+      return (record.provenance && record.provenance.gameVersion) || record.gameVersion || record.version || null;
+    }
+
+    function resolveActiveScVersion(runtimeState) {
+      var source = runtimeState || {};
+      return (source.activeBlueprintDataset && source.activeBlueprintDataset.version) ||
+        (source.gameVersion && source.gameVersion.code) ||
+        (source.activeMiningDataset && source.activeMiningDataset.version) ||
+        null;
+    }
+
+    function c0122SelectExactVersion(records, activeScVersion) {
+      return (records || []).filter(function (record) {
+        return Boolean(activeScVersion) && c0122RecordScVersion(record) === activeScVersion;
+      });
+    }
+
+    function c0122VersionScopedHydrationKey(activeScVersion, uuid) {
+      return String(activeScVersion || "NO_ACTIVE_VERSION") + "::" + String(uuid || "NO_UUID");
+    }
+
+    function buildVersionScopedRecordProjection(input) {
+      var source = input || {};
+      var activeScVersion = source.activeScVersion || null;
+      var miningDatasetVersion = source.activeMiningDataset && source.activeMiningDataset.version || null;
+      var miningDatasetAligned = Boolean(activeScVersion && miningDatasetVersion === activeScVersion);
+      var normalizedRecords = c0122SelectExactVersion(source.normalizedMiningRecords, activeScVersion);
+      return {
+        activeScVersion: activeScVersion,
+        miningDatasetVersion: miningDatasetVersion,
+        miningDatasetAligned: miningDatasetAligned,
+        status: miningDatasetAligned ? "ACTIVE_VERSION_ALIGNED" : "CROSS_VERSION_DATASET_BLOCKED",
+        detailRecords: miningDatasetAligned ? normalizedRecords.filter(function (record) {
+          return record.recordType === "COMMODITY_DETAIL";
+        }) : [],
+        outputPresentationRecords: normalizedRecords.filter(function (record) {
+          return record.recordType === "CRAFTING_OUTPUT_ITEM_PRESENTATION";
+        }),
+        blueprintDetails: c0122SelectExactVersion(source.blueprintDetails, activeScVersion),
+        miningCommodityIndex: miningDatasetAligned
+          ? c0122SelectExactVersion(source.miningCommodityIndex, activeScVersion)
+          : []
+      };
+    }
+    /* C0122_VERSION_CONSISTENCY_MODEL_END */
+
     function miningRecordMap(records) {
       var map = new Map();
       (records || []).forEach(function (record) {
@@ -11549,12 +11598,23 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function resolveMiningCommodityDetailRecord(identifier, options) {
       var settings = options || {};
-      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      var version = settings.gameVersion || resolveActiveScVersion(state);
       if (!version) {
         throw new Error("Nincs aktív SC-verzió a commodity részlethez.");
       }
+      if (state.activeMiningDataset && state.activeMiningDataset.version !== version) {
+        return { normalized: null, origin: "CROSS_VERSION_DATASET_BLOCKED" };
+      }
       var cacheKey = version + "::commodity-detail::" + identifier;
       var cached = await database.get("miningNormalizedCache", cacheKey);
+      if (cached && c0122RecordScVersion(cached) !== version) {
+        logger.event("INFO", "CROSS_VERSION_NORMALIZED_RECORD_BLOCKED", "A verzióidegen commodity detail rekord nem került az aktív projekcióba.", {
+          requestedVersion: version,
+          recordVersion: c0122RecordScVersion(cached),
+          cacheKey: cacheKey
+        });
+        cached = null;
+      }
       var normalized = cached;
       var origin = "CACHE";
       if (cached && (!Object.prototype.hasOwnProperty.call(cached, "raritySourceField") || cached.recommendationModelVersion !== 6 || cached.namingModelVersion !== MATERIAL_NAMING_MODEL_VERSION || cached.radarSignatureRegistryVersion !== RADAR_SIGNATURE_REGISTRY_VERSION)) {
@@ -11821,17 +11881,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function refreshMaterialIntelligenceSnapshots(trigger) {
       var allNormalizedMiningRecords = state.dbReady ? await database.getAll("miningNormalizedCache") : [];
-      var detailRecords = allNormalizedMiningRecords.filter(function (record) {
-        return record.recordType === "COMMODITY_DETAIL";
+      var allBlueprintDetails = state.dbReady ? await database.getAll("blueprintNormalizedCache") : [];
+      var activeScVersion = resolveActiveScVersion(state);
+      var versionProjection = buildVersionScopedRecordProjection({
+        activeScVersion: activeScVersion,
+        activeMiningDataset: state.activeMiningDataset,
+        normalizedMiningRecords: allNormalizedMiningRecords,
+        blueprintDetails: allBlueprintDetails,
+        miningCommodityIndex: state.miningCommodityIndex
       });
-      state.craftingOutputPresentationByUuid = new Map(allNormalizedMiningRecords.filter(function (record) {
-        return record.recordType === "CRAFTING_OUTPUT_ITEM_PRESENTATION";
-      }).map(function (record) {
+      var detailRecords = versionProjection.detailRecords;
+      state.craftingOutputPresentationByUuid = new Map(versionProjection.outputPresentationRecords.map(function (record) {
         return [record.uuid, record];
       }));
-      var blueprintDetails = state.dbReady ? await database.getAll("blueprintNormalizedCache") : [];
       var slotCommodityMap = new Map();
-      blueprintDetails.forEach(function (blueprint) {
+      versionProjection.blueprintDetails.forEach(function (blueprint) {
         (blueprint.recipeSlots || []).forEach(function (slot) {
           var commodityUuid = slot.ingredient && slot.ingredient.commodityUuid;
           if (slot.id && commodityUuid) {
@@ -11842,7 +11906,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.requirementCommodityUuidBySlotId = slotCommodityMap;
       var detailsByUuid = new Map(detailRecords.map(function (record) { return [record.uuid, withResolvedMaterialName(record)]; }));
       var intelligence = new Map();
-      m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null).forEach(function (commodity) {
+      m5MappingWikiCommodities(versionProjection.miningCommodityIndex, activeScVersion).forEach(function (commodity) {
         var detail = detailsByUuid.get(commodity.uuid) || null;
         var farmRecommendation = detail ? buildMiningFarmRecommendations(detail, state.miningSystems) : null;
         var refinery = state.uexRefineryRecommendations.get(commodity.uuid) || {
@@ -11854,13 +11918,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           rankingField: "value_month",
           datasetId: state.activeUexRefineryDataset ? state.activeUexRefineryDataset.datasetId : null
         };
-        var hydrationState = state.materialIntelligenceHydrationByWikiUuid.get(commodity.uuid) || null;
+        var hydrationState = state.materialIntelligenceHydrationByWikiUuid.get(c0122VersionScopedHydrationKey(activeScVersion, commodity.uuid)) || null;
         var materialSource = detail || commodity;
         var materialApiWikiLink = resolveMaterialApiDeepLink({
           exactUrls: [materialSource.webUrl, commodity.webUrl],
           slug: materialSource.slug || commodity.slug || null,
           slugVerifiedByApi: Boolean(materialSource.slug || commodity.slug),
-          gameVersion: state.gameVersion ? state.gameVersion.code : null
+          gameVersion: activeScVersion
         });
         var materialCanonicalName = resolveMaterialDisplayName(materialSource, "Ismeretlen material");
         var materialPublicWikiLink = resolvePublicWikiDeepLink({
@@ -11872,12 +11936,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           generatedFor: "M6_STANDALONE_EXPORT",
           commodityUuid: commodity.uuid,
           commodityName: resolveMaterialDisplayName(commodity, "Ismeretlen material"),
-          scVersion: state.gameVersion ? state.gameVersion.code : null,
+          scVersion: activeScVersion,
+          versionConsistencyStatus: versionProjection.status,
           material: {
             uuid: commodity.uuid,
             canonicalName: materialCanonicalName,
             slug: materialSource.slug || commodity.slug || null,
-            webUrl: materialSource.webUrl || commodity.webUrl || null,
+            webUrl: materialApiWikiLink.url || materialSource.webUrl || commodity.webUrl || null,
             apiWikiLink: materialApiWikiLink,
             publicWikiLink: materialPublicWikiLink,
             categories: (materialSource.categories || commodity.categories || []).slice(),
@@ -11925,6 +11990,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         });
       });
       state.materialIntelligenceByWikiUuid = intelligence;
+      document.body.dataset.c0122ActiveScVersion = activeScVersion || "";
+      document.body.dataset.c0122MiningDatasetVersion = versionProjection.miningDatasetVersion || "";
+      document.body.dataset.c0122VersionConsistency = versionProjection.status;
+      if (!versionProjection.miningDatasetAligned && versionProjection.miningDatasetVersion) {
+        logger.event("INFO", "CROSS_VERSION_DATASET_BLOCKED", "A korábbi mining cache megmaradt, de nem került az aktív SC-verzió material snapshotjába.", {
+          activeScVersion: activeScVersion,
+          miningDatasetVersion: versionProjection.miningDatasetVersion,
+          trigger: trigger || null
+        });
+      }
       if (state.userDataReady) {
         recalculateAllocation(trigger || "M5_SNAPSHOT_REFRESH");
       }
@@ -11967,14 +12042,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function ensureMaterialIntelligenceHydrated(cards, options) {
       var settings = options || {};
       var sourceCards = Array.isArray(cards) ? cards : state.craftingCards;
-      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      var version = resolveActiveScVersion(state);
       if (!version || !sourceCards.length || !state.dbReady) {
         return { requested: 0, cacheHits: 0, apiLoaded: 0, unavailable: 0, details: [] };
+      }
+      if (!state.activeMiningDataset || state.activeMiningDataset.version !== version) {
+        await refreshMaterialIntelligenceSnapshots("CROSS_VERSION_HYDRATION_BLOCKED");
+        return { requested: 0, cacheHits: 0, apiLoaded: 0, unavailable: 0, status: "CROSS_VERSION_DATASET_BLOCKED", details: [] };
       }
       if (!state.requirementCommodityUuidBySlotId.size) {
         await refreshMaterialIntelligenceSnapshots("CARD_DETAIL_RESOLUTION");
       }
-      var mappingCommodities = m5MappingWikiCommodities(state.miningCommodityIndex, state.gameVersion ? state.gameVersion.code : null);
+      var mappingCommodities = m5MappingWikiCommodities(c0122SelectExactVersion(state.miningCommodityIndex, version), version);
       var requestedCommodityUuids = Array.from(new Set(sourceCards.reduce(function (uuids, card) {
         (card.requirements || []).forEach(function (requirement) {
           var commodityUuid = requirement.commodityUuid || state.requirementCommodityUuidBySlotId.get(requirement.id);
@@ -11988,10 +12067,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var hydration = await hydrateMaterialIntelligenceRecords({
         commodityUuids: requestedCommodityUuids,
         allowNetwork: allowNetwork,
-        resolve: resolveMiningCommodityDetailRecord
+        // C006 compatibility marker: resolve: resolveMiningCommodityDetailRecord
+        resolve: function (uuid, resolverOptions) {
+          return resolveMiningCommodityDetailRecord(uuid, Object.assign({}, resolverOptions, { gameVersion: version }));
+        }
       });
       hydration.details.forEach(function (detail) {
-        state.materialIntelligenceHydrationByWikiUuid.set(detail.commodityUuid, detail);
+        state.materialIntelligenceHydrationByWikiUuid.set(c0122VersionScopedHydrationKey(version, detail.commodityUuid), detail);
       });
       logger.event("INFO", "CARD_MATERIAL_INTELLIGENCE_HYDRATED", "A Crafting Card material intelligence részletei cache/API alapon elkészültek.", {
         requestedCommodityCount: requestedCommodityUuids.length,
@@ -12008,7 +12090,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function ensureCraftingOutputPresentationHydrated(cards, options) {
       var settings = options || {};
       var sourceCards = Array.isArray(cards) ? cards : state.craftingCards;
-      var version = state.activeMiningDataset ? state.activeMiningDataset.version : (state.gameVersion && state.gameVersion.code);
+      var version = resolveActiveScVersion(state);
       if (!version || !sourceCards.length || !state.dbReady) {
         return { requested: 0, loaded: 0, unavailable: 0 };
       }
@@ -12019,6 +12101,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       await Promise.all(outputUuids.map(async function (uuid) {
         var cacheKey = version + "::crafting-output-item::" + uuid;
         var cached = await database.get("miningNormalizedCache", cacheKey);
+        if (cached && c0122RecordScVersion(cached) !== version) {
+          cached = null;
+        }
         if (cached) {
           state.craftingOutputPresentationByUuid.set(uuid, cached);
           if (cached.webUrl || !allowNetwork) {
@@ -13518,7 +13603,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var viewModel = buildFinalCraftingCardViewModel({
         appName: APP.name,
         generatedAt: nowIso(),
-        scDataVersion: card.gameVersion,
+        scDataVersion: resolveActiveScVersion(state),
         card: card,
         cardResult: cardResult,
         blueprint: state.normalizedBlueprint || {},
@@ -14207,7 +14292,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var cardViewModel = buildFinalCraftingCardViewModel({
           appName: APP.name,
           generatedAt: nowIso(),
-          scDataVersion: card.gameVersion,
+          scDataVersion: resolveActiveScVersion(state),
           card: card,
           cardResult: cardResult,
           blueprint: {},
@@ -15667,10 +15752,34 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         for (var index = 0; index < exactUrls.length; index += 1) {
           var exactUrl = String(exactUrls[index] || "").trim();
           if (exactUrl && exactPattern.test(exactUrl)) {
+            var activeVersion = String(source.gameVersion || "").trim();
+            var versionedExactUrl = exactUrl;
+            if (activeVersion) {
+              var queryIndex = exactUrl.indexOf("?");
+              var exactPath = queryIndex === -1 ? exactUrl : exactUrl.slice(0, queryIndex);
+              var query = queryIndex === -1 ? [] : exactUrl.slice(queryIndex + 1).split("&").filter(Boolean);
+              var versionWritten = false;
+              query = query.reduce(function (parts, part) {
+                if (/^version=/i.test(part)) {
+                  if (!versionWritten) {
+                    parts.push("version=" + encodeURIComponent(activeVersion));
+                    versionWritten = true;
+                  }
+                } else {
+                  parts.push(part);
+                }
+                return parts;
+              }, []);
+              if (!versionWritten) {
+                query.push("version=" + encodeURIComponent(activeVersion));
+              }
+              versionedExactUrl = exactPath + "?" + query.join("&");
+            }
             return {
               status: "AVAILABLE",
-              url: exactUrl,
+              url: versionedExactUrl,
               origin: "API_WEB_URL",
+              versionOrigin: activeVersion ? "ACTIVE_SC_VERSION" : "SOURCE_URL",
               resourceType: resourceType,
               requiresInternet: true
             };
@@ -16037,6 +16146,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var result = source.cardResult || { requirements: [], bottleneckSlotIds: [] };
       var blueprint = source.blueprint || {};
       var outputPresentation = source.outputPresentation || {};
+      var activeSnapshotVersion = source.scDataVersion || blueprint.gameVersion || card.gameVersion || null;
       var resultBySlot = new Map((result.requirements || []).map(function (requirement) {
         return [requirement.recipeSlotId, requirement];
       }));
@@ -16062,8 +16172,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var intelligenceMaterial = intelligence && intelligence.material ? intelligence.material : null;
         var materialTargetUuid = allocation.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid;
         var materialApiWikiLink = intelligenceMaterial && intelligenceMaterial.apiWikiLink
-          ? resolveMaterialApiDeepLink({ exactUrls: [intelligenceMaterial.apiWikiLink.url, intelligenceMaterial.webUrl], slug: intelligenceMaterial.slug, slugVerifiedByApi: Boolean(intelligenceMaterial.slug), gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null })
-          : resolveMaterialApiDeepLink({ exactUrls: [requirement.materialWebUrl], gameVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null });
+          ? resolveMaterialApiDeepLink({ exactUrls: [intelligenceMaterial.apiWikiLink.url, intelligenceMaterial.webUrl], slug: intelligenceMaterial.slug, slugVerifiedByApi: Boolean(intelligenceMaterial.slug), gameVersion: activeSnapshotVersion })
+          : resolveMaterialApiDeepLink({ exactUrls: [requirement.materialWebUrl], gameVersion: activeSnapshotVersion });
         var materialPublicWikiLink = intelligenceMaterial && intelligenceMaterial.publicWikiLink
           ? intelligenceMaterial.publicWikiLink
           : resolvePublicWikiDeepLink({
@@ -16109,11 +16219,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           commodityUuid: allocation.commodityUuid || requirement.commodityUuid || null,
           materialName: materialDisplayName,
           materialColor: materialColor,
-          materialDetails: intelligenceMaterial ? Object.assign({}, intelligenceMaterial, { apiWikiLink: materialApiWikiLink, publicWikiLink: materialPublicWikiLink }) : {
+          materialDetails: intelligenceMaterial ? Object.assign({}, intelligenceMaterial, { webUrl: materialApiWikiLink.url || intelligenceMaterial.webUrl || null, apiWikiLink: materialApiWikiLink, publicWikiLink: materialPublicWikiLink }) : {
             uuid: materialTargetUuid,
             canonicalName: materialDisplayName,
             slug: null,
-            webUrl: requirement.materialWebUrl || null,
+            webUrl: materialApiWikiLink.url || requirement.materialWebUrl || null,
             apiWikiLink: materialApiWikiLink,
             publicWikiLink: materialPublicWikiLink,
             categories: mining && Array.isArray(mining.methods) ? mining.methods.slice() : [],
@@ -16184,7 +16294,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         kind: "SPG_STANDALONE_CRAFTING_FARM_CARD",
         generatedBy: source.appName || "sPg Crafting List",
         generatedAt: source.generatedAt,
-        scDataVersion: card.gameVersion || blueprint.gameVersion || source.scDataVersion || null,
+        scDataVersion: activeSnapshotVersion,
         dataSources: ["Star Citizen Wiki API", "UEX"],
         card: {
           id: card.id,
@@ -16524,13 +16634,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       var trace = (state.allocationResult && state.allocationResult.trace || []).concat(state.finalCardPreviewAllocation && state.finalCardPreviewAllocation.trace || []);
       var fallback = null;
+      var activeScVersion = resolveActiveScVersion(state);
       for (var index = 0; index < cards.length; index += 1) {
         var card = cards[index];
-        var blueprint = state.normalizedBlueprint && state.normalizedBlueprint.uuid === card.blueprintUuid ? state.normalizedBlueprint : {};
+        var blueprint = state.normalizedBlueprint && state.normalizedBlueprint.uuid === card.blueprintUuid && c0122RecordScVersion(state.normalizedBlueprint) === activeScVersion ? state.normalizedBlueprint : {};
         var snapshot = buildFinalCraftingCardViewModel({
           appName: APP.name,
           generatedAt: nowIso(),
-          scDataVersion: card.gameVersion || (state.gameVersion && state.gameVersion.code),
+          scDataVersion: activeScVersion,
           card: card,
           cardResult: resultByCard.get(card.id) || { requirements: [], bottleneckSlotIds: [] },
           blueprint: blueprint,
@@ -16737,12 +16848,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function resolveExportBlueprint(card) {
       if (!card) { return null; }
-      if (state.normalizedBlueprint && state.normalizedBlueprint.uuid === card.blueprintUuid) {
+      var activeScVersion = resolveActiveScVersion(state);
+      if (state.normalizedBlueprint && state.normalizedBlueprint.uuid === card.blueprintUuid && c0122RecordScVersion(state.normalizedBlueprint) === activeScVersion) {
         return state.normalizedBlueprint;
       }
-      if (state.dbReady && card.blueprintCacheKey) {
-        var cached = await database.get("blueprintNormalizedCache", card.blueprintCacheKey).catch(function () { return null; });
-        if (cached) { return cached; }
+      if (state.dbReady && activeScVersion && card.blueprintUuid) {
+        var activeCacheKey = activeScVersion + "::" + card.blueprintUuid;
+        var cached = await database.get("blueprintNormalizedCache", activeCacheKey).catch(function () { return null; });
+        if (cached && c0122RecordScVersion(cached) === activeScVersion) { return cached; }
       }
       return null;
     }
@@ -16792,7 +16905,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var snapshot = m6BuildStandaloneSnapshot({
         appName: APP.name,
         generatedAt: nowIso(),
-        scDataVersion: state.gameVersion ? state.gameVersion.code : card.gameVersion,
+        scDataVersion: resolveActiveScVersion(state) || card.gameVersion,
         card: card,
         cardResult: cardResult,
         blueprint: blueprint,
@@ -16876,6 +16989,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           force: settings.forceIndex === true
         });
         var normalized = await loadBlueprintDetail("JS-300", { ownsProcess: false });
+        await refreshMaterialIntelligenceSnapshots("ACTIVE_BLUEPRINT_VERSION_CHANGED");
         if (ownsProcess) {
           logger.finish("PASS", {
             gameVersion: state.gameVersion.code,
@@ -17705,6 +17819,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       button.disabled = true;
       setNotice("Az API-adatok frissítése folyamatban…", "neutral");
       syncGameVersionAndBlueprint({ forceIndex: true })
+        .then(function () {
+          var activeScVersion = resolveActiveScVersion(state);
+          if (!state.activeMiningDataset || state.activeMiningDataset.version !== activeScVersion) {
+            return syncMiningDataset({ ownsProcess: false, force: false });
+          }
+          return state.activeMiningDataset;
+        })
+        .then(function () {
+          return refreshMaterialIntelligenceSnapshots("USER_DATA_REFRESH_VERSION_ALIGNED");
+        })
         .then(function () {
           setNotice("Az API-adatok frissítése sikeres.", "success");
         })
