@@ -88,6 +88,9 @@
 - [x] `V003-C012`: a teljes Crafting List ugyanazt a kanonikus Final Card view-modelt es kozos DOM renderert hasznalja, mint a Blueprint Browser; a management csak kompakt priority/action fejlec.
 - [x] C012 expanded/collapsed perzisztencia, quantity/max, prioritas/allocation, forraskartya-aware C008 detail, 3- es 10-kartyas responsive stressz, standalone es teljes regresszio PASS.
 - [x] C012 valodi Chrome localhost: 15/15 Technical Probe, 1920/1366/390, horizontal overflow 0, detail reload+Back a forraskartyahoz, fingerprint `78b870b4`, konzol WARN/ERROR 0.
+- [x] `V003-C012.1`: exact material UUID-s RECIPE/TARGET_Q/HIGHEST_Q User Data terv es kozos effektív Quality policy a Final Card, Crafting List, Combined Materials, Allocation Engine es standalone szamara.
+- [x] C012.1 Quality-bucketek a valodi allocation reservationbol, batch double-count nelkul; Combined Quality+allocation detail, exact material API link es backup/restore kompatibilitas schema bump nelkul.
+- [x] C012.1 teljes C001-C012 + M1-M6.1 + C04 regresszio, Chrome 15/15, 1920/1366/390, detail Back/reload, fingerprint `c4a49ff0` es konzol WARN/ERROR 0 PASS.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -100,6 +103,7 @@
 - [x] `V003-C010.1`: a C010 elrendezes valtoztatasa nelkul rovid Mining/Refinery nyertesprojekcio es javitott C010/C010.1 bizonyitek.
 - [x] `V003-C011`: vegleges user-facing fo UI cleanup es reference lock; felhasznaloi vizualis ellenorzesre atadva.
 - [x] `V003-C012`: Crafting List Final Card visual parity, tobbkartyas prioritas/expanded-state es source-card detail return; felhasznaloi vizualis ellenorzesre atadva.
+- [x] `V003-C012.1`: Material Quality Planner, effektív Recipe Quality felirat es allocation-aware Combined Materials; felhasznaloi vizualis es mukodesi ellenorzesre atadva.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio

@@ -1,0 +1,52 @@
+{
+  "cycle": "V003-C012.1",
+  "status": "PASS",
+  "branch": "develop/V003",
+  "sharedPolicyResolver": "resolveEffectiveMaterialQualityPolicy",
+  "qualityFormatter": "formatEffectiveQualityLabel",
+  "combinedOverviewViewModel": "buildCombinedMaterialsOverviewViewModel",
+  "combinedDetailRenderer": "c008RenderDetailMarkup",
+  "storageKey": "user:materialQualityPlans",
+  "schemaChanged": false,
+  "automated": {
+    "fullRegression": "PASS",
+    "policyMatrix": "PASS",
+    "deterministicAllocation": "PASS",
+    "combinedNoDoubleCount": "PASS",
+    "prioritySwap": "PASS",
+    "maxCraftableRefresh": "PASS",
+    "persistenceBackupRestore": "PASS",
+    "standaloneTargetQ900": "PASS",
+    "standalone": "PASS",
+    "singleFileGate": "PASS"
+  },
+  "chromeLocalhost": {
+    "technicalProbe": "15 PASS / 0 FAIL",
+    "desktop1920": "PASS",
+    "desktop1366": "PASS",
+    "mobile390": "PASS",
+    "horizontalOverflow": 0,
+    "combinedDetailBackReload": "PASS",
+    "fingerprintBefore": "c4a49ff0",
+    "fingerprintAfterReload": "c4a49ff0",
+    "consoleWarningErrorCount": 0
+  },
+  "standalone": {
+    "path": "test-artifacts/V003-C012.1/standalone-js-300-quality-plan.html",
+    "bytes": 220359,
+    "sha256": "f1eabe9a129748fb904538526cbf458fd22d9f5388214134e6b52434c7c2a4bc",
+    "externalRuntimeResources": 0,
+    "runtimeFetch": 0
+  },
+  "reference": {
+    "path": "Info/Combined Materials.png",
+    "sha256": "f1883eca222bb1a5172b90c31cb9be8f724f6366841483f0bdff2cc14bdb7cb6"
+  },
+  "v002": {
+    "tagCommit": "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+    "artifactSha256": "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357",
+    "unchanged": true
+  },
+  "v003ReleaseTagCreated": false,
+  "c013Started": false
+}

@@ -139,3 +139,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A C008 detail route listás megnyitáskor a forráskártya és forrásmodul azonosítóját is tárolja. Ez prezentációs/navigációs kontextus; a detail adatmodell és a ranking/allocation nem változik.
 - A standalone export a kanonikus view-modelt használja és nem kap külön runtime adatforrást vagy külső erőforrást.
 - Stabil V003 release/tag és C013 továbbra is csak külön felhasználói utasításra indulhat.
+
+## 2026-08-29 - V003-C012.1 kozos effektív Quality policy
+
+- A Final Card, Crafting List, Combined Materials, Allocation Engine es standalone egyetlen `resolveEffectiveMaterialQualityPolicy()` eredmenyet fogyasztja; kulon Quality vagy allocation logika nem keszulhet.
+- Materialterv exact material UUID szerint, USER-scoped `user:materialQualityPlans` settingben tarolodik. Alapertelmezese `RECIPE`, ezert regi adatnal es explicit terv nelkul a C012 viselkedes marad.
+- `TARGET_Q` nem gyengitheti a recept minimumat; `HIGHEST_Q` megtartja a baseline minimumot. `FIXED` es `UNKNOWN` materialtervvel sem irhato felul.
+- A Combined Quality-bucket `Lefoglalva` erteke kizarolag a determinisztikus Allocation Engine reservation eredmenye lehet. Batch nem szamolhato tobbszor, bucket-sum nem haladhatja meg a tenyleges inventoryt.
+- A Combined detail a C008 router/renderer es a meglevo exact material API resolver bovítese; Mining/UEX/Radar nem kerul bele. A standalone csak a feloldott export-snapshotot hasznalja, runtime fetch nelkul.
+- Schema bump nem indokolt, mert a terv a meglevo backup/restore USER settings csatornajat hasznalja. Stabil V003 release/tag es C013 tovabbra is csak kulon felhasznaloi utasitasra indulhat.

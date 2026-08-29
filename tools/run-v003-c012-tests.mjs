@@ -47,7 +47,7 @@ for (const marker of ["spg-c010-topline", "spg-c010-titleline", "spg-c010-recipe
 assert.equal((appHtml.match(/materials\.append\(renderC010MaterialIntelligence/g) || []).length, 1, "A material intelligence live DOM implementáció duplikálódott.");
 assert.equal((appHtml.match(/recipe\.append\(renderC010RecipeRow/g) || []).length, 1, "A recipe live DOM implementáció duplikálódott.");
 
-const allocationSummary = appHtml.match(/function renderAllocationSummary\(\)\s*\{([\s\S]*?)\n\s*\}\n\n\s*function combinedQualityLabel/);
+const allocationSummary = appHtml.match(/function renderAllocationSummary\(\)\s*\{([\s\S]*?)\n\s*\}\n\n\s*function emitPreparedDetailAction/);
 assert.ok(allocationSummary, "A Crafting List summary nem auditálható.");
 assert.match(allocationSummary[1], /kártya · [" +\w.()]+recipe slot · [" +\w.()]+hiányos/, "A kompakt summary sor hiányzik.");
 assert.doesNotMatch(allocationSummary[1], /Tervezett batch-foglalás|Aktív kártya/, "A régi négyblokkos dashboard summary visszakerült.");

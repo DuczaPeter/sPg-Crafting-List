@@ -329,3 +329,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a C012 szűk scope, a C013/release tiltás és a fagyasztott V002 védelmének megtartására; valamint a valós quantity/reload, prioritás, detail Back/reload, responsive overflow, fingerprint és tiszta konzol bizonyítására.
 - Mely fájlokat vagy döntéseket érintett: V003 Crafting List/Final Card presentation és detail route kontextus, C012 teszt/validator/report/artifact és projekt státuszfájlok; a skillfájlok és V002 nem változtak.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C012.1 Material Quality Planner
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-29`, a kozos effektív Quality policy, allocation-aware Combined Materials, teljes repair-cycle es valodi Chrome 1920/1366/390/detail/konzol ellenorzes soran.
+- Mire segitett: a C012.1 scope, a C013/release tiltás es a fagyasztott V002 vedelme megtartasara; valamint a valos Q900 reload-perzisztencia, Combined detail Back/reload, responsive overflow, fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 Quality policy/allocation/Combined UI es detail snapshot, C012.1 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

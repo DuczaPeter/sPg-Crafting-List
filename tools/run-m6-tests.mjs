@@ -22,6 +22,7 @@ const context = vm.createContext({
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
 vm.runInContext(`${block("M1_PURE_MODEL")}
+${block("M2_ALLOCATION_ENGINE")}
 ${block("MATERIAL_NAMING_MODEL")}
 ${block("MATERIAL_COLOR_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
@@ -263,7 +264,7 @@ unsafeSnapshot.card.outputName = '<img src="https://example.invalid/x" onerror="
 const escapedHtml = m6.renderHtml(unsafeSnapshot, offlineCss);
 assert.ok(escapedHtml.includes("&lt;img"));
 assert.doesNotMatch(escapedHtml, /<img\s/i);
-assert.ok(exportedHtml.includes("UNKNOWN · nincs találgatás"));
+assert.ok(exportedHtml.includes("<strong>Quality:</strong> Q?"));
 assert.ok(exportedHtml.includes("Hiányzó / ellenőrizendő adatok"));
 
 // 13. Every visible Crafting Card gets a card-specific export action.

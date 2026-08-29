@@ -454,7 +454,7 @@ A V002-dev kezi kapu 2026-08-24-en onallo Downloads-peldannyal lefutott: 13 PASS
 - `v003-c010-exact-final-card-regression`: default Blueprint Browser + egy Final Card, kulon teljes Crafting List, kompakt header/quantity/max/3 recipe/stock/3 material blokk, 8 exact Radar chip, internal detail, standalone parity, teljes C001-C010/M1-M6.1/C04 es V002-integritas.
 - `v003-c0101-compact-presentation-regression`: valtozatlan C010 layout mellett C002 family label, exact mining tie compact count, refinery prefix/system-suffix normalizalas, alacsonyabb `value_month` kizárasa, main/standalone azonos projekcio, teljes C001-C010/M1-M6.1/C04 es V002-integritas.
 - `v003-c011-final-ui-cleanup-regression`: ket reference SHA-zar, fo Blueprint Browser technikai detail lathatosag 0, technikai modellmegorzes, viewportfuggo listascroll, JS-300 Final Card/standalone 3 recipe/3 material/8 Radar invarians, teljes C001-C010.1/M1-M6.1/C04 es V002-integritas.
-- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`, `test-artifacts/V003-C007/`, `test-artifacts/V003-C008/`, `test-artifacts/V003-C008.1/`, `test-artifacts/V003-C009/`, `test-artifacts/V003-C010/`, `test-artifacts/V003-C010.1/`, `test-artifacts/V003-C011/`.
+- V003 artifactok: `test-artifacts/V003-C001/`, `test-artifacts/V003-C002/`, `test-artifacts/V003-C003/`, `test-artifacts/V003-C004/`, `test-artifacts/V003-C005/`, `test-artifacts/V003-C006/`, `test-artifacts/V003-C007/`, `test-artifacts/V003-C008/`, `test-artifacts/V003-C008.1/`, `test-artifacts/V003-C009/`, `test-artifacts/V003-C010/`, `test-artifacts/V003-C010.1/`, `test-artifacts/V003-C011/`, `test-artifacts/V003-C012/`, `test-artifacts/V003-C012.1/`.
 
 V003-C011 teljes kapu:
 
@@ -482,3 +482,18 @@ node .\tools\run-v003-c012-tests.mjs --standalone="test-artifacts/V003-C012/stan
 
 - `v003-c012-crafting-list-final-card-parity`: közös `buildFinalCraftingCardViewModel()` + `renderFinalCraftingCardContent()`, kompakt priority/action fej, 3 és 10 kártya, expanded/collapsed, allocation-prioritáscsere, source-card detail, standalone/single-file és teljes C001-C011/M1-M6.1/C04/V002-integritás.
 - C012 artifactok: `test-artifacts/V003-C012/`.
+
+V003-C012.1 teljes kapu (kozos effektív Quality policy, materialterv, Combined bucket/detail, standalone es teljes regresszio):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0121.ps1"
+```
+
+Csak a C012.1 policy/allocation/Combined/persistence/standalone celteszt:
+
+```powershell
+node .\tools\run-v003-c0121-tests.mjs --standalone="test-artifacts/V003-C012.1/standalone-js-300-quality-plan.html"
+```
+
+- `v003-c0121-material-quality-planner`: kozos `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()`, exact UUID-s USER setting, RECIPE/TARGET_Q/HIGHEST_Q, FIXED/UNKNOWN vedelme, allocation-alapu Quality-bucketek double-count nelkul, max/prioritas, backup/restore, Combined detail, standalone/single-file, teljes C001-C012/M1-M6.1/C04 es V002-integritas.
+- C012.1 artifactok: `test-artifacts/V003-C012.1/`.

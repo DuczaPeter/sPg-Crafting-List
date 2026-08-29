@@ -594,3 +594,13 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, quantity `2/1/1`, 1920/1366/390 és 10-kártyás horizontal overflow 0; source FR-66 detail reload+Back PASS; fingerprint `78b870b4 -> 78b870b4`; WARN/ERROR 0.
 - Screenshotok: `test-artifacts/V003-C012/chrome-crafting-list-3-cards-1920x1080.png`, `chrome-crafting-list-1366x768.png`, `chrome-crafting-list-mobile-card-390x844.png`, `chrome-crafting-list-10-card-stress-1920x1080.png`.
 - V003 release/tag és C013 nem készült. Visszaállás: a C012 commit revertje; stabil fallback a változatlan V002 tag/release.
+
+### V003-C012.1 Material Quality Planner + Combined allocation overview - 2026-08-29
+
+- Scope: egy kozos effektív Quality policy a Final Card, Crafting List, Combined Materials, Allocation Engine es standalone szamara; ranking/hydration/Radar/UEX, stabil V002 es C013 valtozatlan.
+- `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()` kezeli a RECIPE/TARGET_Q/HIGHEST_Q tervet, receptminimum-vedelmet es FIXED/UNKNOWN immunitast. Exact UUID-s tarolas: `user:materialQualityPlans`; schema bump nincs, backup/restore es regi adat default PASS.
+- A `buildCombinedMaterialsOverviewViewModel()` az Allocation Engine foglalasaibol kepez unit-aware Quality-bucketeket. Double-count, priority swap es max craftable frissites PASS. A Combined `Quality + allocation` detail a C008 renderer es `resolveMaterialApiDeepLink()` utvonalat hasznalja.
+- Automatizalt: `validate-v003-c0121.ps1` PASS; teljes C001-C012 + M1-M6.1 + C04, policy-matrix, Q900/Highest/FIXED/UNKNOWN, no-double-count, persistence/backup, standalone es V002-integritas zold.
+- Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, Stileron Q900 reload-perzisztencia, Combined detail reload+Back, 1920/1366/390 horizontal overflow 0; fingerprint `c4a49ff0 -> c4a49ff0`; konzol WARN/ERROR 0.
+- Vizuális referencia: `Info/Combined Materials.png`, SHA `f1883eca...cb9be8f`; standalone 220 359 byte, SHA `f1eabe9a...c2a4bc`, kulso runtime fetch/resource 0.
+- V003 release/tag es C013 nem keszult. Visszaallas: a C012.1 commit revertje; stabil fallback a valtozatlan V002 tag/release.

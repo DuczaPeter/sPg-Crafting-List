@@ -235,6 +235,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c012.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0121-material-quality-planner",
+      "level": "full-regression",
+      "description": "V003-C012.1 gate: one shared effective material Quality policy across Final Card, Crafting List, Combined Materials, Allocation Engine and standalone; persisted material UUID plans; unit-aware Quality buckets without double reservation; Combined allocation detail; complete C001-C012 plus M1-M6.1/C04 regression; locked visual reference; and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0121.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

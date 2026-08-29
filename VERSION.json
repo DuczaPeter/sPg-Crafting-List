@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C012",
-    "currentCycleId":  "V003-C012",
-    "lastSuccessfulCycle":  "V003-C012",
+    "currentCycle":  "C012.1",
+    "currentCycleId":  "V003-C012.1",
+    "lastSuccessfulCycle":  "V003-C012.1",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-25T11:18:36+02:00",
-    "currentCyclePurpose":  "Crafting List Final Crafting Card visual parity, compact priority management and source-card detail return",
-    "currentCycleStartedAt":  "2026-08-25T10:31:00+02:00",
+    "lastUpdated":  "2026-08-29T06:09:39+02:00",
+    "currentCyclePurpose":  "Shared effective material Quality policy, persistent material plans and allocation-aware Combined Materials",
+    "currentCycleStartedAt":  "2026-08-29T04:45:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C012 shared canonical Final Card renderer for Blueprint Browser and Crafting List, compact priority/action management, persisted expanded/collapsed and quantity state, source-card-aware detail return, 3/10-card responsive stress, standalone, full C001-C011 plus M1-M6.1+C04, Chrome 15/15, console/fingerprint and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C012 CRAFTING LIST FINAL CARD VISUAL PARITY – AUTOMATED AND CHROME LOCALHOST PASS; USER VISUAL REVIEW PENDING; C013 AND STABLE RELEASE NOT STARTED.",
+    "currentCycleStatusReason":  "V003-C012.1 shared effective Quality policy, exact material UUID plans, deterministic allocation and max-craftable refresh, allocation-aware Combined Quality buckets without double counting, persisted backup-compatible User Data, Combined detail, standalone, full C001-C012 plus M1-M6.1+C04, Chrome 15/15, console/fingerprint and frozen V002 integrity PASS.",
+    "developmentAcceptance":  "V003-dev C012.1 MATERIAL QUALITY PLANNER – AUTOMATED AND CHROME LOCALHOST PASS; USER VISUAL AND FUNCTIONAL REVIEW PENDING; C013 AND STABLE RELEASE NOT STARTED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C012",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; shared Browser/List Final Card renderer, 3-card and 10-card Crafting List, 1920x1080 + 1366x768 + 390x844, source-card detail Back/reload and console PASS",
+                                "cycle":  "V003-C012.1",
+                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; shared effective Quality policy, JS-300/FR-66/XL-1, Combined planner/detail, 1920x1080 + 1366x768 + 390x844, Back/reload and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL PASS reported for the V003 location-ranking technical baseline: file runtime, IndexedDB, Wiki API, new location-ranking rule, M3 model and standalone export; not Codex automation.",
-                                "userDataFingerprintBefore":  "78b870b4",
-                                "userDataFingerprintAfterReload":  "78b870b4",
+                                "userDataFingerprintBefore":  "c4a49ff0",
+                                "userDataFingerprintAfterReload":  "c4a49ff0",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "USER_VISUAL_REVIEW_REQUIRED_AFTER_C012"
+                                                           "nextCycle":  "USER_VISUAL_AND_FUNCTIONAL_REVIEW_REQUIRED_AFTER_C012_1"
                                                        },
                                 "finalCraftingCard":  {
                                                           "viewModel":  "buildFinalCraftingCardViewModel",
@@ -193,6 +193,36 @@
                                                                                           "test-artifacts/V003-C012/chrome-crafting-list-10-card-stress-1920x1080.png"
                                                                                       ]
                                                                  },
+                                "materialQualityPlanner":  {
+                                                                "policyResolver":  "resolveEffectiveMaterialQualityPolicy",
+                                                                "qualityFormatter":  "formatEffectiveQualityLabel",
+                                                                "storageKey":  "user:materialQualityPlans",
+                                                                "storageIdentity":  "EXACT_MATERIAL_UUID",
+                                                                "schemaChanged":  false,
+                                                                "modes":  [
+                                                                              "RECIPE",
+                                                                              "TARGET_Q",
+                                                                              "HIGHEST_Q"
+                                                                          ],
+                                                                "fixedAndUnknownImmune":  true,
+                                                                "recipeMinimumCannotBeWeakened":  true,
+                                                                "combinedOverviewViewModel":  "buildCombinedMaterialsOverviewViewModel",
+                                                                "combinedDetailRenderer":  "c008RenderDetailMarkup",
+                                                                "allocationNoDoubleCount":  "PASS",
+                                                                "prioritySwap":  "PASS",
+                                                                "maxCraftableRefresh":  "PASS",
+                                                                "backupRestore":  "PASS",
+                                                                "standaloneRuntimeFetch":  0,
+                                                                "referenceImage":  "Info/Combined Materials.png",
+                                                                "referenceSha256":  "f1883eca222bb1a5172b90c31cb9be8f724f6366841483f0bdff2cc14bdb7cb6",
+                                                                "screenshots":  [
+                                                                                    "test-artifacts/V003-C012.1/chrome-1920-blueprint-final-card-quality.png",
+                                                                                    "test-artifacts/V003-C012.1/chrome-1920-crafting-list-three-cards.png",
+                                                                                    "test-artifacts/V003-C012.1/chrome-1920-combined-quality-planner.png",
+                                                                                    "test-artifacts/V003-C012.1/chrome-1366-combined-quality-planner.png",
+                                                                                    "test-artifacts/V003-C012.1/chrome-390-combined-quality-planner.png"
+                                                                                ]
+                                                            },
                                 "topThree":  {
                                                  "maximumDenseRankTiersPerSystemEnvironment":  3,
                                                  "shipNormalSpaceSeparated":  true,

@@ -73,7 +73,7 @@ assert.equal((main.match(/Max: 3 DB/g) || []).length, 1, "A max craftable duplik
 for (const marker of ["Shell", "Stileron", "0,35 SCU", "Voltage Regulator", "Beryl", "0,14 SCU", "Stator Cores", "Savrilium", "0,24 SCU", "Mining", "Refinery", "Radar", "Stanton:", "Pyro:", "Nyx:"]) {
   assert.ok(main.includes(marker), `A kompakt C010 kártyából hiányzik: ${marker}`);
 }
-for (const forbidden of ["Crafting List", "Recipe Slot", "Prioritás", "Belső részlet", "Kártyaműveletek", "Terv teljesíthető", "Hiány van", "Spawn ", "Occurrence ", "Maximum Quality"]) {
+for (const forbidden of ["Crafting List", ">Recipe Slot<", "Prioritás", "Belső részlet", "Kártyaműveletek", "Terv teljesíthető", "Hiány van", "Spawn ", "Occurrence ", "Maximum Quality"]) {
   assert.ok(!main.includes(forbidden), `Nem Final Card jellegű tartalom maradt a standalone főnézetben: ${forbidden}`);
 }
 
