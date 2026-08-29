@@ -1,0 +1,120 @@
+{
+  "cycle": "V003-C013",
+  "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+  "invalidationReason": "The C012.2 application code allowed a Q747 batch for a FIXED recipe slot despite an explicit user Target Q800 material constraint. These historical checks do not qualify this artifact for release.",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "candidate": {
+    "path": "test-artifacts/V003-C013/release-candidate/sPg Crafting List.html",
+    "bytes": 749270,
+    "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
+    "sourceByteIdentical": true
+  },
+  "fixtureCards": [
+    {
+      "outputName": "JS-300",
+      "quantity": 2,
+      "priority": 1,
+      "collapsed": false
+    },
+    {
+      "outputName": "FR-66",
+      "quantity": 1,
+      "priority": 2,
+      "collapsed": false
+    },
+    {
+      "outputName": "XL-1",
+      "quantity": 1,
+      "priority": 3,
+      "collapsed": true
+    }
+  ],
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "runtimeFilesRequired": 1,
+    "localSidecarFilesRequired": 0
+  },
+  "qualityPlanner": {
+    "baseline": [
+      "Q500+",
+      "Bármely Q",
+      "Bármely Q"
+    ],
+    "target": [
+      "Q900+",
+      "Bármely Q",
+      "Bármely Q"
+    ],
+    "unknownFailSafe": "Q?"
+  },
+  "allocation": {
+    "doubleCount": false,
+    "prioritySwap": true,
+    "maxCraftableRefresh": true,
+    "combinedRefresh": true
+  },
+  "backupRestore": {
+    "fingerprint": "c673f6ef",
+    "roundtrip": true,
+    "legacyMissingPlanDefault": "RECIPE"
+  },
+  "versionIsolation": {
+    "versionAStored": true,
+    "versionBActive": true,
+    "versionALeakage": false,
+    "hydrationIdentityVersioned": true
+  },
+  "mining": {
+    "materials": [
+      "Aluminum",
+      "Agricium",
+      "Stileron",
+      "Beryl",
+      "Tungsten",
+      "Quantanium"
+    ],
+    "rankingOrder": "PRIMARY_GATE -> SPAWN -> OCCURRENCE -> QUALITY",
+    "normalSpaceSeparated": true,
+    "secondaryExcluded": true
+  },
+  "radar": {
+    "source": "VERSIONED_REFERENCE_REGISTRY",
+    "apiRawUserFacing": false,
+    "materials": [
+      "Stileron",
+      "Beryl",
+      "Savrilium"
+    ]
+  },
+  "canonicalNaming": {
+    "hiddenInvalid": true,
+    "duplicateCollapse": true,
+    "fuzzy": false
+  },
+  "uex": {
+    "endpoint": "https://api.uexcorp.uk/2.0/refineries_yields",
+    "mapping": true,
+    "tie": true,
+    "negative": true,
+    "unmappedFailSafe": true
+  },
+  "apiLinks": {
+    "item": "https://api.star-citizen.wiki/items/js-300?version=4.10.0-LIVE.12519617",
+    "stileron": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.10.0-LIVE.12519617"
+  },
+  "standalone": {
+    "baseline": {
+      "path": "test-artifacts/V003-C013/standalone/sPg Crafting List - JS-300 baseline.html",
+      "bytes": 183923,
+      "sha256": "038aeef0990056c4fae9be27c02e771648f56cd8ac0dcf972a0b546042a7f580"
+    },
+    "q900": {
+      "path": "test-artifacts/V003-C013/standalone/sPg Crafting List - JS-300 Q900.html",
+      "bytes": 184099,
+      "sha256": "e0fe2383c3f415a0c8eac7cfd244acd302ee839ee707790998bf11317d9799c2"
+    },
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}

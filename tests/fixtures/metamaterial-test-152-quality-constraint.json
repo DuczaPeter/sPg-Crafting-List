@@ -1,0 +1,154 @@
+{
+  "scVersion": "4.10.0-LIVE.12519617",
+  "blueprint": {
+    "uuid": "d31e71e2-38f1-4773-8c4f-2507ca0470db",
+    "key": "BP_CRAFT_Carryable_2H_SQ_CollectorMaterial_002",
+    "output_item_uuid": "8fbead8a-4e5b-4d63-bb80-442151e29094",
+    "output_name": "Metamaterial Test #152",
+    "output_class": "carryable_2h_sq_collectormaterial_002",
+    "craft_time_seconds": 10,
+    "is_available_by_default": false,
+    "game_version": "4.10.0-LIVE.12519617",
+    "ingredients": [
+      {
+        "name": "Stileron",
+        "kind": "resource",
+        "resource_type_uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+        "quantity_scu": 0.5,
+        "link": "https://api.star-citizen.wiki/api/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.10.0-LIVE.12519617",
+        "web_url": "https://api.star-citizen.wiki/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.10.0-LIVE.12519617"
+      },
+      {
+        "name": "Ouratite",
+        "kind": "resource",
+        "resource_type_uuid": "989f9b73-f636-4f35-a81d-579dcbe3f0ab",
+        "quantity_scu": 0.3,
+        "link": "https://api.star-citizen.wiki/api/commodities/ca3ae4c1-3483-4985-ba61-50412994dc83?version=4.10.0-LIVE.12519617",
+        "web_url": "https://api.star-citizen.wiki/commodities/ca3ae4c1-3483-4985-ba61-50412994dc83?version=4.10.0-LIVE.12519617"
+      }
+    ],
+    "output": {
+      "uuid": "8fbead8a-4e5b-4d63-bb80-442151e29094",
+      "name": "Metamaterial Test #152",
+      "class": "carryable_2h_sq_collectormaterial_002",
+      "type": "Misc",
+      "type_label": "Misc",
+      "grade": "1",
+      "item_web_url": "https://api.star-citizen.wiki/items/8fbead8a-4e5b-4d63-bb80-442151e29094?version=4.10.0-LIVE.12519617"
+    },
+    "web_url": "https://api.star-citizen.wiki/blueprints/metamaterial-test-152?version=4.10.0-LIVE.12519617",
+    "output_item_web_url": "https://api.star-citizen.wiki/items/8fbead8a-4e5b-4d63-bb80-442151e29094?version=4.10.0-LIVE.12519617",
+    "aspects": {
+      "aspects": [
+        {
+          "key": "CASE",
+          "name": "Case",
+          "required_count": 1,
+          "selection_group": null,
+          "input": {
+            "kind": "resource",
+            "uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+            "name": "Stileron",
+            "quantity_scu": 0.5,
+            "min_quality": 700,
+            "web_url": "https://api.star-citizen.wiki/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.10.0-LIVE.12519617"
+          },
+          "modifiers": [],
+          "initial_quality": 700,
+          "slider_min": 700,
+          "slider_max": 1000,
+          "has_modifiers": false,
+          "has_dynamic_modifiers": false,
+          "is_selected": true
+        },
+        {
+          "key": "SUPPORT STRUCUTRE",
+          "name": "Support Structure",
+          "required_count": 1,
+          "selection_group": null,
+          "input": {
+            "kind": "resource",
+            "uuid": "989f9b73-f636-4f35-a81d-579dcbe3f0ab",
+            "name": "Ouratite",
+            "quantity_scu": 0.3,
+            "min_quality": 800,
+            "web_url": "https://api.star-citizen.wiki/commodities/ca3ae4c1-3483-4985-ba61-50412994dc83?version=4.10.0-LIVE.12519617"
+          },
+          "modifiers": [],
+          "initial_quality": 800,
+          "slider_min": 800,
+          "slider_max": 1000,
+          "has_modifiers": false,
+          "has_dynamic_modifiers": false,
+          "is_selected": true
+        }
+      ]
+    }
+  },
+  "card": {
+    "id": "metamaterial-152-card",
+    "order": 0,
+    "active": true,
+    "collapsed": false,
+    "quantity": 3
+  },
+  "materialPlans": {
+    "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4": {
+      "mode": "TARGET_Q",
+      "targetQuality": 800
+    },
+    "989f9b73-f636-4f35-a81d-579dcbe3f0ab": {
+      "mode": "TARGET_Q",
+      "targetQuality": 800
+    }
+  },
+  "lowOnlyBatches": [
+    {
+      "id": "stileron-q747",
+      "materialUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "materialName": "Stileron",
+      "quality": 747,
+      "quantityUnits": 20000,
+      "unit": "SCU",
+      "createdAt": "2026-08-29T12:00:00.000Z"
+    },
+    {
+      "id": "ouratite-q860",
+      "materialUuid": "989f9b73-f636-4f35-a81d-579dcbe3f0ab",
+      "materialName": "Ouratite",
+      "quality": 860,
+      "quantityUnits": 9000,
+      "unit": "SCU",
+      "createdAt": "2026-08-29T12:00:01.000Z"
+    }
+  ],
+  "sufficientStileronBatch": {
+    "id": "stileron-q850",
+    "materialUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+    "materialName": "Stileron",
+    "quality": 850,
+    "quantityUnits": 15000,
+    "unit": "SCU",
+    "createdAt": "2026-08-29T12:00:02.000Z"
+  },
+  "highestStileronBatches": [
+    {
+      "id": "stileron-q950",
+      "materialUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "materialName": "Stileron",
+      "quality": 950,
+      "quantityUnits": 10000,
+      "unit": "SCU",
+      "createdAt": "2026-08-29T12:00:03.000Z"
+    },
+    {
+      "id": "stileron-q850-highest",
+      "materialUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "materialName": "Stileron",
+      "quality": 850,
+      "quantityUnits": 5000,
+      "unit": "SCU",
+      "createdAt": "2026-08-29T12:00:04.000Z"
+    }
+  ]
+}

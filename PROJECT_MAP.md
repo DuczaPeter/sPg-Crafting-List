@@ -64,6 +64,10 @@
 - V003-C012.2 kapu: `tools/validate-v003-c0122.ps1`; C012.1 teljes kapu + aktiv SC-verzios normalized cache/projekcio/deep-link/provenance izolacio, standalone es V002-integritas.
 - V003-C012.2 celteszt: `tools/run-v003-c0122-tests.mjs`; VERSION_A/VERSION_B azonos UUID, aktiv B link/source/snapshot, regi A cache-megorzes leakage nelkul es cross-version block.
 - V003-C012.2 riport: `docs/V003_C0122_VERSION_CONSISTENCY_REPORT.md`; gyokerok, invarians, teszt, Chrome/user-manual bizonyitek es visszaallas.
+- V003-C012.3 kapu: `tools/validate-v003-c0123.ps1`; C012.2 teljes kapu + FIXED recipe/user material constraint szetvalasztas, Metamaterial Test #152, standalone parity, C013 invalidacio es V002-integritas.
+- V003-C012.3 celteszt: `tools/run-v003-c0123-tests.mjs`; valos 4.10 Metamaterial fixture, Q747/Q800/Q850/Q860/Q950, missing Quality/Max, HIGHEST_Q, HP/UNKNOWN, priority/no-double-count, backup/restore es standalone.
+- V003-C012.3 fixture: `tests/fixtures/metamaterial-test-152-quality-constraint.json`; exact blueprint/material UUID-k es bizonyitott recipe slot mennyisegek.
+- V003-C012.3 riport: `docs/V003_C0123_USER_MATERIAL_QUALITY_CONSTRAINT_REPORT.md`; gyokerok, policy-modell, celteszt, Chrome, invalidalt C013 es visszaallas.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -130,6 +134,8 @@
 - `test-artifacts/V003-C010.1/`: exact API audit, compact standalone Final Card, PASS summary es helyi Chrome screenshot.
 - `test-artifacts/V003-C011/`: exact API audit, standalone Final Card, PASS summary es helyi Git-ignore 1920/1366/mobile Chrome screenshotok.
 - `test-artifacts/V003-C012.2/`: ketverzios izolacios standalone, PASS summary es Chrome localhost bizonyitek.
+- `test-artifacts/V003-C012.3/`: Metamaterial Q800 allocation/standalone bizonyitek es PASS summary.
+- `test-artifacts/V003-C013/`: a C012.3 release-blokkolo miatt explicit invalidalt, nem aktiv release-candidate bizonyitek; C013 commit nem keszult.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

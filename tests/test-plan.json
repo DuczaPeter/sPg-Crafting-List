@@ -251,6 +251,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0122.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0123-user-material-quality-constraint",
+      "level": "full-regression",
+      "description": "V003-C012.3 gate: recipe Quality semantics remain immutable while explicit material-level Target Q/Highest Q constraints govern batch eligibility, allocation, missingQuality, Max DB, Combined Materials, Final Card and standalone; includes the real Metamaterial Test #152 Q747/Q850 fixture, persistence/backup, priority/no-double-count, complete C001-C012.2 plus M1-M6.1/C04 regression, and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0123.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

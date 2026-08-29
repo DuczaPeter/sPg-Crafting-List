@@ -1,0 +1,36 @@
+{
+  "cycle": "V003-C012.3",
+  "kind": "CODEX_REAL_CHROME_LOCALHOST",
+  "status": "PASS",
+  "url": "http://127.0.0.1:4179/sPg%20Crafting%20List.html",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "technicalProbe": "PASS",
+  "fixture": {
+    "blueprint": "Metamaterial Test #152",
+    "quantity": 3,
+    "materialPlan": "TARGET_Q",
+    "targetQuality": 800,
+    "lowOnly": {
+      "stileronQ747ReservedScu": 0,
+      "stileronMissingQualityScu": 1.5,
+      "ouratiteQ860ReservedScu": 0.9,
+      "cardSatisfied": false,
+      "maxCraftable": 0
+    },
+    "withQualifiedBatch": {
+      "stileronQ850ReservedScu": 1.5,
+      "stileronQ747ReservedScu": 0,
+      "cardSatisfied": true,
+      "maxCraftable": 3
+    }
+  },
+  "combinedLabel": "Q800+",
+  "finalCardLabel": "Q800+",
+  "tooltip": "Q800 vagy magasabb Quality használható · Recipe: Bármely Q / FIXED · Saját anyagcél: Q800+ · Effektív allocation: Q800+",
+  "fingerprintBeforeReload": "749d1f60",
+  "fingerprintAfterReload": "749d1f60",
+  "consoleWarnings": 0,
+  "consoleErrors": 0,
+  "standaloneDownloadCapture": "NOT_CAPTURED_BY_BROWSER_CONTROLLER",
+  "standaloneAutomatedGate": "PASS"
+}

@@ -1,0 +1,14 @@
+{
+  "cycle": "V003-C012.3",
+  "status": "PASS",
+  "targetedTest": "V003_C0123_USER_MATERIAL_CONSTRAINT_TEST_PASS",
+  "fullRegression": "C001-C012.2 + M1-M6.1 + C04 PASS",
+  "chromeLocalhost": "PASS",
+  "consoleWarningErrorCount": 0,
+  "fingerprint": "749d1f60 -> 749d1f60",
+  "standalone": "PASS",
+  "combinedFinalStandaloneParity": "PASS",
+  "v002Integrity": "PASS",
+  "c013Candidate": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+  "v003ReleaseOrTagCreated": false
+}

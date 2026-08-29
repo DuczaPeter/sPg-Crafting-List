@@ -495,7 +495,7 @@ Csak a C012.1 policy/allocation/Combined/persistence/standalone celteszt:
 node .\tools\run-v003-c0121-tests.mjs --standalone="test-artifacts/V003-C012.1/standalone-js-300-quality-plan.html"
 ```
 
-- `v003-c0121-material-quality-planner`: kozos `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()`, exact UUID-s USER setting, RECIPE/TARGET_Q/HIGHEST_Q, FIXED/UNKNOWN vedelme, allocation-alapu Quality-bucketek double-count nelkul, max/prioritas, backup/restore, Combined detail, standalone/single-file, teljes C001-C012/M1-M6.1/C04 es V002-integritas.
+- `v003-c0121-material-quality-planner`: kozos `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()`, exact UUID-s USER setting, RECIPE/TARGET_Q/HIGHEST_Q, receptminimum- es UNKNOWN-vedelem, allocation-alapu Quality-bucketek double-count nelkul, max/prioritas, backup/restore, Combined detail, standalone/single-file, teljes C001-C012/M1-M6.1/C04 es V002-integritas. A FIXED + explicit user constraint vegso szemantikajat a C012.3 gate ellenorzi.
 - C012.1 artifactok: `test-artifacts/V003-C012.1/`.
 
 V003-C012.2 teljes kapu (aktiv SC-verzio, cache/projekcio izolacio, deep link/provenance, standalone es teljes regresszio):
@@ -512,3 +512,18 @@ node .\tools\run-v003-c0122-tests.mjs --artifact="test-artifacts/V003-C012.2/sta
 
 - `v003-c0122-active-version-consistency`: exact aktivverzio-szurt normalized projekcio/hydration, VERSION_A cache-megorzes leakage nelkul, item/material API link es material/mining provenance VERSION_B, cross-version block, standalone/single-file es teljes C001-C012.1/M1-M6.1/C04/V002-integritas.
 - C012.2 artifactok: `test-artifacts/V003-C012.2/`.
+
+V003-C012.3 teljes kapu (FIXED recipe baseline + explicit user material allocation constraint, Metamaterial Test #152, standalone es teljes regresszio):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0123.ps1"
+```
+
+Csak a C012.3 Q747/Q800/Q850/HIGHEST_Q/persistence/standalone celteszt:
+
+```powershell
+node .\tools\run-v003-c0123-tests.mjs
+```
+
+- `v003-c0123-user-material-quality-constraint`: FIXED recipe baseline megorzese, explicit TARGET_Q/HIGHEST_Q allocation-korlat, missing Quality es Max, Combined/Final/standalone parity, HP/UNKNOWN vedelmek, priority/no-double-count, backup/restore, C013 invalidacio es V002-integritas.
+- C012.3 artifactok: `test-artifacts/V003-C012.3/`; az elozo megszakadt candidate csak invalidalt bizonyitekkent: `test-artifacts/V003-C013/`.

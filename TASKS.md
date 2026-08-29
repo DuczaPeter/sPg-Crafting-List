@@ -95,6 +95,11 @@
 - [x] Verzios cache-izolacio: raw/normalized keyek megorzese mellett az aktiv projekcio es hydration exact SC-verziora szurt; regi cache nem szivarog az aktiv snapshotba.
 - [x] Ketverzios VERSION_A/VERSION_B fixture, 4.10 JS-300/Stileron/Beryl/Savrilium link/source invariant, standalone es teljes C001-C012.1 + M1-M6.1 + C04 regresszio PASS.
 - [x] C012.2 Chrome localhost 15/15, refresh/reload/detail/standalone, fingerprint `36b67809`, konzol WARN/ERROR 0; felhasznaloi valodi `file://` kapu `USER MANUAL FILE:// PASS` (nem Codex automation).
+- [x] `V003-C012.3`: a FIXED recipe baseline es az explicit USER material-allocation constraint szetvalasztva; FIXED + RECIPE `Barmely Q`, explicit TARGET_Q/HIGHEST_Q viszont az allocation minden fogyasztojaban ervenyesul.
+- [x] Metamaterial Test #152 x3 valos 4.10 fixture: Stileron Q747 a Q800 celhoz ineligible, `missingAmount=0`, `missingQuality=1.5 SCU`, kartya nem teljesult, Max 0; Q850 hozzaadasaval csak a Q850 fogy, kartya teljesult, Max 3.
+- [x] Ouratite Q860, HIGHEST_Q csokkeno batch-sorrend, HP-minimum vedelme, UNKNOWN fail-safe, priority/no-double-count, Combined/Final/standalone parity es backup/restore PASS.
+- [x] C012.3 teljes C001-C012.2 + M1-M6.1 + C04 regresszio es Chrome localhost PASS; fingerprint `749d1f60`, konzol WARN/ERROR 0, V002 valtozatlan.
+- [x] A megszakadt C013 auditja: C013 commit nem letezett; a candidate/evidence invalidalt, a C013 lezaro ciklus nem folytatodott.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -109,6 +114,7 @@
 - [x] `V003-C012`: Crafting List Final Card visual parity, tobbkartyas prioritas/expanded-state es source-card detail return; felhasznaloi vizualis ellenorzesre atadva.
 - [x] `V003-C012.1`: Material Quality Planner, effektív Recipe Quality felirat es allocation-aware Combined Materials; felhasznaloi vizualis es mukodesi ellenorzesre atadva.
 - [x] `V003-C012.2`: Active SC Version Consistency Repair; felhasznaloi ellenorzesre atadva, C013 nem indult.
+- [x] `V003-C012.3`: FIXED recipe + explicit user material Quality constraint repair; felhasznaloi ellenorzesre atadva, a korabban megkezdett C013 invalidalt.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio

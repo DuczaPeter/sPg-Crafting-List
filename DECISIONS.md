@@ -144,7 +144,7 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 
 - A Final Card, Crafting List, Combined Materials, Allocation Engine es standalone egyetlen `resolveEffectiveMaterialQualityPolicy()` eredmenyet fogyasztja; kulon Quality vagy allocation logika nem keszulhet.
 - Materialterv exact material UUID szerint, USER-scoped `user:materialQualityPlans` settingben tarolodik. Alapertelmezese `RECIPE`, ezert regi adatnal es explicit terv nelkul a C012 viselkedes marad.
-- `TARGET_Q` nem gyengitheti a recept minimumat; `HIGHEST_Q` megtartja a baseline minimumot. `FIXED` es `UNKNOWN` materialtervvel sem irhato felul.
+- `TARGET_Q` nem gyengitheti a recept minimumat; `HIGHEST_Q` megtartja a baseline minimumot. A C012.3 pontositas szerint a `FIXED` recipe-szemantika nem valtozik, de explicit user materialterv allocation-korlatkent ervenyesulhet; `UNKNOWN` tovabbra is fail-safe es nem irhato felul.
 - A Combined Quality-bucket `Lefoglalva` erteke kizarolag a determinisztikus Allocation Engine reservation eredmenye lehet. Batch nem szamolhato tobbszor, bucket-sum nem haladhatja meg a tenyleges inventoryt.
 - A Combined detail a C008 router/renderer es a meglevo exact material API resolver bovítese; Mining/UEX/Radar nem kerul bele. A standalone csak a feloldott export-snapshotot hasznalja, runtime fetch nelkul.
 - Schema bump nem indokolt, mert a terv a meglevo backup/restore USER settings csatornajat hasznalja. Stabil V003 release/tag es C013 tovabbra is csak kulon felhasznaloi utasitasra indulhat.
@@ -157,3 +157,10 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Exact API linknel a forrasbol bizonyitott host/path/slug marad, de a `version=` query az aktiv SC-verziohoz igazodik. Nevbol kepzett vagy fuzzy URL tovabbra is tilos.
 - Aktualis snapshot `scVersion`, material source `gameVersion`, mining source `gameVersion`, API link `version=` es standalone detail verzio egymassal azonos. Tudatos torteneti cross-version adat csak kulon statuszban jelenhet meg.
 - Stabil V003 release/tag es C013 tovabbra is csak kulon felhasznaloi utasitasra indulhat.
+
+## 2026-08-29 - V003-C012.3 recipe baseline es user allocation constraint szetvalasztasa
+
+- A `baselineRecipeQualityRule` a recept bizonyitott szemantikaja; ezt user beallitas nem irja at. A `userMaterialQualityConstraint` ettol kulon USER-scoped allocation-korlat.
+- `FIXED + RECIPE` tovabbra is barmely Quality batch-et elfogad. `FIXED + TARGET_Q/HIGHEST_Q` mellett a recept FIXED marad, de az explicit felhasznaloi cel az allocation, missing Quality, Max craftable, Combined, Final Card, detail es standalone kozos effektív policyja.
+- HP/receptminimum felhasznaloi tervvel nem gyengitheto. `UNKNOWN` tovabbra is fail-safe; bizonyitek nelkul nincs Quality-talalgatas.
+- A megszakadt C013 release-candidate nem kiadasi bizonyitek: C013 commit nem volt, az artifact `INVALIDATED_BY_C012.3_RELEASE_BLOCKER` statuszt kapott. C013 csak uj felhasznaloi utasitasra indulhat ujra.

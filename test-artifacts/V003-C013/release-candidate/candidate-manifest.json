@@ -1,0 +1,15 @@
+{
+  "kind": "INVALIDATED_V003_RELEASE_CANDIDATE",
+  "cycle": "V003-C013",
+  "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+  "invalidationReason": "FIXED recipe slots ignored an explicit user material Quality constraint during allocation.",
+  "baselineCommit": "24b55890a4d97176d756f3f1e3c05f80ee987ab7",
+  "source": "sPg Crafting List.html",
+  "filename": "sPg Crafting List.html",
+  "bytes": 749270,
+  "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
+  "buildModel": "DETERMINISTIC_BYTE_COPY",
+  "runtimeFilesRequired": 1,
+  "localSidecarFilesRequired": 0,
+  "onlineDataRefreshRequiresInternet": true
+}

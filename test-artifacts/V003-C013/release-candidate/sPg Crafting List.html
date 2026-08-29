@@ -8063,14 +8063,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             ? "A Quality szabály nem bizonyított"
             : label.replace("+", " vagy magasabb Quality használható")));
       var details = [];
-      if (source.baselineRule === M2_QUALITY_RULES.FIXED) { details.push("Recipe: Bármely Q / FIXED"); }
-      if (source.baselineRule === M2_QUALITY_RULES.HP_MIN_500) { details.push("Recipe: Q500+ / HP_MIN_500"); }
-      if (source.baselineRule === M2_QUALITY_RULES.TARGET_Q && hasValidQuality(source.baselineTarget)) { details.push("Recipe: Q" + Number(source.baselineTarget) + "+ / TARGET_Q"); }
-      if (source.baselineRule === M2_QUALITY_RULES.HIGHEST_Q) { details.push("Recipe: Legjobb Q / HIGHEST_Q"); }
-      if (source.baselineRule === M2_QUALITY_RULES.UNKNOWN) { details.push("Recipe: Q? / UNKNOWN"); }
-      if (source.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.TARGET_Q && hasValidQuality(source.materialTarget)) { details.push("Saját anyagcél: Q" + Number(source.materialTarget) + "+"); }
-      if (source.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.HIGHEST_Q) { details.push("Saját anyagcél: Legjobb Q"); }
-      if (source.materialPlanMode && source.materialPlanMode !== MATERIAL_QUALITY_PLAN_MODES.RECIPE) { details.push("Effektív allocation: " + label); }
+      if (source.baselineRule === M2_QUALITY_RULES.HP_MIN_500) { details.push("Recept minimum: Q500"); }
+      if (source.baselineRule === M2_QUALITY_RULES.TARGET_Q && hasValidQuality(source.baselineTarget)) { details.push("Recept minimum: Q" + Number(source.baselineTarget)); }
+      if (source.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.TARGET_Q && hasValidQuality(source.materialTarget)) { details.push("Material terv: Q" + Number(source.materialTarget)); }
+      if (source.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.HIGHEST_Q) { details.push("Material terv: Legjobb elérhető"); }
+      if (source.materialPlanMode && source.materialPlanMode !== MATERIAL_QUALITY_PLAN_MODES.RECIPE) { details.push("Effektív: " + label); }
       return explanation + (details.length ? " · " + details.join(" · ") : "");
     }
 
@@ -8095,7 +8092,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var effectiveMinimum = baselineMinimum;
       var reason = baseline.reason || "RECIPE_BASELINE";
 
-      if (baselineRule !== M2_QUALITY_RULES.UNKNOWN) {
+      if (baselineRule !== M2_QUALITY_RULES.FIXED && baselineRule !== M2_QUALITY_RULES.UNKNOWN) {
         if (plan.mode === MATERIAL_QUALITY_PLAN_MODES.TARGET_Q) {
           effectiveMinimum = Math.max(baselineMinimum === null ? 0 : baselineMinimum, plan.targetQuality);
           effectiveRule = M2_QUALITY_RULES.TARGET_Q;
@@ -8119,26 +8116,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         qualityCapability: source.qualityCapability || null,
         baselineRule: baselineRule,
         baselineTarget: baselineTarget,
-        baselineRecipeQualityRule: baselineRule,
-        baselineRecipeTarget: baselineTarget,
         materialPlanMode: plan.mode,
         materialTarget: plan.targetQuality,
-        userMaterialQualityConstraint: {
-          mode: plan.mode,
-          targetQuality: plan.targetQuality
-        },
         effectiveRule: effectiveRule,
         effectiveTarget: effectiveTarget,
         effectiveMinimum: effectiveMinimum,
-        allocationRule: effectiveRule,
-        allocationTarget: effectiveTarget,
-        allocationMinimum: effectiveMinimum,
         allocationStrategy: allocationStrategy,
         mode: effectiveRule,
         targetQuality: effectiveTarget,
         minimumQuality: effectiveMinimum,
-        configurable: baselineRule !== M2_QUALITY_RULES.UNKNOWN,
-        materialConstraintConfigurable: baselineRule !== M2_QUALITY_RULES.UNKNOWN,
+        configurable: baselineRule !== M2_QUALITY_RULES.FIXED && baselineRule !== M2_QUALITY_RULES.UNKNOWN,
         reason: reason
       };
       policy.userFacingLabel = formatEffectiveQualityLabel(policy);
@@ -14101,16 +14088,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       title.append(createPreparedDetailButton(materialName + " belső részlet", "material", view.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid, "spg-intelligence-trigger"));
       var slotStrategies = card.slotStrategies || {};
       var qualityRule = resolveRequirementQualityRule(requirement, slotStrategies[requirement.id]);
-      var displayPolicy = view.qualityPolicy || (allocation && allocation.qualityPolicy) || resolveEffectiveMaterialQualityPolicy({
-        baselineRule: qualityRule,
-        qualityCapability: requirement.qualityCapability || "UNKNOWN",
-        materialUuid: requirement.ingredientUuid,
-        materialPlan: state.materialQualityPlans && state.materialQualityPlans[requirement.ingredientUuid]
-      });
       var ruleBadge = document.createElement("span");
-      ruleBadge.className = "spg-badge spg-badge-" + (displayPolicy.effectiveRule === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
-      ruleBadge.textContent = displayPolicy.userFacingLabel;
-      ruleBadge.title = displayPolicy.tooltip;
+      ruleBadge.className = "spg-badge spg-badge-" + (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
+      ruleBadge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500
+        ? "Q500+ elég"
+        : (qualityRule.mode === M2_QUALITY_RULES.TARGET_Q ? "Target Q" + qualityRule.targetQuality + "+" : qualityRule.mode);
       heading.append(title, ruleBadge);
       advanced.append(heading);
 
@@ -14150,7 +14132,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var qualityNotice = document.createElement("p");
         qualityNotice.className = "spg-quality-notice";
         qualityNotice.textContent = qualityRule.mode === M2_QUALITY_RULES.FIXED
-          ? "Recipe: FIXED – a crafting statot nem módosítja a Quality." + (displayPolicy.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.RECIPE ? "" : " Saját anyagcél: " + displayPolicy.userFacingLabel + ".")
+          ? "Fixed input – Quality-stratégia nem alkalmazható."
           : (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN
             ? "Quality hatás ellenőrizendő – a rendszer nem találgat és nem foglal batch-et."
             : "Integrity-only input – Q500 feletti legalacsonyabb megfelelő Quality fogy először.");
@@ -14210,21 +14192,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var allocation = cardResult && cardResult.requirements.find(function (item) { return item.recipeSlotId === requirement.id; });
         var requirementView = cardViewModel.requirements.find(function (item) { return item.recipeSlotId === requirement.id; }) || {};
         var qualityRule = resolveRequirementQualityRule(requirement, (card.slotStrategies || {})[requirement.id]);
-        var displayPolicy = requirementView.qualityPolicy || (allocation && allocation.qualityPolicy) || resolveEffectiveMaterialQualityPolicy({
-          baselineRule: qualityRule,
-          qualityCapability: requirement.qualityCapability || "UNKNOWN",
-          materialUuid: requirement.ingredientUuid,
-          materialPlan: state.materialQualityPlans && state.materialQualityPlans[requirement.ingredientUuid]
-        });
         var row = document.createElement("div");
         row.className = "spg-c012-quality-row";
         var identity = document.createElement("div");
         var title = document.createElement("strong");
         title.textContent = requirement.recipeSlotName + " · " + (requirementView.materialName || requirement.materialName);
         var badge = document.createElement("span");
-        badge.className = "spg-badge spg-badge-" + (displayPolicy.effectiveRule === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
-        badge.textContent = displayPolicy.userFacingLabel;
-        badge.title = displayPolicy.tooltip;
+        badge.className = "spg-badge spg-badge-" + (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "unknown" : "neutral");
+        badge.textContent = qualityRule.mode === M2_QUALITY_RULES.HP_MIN_500
+          ? "Q500+ elég"
+          : (qualityRule.mode === M2_QUALITY_RULES.TARGET_Q ? "Target Q" + qualityRule.targetQuality + "+" : qualityRule.mode);
         identity.append(title, badge);
         var editor = document.createElement("div");
         editor.className = "spg-c012-quality-editor";
@@ -14260,7 +14237,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         } else {
           var notice = document.createElement("small");
           notice.textContent = qualityRule.mode === M2_QUALITY_RULES.FIXED
-            ? "Recipe: FIXED." + (displayPolicy.materialPlanMode === MATERIAL_QUALITY_PLAN_MODES.RECIPE ? " Saját anyagcél nincs." : " Saját anyagcél: " + displayPolicy.userFacingLabel + ".")
+            ? "Fixed input – nincs Quality-stratégia."
             : (qualityRule.mode === M2_QUALITY_RULES.UNKNOWN ? "UNKNOWN – a rendszer nem találgat." : "Integrity-only – Q500+ legalacsonyabb megfelelő batch.");
           editor.append(notice);
         }

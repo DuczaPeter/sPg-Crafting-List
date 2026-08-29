@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C012.2",
-    "currentCycleId":  "V003-C012.2",
-    "lastSuccessfulCycle":  "V003-C012.2",
+    "currentCycle":  "C012.3",
+    "currentCycleId":  "V003-C012.3",
+    "lastSuccessfulCycle":  "V003-C012.3",
     "branch":  "develop/V003",
     "releaseGate":  "dev-cycle",
-    "lastUpdated":  "2026-08-29T11:03:22+02:00",
-    "currentCyclePurpose":  "Active SC version consistency across normalized cache projection, API deep links, provenance and standalone snapshots",
-    "currentCycleStartedAt":  "2026-08-29T08:00:00+02:00",
+    "lastUpdated":  "2026-08-29T17:21:59+02:00",
+    "currentCyclePurpose":  "Separate fixed recipe semantics from explicit user material Quality allocation constraints",
+    "currentCycleStartedAt":  "2026-08-29T12:00:00+02:00",
     "currentTestLevel":  "full-regression",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "V003-C012.2 exact active-version projection and hydration, stale-cache isolation, active-version API query, two-version fixture, standalone consistency, full C001-C012.1 plus M1-M6.1+C04, Chrome 15/15, console/fingerprint, user-reported file gate and frozen V002 integrity PASS.",
-    "developmentAcceptance":  "V003-dev C012.2 ACTIVE SC VERSION CONSISTENCY – AUTOMATED AND CHROME LOCALHOST PASS; USER MANUAL FILE:// PASS; C013 AND STABLE RELEASE NOT STARTED.",
+    "currentCycleStatusReason":  "V003-C012.3 separates FIXED recipe semantics from explicit TARGET_Q/HIGHEST_Q user allocation constraints; real Metamaterial Test #152 Q747/Q800/Q850/Q860/Q950, missing Quality/Max, Combined/Final/standalone parity, persistence/backup, full C001-C012.2 plus M1-M6.1+C04, Chrome localhost, console/fingerprint and frozen V002 integrity PASS. Interrupted C013 candidate invalidated.",
+    "developmentAcceptance":  "V003-dev C012.3 USER MATERIAL QUALITY CONSTRAINT REPAIR – AUTOMATED AND CHROME LOCALHOST PASS; USER REVIEW REQUIRED; INTERRUPTED C013 INVALIDATED; STABLE RELEASE NOT STARTED.",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -40,12 +40,12 @@
                                   ],
     "v003DevelopmentGate":  {
                                 "status":  "AUTOMATED_PASS_USER_MANUAL_FILE_PASS",
-                                "cycle":  "V003-C012.2",
-                                "chromeLocalhostTechnicalProbe":  "15 PASS / 0 FAIL; active blueprint/mining/projection 4.10.0-LIVE.12519617, main/Crafting/C008/refresh/reload/standalone and console PASS",
+                                "cycle":  "V003-C012.3",
+                                "chromeLocalhostTechnicalProbe":  "PASS; active dataset 4.10.0-LIVE.12519617, Metamaterial Test #152 Q800/Q850 allocation, Combined/Final Card, reload and console PASS",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL FILE:// PASS reported for C012.1/C012.2 input evidence: the complete Technical Baseline passed and the standalone export was created and opened; user-run, not Codex automation.",
-                                "userDataFingerprintBefore":  "36b67809",
-                                "userDataFingerprintAfterReload":  "36b67809",
+                                "userDataFingerprintBefore":  "749d1f60",
+                                "userDataFingerprintAfterReload":  "749d1f60",
                                 "consoleWarningErrorCount":  0,
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
@@ -59,7 +59,7 @@
                                                                                               "Saldynium"
                                                                                           ],
                                                            "scmdbAuditReasonCorrected":  true,
-                                                           "nextCycle":  "USER_REVIEW_REQUIRED_AFTER_C012_2; C013_NOT_STARTED"
+                                                           "nextCycle":  "USER_REVIEW_REQUIRED_AFTER_C012_3; INTERRUPTED_C013_INVALIDATED"
                                                        },
                                 "finalCraftingCard":  {
                                                           "viewModel":  "buildFinalCraftingCardViewModel",
@@ -204,7 +204,9 @@
                                                                               "TARGET_Q",
                                                                               "HIGHEST_Q"
                                                                           ],
-                                                                "fixedAndUnknownImmune":  true,
+                                                                "fixedRecipeSemanticsPreserved":  true,
+                                                                "fixedExplicitMaterialConstraintSupported":  true,
+                                                                "unknownFailSafe":  true,
                                                                 "recipeMinimumCannotBeWeakened":  true,
                                                                 "combinedOverviewViewModel":  "buildCombinedMaterialsOverviewViewModel",
                                                                 "combinedDetailRenderer":  "c008RenderDetailMarkup",
@@ -223,6 +225,42 @@
                                                                                     "test-artifacts/V003-C012.1/chrome-390-combined-quality-planner.png"
                                                                                 ]
                                                             },
+                                "userMaterialQualityConstraintRepair":  {
+                                                                             "cycle":  "V003-C012.3",
+                                                                             "fixture":  "tests/fixtures/metamaterial-test-152-quality-constraint.json",
+                                                                             "baselineField":  "baselineRecipeQualityRule",
+                                                                             "userConstraintField":  "userMaterialQualityConstraint",
+                                                                             "allocationRuleField":  "allocationRule",
+                                                                             "fixedRecipeDefault":  "ANY_QUALITY",
+                                                                             "fixedTargetQSupported":  true,
+                                                                             "fixedHighestQSupported":  true,
+                                                                             "lowOnlyTargetQ800":  {
+                                                                                                            "stileronQ747Eligible":  false,
+                                                                                                            "stileronAllocatedUnits":  0,
+                                                                                                            "missingAmountUnits":  0,
+                                                                                                            "missingQualityUnits":  15000,
+                                                                                                            "ouratiteQ860AllocatedUnits":  9000,
+                                                                                                            "cardSatisfied":  false,
+                                                                                                            "maxCraftable":  0
+                                                                                                        },
+                                                                             "qualifiedQ850":  {
+                                                                                                       "allocatedQualities":  [
+                                                                                                                                  850
+                                                                                                                              ],
+                                                                                                       "q747Unused":  true,
+                                                                                                       "cardSatisfied":  true,
+                                                                                                       "maxCraftable":  3
+                                                                                                   },
+                                                                             "highestQOrder":  [
+                                                                                                     950,
+                                                                                                     850
+                                                                                                 ],
+                                                                             "combinedFinalStandaloneParity":  "PASS",
+                                                                             "priorityNoDoubleCount":  "PASS",
+                                                                             "backupRestore":  "PASS",
+                                                                             "standaloneSha256":  "c5d260c1ddffb6d3638c91c6af7bb650d4162d2d24c77e4890a73605707f30b6",
+                                                                             "interruptedC013":  "INVALIDATED_BY_C012.3_RELEASE_BLOCKER"
+                                                                         },
                                 "activeVersionConsistency":  {
                                                                   "resolver":  "resolveActiveScVersion",
                                                                   "projection":  "buildVersionScopedRecordProjection",

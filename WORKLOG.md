@@ -598,7 +598,7 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 ### V003-C012.1 Material Quality Planner + Combined allocation overview - 2026-08-29
 
 - Scope: egy kozos effektív Quality policy a Final Card, Crafting List, Combined Materials, Allocation Engine es standalone szamara; ranking/hydration/Radar/UEX, stabil V002 es C013 valtozatlan.
-- `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()` kezeli a RECIPE/TARGET_Q/HIGHEST_Q tervet, receptminimum-vedelmet es FIXED/UNKNOWN immunitast. Exact UUID-s tarolas: `user:materialQualityPlans`; schema bump nincs, backup/restore es regi adat default PASS.
+- `resolveEffectiveMaterialQualityPolicy()` es `formatEffectiveQualityLabel()` kezeli a RECIPE/TARGET_Q/HIGHEST_Q tervet es a receptminimum-vedelmet. A ciklus eredeti FIXED-immunitas ertelmezeset a C012.3 felulirta: a FIXED recipe megmarad, de explicit user materialterv allocation-korlatkent ervenyesul; UNKNOWN tovabbra is fail-safe. Exact UUID-s tarolas: `user:materialQualityPlans`; schema bump nincs, backup/restore es regi adat default PASS.
 - A `buildCombinedMaterialsOverviewViewModel()` az Allocation Engine foglalasaibol kepez unit-aware Quality-bucketeket. Double-count, priority swap es max craftable frissites PASS. A Combined `Quality + allocation` detail a C008 renderer es `resolveMaterialApiDeepLink()` utvonalat hasznalja.
 - Automatizalt: `validate-v003-c0121.ps1` PASS; teljes C001-C012 + M1-M6.1 + C04, policy-matrix, Q900/Highest/FIXED/UNKNOWN, no-double-count, persistence/backup, standalone es V002-integritas zold.
 - Chrome localhost: Technical Probe 15/15; JS-300/FR-66/XL-1, Stileron Q900 reload-perzisztencia, Combined detail reload+Back, 1920/1366/390 horizontal overflow 0; fingerprint `c4a49ff0 -> c4a49ff0`; konzol WARN/ERROR 0.
@@ -615,3 +615,14 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Valodi Chrome localhost: 15/15 Technical Probe; main/Crafting/C008/refresh/reload/standalone 4.10-konzisztens; fingerprint `36b67809 -> 36b67809`; WARN/ERROR 0.
 - Felhasznaloi bizonyitek: `USER MANUAL FILE:// PASS`; user-run, nem Codex automation; teljes technikai baseline PASS, standalone letrejott es megnyithato.
 - Visszaallas: a C012.2 commit revertje; stabil fallback a valtozatlan `V002` tag/release.
+
+### V003-C012.3 User Material Quality Constraint Repair - 2026-08-29
+
+- Indulas: a megszakadt C013 auditja szerint C013 commit nem volt; csak uncommitted candidate/tesztanyag letezett. A candidate manifest es bizonyitek `INVALIDATED_BY_C012.3_RELEASE_BLOCKER` statuszt kapott, C013 nem folytatodott.
+- Gyokerok: `resolveEffectiveMaterialQualityPolicy()` a `FIXED` baseline mellett figyelmen kivul hagyta az explicit USER `TARGET_Q/HIGHEST_Q` tervet. Emiatt a recipe FIXED szemantikaja es a user allocation-korlat egyetlen kapcsolokent viselkedett, Q747 jogosulatlanul foglalodott Q800 tervhez.
+- Javitas: kulon `baselineRecipeQualityRule` es `userMaterialQualityConstraint`, illetve explicit `allocationRule/Target/Minimum`. FIXED + RECIPE tovabbra is Barmely Q; FIXED + explicit materialterv a receptet nem irja at, de az allocation minden projekciojaban ervenyesul. HP minimum nem gyengitheto, UNKNOWN fail-safe.
+- Valos 4.10 fixture: Metamaterial Test #152 x3; Stileron Case 1.5 SCU es Ouratite 0.9 SCU. Q747/Q800 mellett Stileron allocated 0, `missingAmount=0`, `missingQuality=1.5 SCU`, kartya false, Max 0; Ouratite Q860 megfelel. Q850 1.5 SCU hozzaadasa utan csak Q850 fogy, Q747 szabad, kartya true, Max 3. HIGHEST_Q sorrend Q950 -> Q850.
+- Automatizalt: `validate-v003-c0123.ps1` PASS; C001-C012.2 + M1-M6.1 + C04, Combined/Final/standalone parity, priority/no-double-count, persistence/backup, C013-invalidacio es V002-integritas zold.
+- Chrome localhost: aktiv `4.10.0-LIVE.12519617`; valos UI Q800 hiany/Max 0, Q850 utan teljesult/Max 3, Q747 reserved 0; reload utan stabil fingerprint `749d1f60 -> 749d1f60`; Technical Probe PASS; konzol WARN/ERROR 0.
+- Standalone automatizalt artifact: `test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html`, 154483 byte, SHA-256 `c5d260c1ddffb6d3638c91c6af7bb650d4162d2d24c77e4890a73605707f30b6`, kulso runtime fetch/resource 0.
+- V003 release/tag/push nem keszult. Visszaallas: a C012.3 commit revertje; stabil fallback a valtozatlan `V002` tag/release.

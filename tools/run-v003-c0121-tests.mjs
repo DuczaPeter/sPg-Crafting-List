@@ -84,7 +84,8 @@ const batch = (id, quality, quantityUnits = 1000, unit = "SCU", targetMaterialUu
   createdAt: `2026-08-29T12:00:${String(Number(id.replace(/\D/g, "") || 0)).padStart(2, "0")}.000Z`
 });
 
-// Shared effective policy matrix. FIXED and UNKNOWN must remain immune.
+// Shared effective policy matrix. Explicit user material constraints may tighten
+// FIXED allocation without changing its recipe semantics; UNKNOWN stays fail-safe.
 const policy = (baselineRule, baselineTarget, plan, qualityCapability = "DYNAMIC") => model.resolveEffectiveMaterialQualityPolicy({
   materialUuid,
   qualityCapability,
@@ -99,8 +100,9 @@ assert.equal(policy(model.rules.TARGET_Q, 750, target900).userFacingLabel, "Q900
 assert.equal(policy(model.rules.TARGET_Q, 750, { mode: model.modes.TARGET_Q, targetQuality: 700 }).effectiveTarget, 750, "A material terv nem gyengítheti a recept minimumát.");
 assert.equal(policy(model.rules.TARGET_Q, 750, highest).userFacingLabel, "Legjobb Q");
 assert.equal(policy(model.rules.TARGET_Q, 750, highest).effectiveMinimum, 750, "A Highest available nem dobhatja el a recept minimumát.");
-assert.equal(policy(model.rules.FIXED, null, target900, "FIXED").userFacingLabel, "Bármely Q");
-assert.equal(policy(model.rules.FIXED, null, highest, "FIXED").effectiveRule, model.rules.FIXED);
+assert.equal(policy(model.rules.FIXED, null, target900, "FIXED").userFacingLabel, "Q900+");
+assert.equal(policy(model.rules.FIXED, null, target900, "FIXED").baselineRecipeQualityRule, model.rules.FIXED);
+assert.equal(policy(model.rules.FIXED, null, highest, "FIXED").effectiveRule, model.rules.HIGHEST_Q);
 assert.equal(policy(model.rules.UNKNOWN, null, target900, "UNKNOWN").userFacingLabel, "Q?");
 assert.equal(policy(model.rules.UNKNOWN, null, highest, "UNKNOWN").effectiveRule, model.rules.UNKNOWN);
 assert.equal(model.formatEffectiveQualityLabel(policy(model.rules.HP_MIN_500, 500, null)), "Q500+");

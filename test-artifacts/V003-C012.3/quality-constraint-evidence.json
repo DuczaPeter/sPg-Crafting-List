@@ -1,0 +1,46 @@
+{
+  "cycle": "V003-C012.3",
+  "status": "PASS",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "blueprint": "Metamaterial Test #152",
+  "recipeSemantics": {
+    "Stileron": "FIXED",
+    "Ouratite": "FIXED"
+  },
+  "targetQ800LowOnly": {
+    "stileronQ747Eligible": false,
+    "stileronReservedUnits": 0,
+    "stileronMissingAmountUnits": 0,
+    "stileronMissingQualityUnits": 15000,
+    "ouratiteQ860ReservedUnits": 9000,
+    "cardSatisfied": false,
+    "maxCraftable": 0
+  },
+  "targetQ800WithQ850": {
+    "stileronAllocatedQualities": [
+      850
+    ],
+    "cardSatisfied": true,
+    "maxCraftable": 3
+  },
+  "highestQ": {
+    "stileronAllocatedQualities": [
+      950,
+      850
+    ]
+  },
+  "parity": {
+    "combinedLabel": "Q800+",
+    "finalCardLabel": "Q800+",
+    "standaloneLabel": "Q800+"
+  },
+  "backupRestore": "PASS",
+  "priorityAndNoDoubleCount": "PASS",
+  "standalone": {
+    "path": "test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html",
+    "bytes": 154483,
+    "sha256": "c5d260c1ddffb6d3638c91c6af7bb650d4162d2d24c77e4890a73605707f30b6",
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}

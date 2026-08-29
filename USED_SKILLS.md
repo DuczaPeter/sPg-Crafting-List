@@ -345,3 +345,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C012.2 scope, a C013/release tiltasa es a fagyasztott V002 vedelme megtartasara; valamint az aktiv 4.10 dataset, exact API linkek, C008 reload/Back, letoltott standalone, fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 aktivverzio-resolver, normalized projekcio/hydration, API deep link es standalone snapshot, C012.2 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C012.3 User Material Quality Constraint Repair
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-29`, a megszakadt C013 auditja, a FIXED recipe/user allocation policy szetvalasztasa, teljes repair-cycle es valodi Chrome localhost Metamaterial Q800/Q850/reload/konzol ellenorzes soran.
+- Mire segitett: a szuk C012.3 scope, az invalidalt C013 es a fagyasztott V002 vedelmenek megtartasara; valamint a valos allocation, Combined/Final Card parity, perzisztencia, fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 Quality policy/allocation UI, C012.3 fixture/teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
