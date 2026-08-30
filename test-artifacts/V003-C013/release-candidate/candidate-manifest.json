@@ -1,15 +1,28 @@
 {
-  "kind": "INVALIDATED_V003_RELEASE_CANDIDATE",
+  "kind": "V003_RELEASE_CANDIDATE",
   "cycle": "V003-C013",
-  "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
-  "invalidationReason": "FIXED recipe slots ignored an explicit user material Quality constraint during allocation.",
-  "baselineCommit": "24b55890a4d97176d756f3f1e3c05f80ee987ab7",
+  "status": "INVALIDATED_BY_C012.5_RELEASE_BLOCKER",
+  "invalidationReason": "A new release-blocking C012.5 requirement was identified before the exact-candidate manual file:// gate. The candidate must never be released or reused.",
+  "baselineCommit": "e519b0889a65b70e8ae6d8be6d869b52e206eb99",
   "source": "sPg Crafting List.html",
+  "path": "test-artifacts/V003-C013/release-candidate/sPg Crafting List.html",
   "filename": "sPg Crafting List.html",
-  "bytes": 749270,
-  "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
-  "buildModel": "DETERMINISTIC_BYTE_COPY",
+  "bytes": 756582,
+  "sha256": "a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807",
+  "buildModel": "GIT_COMMIT_RAW_BYTE_COPY",
+  "sourceByteIdentical": true,
+  "deterministicRebuild": true,
   "runtimeFilesRequired": 1,
   "localSidecarFilesRequired": 0,
-  "onlineDataRefreshRequiresInternet": true
+  "onlineDataRefreshRequiresInternet": true,
+  "manualFileGate": "NOT_RUN_CANDIDATE_INVALIDATED_BEFORE_USER_GATE",
+  "mustNeverBeReleased": true,
+  "reusableForStableRelease": false,
+  "historicalInvalidatedCandidate": {
+    "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+    "baselineCommit": "24b55890a4d97176d756f3f1e3c05f80ee987ab7",
+    "bytes": 749270,
+    "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
+    "mustNeverBeReleased": true
+  }
 }

@@ -103,7 +103,12 @@
 - [x] `V003-C012.4`: mind a 7 letezo numerikus input kozos draft/commit editorral; karakterenkenti User Data iras es teljes rerender eltavolitva.
 - [x] Quantity es Target Q replacement matrix, temporary empty, first-focus select, mar fokuszalt caret, Backspace/Delete, nyil/Home/End, Enter/change/blur/Tab PASS; meglevo unit/parser szabalyok valtozatlanok.
 - [x] Valodi Chrome localhost sequential typing: Craft `1 -> 11452`, Crafting List `11452 -> 3`, Target Q `800 -> 950`; reload fingerprint `170845c4`, console WARN/ERROR 0, 1920/1366/390 overflow 0.
-- [x] C012.4 teljes C001-C012.3 + M1-M6.1 + C04 regresszio, standalone, C012.3 Q800 es V002-integritas PASS; C013 tovabbra is invalidalt es nem indult ujra.
+- [x] C012.4 teljes C001-C012.3 + M1-M6.1 + C04 regresszio, standalone, C012.3 Q800 es V002-integritas PASS.
+- [x] `V003-C013` kiserlet: uj, kizarolag C012.4 baseline-bol epulo determinisztikus single-file candidate; `756582` byte, SHA-256 `a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807`.
+- [x] C013 teljes C001-C012.4 + M1-M6.1 + C04 + target, Quality/allocation/version/mining/radar/color/naming/UEX/backup/standalone/V001/V002 kapu PASS.
+- [x] C013 valodi Chrome localhost Technical Probe, sequential numeric input, Final/Crafting/Combined/detail/Back/reload, baseline+Q900 standalone, 1920/1366/390 es konzol kapu PASS.
+- [x] Az exact `a1c3b86f...807` candidate manual `file://` kapuja `NOT_RUN`; a candidate a kapu elott `INVALIDATED_BY_C012.5_RELEASE_BLOCKER` lett, ezert nem tesztelheto/release-elheto candidate-kent.
+- [ ] `V003-C012.5`: kovetkezo kulon repair-cycle, ebben a lezarasban `NOT_STARTED`.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -119,7 +124,9 @@
 - [x] `V003-C012.1`: Material Quality Planner, effektív Recipe Quality felirat es allocation-aware Combined Materials; felhasznaloi vizualis es mukodesi ellenorzesre atadva.
 - [x] `V003-C012.2`: Active SC Version Consistency Repair; felhasznaloi ellenorzesre atadva, C013 nem indult.
 - [x] `V003-C012.3`: FIXED recipe + explicit user material Quality constraint repair; felhasznaloi ellenorzesre atadva, a korabban megkezdett C013 invalidalt.
-- [x] `V003-C012.4`: Numeric Input Editing Lifecycle Repair; felhasznaloi kezi tesztre atadva, C013 nem indult ujra.
+- [x] `V003-C012.4`: Numeric Input Editing Lifecycle Repair; felhasznaloi kezi teszt PASS, ez lett az uj C013 baseline.
+- [x] `V003-C013` kiserlet: automated es Chrome localhost PASS bizonyitek megorizve; user manual `file://` NOT_RUN; candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`.
+- [ ] `V003-C012.5`: nem indult el.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio

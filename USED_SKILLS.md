@@ -361,3 +361,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C012.4 scope, az invalidalt C013 es a fagyasztott V002 vedelmenek megtartasara; valamint a tenyleges billentyues focus/caret/temporary-empty/commit, reload fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 numerikus input lifecycle, C010/C012 torteneti tesztassert, C012.4 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C013 invalidalt Release Candidate kiserlet lezarasa
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-30`, a C012.4 baseline-lock, determinisztikus candidate-build, teljes release-kapu, exact candidate valodi Chrome localhost ellenorzese es a C012.5 blocker miatti biztonsagos invalidalas soran.
+- Mire segitett: a C013 validacio-only scope, a tiltott application-code modositas, a ket kulon invalidalt candidate es a fagyasztott V001/V002 vedelmenek megtartasara; valamint a PASS evidence megorzese mellett a kiadhatosagi statusz valosaghu lezárasara.
+- Mely fajlokat vagy donteseket erintett: csak C013 builder/teszt/validator, candidate/standalone/evidence, release-candidate riport es projekt statuszdokumentacio; `sPg Crafting List.html`, C012.5, V001 es V002 nem valtozott.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

@@ -1,61 +1,67 @@
 {
   "cycle": "V003-C013",
-  "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
-  "invalidationReason": "The C012.2 application code allowed a Q747 batch for a FIXED recipe slot despite an explicit user Target Q800 material constraint. These historical checks do not qualify this artifact for release.",
+  "status": "PASS_EVIDENCE_PRESERVED_CANDIDATE_INVALIDATED",
+  "candidateValidity": "INVALIDATED_BY_C012.5_RELEASE_BLOCKER",
+  "invalidationReason": "A new release-blocking C012.5 requirement was identified before the exact-candidate manual file:// gate.",
+  "baselineCommit": "e519b0889a65b70e8ae6d8be6d869b52e206eb99",
   "activeScVersion": "4.10.0-LIVE.12519617",
   "candidate": {
     "path": "test-artifacts/V003-C013/release-candidate/sPg Crafting List.html",
-    "bytes": 749270,
-    "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
-    "sourceByteIdentical": true
-  },
-  "fixtureCards": [
-    {
-      "outputName": "JS-300",
-      "quantity": 2,
-      "priority": 1,
-      "collapsed": false
-    },
-    {
-      "outputName": "FR-66",
-      "quantity": 1,
-      "priority": 2,
-      "collapsed": false
-    },
-    {
-      "outputName": "XL-1",
-      "quantity": 1,
-      "priority": 3,
-      "collapsed": true
-    }
-  ],
-  "singleFile": {
-    "embeddedCss": true,
-    "embeddedJavaScript": true,
+    "bytes": 756582,
+    "sha256": "a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807",
+    "sourceByteIdentical": true,
+    "deterministicRebuild": true,
     "runtimeFilesRequired": 1,
     "localSidecarFilesRequired": 0
   },
+  "historicalInvalidatedCandidate": {
+    "status": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+    "sha256": "388a9c04ff6c1a8c9cca06d82f0c226636e0180ba69ced58b59d5284cca4d98e",
+    "reused": false
+  },
+  "fullRegression": {
+    "M1_M6_1": "PASS",
+    "C04": "PASS",
+    "C001_C012_4": "PASS",
+    "C013": "PASS"
+  },
+  "fixtureCards": [
+    "JS-300",
+    "FR-66",
+    "XL-1"
+  ],
   "qualityPlanner": {
-    "baseline": [
-      "Q500+",
-      "Bármely Q",
-      "Bármely Q"
-    ],
-    "target": [
-      "Q900+",
-      "Bármely Q",
-      "Bármely Q"
-    ],
-    "unknownFailSafe": "Q?"
+    "metamaterial152TargetQ800": "PASS",
+    "q747Eligible": false,
+    "q747ReservedUnits": 0,
+    "missingAmountUnits": 0,
+    "missingQualityUnits": 15000,
+    "cardSatisfied": false,
+    "maxCraftable": 0,
+    "ouratiteQ860ReservedUnits": 9000,
+    "qualifiedQ850RestoresCraftability": true,
+    "recipeTargetHighestFixedDynamicHpUnknownMatrix": "PASS"
+  },
+  "numericInputGate": {
+    "auditedNumericEditors": 7,
+    "oneTo11452": "PASS",
+    "11452ToThree": "PASS",
+    "targetQ800To950": "PASS",
+    "temporaryEmpty": "PASS",
+    "firstFocusReplacement": "PASS",
+    "caretStability": "PASS",
+    "enterBlurTab": "PASS",
+    "writesDuringDraft": 0,
+    "fullRerenderDuringDraft": false
   },
   "allocation": {
     "doubleCount": false,
     "prioritySwap": true,
-    "maxCraftableRefresh": true,
-    "combinedRefresh": true
+    "sameBatchReservedTwice": false,
+    "maxCraftableUsesQualityFilteredInventory": true,
+    "combinedUsesSharedAllocation": true
   },
   "backupRestore": {
-    "fingerprint": "c673f6ef",
     "roundtrip": true,
     "legacyMissingPlanDefault": "RECIPE"
   },
@@ -63,58 +69,43 @@
     "versionAStored": true,
     "versionBActive": true,
     "versionALeakage": false,
-    "hydrationIdentityVersioned": true
+    "hydrationIdentityVersioned": true,
+    "itemMaterialDetailStandaloneLinks": "PASS"
   },
-  "mining": {
-    "materials": [
-      "Aluminum",
-      "Agricium",
-      "Stileron",
-      "Beryl",
-      "Tungsten",
-      "Quantanium"
-    ],
-    "rankingOrder": "PRIMARY_GATE -> SPAWN -> OCCURRENCE -> QUALITY",
-    "normalSpaceSeparated": true,
-    "secondaryExcluded": true
-  },
-  "radar": {
-    "source": "VERSIONED_REFERENCE_REGISTRY",
-    "apiRawUserFacing": false,
-    "materials": [
-      "Stileron",
-      "Beryl",
-      "Savrilium"
-    ]
-  },
-  "canonicalNaming": {
-    "hiddenInvalid": true,
-    "duplicateCollapse": true,
-    "fuzzy": false
-  },
-  "uex": {
-    "endpoint": "https://api.uexcorp.uk/2.0/refineries_yields",
-    "mapping": true,
-    "tie": true,
-    "negative": true,
-    "unmappedFailSafe": true
+  "miningRadarColorNamingUex": {
+    "primarySecondaryRanking": "PASS",
+    "normalSpaceTop3": "PASS",
+    "radarRegistry": "PASS",
+    "colorRegistry": "PASS",
+    "canonicalNaming": "PASS",
+    "uexMappingRankingTtl": "PASS"
   },
   "apiLinks": {
     "item": "https://api.star-citizen.wiki/items/js-300?version=4.10.0-LIVE.12519617",
-    "stileron": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.10.0-LIVE.12519617"
+    "stileron": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.10.0-LIVE.12519617",
+    "exactSourceOnly": true,
+    "fuzzy": false
   },
   "standalone": {
     "baseline": {
       "path": "test-artifacts/V003-C013/standalone/sPg Crafting List - JS-300 baseline.html",
-      "bytes": 183923,
-      "sha256": "038aeef0990056c4fae9be27c02e771648f56cd8ac0dcf972a0b546042a7f580"
+      "bytes": 186132,
+      "sha256": "21359755d84cad54f90b00704f9ee4aac14969c09a9652191d71c1adf68267e5"
     },
     "q900": {
       "path": "test-artifacts/V003-C013/standalone/sPg Crafting List - JS-300 Q900.html",
-      "bytes": 184099,
-      "sha256": "e0fe2383c3f415a0c8eac7cfd244acd302ee839ee707790998bf11317d9799c2"
+      "bytes": 186364,
+      "sha256": "a85010611402703d0db623079e79dc112008fdbdce246006a64693ca65bf9c69"
     },
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "embeddedSnapshot": true,
     "externalRuntimeAssets": 0,
-    "runtimeFetch": 0
-  }
+    "runtimeFetch": 0,
+    "details": "PASS"
+  },
+  "v001Integrity": "PASS",
+  "v002Integrity": "PASS",
+  "manualExactCandidateFileGate": "NOT_RUN",
+  "mustNeverBeReleased": true
 }

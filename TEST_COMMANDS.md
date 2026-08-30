@@ -542,3 +542,25 @@ node .\tools\run-v003-c0124-tests.mjs
 
 - `v003-c0124-numeric-editor-lifecycle`: kozos `bindCommittedNumericEditor()` es `normalizeCommittedNumericDraft()`, 7 tenyleges input, quantity/Target Q replacement matrix, temporary empty, first-focus select, mar fokuszalt caret, Backspace/Delete, nyil/Home/End, Enter/change/blur/Tab, 0 draftkori User Data iras, valtozatlan SCU/ITEM parser es teljes C001-C012.3/M1-M6.1/C04/V002-integritas.
 - C012.4 artifactok: `test-artifacts/V003-C012.4/`.
+
+V003-C013 invalidalt kiserlet lezaro integritas-kapuja (C012.4 byte-lock, determinisztikus build, celteszt es fagyasztott release-integritas):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c013.ps1"
+```
+
+Candidate ujrageneralasa kizarolag a lezart C012.4 commitbol:
+
+```powershell
+node .\tools\build-v003-c013-candidate.mjs
+```
+
+Csak a C013 candidate/single-file/JS-300 baseline+Q900 standalone celteszt:
+
+```powershell
+node .\tools\run-v003-c013-tests.mjs
+```
+
+- `v003-c013-release-candidate`: az alkalmazas C012.4 baseline-tol valo eltereset blokkolja; a candidate SHA/byte-egyezeset, single-file runtime-ot, aktiv 4.10 source/link konzisztenciat, baseline/Q900 Quality/allocation/Combined/detail standalone-t, a megorzott evidence statuszt es V001/V002 integritast ellenorzi.
+- A teljes C001-C012.4/M1-M6.1/C04 kapu az invalidalas elott PASS volt; ezt az evidence orzi, a lezaro integritas-kapu nem futtatja ujra a teljes torteneti lancot.
+- C013 artifactok: `test-artifacts/V003-C013/`; exact candidate manual `file://` `NOT_RUN`, candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`. A regi `388a...` candidate kulon `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`.

@@ -3,20 +3,20 @@
 - Projekt neve: `sPg Crafting List`
 - Rovid cel: `Star Citizen crafting-, inventory-, Quality-, mining- es loadout-tervezo helyi webalkalmazas elkeszitese.`
 - Projekt tipus: `egyfajlos helyi webalkalmazas: sPg Crafting List.html embedded CSS-sel es JavaScripttel`
-- Aktualis allapot: `V003-dev C012.4 – NUMERIC INPUT EDITING LIFECYCLE REPAIR PASS`
+- Aktualis allapot: `V003 C013 ATTEMPT – AUTOMATED PASS, CHROME LOCALHOST PASS, USER MANUAL file:// NOT RUN, INVALIDATED BY C012.5 RELEASE BLOCKER`
 - Stabil verzio vagy baseline: `V002`
 - Stabil fajl, commit vagy tag: `releases/V002/sPg Crafting List.html; tag V002`
 - Aktualis fejlesztesi celverzio: `V003-dev`
-- Aktualis javitasi ciklus: `V003-C012.4`
+- Aktualis javitasi ciklus: `V003-C013`
 - Utolso sikeres ciklus: `V003-C012.4`
-- Candidate vagy munkaverzio: `sPg Crafting List.html (V003-dev single-file munkaverzio)`
+- Candidate vagy munkaverzio: `V003-C013 candidate INVALIDATED_BY_C012.5_RELEASE_BLOCKER; SHA-256 a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807`
 - Aktualis branch: `develop/V003`
 - Utolso ellenorzesi szint: `PASS`
-- Kovetkezo kotelezo teszt: `felhasznaloi kezi ellenorzes a C012.4 numerikus mezok szerkesztesi javitasa utan`
-- Aktualis feladat: `C012.4 numerikus draft/commit editor javitas lezart`
-- Blokkolo problema: `nincs fejlesztesi blokkolo; stabil V003 release/tag nincs engedelyezve`
-- Kovetkezo lepes: `megallas felhasznaloi kezi numeric-input ellenorzeshez; C013 nem indul ujra, stabil V003 release/tag nincs engedelyezve`
-- Utolso frissites: `2026-08-30T06:46:16+02:00`
+- Kovetkezo kotelezo teszt: `nincs; C012.5 kulon felhasznaloi utasitasra indulhat, ebben a korben NOT_STARTED`
+- Aktualis feladat: `a felbemaradt C013 kiserlet dokumentalt lezarasa es invalidalasa`
+- Blokkolo problema: `uj C012.5 release blocker; a jelenlegi C013 candidate nem adhato ki es nem hasznalhato ujra`
+- Kovetkezo lepes: `megallas; C012.5 nem indult el, stabil V003 release/tag nincs engedelyezve`
+- Utolso frissites: `2026-08-30T08:00:00+02:00`
 
 ## Ellenorzesi igazsag
 
@@ -40,6 +40,10 @@ Csak azt jelold mukodonek vagy stabilnak, amit tenylegesen ellenoriztel.
 - C012.3 valodi Chrome localhost: aktiv `4.10.0-LIVE.12519617`; Q747 Stileron nem foglalhato Q800 tervhez, hiany 1.5 SCU es Max 0; Q850 batch hozzaadasa utan a kartya teljesult, Max 3, Q747 szabad maradt. Technical Probe PASS, stabil reload fingerprint `749d1f60 -> 749d1f60`, konzol WARN/ERROR 0.
 - C012.4 automatizalt: kozos `bindCommittedNumericEditor()` es commitkori `normalizeCommittedNumericDraft()` mind a 7 tenyleges numerikus editorhoz; karakterenkenti User Data iras/render 0, ures draft, select/caret, Enter/change/blur/Tab es a teljes replacement matrix PASS. Teljes C001-C012.4 + M1-M6.1 + C04 es C012.3 Q800 regresszio PASS.
 - C012.4 valodi Chrome localhost: tenyleges egymas utani billentyukkel Craft `1 -> 11452`, Crafting List `11452 -> 3`, Combined Target Q `800 -> 950`, temporary empty/caret/Enter/Tab/reload PASS; 1920/1366/390 horizontal overflow 0; fingerprint `170845c4 -> 170845c4`; konzol WARN/ERROR 0.
-- A megkezdett C013-nak nem volt commitja. A helyi release-candidate bizonyitek `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`; C013 lezaro kapu, V003 release vagy tag nem keszult.
+- C013 candidate: a C012.4 baseline commit raw byte-copyja, `756582` byte, SHA-256 `a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807`; ket ujrageneralas byte-azonos, single-file runtime es helyi sidecar 0 PASS. A regi `388a9c04...cca4d98e` candidate tovabbra is torteneti `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`, nem lett ujra felhasznalva.
+- C013 automatizalt: teljes C001-C012.4 + M1-M6.1 + C04 + C013, Metamaterial #152 Q800, numerikus gate, allocation, active version/two-version isolation, Mining/Radar/Color/Naming/UEX, backup/restore, JS-300 baseline+Q900 standalone es V001/V002 integritas PASS.
+- C013 valodi Chrome localhost: Technical Probe 15/15, exact candidate Final Card/Crafting List/Combined/detail/reload/Back, sequential numeric edit, ket standalone, 1920/1366/390 overflow 0 es konzol WARN/ERROR 0 PASS. A real save fixture audit `updatedAt` mezoket irt, ezert a logikai visszaallitas utan a teljes fingerprint `170845c4 -> 683b3f50`; adatvesztes nincs, a valtoztatasmentes post-fixture reload `683b3f50 -> 683b3f50` PASS.
+- Az exact candidate felhasznaloi `file://` kapuja `NOT_RUN`. Az `a1c3b86f...807` candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`, mikozben az automatizalt es Chrome localhost PASS bizonyitek valtozatlanul megmarad.
+- A regi `388a9c04...cca4d98e` candidate kulon `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`; a ket candidate es blocker nincs osszekeverve. C012.5 ebben a lezarasban nem indult el.
 - C007 valodi Chrome `file://`: `USER MANUAL PASS_NOT_CODEX_AUTOMATION`; a felhasznalo jelentette, nem Codex automation futtatta.
 - Stabil V002 tag commit `b326aaff...150e35` es HTML SHA-256 `de2d59b4...9f2357` valtozatlan; stabil V003 release/tag nem keszult.

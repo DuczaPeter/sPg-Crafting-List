@@ -1,0 +1,60 @@
+{
+  "cycle": "V003-C013",
+  "status": "PASS_EVIDENCE_PRESERVED_CANDIDATE_INVALIDATED",
+  "candidateValidity": "INVALIDATED_BY_C012.5_RELEASE_BLOCKER",
+  "origin": "CODEX_REAL_CHROME_LOCALHOST",
+  "candidateSha256": "a1c3b86f6cda2ac992d4ee62d6186cce0c5dc2df499cfc7d85892b471fccb807",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "technicalProbe": {
+    "status": "PASS",
+    "checks": 15,
+    "failedChecks": 0
+  },
+  "actualSequentialTyping": {
+    "blueprintQuantity1To11452": "PASS",
+    "blueprintQuantity11452To3": "PASS",
+    "craftingListQuantityTo11452AndBackTo3": "PASS",
+    "combinedTargetQ800To950": "PASS",
+    "temporaryEmpty": "PASS",
+    "firstFocusReplacement": "PASS",
+    "alreadyFocusedSingleDigitEdit": "PASS",
+    "focusAndDomIdentityRetainedDuringDraft": "PASS",
+    "enterCommit": "PASS",
+    "tabBlurCommit": "PASS",
+    "reloadQuantity": 3,
+    "reloadTargetQuality": 950
+  },
+  "modules": {
+    "finalCard": "PASS",
+    "craftingList": "PASS",
+    "combinedMaterials": "PASS",
+    "detailRoute": "PASS",
+    "detailReload": "PASS",
+    "browserBack": "PASS"
+  },
+  "viewports": {
+    "1920x1080": { "horizontalOverflow": 0, "status": "PASS" },
+    "1366x768": { "horizontalOverflow": 0, "status": "PASS" },
+    "390x844": { "horizontalOverflow": 0, "detailHorizontalOverflow": 0, "status": "PASS" }
+  },
+  "standalone": {
+    "baseline": "PASS",
+    "q900": "PASS",
+    "embeddedSnapshot": true,
+    "externalRuntimeResources": 0,
+    "detailRoute": "PASS"
+  },
+  "consoleWarningCount": 0,
+  "consoleErrorCount": 0,
+  "userData": {
+    "fingerprintBeforeIntentionalFixture": "170845c4",
+    "fingerprintAfterLogicalValuesRestored": "683b3f50",
+    "postFixtureReloadFingerprint": "683b3f50",
+    "logicalQuantityRestored": 3,
+    "logicalTargetQualityRestored": 950,
+    "loss": false,
+    "auditNote": "The required real save operations update record updatedAt metadata, so the full fingerprint changes even after logical values are restored. The restored post-fixture state is stable across reload."
+  },
+  "manualExactCandidateFileGate": "NOT_RUN",
+  "mustNeverBeReleased": true
+}
