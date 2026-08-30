@@ -353,3 +353,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a szuk C012.3 scope, az invalidalt C013 es a fagyasztott V002 vedelmenek megtartasara; valamint a valos allocation, Combined/Final Card parity, perzisztencia, fingerprint es tiszta konzol bizonyitasara.
 - Mely fajlokat vagy donteseket erintett: V003 Quality policy/allocation UI, C012.3 fixture/teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C012.4 Numeric Input Editing Lifecycle Repair
+
+- Skillek neve: `uj-projekt`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-29` es `2026-08-30`, a numeric input audit, kozos draft/commit helper, teljes repair-cycle es valodi Chrome sequential typing/responsive/konzol ellenorzes soran.
+- Mire segitett: a szuk C012.4 scope, az invalidalt C013 es a fagyasztott V002 vedelmenek megtartasara; valamint a tenyleges billentyues focus/caret/temporary-empty/commit, reload fingerprint es tiszta konzol bizonyitasara.
+- Mely fajlokat vagy donteseket erintett: V003 numerikus input lifecycle, C010/C012 torteneti tesztassert, C012.4 teszt/validator/report/artifact es projekt statuszfajlok; a skillfajlok es V002 nem valtoztak.
+- Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.

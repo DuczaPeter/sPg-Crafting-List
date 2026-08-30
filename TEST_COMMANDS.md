@@ -527,3 +527,18 @@ node .\tools\run-v003-c0123-tests.mjs
 
 - `v003-c0123-user-material-quality-constraint`: FIXED recipe baseline megorzese, explicit TARGET_Q/HIGHEST_Q allocation-korlat, missing Quality es Max, Combined/Final/standalone parity, HP/UNKNOWN vedelmek, priority/no-double-count, backup/restore, C013 invalidacio es V002-integritas.
 - C012.3 artifactok: `test-artifacts/V003-C012.3/`; az elozo megszakadt candidate csak invalidalt bizonyitekkent: `test-artifacts/V003-C013/`.
+
+V003-C012.4 teljes kapu (minden numerikus editor draft/commit lifecycle, C012.3 es teljes regresszio):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0124.ps1"
+```
+
+Csak a C012.4 replacement/empty/selection/caret/commit/unit celteszt:
+
+```powershell
+node .\tools\run-v003-c0124-tests.mjs
+```
+
+- `v003-c0124-numeric-editor-lifecycle`: kozos `bindCommittedNumericEditor()` es `normalizeCommittedNumericDraft()`, 7 tenyleges input, quantity/Target Q replacement matrix, temporary empty, first-focus select, mar fokuszalt caret, Backspace/Delete, nyil/Home/End, Enter/change/blur/Tab, 0 draftkori User Data iras, valtozatlan SCU/ITEM parser es teljes C001-C012.3/M1-M6.1/C04/V002-integritas.
+- C012.4 artifactok: `test-artifacts/V003-C012.4/`.

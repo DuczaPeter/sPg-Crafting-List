@@ -626,3 +626,12 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Chrome localhost: aktiv `4.10.0-LIVE.12519617`; valos UI Q800 hiany/Max 0, Q850 utan teljesult/Max 3, Q747 reserved 0; reload utan stabil fingerprint `749d1f60 -> 749d1f60`; Technical Probe PASS; konzol WARN/ERROR 0.
 - Standalone automatizalt artifact: `test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html`, 154483 byte, SHA-256 `c5d260c1ddffb6d3638c91c6af7bb650d4162d2d24c77e4890a73605707f30b6`, kulso runtime fetch/resource 0.
 - V003 release/tag/push nem keszult. Visszaallas: a C012.3 commit revertje; stabil fallback a valtozatlan `V002` tag/release.
+
+### V003-C012.4 Numeric Input Editing Lifecycle Repair - 2026-08-30
+
+- Gyokerok: a quantity/Target Q `input` esemeny karakterenkent normalizalt, state-et irt es debounced teljes renderrel lecserelte a fokuszalt inputot; az ures draft visszaugorhatott, a selection/caret elveszhetett. A Mining station override szinten minden karakterre alkalmazott es renderelt.
+- Javitas: kozos `bindCommittedNumericEditor()`, `normalizeCommittedNumericDraft()` es `bindQualityTargetEditor()`; draft DOM-lokalis, commit csak Enter/change/blurkor, elso focus select-all, mar fokuszalt kattintasnal nativ caret. Invalid Target Q restore previous; quantity commitkor a regi min/clamp szabaly marad.
+- Audit: Blueprint Browser es Crafting List quantity, Combined es recipe Target Q, My Materials quantity/Quality, Mining station override. Dot/comma/precision es SCU/ITEM parser valtozatlan.
+- Automatizalt: replacement matrix, ures draft, Backspace/Delete, nyil/Home/End, Enter/change/blur/Tab, draftkori User Data write 0; teljes `validate-v003-c0124.ps1` C001-C012.4 + M1-M6.1 + C04, C012.3 Q800, standalone es V002-integritas PASS.
+- Valodi Chrome localhost: tenyleges egymas utani billentyukkel `1 -> 11452`, `11452 -> 3`, `800 -> 950`; focus/caret es reload perzisztencia PASS. 1920x1080, 1366x768, 390x844 overflow 0; fingerprint `170845c4 -> 170845c4`; konzol WARN/ERROR 0.
+- A C013 candidate tovabbra is `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`; C013, V003 release/tag/push/main merge nem keszult. Visszaallas: a C012.4 commit revertje; stabil fallback a valtozatlan V002 tag/release.

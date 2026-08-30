@@ -35,7 +35,8 @@ assert.match(listRenderer[1], /duplicateCraftingCard/, "A duplikálás elveszett
 assert.match(listRenderer[1], /deleteCraftingCard/, "A törlés elveszett.");
 assert.match(listRenderer[1], /downloadStandaloneExport/, "A kanonikus egykártyás export elveszett.");
 assert.match(listRenderer[1], /sourceCardId:\s*card\.id[\s\S]*?sourceModule:\s*"craftingListNav"/, "A detail route nem őrzi a forráskártya-kontektsust.");
-assert.match(listRenderer[1], /onQuantityInput:\s*function\s*\(value\)/, "A mennyiség nem mentődik input közben.");
+assert.match(listRenderer[1], /onQuantityCommit:\s*function\s*\(value\)/, "A mennyiség egyszeri commit callbackje hiányzik.");
+assert.doesNotMatch(listRenderer[1], /onQuantityInput\s*:/, "A mennyiség ismét karakterenként mentődik.");
 assert.match(appHtml, /spg-source-card=/, "A detail route nem tárolja a forrás Crafting Card azonosítóját.");
 assert.match(appHtml, /spgDetailReturnedCardId/, "A detail-visszatérés diagnosztikája nem azonosítja a helyreállított kártyát.");
 

@@ -164,3 +164,10 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - `FIXED + RECIPE` tovabbra is barmely Quality batch-et elfogad. `FIXED + TARGET_Q/HIGHEST_Q` mellett a recept FIXED marad, de az explicit felhasznaloi cel az allocation, missing Quality, Max craftable, Combined, Final Card, detail es standalone kozos effektív policyja.
 - HP/receptminimum felhasznaloi tervvel nem gyengitheto. `UNKNOWN` tovabbra is fail-safe; bizonyitek nelkul nincs Quality-talalgatas.
 - A megszakadt C013 release-candidate nem kiadasi bizonyitek: C013 commit nem volt, az artifact `INVALIDATED_BY_C012.3_RELEASE_BLOCKER` statuszt kapott. C013 csak uj felhasznaloi utasitasra indulhat ujra.
+
+## 2026-08-30 - V003-C012.4 numerikus draft/commit eletciklus
+
+- Numerikus input szerkesztese kozben a DOM-szoveg draft; nem User Data es nem indok teljes alkalmazas-renderre. Normalizalas, state-iras es fuggő ujraszamolas csak Enter/change/blur commitkor tortenhet.
+- Kompakt numerikus mezonel az elso pointer- vagy keyboard-focus teljes ertekcseret segito kijelolest kap. Mar fokuszalt mezore kattintas a bongeszo nativ caret-viselkedeset hagyja ervenyesulni.
+- A kozos editor nem irhatja felul a meglevo mezo-specifikus uzleti szabalyokat. Quantity a regi min/clamp logikat, Target Q a 0..1000 egesz validaciot, My Materials az eredeti SCU/ITEM parser es precision szabalyokat tartja meg.
+- C013 csak uj, C012.4 utani byte-tartalombol indulhat uj felhasznaloi utasitasra. A regi candidate tovabbra is invalidalt.

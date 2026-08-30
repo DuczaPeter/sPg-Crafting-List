@@ -259,6 +259,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0123.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0124-numeric-editor-lifecycle",
+      "level": "full-regression",
+      "description": "V003-C012.4 gate: all seven real numeric inputs use one draft/commit lifecycle; first-focus replacement, stable multi-character typing/caret, temporary empty draft, Enter/blur/change/Tab commit, unchanged SCU parser, C012.3 Quality allocation, complete C001-C012.3 plus M1-M6.1/C04 regression, invalidated C013 preservation and frozen V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0124.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

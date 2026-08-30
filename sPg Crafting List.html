@@ -7964,6 +7964,181 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 1000;
     }
 
+    /* C0124_NUMERIC_EDITOR_START */
+    function normalizeCommittedNumericDraft(rawValue, options) {
+      var settings = options || {};
+      var rawText = String(rawValue == null ? "" : rawValue).trim();
+      if (rawText === "") {
+        if (settings.allowEmpty === true) {
+          return { ok: true, value: null, text: "", normalization: "EMPTY_ALLOWED" };
+        }
+        if (settings.emptyValue !== undefined) {
+          return {
+            ok: true,
+            value: Number(settings.emptyValue),
+            text: String(settings.emptyValue),
+            normalization: "EMPTY_NORMALIZED"
+          };
+        }
+        return { ok: false, reason: "EMPTY_NOT_ALLOWED" };
+      }
+      var value = Number(rawText);
+      if (!Number.isFinite(value)) {
+        return { ok: false, reason: "NOT_FINITE" };
+      }
+      if (settings.integer === true) {
+        if (settings.roundInteger === true) {
+          value = Math.round(value);
+        } else if (!Number.isInteger(value)) {
+          return { ok: false, reason: "INTEGER_REQUIRED" };
+        }
+      }
+      if (Number.isFinite(Number(settings.min)) && value < Number(settings.min)) {
+        if (settings.clamp === true) {
+          value = Number(settings.min);
+        } else {
+          return { ok: false, reason: "BELOW_MINIMUM" };
+        }
+      }
+      if (Number.isFinite(Number(settings.max)) && value > Number(settings.max)) {
+        if (settings.clamp === true) {
+          value = Number(settings.max);
+        } else {
+          return { ok: false, reason: "ABOVE_MAXIMUM" };
+        }
+      }
+      return { ok: true, value: value, text: String(value), normalization: "VALID" };
+    }
+
+    function bindCommittedNumericEditor(input, options) {
+      if (!input || typeof input.addEventListener !== "function") {
+        throw new TypeError("A numerikus editorhoz input elem szükséges.");
+      }
+      if (input.dataset.numericEditorBound === "true") {
+        return input.__spgNumericEditor || null;
+      }
+      var settings = options || {};
+      var committedText = String(input.value == null ? "" : input.value);
+      var dirty = false;
+      var selectOnPointerUp = false;
+
+      function selectCurrentValue() {
+        if (document.activeElement !== input || typeof input.select !== "function") { return; }
+        try { input.select(); } catch (_) { return; }
+      }
+
+      function restoreCommitted(reason, result) {
+        input.value = committedText;
+        input.dataset.numericCommit = "RESTORED_INVALID";
+        input.dataset.numericCommitReason = reason;
+        input.setCustomValidity("");
+        dirty = false;
+        if (typeof settings.onInvalid === "function") {
+          settings.onInvalid(result || { ok: false, reason: "INVALID" }, input, reason);
+        }
+        return false;
+      }
+
+      function commit(reason) {
+        if (!dirty && reason !== "explicit") { return true; }
+        if (typeof settings.resolveDraft !== "function") {
+          committedText = String(input.value == null ? "" : input.value);
+          dirty = false;
+          input.dataset.numericCommit = "DEFERRED_TO_FORM";
+          return true;
+        }
+        var result = settings.resolveDraft(input.value, committedText, input);
+        if (!result || result.ok !== true) {
+          return restoreCommitted(reason, result);
+        }
+        input.value = result.text === undefined ? String(result.value == null ? "" : result.value) : String(result.text);
+        committedText = input.value;
+        dirty = false;
+        input.dataset.numericDraft = committedText;
+        input.dataset.numericCommit = result.normalization || "COMMITTED";
+        input.dataset.numericCommitReason = reason;
+        input.setCustomValidity("");
+        if (typeof settings.onCommit === "function") {
+          var commitResult;
+          try {
+            commitResult = settings.onCommit(result.value, input, reason, result);
+          } catch (error) {
+            if (typeof settings.onError === "function") {
+              settings.onError(error, input, reason);
+            } else {
+              setNotice("Numerikus mező mentési hiba: " + error.message, "error");
+            }
+            return false;
+          }
+          Promise.resolve(commitResult).catch(function (error) {
+            if (typeof settings.onError === "function") {
+              settings.onError(error, input, reason);
+            } else {
+              setNotice("Numerikus mező mentési hiba: " + error.message, "error");
+            }
+          });
+        }
+        return true;
+      }
+
+      input.dataset.numericEditorBound = "true";
+      input.dataset.numericDraft = committedText;
+      input.addEventListener("pointerdown", function () {
+        selectOnPointerUp = document.activeElement !== input;
+      });
+      input.addEventListener("focus", function () {
+        committedText = String(input.value == null ? "" : input.value);
+        dirty = false;
+        input.dataset.numericEditing = "true";
+        if (!selectOnPointerUp) { selectCurrentValue(); }
+      });
+      input.addEventListener("pointerup", function (event) {
+        if (!selectOnPointerUp) { return; }
+        event.preventDefault();
+        selectOnPointerUp = false;
+        selectCurrentValue();
+      });
+      input.addEventListener("input", function () {
+        dirty = true;
+        input.dataset.numericDraft = input.value;
+        input.dataset.numericCommit = "DRAFT";
+        input.setCustomValidity("");
+        if (typeof settings.onDraft === "function") {
+          settings.onDraft(input.value, input);
+        }
+      });
+      input.addEventListener("change", function () { commit("change"); });
+      input.addEventListener("blur", function () {
+        input.dataset.numericEditing = "false";
+        commit("blur");
+      });
+      input.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter" || typeof settings.resolveDraft !== "function") { return; }
+        event.preventDefault();
+        if (commit("enter")) { input.blur(); }
+      });
+      input.__spgNumericEditor = Object.freeze({
+        commit: commit,
+        getDraftText: function () { return input.value; },
+        getCommittedText: function () { return committedText; }
+      });
+      return input.__spgNumericEditor;
+    }
+
+    function bindQualityTargetEditor(input, onCommit, onError) {
+      return bindCommittedNumericEditor(input, {
+        resolveDraft: function (draft) {
+          return normalizeCommittedNumericDraft(draft, { integer: true, min: 0, max: 1000 });
+        },
+        onCommit: onCommit,
+        onInvalid: function () {
+          setNotice("A Cél Q 0 és 1000 közötti egész szám legyen; az előző érték maradt.", "error");
+        },
+        onError: onError
+      });
+    }
+    /* C0124_NUMERIC_EDITOR_END */
+
     function isIntegrityStat(stat) {
       var text = String([
         stat && stat.key,
@@ -13554,14 +13729,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         quantity.step = "1";
         quantity.value = String(viewModel.card.requestedQuantity);
         quantity.setAttribute("aria-label", viewModel.card.outputName + " – gyártani akarok");
-        quantity.addEventListener("input", function () {
-          if (typeof settings.onQuantityInput === "function") {
-            settings.onQuantityInput(Math.max(1, Math.round(Number(quantity.value) || 1)), quantity);
-          }
-        });
-        quantity.addEventListener("change", function () {
-          if (typeof settings.onQuantityChange === "function") {
-            settings.onQuantityChange(Math.max(1, Math.round(Number(quantity.value) || 1)), quantity);
+        bindCommittedNumericEditor(quantity, {
+          resolveDraft: function (draft) {
+            return normalizeCommittedNumericDraft(draft, { integer: true, roundInteger: true, min: 1, clamp: true, emptyValue: 1 });
+          },
+          onCommit: function (value, input, reason, result) {
+            if (typeof settings.onQuantityCommit === "function") {
+              return settings.onQuantityCommit(value, input, reason, result);
+            }
+            return null;
+          },
+          onError: function (error) {
+            setNotice("Mennyiség mentési hiba: " + error.message, "error");
           }
         });
         var unit = document.createElement("span");
@@ -13624,7 +13803,6 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         trace: allocation.trace || [],
         materialQualityPlans: state.materialQualityPlans
       });
-      var quantityRecalcTimer = null;
       container.append(renderFinalCraftingCardContent(viewModel, {
         context: "blueprint-browser",
         cardId: card.id,
@@ -13637,22 +13815,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             cart.disabled = false;
           });
         },
-        onQuantityInput: function (value) {
+        onQuantityCommit: function (value) {
           state.finalCardQuantity = value;
           document.body.dataset.c010FinalCardQuantity = String(value);
-          if (quantityRecalcTimer !== null) { clearTimeout(quantityRecalcTimer); }
-          quantityRecalcTimer = setTimeout(function () {
-            quantityRecalcTimer = null;
-            recalculateC010FinalCraftingCard();
-          }, 250);
-        },
-        onQuantityChange: function (value) {
-          if (quantityRecalcTimer !== null) {
-            clearTimeout(quantityRecalcTimer);
-            quantityRecalcTimer = null;
-          }
-          state.finalCardQuantity = value;
-          recalculateC010FinalCraftingCard();
+          return recalculateC010FinalCraftingCard();
         }
       }));
       document.body.dataset.c010FinalCardReady = "true";
@@ -13801,41 +13967,25 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         ? String(material.plan.targetQuality)
         : "";
       target.hidden = material.plan.mode !== MATERIAL_QUALITY_PLAN_MODES.TARGET_Q;
-      var inputTimer = null;
-
-      function saveTarget() {
-        if (!hasValidQuality(target.value)) {
-          target.setCustomValidity("A Cél Q 0 és 1000 közötti egész szám legyen.");
-          target.reportValidity();
-          return;
-        }
-        target.setCustomValidity("");
-        persistMaterialQualityPlan(material.materialUuid, { mode: MATERIAL_QUALITY_PLAN_MODES.TARGET_Q, targetQuality: Number(target.value) }).catch(function (error) {
-          setNotice("Material Quality Plan mentési hiba: " + error.message, "error");
-        });
-      }
+      bindQualityTargetEditor(target, function (value) {
+        return persistMaterialQualityPlan(material.materialUuid, { mode: MATERIAL_QUALITY_PLAN_MODES.TARGET_Q, targetQuality: value });
+      }, function (error) {
+        setNotice("Material Quality Plan mentési hiba: " + error.message, "error");
+      });
 
       select.addEventListener("change", function () {
         target.hidden = select.value !== MATERIAL_QUALITY_PLAN_MODES.TARGET_Q;
         if (select.value === MATERIAL_QUALITY_PLAN_MODES.TARGET_Q) {
           if (!hasValidQuality(target.value)) { target.value = "500"; }
-          saveTarget();
+          persistMaterialQualityPlan(material.materialUuid, { mode: MATERIAL_QUALITY_PLAN_MODES.TARGET_Q, targetQuality: Number(target.value) }).catch(function (error) {
+            setNotice("Material Quality Plan mentési hiba: " + error.message, "error");
+          });
           target.focus();
           return;
         }
         persistMaterialQualityPlan(material.materialUuid, { mode: select.value, targetQuality: null }).catch(function (error) {
           setNotice("Material Quality Plan mentési hiba: " + error.message, "error");
         });
-      });
-      target.addEventListener("input", function () {
-        target.setCustomValidity(hasValidQuality(target.value) ? "" : "A Cél Q 0 és 1000 közötti egész szám legyen.");
-        if (inputTimer !== null) { clearTimeout(inputTimer); }
-        if (!hasValidQuality(target.value)) { return; }
-        inputTimer = setTimeout(function () { inputTimer = null; saveTarget(); }, 350);
-      });
-      target.addEventListener("change", function () {
-        if (inputTimer !== null) { clearTimeout(inputTimer); inputTimer = null; }
-        saveTarget();
       });
       wrapper.append(label, target);
       return wrapper;
@@ -14134,14 +14284,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         target.setAttribute("aria-label", requirement.recipeSlotName + " Target Q");
         target.value = String((slotStrategies[requirement.id] && slotStrategies[requirement.id].targetQuality) || 850);
         target.hidden = qualityRule.mode !== M2_QUALITY_RULES.TARGET_Q;
+        bindQualityTargetEditor(target, function (value) {
+          return updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, value);
+        }, function (error) {
+          setNotice("Target Q mentési hiba: " + error.message, "error");
+        });
         select.addEventListener("change", function () {
           updateCardStrategy(card.id, requirement.id, select.value, Number(target.value)).catch(function (error) {
             setNotice("Quality stratégia mentési hiba: " + error.message, "error");
-          });
-        });
-        target.addEventListener("change", function () {
-          updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, Number(target.value)).catch(function (error) {
-            setNotice("Target Q mentési hiba: " + error.message, "error");
           });
         });
         strategyRow.append(select, target);
@@ -14246,14 +14396,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           target.setAttribute("aria-label", requirement.recipeSlotName + " Target Q");
           target.value = String(((card.slotStrategies || {})[requirement.id] && card.slotStrategies[requirement.id].targetQuality) || 850);
           target.hidden = qualityRule.mode !== M2_QUALITY_RULES.TARGET_Q;
+          bindQualityTargetEditor(target, function (value) {
+            return updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, value);
+          }, function (error) {
+            setNotice("Target Q mentési hiba: " + error.message, "error");
+          });
           select.addEventListener("change", function () {
             updateCardStrategy(card.id, requirement.id, select.value, Number(target.value)).catch(function (error) {
               setNotice("Quality stratégia mentési hiba: " + error.message, "error");
-            });
-          });
-          target.addEventListener("change", function () {
-            updateCardStrategy(card.id, requirement.id, M2_QUALITY_RULES.TARGET_Q, Number(target.value)).catch(function (error) {
-              setNotice("Target Q mentési hiba: " + error.message, "error");
             });
           });
           editor.append(select, target);
@@ -14371,7 +14521,6 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         managementActions.querySelector(".spg-c012-export-action").dataset.exportCardId = card.id;
         management.append(priority, managementActions);
 
-        var quantityPersistTimer = null;
         var finalCard = renderFinalCraftingCardContent(cardViewModel, {
           context: "crafting-list",
           className: "spg-c012-final-card",
@@ -14381,23 +14530,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           includeOutputType: true,
           stockStatusText: cardResult.satisfied ? "Készlet rendben" : "Hiány van",
           detailContext: { sourceCardId: card.id, sourceModule: "craftingListNav" },
-          onQuantityInput: function (value) {
-            if (quantityPersistTimer !== null) { clearTimeout(quantityPersistTimer); }
-            quantityPersistTimer = setTimeout(function () {
-              quantityPersistTimer = null;
-              updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY").catch(function (error) {
-                setNotice("Mennyiség mentési hiba: " + error.message, "error");
-              });
-            }, 350);
-          },
-          onQuantityChange: function (value) {
-            if (quantityPersistTimer !== null) {
-              clearTimeout(quantityPersistTimer);
-              quantityPersistTimer = null;
-            }
-            updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY").catch(function (error) {
-              setNotice("Mennyiség mentési hiba: " + error.message, "error");
-            });
+          onQuantityCommit: function (value) {
+            return updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY");
           }
         });
         wrapper.append(management, finalCard);
@@ -17986,10 +18120,17 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
     });
 
-    document.getElementById("miningStationOverride").addEventListener("input", function () {
-      try {
-        applyMiningStationOverride(this.value);
-      } catch (error) {
+    bindCommittedNumericEditor(document.getElementById("miningStationOverride"), {
+      resolveDraft: function (draft) {
+        return normalizeCommittedNumericDraft(draft, { allowEmpty: true, integer: true, min: 1 });
+      },
+      onCommit: function (value) {
+        applyMiningStationOverride(value === null ? "" : String(value));
+      },
+      onInvalid: function () {
+        setMiningNotice("A station override pozitív egész szám legyen; az előző érték maradt.", "error");
+      },
+      onError: function (error) {
         setMiningNotice(error.message, "error");
       }
     });
@@ -18081,6 +18222,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
     });
 
+    bindCommittedNumericEditor(document.getElementById("batchQuality"));
+    bindCommittedNumericEditor(document.getElementById("batchQuantity"));
+
     document.getElementById("batchUnit").addEventListener("change", function () {
       var quantity = document.getElementById("batchQuantity");
       var isItem = this.value === "ITEM";
@@ -18141,6 +18285,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalizeOutputTypeFilters: normalizeOutputTypeFilters,
       qualityRules: M2_QUALITY_RULES,
       classifyRequirementQuality: classifyRequirementQuality,
+      normalizeCommittedNumericDraft: normalizeCommittedNumericDraft,
+      bindCommittedNumericEditor: bindCommittedNumericEditor,
+      bindQualityTargetEditor: bindQualityTargetEditor,
       allocateCardsDeterministically: allocateCardsDeterministically,
       compareLocations: compareLocations,
       buildStandaloneExport: buildStandaloneExport,

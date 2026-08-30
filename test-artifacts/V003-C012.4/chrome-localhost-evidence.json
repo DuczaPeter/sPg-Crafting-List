@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C012.4",
+  "status": "PASS",
+  "origin": "CODEX_REAL_CHROME_LOCALHOST",
+  "technicalProbe": { "status": "PASS", "failedChecks": 0 },
+  "actualSequentialTyping": {
+    "blueprintQuantity1To11452": {
+      "draftValues": ["1", "11", "114", "1145", "11452"],
+      "focusRetained": true,
+      "writesDuringDraft": 0,
+      "commit": "ENTER",
+      "committedValue": 11452
+    },
+    "craftingListQuantity11452To3": { "commit": "TAB_BLUR", "committedValue": 3, "reloadValue": 3 },
+    "combinedTargetQ800To950": {
+      "draftValues": ["", "9", "95", "950"],
+      "focusRetained": true,
+      "commit": "ENTER",
+      "committedValue": 950,
+      "reloadValue": 950
+    }
+  },
+  "nativeEditing": {
+    "temporaryEmpty": "PASS",
+    "arrowLeft": "PASS",
+    "home": "PASS",
+    "end": "PASS",
+    "alreadyFocusedCaret": "PASS"
+  },
+  "miningStationOverride": { "draftValue": 12, "rowsDuringDraft": 0, "rowsAfterEnter": 12, "status": "PASS" },
+  "viewports": {
+    "1920x1080": { "horizontalOverflow": 0, "status": "PASS" },
+    "1366x768": { "horizontalOverflow": 0, "status": "PASS" },
+    "390x844": { "horizontalOverflow": 0, "status": "PASS" }
+  },
+  "consoleWarningErrorCount": 0,
+  "userDataFingerprintBeforeReload": "170845c4",
+  "userDataFingerprintAfterReload": "170845c4"
+}

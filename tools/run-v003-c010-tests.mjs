@@ -24,8 +24,8 @@ for (const marker of [
   "function addC010FinalCardToCraftingList",
   "function renderC010FinalCraftingCard",
   "function renderC010MaterialIntelligence",
-  'quantity.addEventListener("input"',
-  'quantity.addEventListener("change"',
+  "bindCommittedNumericEditor(quantity",
+  "onQuantityCommit",
   "function c010MiningSummary",
   "function c010RefinerySummary",
   "function c010RenderStandaloneMaterial",
@@ -33,6 +33,7 @@ for (const marker of [
 ]) {
   assert.ok(appHtml.includes(marker), `A C010 alkalmazásmarker hiányzik: ${marker}`);
 }
+assert.ok(!appHtml.includes("onQuantityInput"), "A karakterenkénti quantity callback visszakerült.");
 
 const liveStart = appHtml.indexOf("function renderC010FinalCraftingCard");
 const liveEnd = appHtml.indexOf("function renderC009MaterialSnapshot", liveStart);

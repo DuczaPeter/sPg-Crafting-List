@@ -1,0 +1,16 @@
+{
+  "version": "V003-dev",
+  "cycle": "V003-C012.4",
+  "status": "PASS",
+  "targetedNumericEditorSuite": "PASS",
+  "fullRegression": "C001-C012.4 + M1-M6.1 + C04 PASS",
+  "c0123Q800Regression": "PASS",
+  "standalone": "PASS",
+  "chromeLocalhost": "PASS",
+  "consoleWarningErrorCount": 0,
+  "userDataFingerprint": "170845c4 -> 170845c4",
+  "v002TagCommit": "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+  "v002HtmlSha256": "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357",
+  "interruptedC013": "INVALIDATED_BY_C012.3_RELEASE_BLOCKER",
+  "v003ReleaseOrTagCreated": false
+}

@@ -100,6 +100,10 @@
 - [x] Ouratite Q860, HIGHEST_Q csokkeno batch-sorrend, HP-minimum vedelme, UNKNOWN fail-safe, priority/no-double-count, Combined/Final/standalone parity es backup/restore PASS.
 - [x] C012.3 teljes C001-C012.2 + M1-M6.1 + C04 regresszio es Chrome localhost PASS; fingerprint `749d1f60`, konzol WARN/ERROR 0, V002 valtozatlan.
 - [x] A megszakadt C013 auditja: C013 commit nem letezett; a candidate/evidence invalidalt, a C013 lezaro ciklus nem folytatodott.
+- [x] `V003-C012.4`: mind a 7 letezo numerikus input kozos draft/commit editorral; karakterenkenti User Data iras es teljes rerender eltavolitva.
+- [x] Quantity es Target Q replacement matrix, temporary empty, first-focus select, mar fokuszalt caret, Backspace/Delete, nyil/Home/End, Enter/change/blur/Tab PASS; meglevo unit/parser szabalyok valtozatlanok.
+- [x] Valodi Chrome localhost sequential typing: Craft `1 -> 11452`, Crafting List `11452 -> 3`, Target Q `800 -> 950`; reload fingerprint `170845c4`, console WARN/ERROR 0, 1920/1366/390 overflow 0.
+- [x] C012.4 teljes C001-C012.3 + M1-M6.1 + C04 regresszio, standalone, C012.3 Q800 es V002-integritas PASS; C013 tovabbra is invalidalt es nem indult ujra.
 - [ ] Stabil V003 release/tag csak kulon jovahagyas es minden kotelezo kapu utan.
 
 ### V003-dev final Crafting Card roadmap
@@ -115,6 +119,7 @@
 - [x] `V003-C012.1`: Material Quality Planner, effektív Recipe Quality felirat es allocation-aware Combined Materials; felhasznaloi vizualis es mukodesi ellenorzesre atadva.
 - [x] `V003-C012.2`: Active SC Version Consistency Repair; felhasznaloi ellenorzesre atadva, C013 nem indult.
 - [x] `V003-C012.3`: FIXED recipe + explicit user material Quality constraint repair; felhasznaloi ellenorzesre atadva, a korabban megkezdett C013 invalidalt.
+- [x] `V003-C012.4`: Numeric Input Editing Lifecycle Repair; felhasznaloi kezi tesztre atadva, C013 nem indult ujra.
 - [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
 
 ### V002 GitHub- es Discord-dokumentacio
