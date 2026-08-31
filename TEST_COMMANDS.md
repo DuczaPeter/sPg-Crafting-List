@@ -579,3 +579,18 @@ node .\tools\run-v003-c0125a-tests.mjs
 
 - `v003-c0125a-inventory-independence`: inventory ∪ requirement source-set, inventory-only/requirement-only/dedup/delete-card, exact commodityUuid–ingredientUuid bridge, no-fuzzy negatív fixture, recipe-independent known material, backup/restore és közvetlen C012.3/C012.4 regresszió.
 - Artifactok: `test-artifacts/V003-C012.5A/`.
+
+V003-C012.5B célzott kapu (Combined Minimum/MAX Q pool, eligible inventory preview, persistence és stabil release-integritás):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125b.ps1"
+```
+
+Csak a C012.5B model/fixture teszt:
+
+```powershell
+node .\tools\run-v003-c0125b-tests.mjs
+```
+
+- `v003-c0125b-combined-quality-pools`: két külön 0–1000 egész threshold, átfedő eligible preview készletduplázás nélkül, exact commodity/ingredient közös beállítás, no-fuzzy negatív fixture, inventory-only és recipe add/remove, backup/restore, régi backup és közvetlen C012.5A/C012.4/C012.3 regresszió.
+- Artifactok: `test-artifacts/V003-C012.5B/`.

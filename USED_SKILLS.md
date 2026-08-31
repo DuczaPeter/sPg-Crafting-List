@@ -43,6 +43,15 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Érintett döntések: inventory ∪ requirement Combined source-set, aktív commodity cache alapú known-material lista, exact `commodityUuid ↔ ingredientUuid` bridge és no-fuzzy negatív gate.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
 
+## V003-C012.5B Combined Quality Pools
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Az `uj-projekt` skillt a felhasználói tiltásnak megfelelően nem használtuk.
+- Mikor használtuk: `2026-08-31`, a félkész C012.5B célzott folytatása, bounded validator, valós Chrome recipe add/remove/reload és 1920/390 viewport ellenőrzése során.
+- Mire segített: a teljes történeti regresszió elkerülésére, a C012.5A/C012.4/C012.3 közvetlen kapuk megtartására, valamint a committed numeric szerkesztés, IndexedDB-perzisztencia, mobil overflow és tiszta konzol bizonyítására.
+- Érintett döntések: külön Material Quality Pool User Data, exact canonical UUID sharing, eligible preview allocation-bekötés nélkül, C012.5C halasztása.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## M2 projektfolytatas
 
 - Skill neve: `uj-projekt`

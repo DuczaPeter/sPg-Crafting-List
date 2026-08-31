@@ -656,3 +656,12 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Targeted validator: static/JS, C012.5A fixture-ek, no-exact-link negatív eset, C012.3 Quality, C012.4 numeric és V001/V002 integrity PASS.
 - Chrome localhost: commodity UUID-n tárolt Stileron Q747 4,109 SCU + eltérő ingredient UUID-s JS-300 egy material kártyán; 0,35 SCU foglalás, 0 hiány. Kártyatörlés és reload után inventory-only állapot megmaradt; console WARN/ERROR 0.
 - C012.5B és C013 nem indult; V003 tag/release/push/main merge nincs. Visszaállás: a C012.5A commit revertje; stabil fallback a változatlan V002.
+
+### V003-C012.5B Combined Quality Pools - 2026-08-31
+
+- A C012.5A source-set és exact canonical identity fölé külön `user:materialQualityPools` User Data beállítás került: materialonként Minimum Q és MAX Q, 0–1000 egész értékkel. A régi `materialQualityPlans` adat változatlan és külön maradt.
+- A Combined kártyák két, azonos hangsúlyú pool blokkot mutatnak. Az eligible előnézet `Q >= threshold`; a két halmaz átfedhet, de a globális készlet egyszer számolódik. Recipe-hozzárendelés/allocation kapcsolat C012.5C-re maradt.
+- Exact commodity/ingredient UUID-k ugyanazt a canonical pool kulcsot használják. Azonos név önmagában nem merge-bizonyíték.
+- Targeted validator: C012.5B, C012.5A, C012.4 numeric, C012.3 Quality, static/JS és V001/V002 integrity PASS. Backup/restore és új kulcs nélküli régi backup PASS.
+- Valódi Chrome localhost: 3 inventory-only material; Stileron Q550 2 SCU + Q975 1 SCU, Minimum Q500 eligible 3 SCU, MAX Q950 eligible 1 SCU. JS-300 add/remove és reload után a poolok megmaradtak. 1920×1080 és 390×844 overflow 0; console WARN/ERROR 0; záró fingerprint `ea5989f9`.
+- Standalone, allocation, Quality policy és V002 nem változott. C012.5C/C013 nincs elindítva; V003 tag/release/push/main merge nincs. Visszaállás: a C012.5B commit revertje; stabil fallback a változatlan V002.

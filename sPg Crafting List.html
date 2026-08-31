@@ -3791,6 +3791,66 @@ code {
   justify-self: start;
 }
 
+.spg-c0125b-quality-pools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.spg-c0125b-quality-pool {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--spg-material-accent, var(--accent)) 72%, transparent);
+  border-radius: 12px;
+  background: rgba(3, 12, 20, 0.52);
+}
+
+.spg-c0125b-quality-pool label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px;
+  align-items: center;
+  gap: 8px;
+  color: var(--spg-material-foreground, #ccecff);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.spg-c0125b-quality-pool input {
+  width: 78px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 8px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.spg-c0125b-eligible {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.spg-c0125b-eligible small {
+  color: var(--muted);
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.spg-c0125b-eligible strong {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.spg-c0125b-pool-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
 .spg-combined-material[data-missing="true"] {
   box-shadow: inset 3px 0 0 var(--danger);
 }
@@ -5243,6 +5303,19 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
     font-size: 10px;
   }
 
+  .spg-c0125b-quality-pool {
+    padding: 8px;
+  }
+
+  .spg-c0125b-quality-pool label {
+    grid-template-columns: minmax(0, 1fr) 68px;
+    font-size: 11px;
+  }
+
+  .spg-c0125b-quality-pool input {
+    width: 68px;
+  }
+
   .spg-c010-final-card {
     padding: 10px;
   }
@@ -6375,6 +6448,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       craftingCards: [],
       allocationResult: null,
       combinedMaterials: [],
+      materialQualityPools: {},
       editingBatchId: null,
       miningCommodityIndex: [],
       materialNamingAudit: null,
@@ -7676,6 +7750,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return normalized;
       }
 
+      async loadMaterialQualityPools() {
+        return materialQualityPoolsFromUserSettings(await this.loadUserSettings());
+      }
+
+      async saveMaterialQualityPools(pools) {
+        var normalized = normalizeMaterialQualityPools(pools);
+        await this.database.put("settings", {
+          key: MATERIAL_QUALITY_POOL_SETTING_KEY,
+          scope: "USER",
+          value: normalized,
+          updatedAt: nowIso()
+        });
+        return normalized;
+      }
+
       async readAllUserData() {
         var records = await Promise.all([
           this.database.getAll("userInventory"),
@@ -8216,6 +8305,84 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
       return normalizeMaterialQualityPlans(record && record.value);
     }
+
+    /* C0125B_COMBINED_QUALITY_POOL_MODEL_START */
+    var MATERIAL_QUALITY_POOL_SETTING_KEY = "user:materialQualityPools";
+
+    function normalizeMaterialQualityPool(pool) {
+      var source = pool && typeof pool === "object" ? pool : {};
+      return {
+        minimumQ: hasValidQuality(source.minimumQ) ? Number(source.minimumQ) : null,
+        maximumQ: hasValidQuality(source.maximumQ) ? Number(source.maximumQ) : null
+      };
+    }
+
+    function normalizeMaterialQualityPools(pools) {
+      var source = pools && typeof pools === "object" && !Array.isArray(pools) ? pools : {};
+      return Object.keys(source).sort().reduce(function (result, materialUuid) {
+        var normalized = normalizeMaterialQualityPool(source[materialUuid]);
+        if (materialUuid && (normalized.minimumQ !== null || normalized.maximumQ !== null)) {
+          result[materialUuid] = normalized;
+        }
+        return result;
+      }, {});
+    }
+
+    function materialQualityPoolsFromUserSettings(settings) {
+      var record = (Array.isArray(settings) ? settings : []).find(function (setting) {
+        return setting && setting.key === MATERIAL_QUALITY_POOL_SETTING_KEY;
+      });
+      return normalizeMaterialQualityPools(record && record.value);
+    }
+
+    function resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials) {
+      if (!materialUuid) { return null; }
+      var lookup = buildCombinedCanonicalMaterialLookup(canonicalMaterials);
+      var identity = lookup.get(materialUuid);
+      return identity ? identity.uuid : materialUuid;
+    }
+
+    function materialQualityPoolFor(materialUuid, pools, canonicalMaterials) {
+      var source = normalizeMaterialQualityPools(pools);
+      var canonicalKey = resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials);
+      if (canonicalKey && source[canonicalKey]) {
+        return normalizeMaterialQualityPool(source[canonicalKey]);
+      }
+      var lookup = buildCombinedCanonicalMaterialLookup(canonicalMaterials);
+      var identity = lookup.get(materialUuid);
+      var aliases = identity && Array.isArray(identity.sourceUuids) ? identity.sourceUuids : [];
+      var aliasKey = aliases.slice().sort().find(function (uuid) { return source[uuid]; });
+      return normalizeMaterialQualityPool(aliasKey ? source[aliasKey] : null);
+    }
+
+    function canonicalizeMaterialQualityPoolUpdate(materialUuid, pool, pools, canonicalMaterials) {
+      var next = Object.assign({}, normalizeMaterialQualityPools(pools));
+      var canonicalKey = resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials);
+      if (!canonicalKey) { throw new Error("A Quality pool canonical material UUID-je hiányzik."); }
+      var lookup = buildCombinedCanonicalMaterialLookup(canonicalMaterials);
+      var identity = lookup.get(materialUuid) || lookup.get(canonicalKey);
+      [canonicalKey].concat(identity && identity.sourceUuids || []).filter(Boolean).forEach(function (uuid) {
+        delete next[uuid];
+      });
+      var normalized = normalizeMaterialQualityPool(pool);
+      if (normalized.minimumQ !== null || normalized.maximumQ !== null) {
+        next[canonicalKey] = normalized;
+      }
+      return normalizeMaterialQualityPools(next);
+    }
+
+    function calculateQualityEligibleInventoryUnits(batches, materialUuid, unit, threshold, canonicalMaterials) {
+      if (!hasValidQuality(threshold)) { return null; }
+      var canonicalKey = resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials);
+      return (Array.isArray(batches) ? batches : []).reduce(function (sum, batch) {
+        var batchKey = resolveMaterialQualityPoolKey(materialIdentity(batch), canonicalMaterials);
+        if (batchKey !== canonicalKey || (batch.unit || "UNKNOWN") !== unit || !hasValidQuality(batch.quality) || Number(batch.quality) < Number(threshold)) {
+          return sum;
+        }
+        return sum + Number(batch.quantityUnits || 0);
+      }, 0);
+    }
+    /* C0125B_COMBINED_QUALITY_POOL_MODEL_END */
 
     function formatEffectiveQualityLabel(policy) {
       var source = policy || {};
@@ -10611,9 +10778,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (!record || !record.uuid) { return; }
         var identity = {
           uuid: record.uuid,
-          name: record.displayName || record.canonicalName || record.name || record.materialName || "Ismeretlen material"
+          name: record.displayName || record.canonicalName || record.name || record.materialName || "Ismeretlen material",
+          sourceUuids: Array.from(new Set([record.uuid].concat(record.sourceUuids || []).filter(Boolean)))
         };
-        [record.uuid].concat(record.sourceUuids || []).filter(Boolean).forEach(function (uuid) {
+        identity.sourceUuids.forEach(function (uuid) {
           lookup.set(uuid, identity);
         });
       });
@@ -10792,7 +10960,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     }
 
-    function buildCombinedMaterialsOverviewViewModel(groups, cards, materialQualityPlans) {
+    function buildCombinedMaterialsOverviewViewModel(groups, cards, materialQualityPlans, materialQualityPools, batches, canonicalMaterials) {
       var sourceGroups = Array.isArray(groups) ? groups : [];
       var activeCards = (Array.isArray(cards) ? cards : []).filter(function (card) { return card && card.active !== false; });
       var blueprintIds = new Set(activeCards.map(function (card) { return card.blueprintUuid || card.outputUuid || card.id; }));
@@ -10804,12 +10972,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           missingMaterialCount: sourceGroups.filter(function (group) { return group.missingUnits > 0; }).length
         },
         materials: sourceGroups.map(function (group) {
+          var pool = materialQualityPoolFor(group.materialUuid, materialQualityPools, canonicalMaterials);
           return {
             key: group.key,
             materialUuid: group.materialUuid,
             materialName: group.materialName,
             unit: group.unit,
             plan: normalizeMaterialQualityPlan(materialQualityPlans && materialQualityPlans[group.materialUuid]),
+            qualityPool: pool,
+            eligibleInventory: {
+              minimumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.minimumQ, canonicalMaterials),
+              maximumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.maximumQ, canonicalMaterials)
+            },
             buckets: m4Clone(group.qualityBuckets || []),
             totals: {
               requiredUnits: group.requiredUnits,
@@ -14049,6 +14223,53 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return metric;
     }
 
+    function renderCombinedQualityPool(material, field, label) {
+      var threshold = material.qualityPool[field];
+      var eligibleUnits = field === "minimumQ" ? material.eligibleInventory.minimumUnits : material.eligibleInventory.maximumUnits;
+      var section = document.createElement("section");
+      section.className = "spg-c0125b-quality-pool";
+      section.dataset.pool = field;
+      var inputLabel = document.createElement("label");
+      var caption = document.createElement("span");
+      caption.textContent = label;
+      var input = document.createElement("input");
+      input.type = "number";
+      input.min = "0";
+      input.max = "1000";
+      input.step = "1";
+      input.inputMode = "numeric";
+      input.placeholder = "0–1000";
+      input.value = hasValidQuality(threshold) ? String(threshold) : "";
+      input.setAttribute("aria-label", material.materialName + " " + label);
+      bindCommittedNumericEditor(input, {
+        resolveDraft: function (draft) {
+          return normalizeCommittedNumericDraft(draft, { integer: true, min: 0, max: 1000 });
+        },
+        onCommit: function (value) {
+          return persistMaterialQualityPoolValue(material.materialUuid, field, value);
+        },
+        onInvalid: function () {
+          setNotice(label + " 0 és 1000 közötti egész szám legyen; az előző érték maradt.", "error");
+        },
+        onError: function (error) {
+          setNotice("Quality pool mentési hiba: " + error.message, "error");
+        }
+      });
+      inputLabel.append(caption, input);
+      var eligible = document.createElement("span");
+      eligible.className = "spg-c0125b-eligible";
+      var eligibleCaption = document.createElement("small");
+      eligibleCaption.textContent = hasValidQuality(threshold) ? "Q" + threshold + "+ eligible készlet" : "Eligible készlet";
+      var eligibleValue = document.createElement("strong");
+      eligibleValue.textContent = eligibleUnits === null ? "—" : formatInventoryUnits(material.unit, eligibleUnits);
+      eligible.append(eligibleCaption, eligibleValue);
+      var note = document.createElement("p");
+      note.className = "spg-c0125b-pool-note";
+      note.textContent = "Készlet-előnézet; recipe-hozzárendelés C012.5C-ben.";
+      section.append(inputLabel, eligible, note);
+      return section;
+    }
+
     function renderMaterialQualityPlanControl(material) {
       var wrapper = document.createElement("div");
       wrapper.className = "spg-c0121-quality-plan";
@@ -14106,13 +14327,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function renderCombinedMaterials() {
-      var overview = buildCombinedMaterialsOverviewViewModel(state.combinedMaterials || [], state.craftingCards, state.materialQualityPlans);
+      var overview = buildCombinedMaterialsOverviewViewModel(state.combinedMaterials || [], state.craftingCards, state.materialQualityPlans, state.materialQualityPools, state.materialBatches, state.knownMaterials);
       var summaryModel = overview.summary;
       setBadge(document.getElementById("combinedMaterialCount"), summaryModel.materialCount ? (summaryModel.missingMaterialCount ? "FAIL" : "PASS") : "NEUTRAL", summaryModel.materialCount + " material");
       document.body.dataset.combinedMaterialCount = String(summaryModel.materialCount);
       document.body.dataset.combinedMissingCount = String(summaryModel.missingMaterialCount);
       document.body.dataset.combinedMaterialsFingerprint = m4FingerprintText(JSON.stringify(m4Canonicalize(state.combinedMaterials || [])));
       document.body.dataset.combinedQualityPlanCount = String(Object.keys(state.materialQualityPlans || {}).length);
+      document.body.dataset.combinedQualityPoolCount = String(Object.keys(state.materialQualityPools || {}).length);
 
       var summary = document.getElementById("combinedMaterialsSummary");
       summary.replaceChildren();
@@ -14144,32 +14366,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var title = document.createElement("div");
         var name = document.createElement("h3");
         name.textContent = resolveMaterialDisplayName({ uuid: material.materialUuid, materialName: material.materialName }, "Ismeretlen material");
+        applyMaterialColor(article, material.materialUuid, name.textContent);
         applyMaterialColor(name, material.materialUuid, name.textContent, { label: true });
         var unit = document.createElement("small");
         unit.textContent = material.unit;
         title.append(name, unit);
-        heading.append(title, renderMaterialQualityPlanControl(material));
+        heading.append(title);
 
-        var buckets = document.createElement("div");
-        buckets.className = "spg-c0121-quality-buckets";
-        material.buckets.forEach(function (bucket) {
-          var bucketCard = document.createElement("section");
-          bucketCard.className = "spg-c0121-quality-bucket";
-          bucketCard.dataset.qualityRule = bucket.effectiveRule;
-          var bucketTitle = document.createElement("strong");
-          bucketTitle.className = "spg-c0121-quality-badge";
-          bucketTitle.textContent = bucket.label;
-          bucketTitle.title = formatEffectiveQualityTooltip({ effectiveRule: bucket.effectiveRule, effectiveTarget: bucket.effectiveTarget, effectiveMinimum: bucket.effectiveMinimum });
-          var metrics = document.createElement("div");
-          metrics.className = "spg-c0121-bucket-metrics";
-          metrics.append(
-            createCombinedMetric("Szükséges", material.unit, bucket.requiredUnits),
-            createCombinedMetric("Lefoglalva", material.unit, bucket.reservedUnits),
-            createCombinedMetric("Hiány", material.unit, bucket.missingUnits)
-          );
-          bucketCard.append(bucketTitle, metrics);
-          buckets.append(bucketCard);
-        });
+        var pools = document.createElement("div");
+        pools.className = "spg-c0125b-quality-pools";
+        pools.append(
+          renderCombinedQualityPool(material, "minimumQ", "Minimum Q"),
+          renderCombinedQualityPool(material, "maximumQ", "MAX Q")
+        );
 
         var totals = document.createElement("div");
         totals.className = "spg-combined-totals spg-c0121-material-totals";
@@ -14190,7 +14399,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             emitPreparedDetailAction("combined", material.materialUuid, name.textContent, { sourceModule: "combinedMaterialsNav" });
           }
         });
-        article.append(heading, buckets, totals, detail);
+        article.append(heading, pools, totals, detail);
         container.append(article);
       });
     }
@@ -14736,6 +14945,35 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
     }
 
+    async function persistMaterialQualityPoolValue(materialUuid, field, value) {
+      if (field !== "minimumQ" && field !== "maximumQ") {
+        throw new Error("Ismeretlen Quality pool mező: " + field);
+      }
+      if (!hasValidQuality(value)) {
+        throw new Error("A Quality pool értéke 0 és 1000 közötti egész szám legyen.");
+      }
+      var current = materialQualityPoolFor(materialUuid, state.materialQualityPools, state.knownMaterials);
+      var updated = Object.assign({}, current);
+      updated[field] = Number(value);
+      var next = canonicalizeMaterialQualityPoolUpdate(materialUuid, updated, state.materialQualityPools, state.knownMaterials);
+      logger.start("Material Quality Pool Update", { materialUuid: materialUuid, field: field, value: Number(value) });
+      try {
+        state.materialQualityPools = await userDataRepository.saveMaterialQualityPools(next);
+        state.userSettings = await userDataRepository.loadUserSettings();
+        renderCombinedMaterials();
+        logger.finish("PASS", {
+          materialUuid: resolveMaterialQualityPoolKey(materialUuid, state.knownMaterials),
+          pool: materialQualityPoolFor(materialUuid, state.materialQualityPools, state.knownMaterials),
+          userDataFingerprint: await userDataRepository.fingerprint()
+        });
+        return materialQualityPoolFor(materialUuid, state.materialQualityPools, state.knownMaterials);
+      } catch (error) {
+        logger.event("ERROR", "MATERIAL_QUALITY_POOL_SAVE_FAILED", "A Material Quality Pool mentése sikertelen.", { materialUuid: materialUuid, field: field, error: serializeError(error) });
+        logger.finish("FAIL", { materialUuid: materialUuid, field: field, error: serializeError(error) });
+        throw error;
+      }
+    }
+
     async function persistMaterialBatches(nextBatches, processType) {
       logger.start(processType || "Inventory Update", { batchCount: nextBatches.length });
       try {
@@ -14943,6 +15181,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.miningLoadouts = await userDataRepository.loadMiningLoadouts();
       state.userSettings = await userDataRepository.loadUserSettings();
       state.materialQualityPlans = materialQualityPlansFromUserSettings(state.userSettings);
+      state.materialQualityPools = materialQualityPoolsFromUserSettings(state.userSettings);
       state.userDataReady = true;
       recalculateAllocation("STARTUP_RESTORE");
       updateKnownMaterials();

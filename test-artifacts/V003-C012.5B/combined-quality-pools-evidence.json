@@ -1,0 +1,24 @@
+{
+  "cycle": "V003-C012.5B",
+  "status": "PASS",
+  "inventoryOnlyMaterialCount": 3,
+  "stileronPool": {
+    "minimumQ": 500,
+    "maximumQ": 950
+  },
+  "eligibleInventory": {
+    "totalUnits": 30000,
+    "minimumUnits": 30000,
+    "maximumUnits": 10000,
+    "noDoubleCount": "PASS"
+  },
+  "canonicalCommodityIngredientSharedSetting": "PASS",
+  "unlinkedSameNameRemainsSeparate": "PASS",
+  "independentMaterialSettings": "PASS",
+  "recipeAddRemovePersistence": "PASS",
+  "backupRestore": "PASS",
+  "oldBackupWithoutPoolSettings": "PASS",
+  "existingMaterialQualityPlansPreserved": "PASS",
+  "allocationUsesNewPools": false,
+  "standaloneChanged": false
+}

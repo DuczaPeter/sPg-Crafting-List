@@ -29,6 +29,7 @@ ${block("M2_ALLOCATION_ENGINE")}
 ${block("MATERIAL_NAMING_MODEL")}
 ${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
+${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 globalThis.__C0125A__ = {
   allocateCardsDeterministically,
   buildCombinedMaterials,

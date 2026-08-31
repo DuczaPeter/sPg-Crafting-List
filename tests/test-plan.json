@@ -275,6 +275,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125a.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0125b-combined-quality-pools",
+      "level": "targeted-regression",
+      "description": "V003-C012.5B gate: per-canonical-material Minimum Q and MAX Q user settings, integer 0..1000 committed numeric editing, overlapping eligible-inventory previews without double-counting physical inventory, exact commodityUuid-to-ingredientUuid sharing without fuzzy matching, inventory-only and recipe add/remove persistence, backup/restore and older-backup compatibility, direct C012.5A/C012.4/C012.3 regression, static gate and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125b.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

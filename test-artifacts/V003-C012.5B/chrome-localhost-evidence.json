@@ -1,0 +1,46 @@
+{
+  "cycle": "V003-C012.5B",
+  "browser": "Google Chrome",
+  "protocol": "http:",
+  "url": "http://127.0.0.1:4182/sPg%20Crafting%20List.html",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "inventoryOnlyMaterials": 3,
+  "stileronBatches": [
+    { "quality": 550, "scu": 2 },
+    { "quality": 975, "scu": 1 }
+  ],
+  "stileronPool": {
+    "minimumQ": 500,
+    "minimumEligibleScu": 3,
+    "maximumQ": 950,
+    "maximumEligibleScu": 1,
+    "physicalInventoryScu": 3,
+    "doubleCounted": false
+  },
+  "numericEditing": {
+    "sequentialTyping": "PASS",
+    "temporaryEmptyDraft": "PASS",
+    "firstFocusReplacement": "PASS",
+    "caretMiddleEdit": "PASS",
+    "enterCommit": "PASS",
+    "tabCommit": "PASS"
+  },
+  "independentMaterialPool": "Savrilium 700/900 PASS",
+  "recipeAdd": "JS-300 one canonical Stileron; required/reserved 0.35 SCU; pool preserved PASS",
+  "recipeRemove": "three inventory-only materials; required/reserved/missing 0; pool preserved PASS",
+  "reloadPersistence": "PASS",
+  "desktop": {
+    "viewport": "1920x1080",
+    "horizontalOverflowPx": 0,
+    "screenshot": "test-artifacts/V003-C012.5B/chrome-desktop-1920x1080.png"
+  },
+  "mobile": {
+    "viewport": "390x844",
+    "horizontalOverflowPx": 0,
+    "screenshot": "test-artifacts/V003-C012.5B/chrome-mobile-390x844.png"
+  },
+  "consoleWarnings": 0,
+  "consoleErrors": 0,
+  "finalUserDataFingerprint": "ea5989f9",
+  "result": "PASS"
+}

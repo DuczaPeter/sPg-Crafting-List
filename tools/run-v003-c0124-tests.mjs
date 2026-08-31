@@ -225,12 +225,13 @@ assert.equal(stationResult.value, null);
 const staticNumberInputs = [...html.matchAll(/<input[^>]+type="number"/g)].length;
 const dynamicNumberInputs = [...html.matchAll(/\.type\s*=\s*"number"/g)].length;
 assert.equal(staticNumberInputs, 3);
-assert.equal(dynamicNumberInputs, 4);
+assert.equal(dynamicNumberInputs, 5);
 assert.doesNotMatch(html, /onQuantityInput\s*:/, "A karakterenkenti quantity callback visszakerult.");
 assert.doesNotMatch(html, /quantityPersistTimer|var inputTimer = null/, "Karakterenkenti numeric mentest/renderelest vezerlo timer maradt.");
 assert.match(html, /bindCommittedNumericEditor\(document\.getElementById\("batchQuality"\)\)/);
 assert.match(html, /bindCommittedNumericEditor\(document\.getElementById\("batchQuantity"\)\)/);
 assert.match(html, /bindCommittedNumericEditor\(document\.getElementById\("miningStationOverride"\)/);
+assert.match(html, /function renderCombinedQualityPool[\s\S]*bindCommittedNumericEditor\(input,/);
 assert.match(html, /var quantityValue = Number\(document\.getElementById\("batchQuantity"\)\.value\)/, "A meglevo SCU\/ITEM parser megvaltozott.");
 assert.match(html, /unit === "SCU" \? toScuUnits\(quantityValue\) : quantityValue/, "A 1 SCU = 10000 unit utvonal megvaltozott.");
 
@@ -243,7 +244,8 @@ const evidence = {
   auditedNumericInputs: [
     "Blueprint Browser Final Card quantity",
     "Crafting List expanded card quantity",
-    "Combined Materials Target Q",
+    "Combined Materials Minimum Q",
+    "Combined Materials MAX Q",
     "Crafting requirement Target Q",
     "My Materials batch quantity",
     "My Materials batch Quality",
