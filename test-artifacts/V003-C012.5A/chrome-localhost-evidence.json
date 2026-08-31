@@ -1,0 +1,34 @@
+{
+  "cycle": "V003-C012.5A",
+  "environment": "real Google Chrome controlled on localhost",
+  "url": "http://127.0.0.1:4181/sPg%20Crafting%20List.html",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "fixture": {
+    "materialName": "Stileron",
+    "inventoryCommodityUuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+    "requirementIngredientUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+    "exactApiIdentityLink": "commodityUuid ↔ ingredientUuid",
+    "quality": 747,
+    "quantityScu": 4.109
+  },
+  "assertions": {
+    "inventoryWithoutCraftingCard": "PASS",
+    "reloadInventoryStillVisible": "PASS",
+    "zeroCardRequiredScu": 0,
+    "zeroCardReservedScu": 0,
+    "zeroCardMissingScu": 0,
+    "zeroCardAvailableScu": 4.109,
+    "js300RequirementMergedIntoSingleStileronRow": "PASS",
+    "exactUuidMismatchMerge": "PASS",
+    "js300RequiredScu": 0.35,
+    "js300ReservedScu": 0.35,
+    "js300MissingScu": 0,
+    "inventoryRetainedAfterCardDeletion": "PASS",
+    "afterDeleteRequiredScu": 0,
+    "afterDeleteReservedScu": 0,
+    "afterDeleteMissingScu": 0,
+    "afterDeleteAvailableScu": 4.109,
+    "consoleWarnErrorCount": 0
+  },
+  "result": "PASS"
+}

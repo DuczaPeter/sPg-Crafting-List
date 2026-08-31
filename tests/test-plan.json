@@ -267,6 +267,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0124.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0125a-inventory-independence",
+      "level": "targeted-regression",
+      "description": "V003-C012.5A gate: Combined Materials uses inventory-material UNION active-requirement sources; exact commodityUuid-to-ingredientUuid links merge canonical identity while unlinked same-name UUIDs stay separate; My Materials known-material selection is recipe-independent; zero-card inventory, requirement-only, dedup, card deletion, reload/persistence model, backup/restore, C012.3 Quality and C012.4 numeric targeted regressions, static gate and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125a.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

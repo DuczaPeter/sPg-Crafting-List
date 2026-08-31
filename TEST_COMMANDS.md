@@ -564,3 +564,18 @@ node .\tools\run-v003-c013-tests.mjs
 - `v003-c013-release-candidate`: az alkalmazas C012.4 baseline-tol valo eltereset blokkolja; a candidate SHA/byte-egyezeset, single-file runtime-ot, aktiv 4.10 source/link konzisztenciat, baseline/Q900 Quality/allocation/Combined/detail standalone-t, a megorzott evidence statuszt es V001/V002 integritast ellenorzi.
 - A teljes C001-C012.4/M1-M6.1/C04 kapu az invalidalas elott PASS volt; ezt az evidence orzi, a lezaro integritas-kapu nem futtatja ujra a teljes torteneti lancot.
 - C013 artifactok: `test-artifacts/V003-C013/`; exact candidate manual `file://` `NOT_RUN`, candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`. A regi `388a...` candidate kulon `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`.
+
+V003-C012.5A célzott kapu (inventory independence, exact UUID identity, közvetlen Quality/numeric regresszió és stabil release-integritás):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125a.ps1"
+```
+
+Csak a C012.5A model/fixture teszt:
+
+```powershell
+node .\tools\run-v003-c0125a-tests.mjs
+```
+
+- `v003-c0125a-inventory-independence`: inventory ∪ requirement source-set, inventory-only/requirement-only/dedup/delete-card, exact commodityUuid–ingredientUuid bridge, no-fuzzy negatív fixture, recipe-independent known material, backup/restore és közvetlen C012.3/C012.4 regresszió.
+- Artifactok: `test-artifacts/V003-C012.5A/`.

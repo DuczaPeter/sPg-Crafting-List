@@ -6371,6 +6371,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       activeBlueprintDataset: null,
       blueprintIndexSyncing: false,
       materialBatches: [],
+      knownMaterials: [],
       craftingCards: [],
       allocationResult: null,
       combinedMaterials: [],
@@ -8375,16 +8376,28 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     }
 
-    function allocateCardsDeterministically(cards, batches, materialQualityPlans) {
+    function allocateCardsDeterministically(cards, batches, materialQualityPlans, canonicalMaterials) {
       if (!Array.isArray(cards) || !Array.isArray(batches)) {
         throw new TypeError("Az allocation bemenete csak card- és batch-tömb lehet.");
+      }
+      var canonicalBySourceUuid = new Map();
+      (Array.isArray(canonicalMaterials) ? canonicalMaterials : []).forEach(function (record) {
+        if (!record || !record.uuid) { return; }
+        [record.uuid].concat(record.sourceUuids || []).filter(Boolean).forEach(function (uuid) {
+          canonicalBySourceUuid.set(uuid, record.uuid);
+        });
+      });
+      function canonicalAllocationIdentity(value) {
+        var sourceUuid = materialIdentity(value);
+        return canonicalBySourceUuid.get(sourceUuid) || sourceUuid;
       }
       var normalizedBatches = batches.map(function (batch) {
         if (!batch || !batch.id || !materialIdentity(batch) || !Number.isInteger(batch.quantityUnits) || batch.quantityUnits < 0) {
           throw new TypeError("Érvénytelen material batch az allocation bemenetben.");
         }
         return Object.assign({}, batch, {
-          materialUuid: materialIdentity(batch),
+          sourceMaterialUuid: materialIdentity(batch),
+          materialUuid: canonicalAllocationIdentity(batch),
           unit: batch.unit || "UNKNOWN",
           quality: hasValidQuality(batch.quality) ? Number(batch.quality) : null
         });
@@ -8408,10 +8421,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       function materialPlanFor(requirement) {
         var materialUuid = materialIdentity(requirement);
+        var canonicalUuid = canonicalAllocationIdentity(requirement);
         if (materialQualityPlans instanceof Map) {
-          return materialQualityPlans.get(materialUuid) || null;
+          return materialQualityPlans.get(materialUuid) || materialQualityPlans.get(canonicalUuid) || null;
         }
-        return materialQualityPlans && typeof materialQualityPlans === "object" ? materialQualityPlans[materialUuid] || null : null;
+        return materialQualityPlans && typeof materialQualityPlans === "object" ? materialQualityPlans[materialUuid] || materialQualityPlans[canonicalUuid] || null : null;
       }
 
       function effectiveRuleFor(requirement, card) {
@@ -8426,7 +8440,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
 
       function evaluateRequirement(requirement, requiredUnits, available, collectTrace, card, rule) {
-        var materialUuid = materialIdentity(requirement);
+        var sourceMaterialUuid = materialIdentity(requirement);
+        var materialUuid = canonicalAllocationIdentity(requirement);
         var unit = requirement.unit || (requirement.quantity && requirement.quantity.unit) || "UNKNOWN";
         var exactKey = materialUuid + "::" + unit;
         var exactBatches = (byMaterialUnit.get(exactKey) || []).slice();
@@ -8494,7 +8509,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             outputName: card.outputName || null,
             recipeSlotId: requirement.id,
             recipeSlotName: requirement.recipeSlotName,
-            materialUuid: materialUuid,
+            materialUuid: sourceMaterialUuid,
+            canonicalMaterialUuid: materialUuid,
             materialName: requirement.materialName,
             unit: unit,
             rule: rule.mode,
@@ -8545,7 +8561,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return {
           recipeSlotId: requirement.id,
           recipeSlotName: requirement.recipeSlotName,
-          ingredientUuid: materialUuid,
+          ingredientUuid: sourceMaterialUuid,
+          canonicalMaterialUuid: materialUuid,
           materialName: requirement.materialName,
           unit: unit,
           rule: rule.mode,
@@ -8613,7 +8630,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             optimisticUpper = 0;
             return;
           }
-          var materialUuid = materialIdentity(requirement);
+          var materialUuid = canonicalAllocationIdentity(requirement);
           var unit = requirement.unit || (requirement.quantity && requirement.quantity.unit) || "UNKNOWN";
           var eligibleTotal = (byMaterialUnit.get(materialUuid + "::" + unit) || []).reduce(function (sum, batch) {
             return sum + (batchEligibility(batch, rule).eligible ? (remaining.get(batch.id) || 0) : 0);
@@ -8669,6 +8686,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return {
           batchId: batch.id,
           materialUuid: batch.materialUuid,
+          sourceMaterialUuid: batch.sourceMaterialUuid,
           materialName: batch.materialName,
           quality: batch.quality,
           unit: batch.unit,
@@ -10587,49 +10605,86 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return result;
     }
 
-    function buildCombinedMaterials(allocationResult, cards, batches) {
+    function buildCombinedCanonicalMaterialLookup(canonicalMaterials) {
+      var lookup = new Map();
+      (Array.isArray(canonicalMaterials) ? canonicalMaterials : []).forEach(function (record) {
+        if (!record || !record.uuid) { return; }
+        var identity = {
+          uuid: record.uuid,
+          name: record.displayName || record.canonicalName || record.name || record.materialName || "Ismeretlen material"
+        };
+        [record.uuid].concat(record.sourceUuids || []).filter(Boolean).forEach(function (uuid) {
+          lookup.set(uuid, identity);
+        });
+      });
+      return lookup;
+    }
+
+    function resolveCombinedMaterialIdentity(uuid, name, canonicalLookup) {
+      return canonicalLookup.get(uuid) || {
+        uuid: uuid,
+        name: name || "Ismeretlen material"
+      };
+    }
+
+    function createCombinedMaterialGroup(key, identity, unit, availableUnits, materialIntelligence) {
+      return {
+        key: key,
+        materialUuid: identity.uuid,
+        materialName: identity.name,
+        unit: unit,
+        requiredUnits: 0,
+        availableUnits: availableUnits || 0,
+        reservedUnits: 0,
+        missingUnits: 0,
+        missingAmountUnits: 0,
+        missingQualityUnits: 0,
+        blueprints: [],
+        recipeSlots: [],
+        qualityRules: [],
+        usages: [],
+        materialIntelligence: materialIntelligence ? m4Clone(materialIntelligence) : null
+      };
+    }
+
+    function buildCombinedMaterials(allocationResult, cards, batches, canonicalMaterials) {
       if (!allocationResult || !Array.isArray(allocationResult.cards) || !Array.isArray(cards) || !Array.isArray(batches)) {
         return [];
       }
       var sourceCards = new Map(cards.map(function (card) { return [card.id, card]; }));
+      var canonicalLookup = buildCombinedCanonicalMaterialLookup(canonicalMaterials);
       var availableByMaterialUnit = new Map();
       var batchQuantityById = new Map();
       batches.forEach(function (batch) {
-        var key = (batch.materialUuid || batch.ingredientUuid) + "::" + batch.unit;
+        var identity = resolveCombinedMaterialIdentity(batch.materialUuid || batch.ingredientUuid, batch.materialName, canonicalLookup);
+        var key = identity.uuid + "::" + batch.unit;
         availableByMaterialUnit.set(key, (availableByMaterialUnit.get(key) || 0) + Number(batch.quantityUnits || 0));
         batchQuantityById.set(batch.id, Number(batch.quantityUnits || 0));
       });
       var reservedByMaterialUnit = new Map();
       (allocationResult.batchUsage || []).forEach(function (usage) {
-        var key = usage.materialUuid + "::" + usage.unit;
+        var identity = resolveCombinedMaterialIdentity(usage.materialUuid, usage.materialName, canonicalLookup);
+        var key = identity.uuid + "::" + usage.unit;
         reservedByMaterialUnit.set(key, (reservedByMaterialUnit.get(key) || 0) + Number(usage.reservedUnits || 0));
       });
       var groups = new Map();
+      batches.forEach(function (batch) {
+        var identity = resolveCombinedMaterialIdentity(batch.materialUuid || batch.ingredientUuid, batch.materialName, canonicalLookup);
+        var key = identity.uuid + "::" + batch.unit;
+        if (!groups.has(key)) {
+          groups.set(key, createCombinedMaterialGroup(key, identity, batch.unit, availableByMaterialUnit.get(key) || 0, null));
+        }
+      });
       var reservedByBatchId = new Map();
       allocationResult.cards.slice().sort(function (a, b) {
         return Number(a.order || 0) - Number(b.order || 0) || String(a.cardId).localeCompare(String(b.cardId));
       }).forEach(function (cardResult) {
         var card = sourceCards.get(cardResult.cardId) || {};
         cardResult.requirements.forEach(function (requirement) {
-          var key = requirement.ingredientUuid + "::" + requirement.unit;
+          var identity = resolveCombinedMaterialIdentity(requirement.ingredientUuid, requirement.materialName, canonicalLookup);
+          var key = identity.uuid + "::" + requirement.unit;
           if (!groups.has(key)) {
-            groups.set(key, {
-              key: key,
-              materialUuid: requirement.ingredientUuid,
-              materialName: requirement.materialName,
-              unit: requirement.unit,
-              requiredUnits: 0,
-              availableUnits: availableByMaterialUnit.get(key) || 0,
-              reservedUnits: 0,
-              missingUnits: 0,
-              missingAmountUnits: 0,
-              missingQualityUnits: 0,
-              blueprints: [],
-              recipeSlots: [],
-              qualityRules: [],
-              usages: [],
-              materialIntelligence: requirement.materialIntelligence ? m4Clone(requirement.materialIntelligence) : null
-            });
+            groups.set(key, createCombinedMaterialGroup(key, identity, requirement.unit, availableByMaterialUnit.get(key) || 0, requirement.materialIntelligence));
           }
           var group = groups.get(key);
           if (!group.materialIntelligence && requirement.materialIntelligence) {
@@ -11448,6 +11503,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.materialNamingAudit = auditMaterialNames(state.miningCommodityIndex);
       state.radarSignatureAudit = auditRadarSignatures(state.miningCommodityIndex);
       state.materialColorAudit = auditMaterialColors(buildMaterialDisplayIndex(state.miningCommodityIndex));
+      updateKnownMaterials();
       var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
       state.miningEquipment = {
         heads: equipment.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }),
@@ -13324,7 +13380,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return null;
       }
       card.quantity = Math.max(1, Math.round(Number(state.finalCardQuantity) || 1));
-      var allocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans);
+      var allocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans, state.knownMaterials);
       if (allocation.cards && allocation.cards[0]) {
         attachExportMaterialIntelligence(card, allocation.cards[0]);
       }
@@ -13383,33 +13439,91 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return normalized;
     }
 
+    /* C0125A_INVENTORY_INDEPENDENCE_MODEL_START */
+    function buildKnownMaterialOptions(miningCommodityIndex, materialBatches, craftingCards, normalizedBlueprint) {
+      var options = [];
+      var canonicalBySourceUuid = new Map();
+      function addOption(record, origin) {
+        if (!record || !record.uuid) { return; }
+        var sourceUuids = Array.from(new Set([record.uuid].concat(record.sourceUuids || []).filter(Boolean)));
+        var name = resolveMaterialDisplayName(record, record.materialName || record.name || "Ismeretlen material");
+        var matches = Array.from(new Set(sourceUuids.map(function (uuid) { return canonicalBySourceUuid.get(uuid); }).filter(Boolean)));
+        if (matches.length) {
+          var existing = matches[0];
+          matches.slice(1).forEach(function (duplicate) {
+            existing.sourceUuids = Array.from(new Set(existing.sourceUuids.concat(duplicate.sourceUuids || [])));
+            existing.aliases = materialUniqueNames(existing.aliases.concat(duplicate.aliases || []));
+            var duplicateIndex = options.indexOf(duplicate);
+            if (duplicateIndex !== -1) { options.splice(duplicateIndex, 1); }
+          });
+          existing.sourceUuids = Array.from(new Set(existing.sourceUuids.concat(sourceUuids)));
+          existing.aliases = materialUniqueNames(existing.aliases.concat([name]).concat(record.aliases || []));
+          existing.sourceUuids.forEach(function (uuid) { canonicalBySourceUuid.set(uuid, existing); });
+          return existing;
+        }
+        var option = {
+          uuid: record.uuid,
+          name: name,
+          aliases: materialUniqueNames([name].concat(record.aliases || [])),
+          sourceUuids: sourceUuids,
+          origin: origin
+        };
+        options.push(option);
+        sourceUuids.forEach(function (uuid) { canonicalBySourceUuid.set(uuid, option); });
+      }
+      buildMaterialDisplayIndex(miningCommodityIndex || []).forEach(function (record) {
+        addOption(record, "ACTIVE_COMMODITY_CACHE");
+      });
+      (materialBatches || []).forEach(function (batch) {
+        addOption({ uuid: batch.materialUuid, materialName: batch.materialName }, "USER_INVENTORY");
+      });
+      (craftingCards || []).forEach(function (card) {
+        (card.requirements || []).forEach(function (requirement) {
+          addOption({
+            uuid: requirement.commodityUuid || requirement.ingredientUuid,
+            sourceUuids: [requirement.ingredientUuid, requirement.commodityUuid, requirement.resourceTypeUuid, requirement.itemUuid],
+            materialName: requirement.materialName
+          }, "CRAFTING_CARD");
+        });
+      });
+      (normalizedBlueprint && normalizedBlueprint.recipeSlots || []).forEach(function (requirement) {
+        var ingredient = requirement.ingredient || {};
+        addOption({
+          uuid: ingredient.commodityUuid || requirement.commodityUuid || requirement.ingredientUuid,
+          sourceUuids: [requirement.ingredientUuid, ingredient.commodityUuid, ingredient.resourceTypeUuid, ingredient.itemUuid],
+          materialName: requirement.materialName
+        }, "BLUEPRINT_PREVIEW");
+      });
+      return options.sort(function (a, b) {
+        return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid);
+      });
+    }
+
+    function resolveKnownMaterialSelection(materialName, materialUuid, knownMaterials) {
+      var records = Array.isArray(knownMaterials) ? knownMaterials : [];
+      if (materialUuid) {
+        var uuidMatch = records.find(function (record) {
+          return record.uuid === materialUuid || record.sourceUuids.indexOf(materialUuid) !== -1;
+        });
+        if (uuidMatch) { return uuidMatch; }
+      }
+      var foldedName = foldSearchText(materialName);
+      var nameMatches = records.filter(function (record) {
+        return record.aliases.some(function (alias) { return foldSearchText(alias) === foldedName; });
+      });
+      return nameMatches.length === 1 ? nameMatches[0] : null;
+    }
+    /* C0125A_INVENTORY_INDEPENDENCE_MODEL_END */
+
     function updateKnownMaterials() {
       var datalist = document.getElementById("knownMaterials");
-      var records = new Map();
-      state.materialBatches.forEach(function (batch) {
-        records.set(batch.materialUuid, { uuid: batch.materialUuid, name: resolveMaterialDisplayName({ uuid: batch.materialUuid, materialName: batch.materialName }, "Ismeretlen material"), rawName: batch.materialName });
-      });
-      state.craftingCards.forEach(function (card) {
-        (card.requirements || []).forEach(function (requirement) {
-          if (requirement.ingredientUuid) {
-            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material"), rawName: requirement.materialName });
-          }
-        });
-      });
-      if (state.normalizedBlueprint) {
-        state.normalizedBlueprint.recipeSlots.forEach(function (requirement) {
-          if (requirement.ingredientUuid) {
-            records.set(requirement.ingredientUuid, { uuid: requirement.ingredientUuid, name: resolveMaterialDisplayName({ uuid: requirement.ingredientUuid, materialName: requirement.materialName }, "Ismeretlen material"), rawName: requirement.materialName });
-          }
-        });
-      }
+      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint);
       datalist.replaceChildren();
-      Array.from(records.values()).sort(function (a, b) {
-        return a.name.localeCompare(b.name, "hu");
-      }).forEach(function (record) {
+      state.knownMaterials.forEach(function (record) {
         var option = document.createElement("option");
         option.value = record.name;
         option.dataset.uuid = record.uuid;
+        option.dataset.origin = record.origin;
         option.label = record.uuid;
         datalist.append(option);
       });
@@ -14012,7 +14126,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!overview.materials.length) {
         var empty = document.createElement("p");
         empty.className = "spg-muted";
-        empty.textContent = "Még nincs összesíthető aktív Crafting Card.";
+        empty.textContent = "Még nincs inventory material vagy aktív recipe requirement.";
         container.append(empty);
         return;
       }
@@ -14060,6 +14174,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var totals = document.createElement("div");
         totals.className = "spg-combined-totals spg-c0121-material-totals";
         totals.append(
+          createCombinedMetric("Készlet", material.unit, material.totals.availableUnits),
           createCombinedMetric("Kell", material.unit, material.totals.requiredUnits),
           createCombinedMetric("Lefoglalva", material.unit, material.totals.reservedUnits),
           createCombinedMetric("Hiány", material.unit, material.totals.missingUnits)
@@ -14548,7 +14663,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function recalculateAllocation(logReason) {
-      state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches, state.materialQualityPlans);
+      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint);
+      state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches, state.materialQualityPlans, state.knownMaterials);
       state.allocationResult.cards.forEach(function (cardResult) {
         cardResult.requirements.forEach(function (requirement) {
           var sourceCard = state.craftingCards.find(function (card) { return card.id === cardResult.cardId; });
@@ -14560,7 +14676,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           requirement.materialIntelligence = state.materialIntelligenceByWikiUuid.get(commodityUuid || requirement.ingredientUuid) || null;
         });
       });
-      state.combinedMaterials = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
+      state.combinedMaterials = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches, state.knownMaterials);
       document.body.dataset.allocationCardCount = String(state.allocationResult.summary.cardCount);
       document.body.dataset.allocationUnsatisfiedCount = String(state.allocationResult.summary.unsatisfiedRequirementCount);
       document.body.dataset.inventoryQuantityPreserved = "true";
@@ -14768,6 +14884,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var note = document.getElementById("batchNote").value.trim();
       if (!materialName || !materialUuid) {
         throw new Error("A material neve és UUID-je kötelező.");
+      }
+      var knownMaterial = resolveKnownMaterialSelection(materialName, materialUuid, state.knownMaterials);
+      if (knownMaterial) {
+        materialName = knownMaterial.name;
+        materialUuid = knownMaterial.uuid;
       }
       var quality = qualityText === "" ? null : Number(qualityText);
       if (quality !== null && !hasValidQuality(quality)) {
@@ -17049,12 +17170,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (state.craftingCards.some(function (candidate) { return candidate.id === card.id; })) {
         allocation = recalculateAllocation("EXPORT_MATERIAL_HYDRATION");
       } else {
-        allocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans);
+        allocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans, state.knownMaterials);
         attachExportMaterialIntelligence(card, allocation.cards[0]);
       }
       var cardResult = allocation && allocation.cards.find(function (result) { return result.cardId === card.id; });
       if (!cardResult) {
-        var singleAllocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans);
+        var singleAllocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans, state.knownMaterials);
         cardResult = attachExportMaterialIntelligence(card, singleAllocation.cards[0]);
         allocation = singleAllocation;
       }
@@ -18213,12 +18334,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     });
 
     document.getElementById("batchMaterialName").addEventListener("change", function () {
-      var selectedName = foldSearchText(this.value);
-      var option = Array.from(document.getElementById("knownMaterials").options).find(function (candidate) {
-        return foldSearchText(candidate.value) === selectedName;
-      });
-      if (option && option.dataset.uuid) {
-        document.getElementById("batchMaterialUuid").value = option.dataset.uuid;
+      var uuidInput = document.getElementById("batchMaterialUuid");
+      var selected = resolveKnownMaterialSelection(this.value, uuidInput.value.trim(), state.knownMaterials);
+      if (selected) {
+        this.value = selected.name;
+        uuidInput.value = selected.uuid;
       }
     });
 

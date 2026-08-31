@@ -34,6 +34,15 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett: `docs/M1_REPORT.md`, `docs/TECHNICAL_BASELINE.md`; a `file://` kapu tovabbra is kezi maradt.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
 
+## V003-C012.5A Inventory Independence Foundation
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Az `uj-projekt` skillt a felhasználói tiltásnak megfelelően nem használtuk.
+- Mikor használtuk: `2026-08-30` és `2026-08-31`, a félbemaradt dirty repair-cycle célzott folytatása, bounded validator és rövid valós Chrome localhost fixture során.
+- Mire segített: a minimális resume/audit, a teljes történeti regresszió elkerülése, az exact UUID identity edge case célzott bizonyítása és a C012.5A scope védelme.
+- Érintett döntések: inventory ∪ requirement Combined source-set, aktív commodity cache alapú known-material lista, exact `commodityUuid ↔ ingredientUuid` bridge és no-fuzzy negatív gate.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## M2 projektfolytatas
 
 - Skill neve: `uj-projekt`

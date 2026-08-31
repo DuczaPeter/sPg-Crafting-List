@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V003-C012.5A Inventory Independence Foundation
+
+- [x] Combined source-set: inventory materialok és aktív recipe requirementek uniója.
+- [x] Canonical UUID dedup exact `commodityUuid ↔ ingredientUuid` API-kapcsolattal; név/fuzzy merge nélkül.
+- [x] Inventory-only, requirement-only, több material, dedup és recipe-törlés utáni inventory-megőrzés.
+- [x] My Materials receptfüggetlen ismert-material forrás az aktív commodity cache-ből; kézi név/UUID bevitel megmaradt.
+- [x] Reload/persistence, backup/restore, C012.3 Quality, C012.4 numeric, static/JS és V001/V002 integrity targeted PASS.
+- [x] Rövid Chrome localhost exact UUID-mismatch flow és konzol `WARN 0 / ERROR 0` PASS.
+- [ ] `V003-C012.5B` – NOT STARTED.
+- [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
+
 ### V003-dev farm recommendation
 
 - [x] Kulon `develop/V003` branch a kozos main alapjan; V001/V002 fagyasztva.

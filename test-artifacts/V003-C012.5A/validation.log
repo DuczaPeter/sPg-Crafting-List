@@ -1,0 +1,106 @@
+﻿V003-C012.5A targeted validation
+
+--- static-gate exit=0 ---
+EMBEDDED_APPLICATION_CSS_PASS 279e71063ee8c1a9a880a8bac1361e3eb6d017c7f4023a1652b89502583beb12 112151 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+--- c0125a-target exit=0 ---
+V003_C0125A_TARGET_PASS evidence=test-artifacts/V003-C012.5A/inventory-independence-evidence.json
+--- c0123-quality-target exit=0 ---
+V003_C0123_USER_MATERIAL_CONSTRAINT_TEST_PASS
+{
+  "cycle": "V003-C012.3",
+  "status": "PASS",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "blueprint": "Metamaterial Test #152",
+  "recipeSemantics": {
+    "Stileron": "FIXED",
+    "Ouratite": "FIXED"
+  },
+  "targetQ800LowOnly": {
+    "stileronQ747Eligible": false,
+    "stileronReservedUnits": 0,
+    "stileronMissingAmountUnits": 0,
+    "stileronMissingQualityUnits": 15000,
+    "ouratiteQ860ReservedUnits": 9000,
+    "cardSatisfied": false,
+    "maxCraftable": 0
+  },
+  "targetQ800WithQ850": {
+    "stileronAllocatedQualities": [
+      850
+    ],
+    "cardSatisfied": true,
+    "maxCraftable": 3
+  },
+  "highestQ": {
+    "stileronAllocatedQualities": [
+      950,
+      850
+    ]
+  },
+  "parity": {
+    "combinedLabel": "Q800+",
+    "finalCardLabel": "Q800+",
+    "standaloneLabel": "Q800+"
+  },
+  "backupRestore": "PASS",
+  "priorityAndNoDoubleCount": "PASS",
+  "standalone": {
+    "path": "test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html",
+    "bytes": 154483,
+    "sha256": "c5d260c1ddffb6d3638c91c6af7bb650d4162d2d24c77e4890a73605707f30b6",
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}
+--- c0124-numeric-target exit=0 ---
+V003_C0124_NUMERIC_EDITOR_TEST_PASS
+{
+  "cycle": "V003-C012.4",
+  "status": "PASS",
+  "rootCause": "INPUT_EVENT_NORMALIZATION_PLUS_DEBOUNCED_FULL_RERENDER",
+  "helper": "bindCommittedNumericEditor",
+  "normalizationHelper": "normalizeCommittedNumericDraft",
+  "auditedNumericInputs": [
+    "Blueprint Browser Final Card quantity",
+    "Crafting List expanded card quantity",
+    "Combined Materials Target Q",
+    "Crafting requirement Target Q",
+    "My Materials batch quantity",
+    "My Materials batch Quality",
+    "Mining Loadout station count override"
+  ],
+  "craftQuantity": {
+    "oneTo11452": 11452,
+    "elevenFourFiveTwoToThree": 3,
+    "temporaryEmpty": "PASS"
+  },
+  "targetQuality": {
+    "eightHundredToNineFifty": 950,
+    "invalidCommit": "RESTORE_PREVIOUS"
+  },
+  "interaction": {
+    "firstFocusSelectAll": "PASS",
+    "alreadyFocusedCaretEdit": "PASS",
+    "multiCharacterFocusStable": "PASS",
+    "backspaceDeleteDraft": "PASS",
+    "arrowHomeEndNativePathPreserved": "PASS",
+    "enterCommit": "PASS",
+    "blurCommit": "PASS",
+    "changeNoDoubleCommit": "PASS",
+    "tabUsesNativeBlurCommit": "PASS"
+  },
+  "userDataWritesDuringDraft": 0,
+  "decimalAudit": {
+    "dot": "SUPPORTED_AS_BEFORE",
+    "comma": "NOT_PARSED_AS_BEFORE",
+    "scuPrecision": 4
+  },
+  "staticNumberInputs": 3,
+  "dynamicNumberInputs": 4
+}
+V001_V002_INTEGRITY=PASS
+V003_TAG_RELEASE=NONE

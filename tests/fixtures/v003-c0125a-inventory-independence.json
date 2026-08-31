@@ -1,0 +1,66 @@
+{
+  "scVersion": "4.10.0-LIVE.12519617",
+  "materials": {
+    "stileron": {
+      "uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "name": "Stileron"
+    },
+    "beryl": {
+      "uuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+      "name": "Beryl"
+    },
+    "savrilium": {
+      "uuid": "4a47cad8-0271-4048-b19b-d9b52521fc20",
+      "name": "Savrilium"
+    }
+  },
+  "identityFixtures": {
+    "exactLinkedStileron": {
+      "commodityUuid": "c0125a-active-cache-stileron",
+      "ingredientUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "name": "Stileron"
+    },
+    "unlinkedSameName": [
+      {
+        "uuid": "c0125a-unlinked-stileron-a",
+        "name": "Stileron"
+      },
+      {
+        "uuid": "c0125a-unlinked-stileron-b",
+        "name": "Stileron"
+      }
+    ]
+  },
+  "inventoryOnlyBatches": [
+    {
+      "id": "c0125a-stileron-q747",
+      "materialUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "materialName": "Stileron",
+      "quality": 747,
+      "quantityUnits": 41090,
+      "unit": "SCU",
+      "createdAt": "2026-08-30T09:00:00.000Z",
+      "updatedAt": "2026-08-30T09:00:00.000Z"
+    },
+    {
+      "id": "c0125a-beryl-q517",
+      "materialUuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+      "materialName": "Beryl",
+      "quality": 517,
+      "quantityUnits": 20000,
+      "unit": "SCU",
+      "createdAt": "2026-08-30T09:00:01.000Z",
+      "updatedAt": "2026-08-30T09:00:01.000Z"
+    },
+    {
+      "id": "c0125a-savrilium-q517",
+      "materialUuid": "4a47cad8-0271-4048-b19b-d9b52521fc20",
+      "materialName": "Savrilium",
+      "quality": 517,
+      "quantityUnits": 30000,
+      "unit": "SCU",
+      "createdAt": "2026-08-30T09:00:02.000Z",
+      "updatedAt": "2026-08-30T09:00:02.000Z"
+    }
+  ]
+}

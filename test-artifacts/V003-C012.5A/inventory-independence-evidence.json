@@ -1,0 +1,35 @@
+{
+  "cycle": "V003-C012.5A",
+  "status": "PASS",
+  "combinedSourceSet": "inventory materials UNION active requirement materials",
+  "canonicalIdentity": "canonical material UUID",
+  "inventoryOnly": {
+    "status": "PASS",
+    "stileronUnits": 41090,
+    "requiredUnits": 0,
+    "reservedUnits": 0,
+    "missingUnits": 0
+  },
+  "multipleInventoryOnly": {
+    "status": "PASS",
+    "materialCount": 3
+  },
+  "requirementOnly": {
+    "status": "PASS",
+    "missingUnits": 50000
+  },
+  "inventoryRequirementDedup": {
+    "status": "PASS",
+    "materialCount": 1
+  },
+  "recipeDeletionRetainsInventory": "PASS",
+  "recipeIndependentKnownMaterialAdd": "PASS",
+  "knownMaterialSource": "ACTIVE_COMMODITY_CACHE via buildMaterialDisplayIndex",
+  "exactCommodityIngredientBridge": "PASS",
+  "unlinkedSameNameRemainsSeparate": "PASS",
+  "manualNameUuidEntryPreserved": true,
+  "reloadPersistenceModel": "materialBatches IndexedDB source unchanged",
+  "backupRestore": "PASS",
+  "schemaChanged": false,
+  "qualityPoolImplemented": false
+}

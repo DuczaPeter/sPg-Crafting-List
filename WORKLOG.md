@@ -647,3 +647,12 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - A pontos candidate manual `file://` kapuja nem futott le. A kapu elott uj C012.5 release blocker jelent meg, ezert az `a1c3b86f...807` candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`; az automated es Chrome localhost PASS evidence megmarad, de az artifact nem adhato ki es nem hasznalhato ujra.
 - A korabbi `388a9c04...cca4d98e` candidate ettol elkulonitve tovabbra is `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`. A lezart C012.3/C012.4 validatorok utolag nem lettek atirva.
 - Vegso statusz: `V003 C013 ATTEMPT – AUTOMATED PASS, CHROME LOCALHOST PASS, USER MANUAL file:// NOT RUN, INVALIDATED BY C012.5 RELEASE BLOCKER`. C012.5 nem indult el; V003 tag/release/push/main merge nincs. Visszaallas: a `V003-C013-ABORTED-BY-C012.5` commit revertje; az alkalmazas tovabbra is a C012.4 baseline, stabil fallback V002.
+
+### V003-C012.5A Inventory Independence Foundation - 2026-08-31
+
+- Root cause: a Combined Materials csak az allocation recipe requirementjeiből épült, a known-material lista pedig inventory/recipe állapothoz kötődött.
+- Javítás: inventory ∪ active requirement source-set; exact canonical UUID identity, továbbá csak bizonyított API `commodityUuid ↔ ingredientUuid` kapcsolat szerinti összevonás. Név/fuzzy dedup nincs.
+- My Materials: az aktív commodity cache `buildMaterialDisplayIndex()` projekciója recept nélkül is elérhető; manuális név/UUID bevitel megmaradt.
+- Targeted validator: static/JS, C012.5A fixture-ek, no-exact-link negatív eset, C012.3 Quality, C012.4 numeric és V001/V002 integrity PASS.
+- Chrome localhost: commodity UUID-n tárolt Stileron Q747 4,109 SCU + eltérő ingredient UUID-s JS-300 egy material kártyán; 0,35 SCU foglalás, 0 hiány. Kártyatörlés és reload után inventory-only állapot megmaradt; console WARN/ERROR 0.
+- C012.5B és C013 nem indult; V003 tag/release/push/main merge nincs. Visszaállás: a C012.5A commit revertje; stabil fallback a változatlan V002.
