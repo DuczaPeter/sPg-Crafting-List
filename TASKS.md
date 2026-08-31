@@ -2,16 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5C3A Pool Allocation + Max DB
+### V003-C012.5C3B1 Combined real pool metrics
 
-- [x] Recipe Slot assignment → effective Quality policy; recipe baseline nem gyengíthető.
-- [x] `LEGACY_FALLBACK`, `ANY_Q`, Minimum Q és MAX Q szemantika; unresolved threshold fail-safe.
-- [x] Lowest-eligible-first pool batch order; legacy `HIGHEST_Q` változatlan.
-- [x] Exact canonical UUID, per-card prioritás, közös fizikai inventory és no-double-count.
-- [x] FR-86 Q550/Q750 happy path és csak-Q550 insufficient Quality/Max DB=0 fixture.
-- [x] C3A/C2/C1/B/A/C012.3 + static/single-file + V001/V002 integrity PASS.
-- [x] Chrome localhost: live recalculation, reload persistence, WARN/ERROR 0; izolált Site Data teardown, fingerprint `9be961d3 → 9be961d3`.
-- [ ] `V003-C012.5C3B` Combined pool metrikák / standalone presentation – NOT STARTED.
+- [x] A Minimum/MAX blokkok a C3A valódi allocation usage eredményét aggregálják, külön Combined-allocation nélkül.
+- [x] `ANY_Q` / `LEGACY_FALLBACK` explicit poolból kizárva, globális totalban megtartva.
+- [x] Required/reserved/mennyiséghiány/Quality-hiány és unresolved fail-safe material-szinten.
+- [x] Exact canonical UUID, multiple Card/prioritás, közös fizikai inventory és no-double-count.
+- [x] FR-86 happy path, Q550-only Quality-hiány, recipe delete és inventory-only persistence.
+- [x] C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity PASS.
+- [x] Chrome `127.0.0.1:4184`: happy/shortage/delete/reload, responsive overflow 0, WARN/ERROR 0; fingerprint `ab900bdc → ab900bdc`.
+- [ ] `V003-C012.5C3B2` standalone pool presentation – NOT STARTED.
 - [ ] `V003-C012.5D` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 

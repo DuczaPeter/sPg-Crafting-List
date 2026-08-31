@@ -641,3 +641,19 @@ node .\tools\run-v003-c0125c3a-tests.mjs
 - `v003-c0125c3a-pool-allocation-maxdb`: precedence, legacy fallback, ANY/Minimum/MAX, unresolved threshold, FIXED/UNKNOWN, batch order, FR-86 Quality-hiány, per-card/prioritás/no-double-count, canonical UUID és Max DB.
 - A validator közvetlenül futtatja a C2/C1/B/A/C012.3 regressziókat, static/single-file kaput és V001/V002 integritást; teljes történeti regressziót nem futtat.
 - Artifactok: `test-artifacts/V003-C012.5C3A/`.
+
+V003-C012.5C3B1 célzott kapu (Combined Materials valódi pool-metrikák):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125c3b1.ps1"
+```
+
+Csak a C012.5C3B1 aggregation célteszt:
+
+```powershell
+node .\tools\run-v003-c0125c3b1-tests.mjs
+```
+
+- `v003-c0125c3b1-combined-pool-metrics`: explicit Minimum/MAX allocation részösszegek, eligible/global no-double-count, Quality-hiány, unresolved threshold, ANY/legacy exclusion, multiple Card/prioritás, exact UUID és recipe delete/inventory-only.
+- A validator közvetlenül futtatja a C3A/C2/C1/B/A regressziókat, a static/single-file kaput és V001/V002 integritást; teljes történeti regressziót nem futtat.
+- Artifactok: `test-artifacts/V003-C012.5C3B1/`.

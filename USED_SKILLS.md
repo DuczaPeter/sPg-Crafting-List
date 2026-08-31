@@ -34,6 +34,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett: `docs/M1_REPORT.md`, `docs/TECHNICAL_BASELINE.md`; a `file://` kapu tovabbra is kezi maradt.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
 
+## V003-C012.5C3B1 Combined real pool metrics
+
+- Skill neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-31`, a C3A baseline-ról induló szűk Combined aggregation-javításhoz és az izolált localhost UI/teardown/reload ellenőrzéshez.
+- Mire segített: a célzott fájl- és tesztkör megtartására teljes regresszió nélkül, valamint az egyetlen jóváhagyott FR-86 tesztkártya biztonságos törlésének és a megmaradó User Data bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: Combined view-model/render, C3B1 teszt/validator/report/artifact és aktuális projektstátusz; skillfájl, standalone és V002 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5C1 Recipe Slot assignment model
 
 - Skill neve: `credit-efficient-project-runner`.

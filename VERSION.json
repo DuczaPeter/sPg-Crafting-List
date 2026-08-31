@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C012.5C3A",
-    "currentCycleId":  "V003-C012.5C3A",
-    "lastSuccessfulCycle":  "V003-C012.5C3A",
+    "currentCycle":  "C012.5C3B1",
+    "currentCycleId":  "V003-C012.5C3B1",
+    "lastSuccessfulCycle":  "V003-C012.5C3B1",
     "branch":  "develop/V003",
     "releaseGate":  "development-cycle-pass-no-release",
-    "lastUpdated":  "2026-08-31T17:11:57+02:00",
-    "currentCyclePurpose":  "Recipe Slot Quality pool assignment binding to the shared Allocation Engine and Max DB effective policy",
-    "currentCycleStartedAt":  "2026-08-31T13:00:00+02:00",
+    "lastUpdated":  "2026-08-31T17:38:21+02:00",
+    "currentCyclePurpose":  "Combined Materials projection of real C3A Minimum/MAX allocation metrics",
+    "currentCycleStartedAt":  "2026-08-31T17:12:00+02:00",
     "currentTestLevel":  "targeted-regression-plus-short-real-chrome",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "Explicit slot pool assignments now constrain the shared allocation and Max DB policy without weakening recipe baselines. FR-86 happy and insufficient-Quality fixtures, legacy/ANY/Minimum/MAX/FIXED/UNKNOWN semantics, targeted regressions, Chrome live recalculation/reload and isolated teardown passed. C012.5C3B is not started.",
-    "developmentAcceptance":  "V003-C012.5C3A – POOL ALLOCATION + MAX DB PASS, C012.5C3B NOT STARTED",
+    "currentCycleStatusReason":  "Combined Materials now reads real C3A allocation usages for explicit Minimum/MAX pool subtotals without a second allocation. Happy, Quality-shortage, unresolved, exclusion, priority, no-double-count, deletion, targeted regression and isolated Chrome reload checks passed. C012.5C3B2 is not started.",
+    "developmentAcceptance":  "V003-C012.5C3B1 – COMBINED REAL POOL METRICS PASS, C012.5C3B2 NOT STARTED",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -39,13 +39,13 @@
 
                                   ],
     "v003DevelopmentGate":  {
-                                "status":  "C012.5C3A_PASS_C012.5C3B_NOT_STARTED",
-                                "cycle":  "V003-C012.5C3A",
-                                "chromeLocalhostTechnicalProbe":  "PASS; isolated FR-86 Minimum Q500/MAX Q700 happy path and Q550-only insufficient-Quality path, live assignment recalculation, reload persistence, complete isolated Site Data teardown and console WARN/ERROR 0",
+                                "status":  "C012.5C3B1_PASS_C012.5C3B2_NOT_STARTED",
+                                "cycle":  "V003-C012.5C3B1",
+                                "chromeLocalhostTechnicalProbe":  "PASS; isolated FR-86 Combined happy and Q550-only Quality-shortage paths, user-approved single-Card deletion, inventory-only threshold/eligible persistence, mutation-free reload and console WARN/ERROR 0",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL FILE:// PASS reported for C012.1/C012.2 input evidence: the complete Technical Baseline passed and the standalone export was created and opened; user-run, not Codex automation.",
-                                "userDataFingerprintBefore":  "9be961d3",
-                                "userDataFingerprintAfterReload":  "9be961d3",
+                                "userDataFingerprintBefore":  "ab900bdc",
+                                "userDataFingerprintAfterReload":  "ab900bdc",
                                 "consoleWarningErrorCount":  0,
                                 "combinedQualityPools":  {
                                                               "settingKey":  "user:materialQualityPools",
@@ -67,7 +67,7 @@
                                                               "desktopOverflow":  0,
                                                               "mobileOverflow":  0,
                                                               "chromeEvidence":  "test-artifacts/V003-C012.5B/chrome-localhost-evidence.json",
-                                                              "nextCycle":  "V003-C012.5C3B_NOT_STARTED"
+                                                              "nextCycle":  "V003-C012.5C3B2_NOT_STARTED"
                                                           },
                                 "recipeSlotPoolAssignment":  {
                                                                          "storage":  "craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]",
@@ -95,8 +95,35 @@
                                                                          "fr86InsufficientQuality":  "PASS_MISSING_AMOUNT_0_MISSING_QUALITY_1.9_SCU_MAX_DB_0",
                                                                          "noDoubleCount":  "PASS",
                                                                          "chromeEvidence":  "test-artifacts/V003-C012.5C3A/chrome-localhost-evidence.json",
-                                                                         "nextCycle":  "V003-C012.5C3B_NOT_STARTED"
+                                                                         "nextCycle":  "V003-C012.5C3B2_NOT_STARTED"
                                                                      },
+                                "combinedPoolMetrics":  {
+                                                            "cycle":  "V003-C012.5C3B1",
+                                                            "source":  "C3A_ACTUAL_ALLOCATION_USAGES",
+                                                            "separateCombinedAllocation":  false,
+                                                            "explicitModes":  [
+                                                                                  "MINIMUM_Q_POOL",
+                                                                                  "MAXIMUM_Q_POOL"
+                                                                              ],
+                                                            "metrics":  [
+                                                                            "requiredUnits",
+                                                                            "reservedUnits",
+                                                                            "missingAmountUnits",
+                                                                            "missingQualityUnits"
+                                                                        ],
+                                                            "anyQExcludedFromPools":  true,
+                                                            "legacyFallbackExcludedFromPools":  true,
+                                                            "globalTotalsIncludeAllModes":  true,
+                                                            "eligibleOverlapAllowed":  true,
+                                                            "physicalInventoryDoubleCount":  false,
+                                                            "unresolvedThreshold":  "FAIL_SAFE_VISIBLE",
+                                                            "multipleCardsPriorityDerived":  true,
+                                                            "canonicalIdentity":  "EXACT_UUID_OR_PROVEN_COMMODITY_INGREDIENT_BRIDGE",
+                                                            "recipeDeleteInventoryOnlyPersistence":  "PASS",
+                                                            "chromeEvidence":  "test-artifacts/V003-C012.5C3B1/chrome-localhost-evidence.json",
+                                                            "report":  "docs/V003_C0125C3B1_COMBINED_POOL_METRICS_REPORT.md",
+                                                            "nextCycle":  "V003-C012.5C3B2_NOT_STARTED"
+                                                        },
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",
                                                            "topThreeChanged":  false,

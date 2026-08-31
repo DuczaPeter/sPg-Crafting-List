@@ -3866,6 +3866,36 @@ code {
   font-size: 12px;
 }
 
+.spg-c0125c3b1-pool-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(24, 218, 255, 0.12);
+}
+
+.spg-c0125c3b1-pool-metrics span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.spg-c0125c3b1-pool-metrics small {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.spg-c0125c3b1-pool-metrics strong {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.spg-c0125b-quality-pool[data-pool-status="UNRESOLVED"] {
+  border-color: color-mix(in srgb, var(--warning) 72%, transparent);
+}
+
 .spg-c0125b-pool-note {
   margin: 0;
   color: var(--muted);
@@ -8423,6 +8453,40 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }, 0);
     }
 
+    /* C0125C3B1_COMBINED_POOL_METRICS_START */
+    function buildCombinedPoolAllocationMetrics(usages, assignmentMode) {
+      var matching = (Array.isArray(usages) ? usages : []).filter(function (usage) {
+        return usage && usage.recipePoolAssignmentMode === assignmentMode;
+      });
+      var metrics = matching.reduce(function (result, usage) {
+        result.requiredUnits += Number(usage.requiredUnits || 0);
+        result.reservedUnits += Number(usage.reservedUnits || 0);
+        result.missingUnits += Number(usage.missingUnits || 0);
+        result.missingAmountUnits += Number(usage.missingAmountUnits || 0);
+        result.missingQualityUnits += Number(usage.missingQualityUnits || 0);
+        if (usage.status === "POOL_THRESHOLD_UNRESOLVED" || usage.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED") {
+          result.unresolvedCount += 1;
+        }
+        return result;
+      }, {
+        assignmentMode: assignmentMode,
+        requirementCount: matching.length,
+        requiredUnits: 0,
+        reservedUnits: 0,
+        missingUnits: 0,
+        missingAmountUnits: 0,
+        missingQualityUnits: 0,
+        unresolvedCount: 0
+      });
+      metrics.status = metrics.unresolvedCount > 0
+        ? "UNRESOLVED"
+        : (metrics.missingQualityUnits > 0
+          ? "INSUFFICIENT_QUALITY"
+          : (metrics.missingAmountUnits > 0 ? "INSUFFICIENT_QUANTITY" : (metrics.requirementCount ? "SATISFIED" : "NO_ASSIGNMENT")));
+      return metrics;
+    }
+    /* C0125C3B1_COMBINED_POOL_METRICS_END */
+
     /* C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL_START */
     var RECIPE_SLOT_QUALITY_POOL_MODES = Object.freeze({
       ANY_Q: "ANY_Q",
@@ -11156,6 +11220,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             effectiveTarget: requirement.effectiveTarget === undefined ? requirement.targetQuality : requirement.effectiveTarget,
             effectiveMinimum: requirement.effectiveMinimum === undefined ? null : requirement.effectiveMinimum,
             allocationStrategy: requirement.allocationStrategy || null,
+            recipePoolAssignmentMode: requirement.recipePoolAssignmentMode || null,
+            recipePoolAssignmentOrigin: requirement.recipePoolAssignmentOrigin || null,
+            recipePoolThreshold: requirement.recipePoolThreshold === undefined ? null : requirement.recipePoolThreshold,
+            recipePoolThresholdField: requirement.recipePoolThresholdField || null,
+            recipePoolResolutionStatus: requirement.recipePoolResolutionStatus || null,
+            allocationBlockReason: requirement.allocationBlockReason || null,
             userFacingQualityLabel: requirement.userFacingQualityLabel || formatEffectiveQualityLabel({ effectiveRule: requirement.rule, effectiveTarget: requirement.targetQuality }),
             requiredUnits: requirement.requiredUnits,
             reservedUnits: requirement.allocatedUnits,
@@ -11262,6 +11332,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             eligibleInventory: {
               minimumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.minimumQ, canonicalMaterials),
               maximumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.maximumQ, canonicalMaterials)
+            },
+            poolMetrics: {
+              minimum: buildCombinedPoolAllocationMetrics(group.usages, RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL),
+              maximum: buildCombinedPoolAllocationMetrics(group.usages, RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL)
             },
             buckets: m4Clone(group.qualityBuckets || []),
             totals: {
@@ -14575,9 +14649,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     function renderCombinedQualityPool(material, field, label) {
       var threshold = material.qualityPool[field];
       var eligibleUnits = field === "minimumQ" ? material.eligibleInventory.minimumUnits : material.eligibleInventory.maximumUnits;
+      var poolMetrics = field === "minimumQ" ? material.poolMetrics.minimum : material.poolMetrics.maximum;
       var section = document.createElement("section");
       section.className = "spg-c0125b-quality-pool";
       section.dataset.pool = field;
+      section.dataset.poolStatus = poolMetrics.status;
+      section.dataset.requirementCount = String(poolMetrics.requirementCount);
+      section.dataset.requiredUnits = String(poolMetrics.requiredUnits);
+      section.dataset.reservedUnits = String(poolMetrics.reservedUnits);
+      section.dataset.missingAmountUnits = String(poolMetrics.missingAmountUnits);
+      section.dataset.missingQualityUnits = String(poolMetrics.missingQualityUnits);
       var inputLabel = document.createElement("label");
       var caption = document.createElement("span");
       caption.textContent = label;
@@ -14612,10 +14693,22 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var eligibleValue = document.createElement("strong");
       eligibleValue.textContent = eligibleUnits === null ? "—" : formatInventoryUnits(material.unit, eligibleUnits);
       eligible.append(eligibleCaption, eligibleValue);
+      var metrics = document.createElement("div");
+      metrics.className = "spg-c0125c3b1-pool-metrics";
+      metrics.append(
+        createCombinedMetric("Kell", material.unit, poolMetrics.requiredUnits),
+        createCombinedMetric("Lefoglalva", material.unit, poolMetrics.reservedUnits),
+        createCombinedMetric("Mennyiséghiány", material.unit, poolMetrics.missingAmountUnits),
+        createCombinedMetric("Quality-hiány", material.unit, poolMetrics.missingQualityUnits)
+      );
       var note = document.createElement("p");
       note.className = "spg-c0125b-pool-note";
-      note.textContent = "Készlet-előnézet; recipe-hozzárendelés C012.5C-ben.";
-      section.append(inputLabel, eligible, note);
+      note.textContent = poolMetrics.status === "UNRESOLVED"
+        ? "Küszöb nincs beállítva · allocation feloldatlan."
+        : (poolMetrics.requirementCount
+          ? poolMetrics.requirementCount + " explicit pool requirement · allocation utáni részösszeg."
+          : "Nincs explicit " + label + " hozzárendelés.");
+      section.append(inputLabel, eligible, metrics, note);
       return section;
     }
 

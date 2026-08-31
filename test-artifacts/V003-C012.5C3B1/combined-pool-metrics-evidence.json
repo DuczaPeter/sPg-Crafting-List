@@ -1,0 +1,22 @@
+{
+  "cycle": "V003-C012.5C3B1",
+  "status": "PASS",
+  "minimumQRealMetrics": "PASS",
+  "maximumQRealMetrics": "PASS",
+  "eligiblePreview": "PASS_OVERLAP_NOT_PHYSICAL_TOTAL",
+  "globalTotal": "PASS",
+  "anyQExcludedFromPools": "PASS",
+  "legacyFallbackExcludedFromPools": "PASS",
+  "fr86HappyPath": "PASS",
+  "qualityShortage": "PASS_MISSING_AMOUNT_0_MISSING_QUALITY_19000",
+  "unresolvedThreshold": "PASS_FAIL_SAFE",
+  "noDoubleCount": "PASS",
+  "multipleCards": "PASS",
+  "priorityDerivedAggregation": "PASS",
+  "canonicalCommodityIngredientIdentity": "PASS",
+  "recipeDelete": "PASS",
+  "inventoryOnlyPersistence": "PASS",
+  "recipeSlotNamesInPoolUi": false,
+  "standaloneChanged": false,
+  "c0125c3b2Started": false
+}
