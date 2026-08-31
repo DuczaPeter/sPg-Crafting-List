@@ -146,7 +146,7 @@ assert.match(combinedRenderer[1], /"MAX Q"/);
 assert.doesNotMatch(combinedRenderer[1], /recipeSlotName|Shell|Field Array|Voltage Regulator|Stator Cores/);
 const poolPersistence = html.match(/async function persistMaterialQualityPoolValue\([\s\S]*?\n    \}/);
 assert.ok(poolPersistence);
-assert.doesNotMatch(poolPersistence[0], /recalculateAllocation/);
+assert.match(poolPersistence[0], /recalculateAllocation\("MATERIAL_QUALITY_POOL_UPDATE"\)/);
 
 const evidence = {
   cycle: "V003-C012.5B",
@@ -161,7 +161,8 @@ const evidence = {
   backupRestore: "PASS",
   oldBackupWithoutPoolSettings: "PASS",
   existingMaterialQualityPlansPreserved: "PASS",
-  allocationUsesNewPools: false,
+  allocationUsesNewPools: true,
+  c0125c3aIntegrationExpected: true,
   standaloneChanged: false
 };
 fs.mkdirSync(artifactDirectory, { recursive: true });

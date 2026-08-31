@@ -121,11 +121,6 @@ const batches = [
 ];
 const withoutAssignments = clone(cardA);
 delete withoutAssignments.recipeSlotQualityPoolAssignments;
-assert.deepEqual(
-  JSON.parse(JSON.stringify(model.allocateCardsDeterministically([cardA], batches, {}, canonical))),
-  JSON.parse(JSON.stringify(model.allocateCardsDeterministically([withoutAssignments], batches, {}, canonical))),
-  "A C012.5C2 dropdown assignment nem módosíthat allocationt."
-);
 const legacyPlan = { [stileron.ingredientUuid]: { mode: "TARGET_Q", targetQuality: 700 } };
 assert.equal(model.allocateCardsDeterministically([withoutAssignments], batches, legacyPlan, canonical).cards[0].requirements[0].allocatedBatches[0].batchId, "q750");
 
@@ -138,7 +133,7 @@ assert.match(html, /onQualityPoolAssignment: function \(mode, requirement\)/);
 assert.match(html, /applyRecipeSlotQualityPoolAssignmentsToCard\(card, state\.finalCardPreview\.recipeSlotQualityPoolAssignments\)/);
 assert.match(html, /state\.finalCardBoundCardId = card\.id/);
 assert.match(html, /renderC010FinalCraftingCard\(\);[\s\S]*renderCraftingCards\(\);/);
-assert.match(html, /function allocateCardsDeterministically\(cards, batches, materialQualityPlans, canonicalMaterials\)/);
+assert.match(html, /function allocateCardsDeterministically\(cards, batches, materialQualityPlans, canonicalMaterials, materialQualityPools\)/);
 const standaloneRequirement = html.match(/function m6RenderRequirement\(requirement\) \{[\s\S]*?\n    \}(?=\n\n    function)/);
 assert.ok(standaloneRequirement);
 assert.match(standaloneRequirement[0], /spg-export-quality/);
@@ -157,9 +152,10 @@ const evidence = {
   duplicateIndependence: "PASS",
   dynamicThresholdLabels: "PASS",
   invalidStoredFallback: "PASS",
-  allocationUnchanged: "PASS",
+  legacyFallbackAllocationCompatibility: "PASS",
   standaloneEditableDropdown: false,
-  c0125c3Started: false
+  c0125c3aIntegrationExpected: true,
+  c0125c3bStarted: false
 };
 fs.mkdirSync(artifactDirectory, { recursive: true });
 fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");

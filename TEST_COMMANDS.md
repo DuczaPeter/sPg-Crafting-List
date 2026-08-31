@@ -625,3 +625,19 @@ node .\tools\run-v003-c0125c2-tests.mjs
 - `v003-c0125c2-recipe-pool-dropdown-ui`: transient draft, draft→Card, exact cardId binding, Browser/Crafting same-card állapot, per-slot/per-card/Duplicate függetlenség, legacy/invalid fallback, dinamikus Minimum/MAX label, reload és változatlan allocation/Max/Combined modell.
 - A validator közvetlenül futtatja a C012.5C1/C012.5B/C012.5A/C012.3 kapukat, a static/single-file ellenőrzést és V001/V002 integritást; teljes történeti regressziót nem futtat.
 - Artifactok: `test-artifacts/V003-C012.5C2/`.
+
+V003-C012.5C3A célzott kapu (Recipe Slot pool assignment → Allocation Engine + Max DB):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125c3a.ps1"
+```
+
+Csak a C012.5C3A allocation modellteszt:
+
+```powershell
+node .\tools\run-v003-c0125c3a-tests.mjs
+```
+
+- `v003-c0125c3a-pool-allocation-maxdb`: precedence, legacy fallback, ANY/Minimum/MAX, unresolved threshold, FIXED/UNKNOWN, batch order, FR-86 Quality-hiány, per-card/prioritás/no-double-count, canonical UUID és Max DB.
+- A validator közvetlenül futtatja a C2/C1/B/A/C012.3 regressziókat, static/single-file kaput és V001/V002 integritást; teljes történeti regressziót nem futtat.
+- Artifactok: `test-artifacts/V003-C012.5C3A/`.

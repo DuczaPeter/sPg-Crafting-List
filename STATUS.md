@@ -4,28 +4,27 @@
 
 - Branch: `develop/V003`
 - Stabil fallback: `V002` – változatlan single-file release.
-- Aktuális ciklus: `V003-C012.5C2`
+- Aktuális ciklus: `V003-C012.5C3A`
 - Státusz: `PASS`
-- Következő: `V003-C012.5C3` – **NOT STARTED**.
+- Következő: `V003-C012.5C3B` – **NOT STARTED**.
+- C012.5D / C013: **NOT STARTED**.
 - V003 tag/release/push/main merge: nincs.
 
-## C012.5C2 eredmény
+## C012.5C3A eredmény
 
-- Browser Final Card és Crafting List közös `renderRecipeSlotQualityPoolSelect()` UI.
-- Opciók: legacy recipe fallback, `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`.
-- Csak a pool mód persistálódik; Minimum/MAX felirat az aktuális material thresholdból épül.
-- Új blueprint transient `finalCardDraftQualityPoolAssignments` state-et használ; kosárkor az assignment az új Cardra másolódik.
-- Browser/Crafting szinkron kizárólag exact `cardId`; blueprint UUID szerinti automatikus Card-választás nincs.
-- Per-slot, per-card, azonos blueprint és Duplicate függetlenség PASS.
-- Allocation/Max/Combined/standalone logika változatlan; C3 nincs elindítva.
+- Effective precedence: recipe baseline → legacy C012.3 fallback → explicit slot pool constraint; baseline nem gyengíthető.
+- `ANY_Q`: nincs extra threshold; Minimum/MAX: material threshold alsó `Qxxx+` korlát; unresolved threshold fail-safe.
+- Pool-módok lowest-eligible-first; legacy `HIGHEST_Q`, FIXED és UNKNOWN szemantika megmaradt.
+- Exact canonical UUID, per-card prioritás, közös fizikai inventory és no-double-count PASS.
+- FR-86 Q550 1,2 + Q750 1,9 SCU: SATISFIED, Max DB 1. Csak Q550 3,1 SCU: Field Array `INSUFFICIENT_QUALITY`, missing amount 0, missing Quality 1,9 SCU, Max DB 0.
 
 ## Ellenőrzés
 
-- C012.5C2/C1/B/A/C012.3 + static/single-file + V001/V002 integrity: PASS.
-- Chrome localhost: draft→Card, same-card, reload PASS; 1366×768 és 390×844 overflow 0; mobil dropdown 89 px; WARN/ERROR 0.
-- Teardown: csak az egy jóváhagyott ideiglenes JS-300 Card törölve; Card count 5, explicit teszt-assignment 0.
-- Fingerprint: `3e2bcb00 → b965ee32 → f3ad8800`; utolsó változtatásmentes reload `f3ad8800 → f3ad8800`. A biteltérés a meglévő Card-save `updatedAt` frissítése, nem adatvesztés.
+- C3A/C2/C1/B/A/C012.3 + static/single-file + V001/V002 integrity: PASS.
+- Chrome localhost: assignment/pool reload, live allocation/Card/Max frissítés PASS; console WARN/ERROR `0/0`.
+- Izolált `127.0.0.1:4183` Site Data teardown: 0 Card, 0 batch, 0 pool.
+- Mutation-free fingerprint: `9be961d3 → 9be961d3`.
 
 ## Végső fejlesztési státusz
 
-`V003-C012.5C2 – RECIPE POOL DROPDOWN UI PASS, C012.5C3 NOT STARTED`
+`V003-C012.5C3A – POOL ALLOCATION + MAX DB PASS, C012.5C3B NOT STARTED`

@@ -51,6 +51,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fájlokat vagy döntéseket érintett: V003 Browser/Crafting Recipe Slot pool presentation és transient draft state, C2 teszt/validator/report/artifact és aktuális projektdokumentáció; C3 nem indult, V002 változatlan.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
 
+## V003-C012.5C3A Pool Allocation + Max DB
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-08-31`, a félbemaradt C3A dirty diff célzott folytatása, rövid regressziós lezárása és izolált valódi Chrome localhost allocation/reload/teardown ellenőrzése során.
+- Mire segített: az ismételt teljes projekt- és történeti regresszió elkerülésére, valamint a FR-86 happy/insufficient Quality, live recalculation, konzol és fingerprint tényleges bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C3A effective policy/allocation, céltesztek/validator/evidence/report és kötelező projektmetaadatok; skillfájl, V001/V002, C3B/D/C013 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5A Inventory Independence Foundation
 
 - Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.

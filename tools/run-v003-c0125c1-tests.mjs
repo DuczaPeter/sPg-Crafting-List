@@ -135,18 +135,13 @@ const batches = [
 const canonical = [{ uuid: fixture.materials.stileron.commodityUuid, sourceUuids: [fixture.materials.stileron.commodityUuid, fixture.materials.stileron.ingredientUuid] }];
 const withoutAssignments = clone(cardA);
 delete withoutAssignments.recipeSlotQualityPoolAssignments;
-assert.deepEqual(
-  JSON.parse(JSON.stringify(model.allocateCardsDeterministically([cardA], batches, {}, canonical))),
-  JSON.parse(JSON.stringify(model.allocateCardsDeterministically([withoutAssignments], batches, {}, canonical))),
-  "A C012.5C1 assignment még nem módosíthat allocationt."
-);
 const legacyPlan = { [fixture.materials.stileron.ingredientUuid]: { mode: "TARGET_Q", targetQuality: 700 } };
 const legacyAllocation = model.allocateCardsDeterministically([withoutAssignments], batches, legacyPlan, canonical);
 assert.equal(legacyAllocation.cards[0].requirements[0].allocatedBatches[0].batchId, "q750", "A C012.3 materialQualityPlans fallbacknak változatlanul működnie kell.");
 
 assert.match(html, /recipeSlotQualityPoolAssignments:\s*\{\}/);
 assert.match(html, /async function updateRecipeSlotQualityPoolAssignment/);
-assert.match(html, /function allocateCardsDeterministically\(cards, batches, materialQualityPlans, canonicalMaterials\)/);
+assert.match(html, /function allocateCardsDeterministically\(cards, batches, materialQualityPlans, canonicalMaterials, materialQualityPools\)/);
 
 const evidence = {
   cycle: "V003-C012.5C1",
@@ -162,9 +157,10 @@ const evidence = {
   deleteCleanup: "PASS",
   backupRestore: "PASS",
   oldBackupCompatibility: "PASS",
-  legacyAllocationUnchanged: "PASS",
+  legacyFallbackAllocationCompatibility: "PASS",
   c0125c2Started: false,
-  c0125c3Started: false
+  c0125c3aIntegrationExpected: true,
+  c0125c3bStarted: false
 };
 fs.mkdirSync(artifactDirectory, { recursive: true });
 fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");

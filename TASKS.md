@@ -2,16 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5C2 Recipe Pool Dropdown UI
+### V003-C012.5C3A Pool Allocation + Max DB
 
-- [x] Browser Final Card és Crafting List közös Recipe Slot pool dropdown.
-- [x] Legacy / ANY / Minimum / MAX opciók; dinamikus C012.3 és pool-threshold feliratok.
-- [x] Transient draft, draft→Card másolás és kizárólag exact `cardId` Browser/Crafting kötés.
-- [x] Per-slot, per-card, azonos blueprint és Duplicate függetlenség; reload persistence.
-- [x] Allocation/Max/Combined metrikák változatlanok; standalone nem szerkeszthető.
-- [x] C012.5C2/C1/B/A/C012.3 célkapu, static gate, rövid Chrome 1366/390 és V001/V002 integrity PASS.
-- [x] Chrome teardown: csak az egyetlen jóváhagyott teszt-Card törölve; 5 Card visszaállt, post-teardown fingerprint reload-stabil `f3ad8800`.
-- [ ] `V003-C012.5C3` allocation/Max/Combined – NOT STARTED.
+- [x] Recipe Slot assignment → effective Quality policy; recipe baseline nem gyengíthető.
+- [x] `LEGACY_FALLBACK`, `ANY_Q`, Minimum Q és MAX Q szemantika; unresolved threshold fail-safe.
+- [x] Lowest-eligible-first pool batch order; legacy `HIGHEST_Q` változatlan.
+- [x] Exact canonical UUID, per-card prioritás, közös fizikai inventory és no-double-count.
+- [x] FR-86 Q550/Q750 happy path és csak-Q550 insufficient Quality/Max DB=0 fixture.
+- [x] C3A/C2/C1/B/A/C012.3 + static/single-file + V001/V002 integrity PASS.
+- [x] Chrome localhost: live recalculation, reload persistence, WARN/ERROR 0; izolált Site Data teardown, fingerprint `9be961d3 → 9be961d3`.
+- [ ] `V003-C012.5C3B` Combined pool metrikák / standalone presentation – NOT STARTED.
 - [ ] `V003-C012.5D` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 

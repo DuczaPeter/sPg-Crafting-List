@@ -1,0 +1,40 @@
+{
+  "cycle": "V003-C012.5C3A",
+  "status": "PASS",
+  "precedence": "RECIPE_BASELINE -> LEGACY_C0123_WHEN_NO_EXPLICIT_ASSIGNMENT -> EXPLICIT_RECIPE_SLOT_POOL_CONSTRAINT",
+  "legacyFallbackCompatibility": "PASS",
+  "anyQBaselineProtection": "PASS",
+  "minimumQ": {
+    "threshold": 500,
+    "batch": "q550",
+    "status": "PASS"
+  },
+  "maximumQ": {
+    "threshold": 700,
+    "batch": "q750",
+    "status": "PASS"
+  },
+  "fr86HappyPath": "PASS",
+  "insufficientQuality": {
+    "status": "INSUFFICIENT_QUALITY",
+    "missingAmountUnits": 0,
+    "missingQualityUnits": 19000
+  },
+  "unresolvedThreshold": "POOL_THRESHOLD_UNRESOLVED",
+  "fixedBaselinePreserved": "PASS",
+  "unknownFailSafe": "PASS",
+  "lowEligibleFirst": "PASS",
+  "legacyHighestQ": "PASS",
+  "perCardIndependence": "PASS",
+  "priority": "PASS",
+  "noDoubleCount": "PASS",
+  "canonicalCommodityIngredientIdentity": "PASS",
+  "maxCraftable": {
+    "insufficient": 0,
+    "sufficientForTwo": 2
+  },
+  "assignmentRecalculationWiring": "PASS",
+  "combinedPoolMetricsChanged": false,
+  "standaloneRendererChanged": false,
+  "c0125c3bStarted": false
+}

@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C012.5C2",
-    "currentCycleId":  "V003-C012.5C2",
-    "lastSuccessfulCycle":  "V003-C012.5C2",
+    "currentCycle":  "C012.5C3A",
+    "currentCycleId":  "V003-C012.5C3A",
+    "lastSuccessfulCycle":  "V003-C012.5C3A",
     "branch":  "develop/V003",
     "releaseGate":  "development-cycle-pass-no-release",
-    "lastUpdated":  "2026-08-31T12:38:21+02:00",
-    "currentCyclePurpose":  "Recipe Slot Quality pool dropdown UI with transient draft, exact cardId binding and no allocation binding",
-    "currentCycleStartedAt":  "2026-08-31T12:00:00+02:00",
+    "lastUpdated":  "2026-08-31T17:11:57+02:00",
+    "currentCyclePurpose":  "Recipe Slot Quality pool assignment binding to the shared Allocation Engine and Max DB effective policy",
+    "currentCycleStartedAt":  "2026-08-31T13:00:00+02:00",
     "currentTestLevel":  "targeted-regression-plus-short-real-chrome",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "Shared Browser/Crafting dropdown, transient draft-to-Card copy, exact cardId binding, per-slot/per-card/duplicate independence, legacy and invalid fallback, dynamic labels, reload persistence, unchanged allocation and targeted C012.5C1/B/A/C012.3 plus V001/V002 gates passed. C012.5C3 is not started.",
-    "developmentAcceptance":  "V003-C012.5C2 – RECIPE POOL DROPDOWN UI PASS, C012.5C3 NOT STARTED",
+    "currentCycleStatusReason":  "Explicit slot pool assignments now constrain the shared allocation and Max DB policy without weakening recipe baselines. FR-86 happy and insufficient-Quality fixtures, legacy/ANY/Minimum/MAX/FIXED/UNKNOWN semantics, targeted regressions, Chrome live recalculation/reload and isolated teardown passed. C012.5C3B is not started.",
+    "developmentAcceptance":  "V003-C012.5C3A – POOL ALLOCATION + MAX DB PASS, C012.5C3B NOT STARTED",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -39,13 +39,13 @@
 
                                   ],
     "v003DevelopmentGate":  {
-                                "status":  "C012.5C2_PASS_C012.5C3_NOT_STARTED",
-                                "cycle":  "V003-C012.5C2",
-                                "chromeLocalhostTechnicalProbe":  "PASS; JS-300 draft-to-Card and exact same-card Browser/Crafting state, same-blueprint independence, reload, 1366x768 and 390x844 overflow 0, visible mobile dropdown 89 px, console WARN/ERROR 0",
+                                "status":  "C012.5C3A_PASS_C012.5C3B_NOT_STARTED",
+                                "cycle":  "V003-C012.5C3A",
+                                "chromeLocalhostTechnicalProbe":  "PASS; isolated FR-86 Minimum Q500/MAX Q700 happy path and Q550-only insufficient-Quality path, live assignment recalculation, reload persistence, complete isolated Site Data teardown and console WARN/ERROR 0",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL FILE:// PASS reported for C012.1/C012.2 input evidence: the complete Technical Baseline passed and the standalone export was created and opened; user-run, not Codex automation.",
-                                "userDataFingerprintBefore":  "3e2bcb00",
-                                "userDataFingerprintAfterReload":  "f3ad8800",
+                                "userDataFingerprintBefore":  "9be961d3",
+                                "userDataFingerprintAfterReload":  "9be961d3",
                                 "consoleWarningErrorCount":  0,
                                 "combinedQualityPools":  {
                                                               "settingKey":  "user:materialQualityPools",
@@ -60,14 +60,14 @@
                                                               "physicalInventoryDoubleCount":  false,
                                                               "canonicalIdentity":  "EXACT_UUID_OR_PROVEN_COMMODITY_INGREDIENT_BRIDGE",
                                                               "fuzzyMerge":  false,
-                                                              "allocationBinding":  "DEFERRED_TO_C012.5C3",
+                                                              "allocationBinding":  "PASS_C012.5C3A_SHARED_EFFECTIVE_POLICY",
                                                               "materialQualityPlansPreserved":  true,
                                                               "backupRestore":  "PASS",
                                                               "olderBackupWithoutSetting":  "PASS_EMPTY_DEFAULT",
                                                               "desktopOverflow":  0,
                                                               "mobileOverflow":  0,
                                                               "chromeEvidence":  "test-artifacts/V003-C012.5B/chrome-localhost-evidence.json",
-                                                              "nextCycle":  "V003-C012.5C2_NOT_STARTED"
+                                                              "nextCycle":  "V003-C012.5C3B_NOT_STARTED"
                                                           },
                                 "recipeSlotPoolAssignment":  {
                                                                          "storage":  "craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]",
@@ -79,7 +79,7 @@
                                                                                          ],
                                                                          "missingOrInvalid":  "LEGACY_FALLBACK",
                                                                          "uiBinding":  "PASS_SHARED_BROWSER_CRAFTING_EXACT_CARD_ID_WITH_TRANSIENT_DRAFT",
-                                                                         "allocationBinding":  "NOT_STARTED_C012.5C3",
+                                                                         "allocationBinding":  "PASS_C012.5C3A_SHARED_ALLOCATION_AND_MAX_DB",
                                                                          "schemaChanged":  false,
                                                                          "targetedValidation":  "PASS",
                                                                          "dropdownOptions":  [
@@ -88,8 +88,14 @@
                                                                                                   "MINIMUM_Q_POOL",
                                                                                                   "MAXIMUM_Q_POOL"
                                                                                               ],
-                                                                         "chromeEvidence":  "test-artifacts/V003-C012.5C2/chrome-localhost-evidence.json",
-                                                                         "nextCycle":  "V003-C012.5C3_NOT_STARTED"
+                                                                         "effectivePrecedence":  "RECIPE_BASELINE_THEN_LEGACY_OR_EXPLICIT_POOL_CONSTRAINT",
+                                                                         "poolBatchOrder":  "LOWEST_ELIGIBLE_FIRST",
+                                                                         "unresolvedThreshold":  "FAIL_SAFE_POOL_THRESHOLD_UNRESOLVED",
+                                                                         "fr86HappyPath":  "PASS_Q550_SHELL_Q750_FIELD_ARRAY_MAX_DB_1",
+                                                                         "fr86InsufficientQuality":  "PASS_MISSING_AMOUNT_0_MISSING_QUALITY_1.9_SCU_MAX_DB_0",
+                                                                         "noDoubleCount":  "PASS",
+                                                                         "chromeEvidence":  "test-artifacts/V003-C012.5C3A/chrome-localhost-evidence.json",
+                                                                         "nextCycle":  "V003-C012.5C3B_NOT_STARTED"
                                                                      },
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",

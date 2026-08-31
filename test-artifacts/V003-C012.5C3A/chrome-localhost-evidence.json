@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C012.5C3A",
+  "status": "PASS",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:4183/",
+  "fixture": "FR-86",
+  "happyPath": {
+    "minimumQ": 500,
+    "maximumQ": 700,
+    "shellAssignment": "MINIMUM_Q_POOL",
+    "fieldArrayAssignment": "MAXIMUM_Q_POOL",
+    "q550Scu": 1.2,
+    "q750Scu": 1.9,
+    "cardSatisfied": true,
+    "maxCraftable": 1,
+    "reloadPersistence": "PASS"
+  },
+  "insufficientQuality": {
+    "q550Scu": 3.1,
+    "shellSatisfied": true,
+    "fieldArrayStatus": "INSUFFICIENT_QUALITY",
+    "missingAmountScu": 0,
+    "missingQualityScu": 1.9,
+    "cardSatisfied": false,
+    "maxCraftable": 0
+  },
+  "liveRecalculation": "PASS",
+  "consoleWarnings": 0,
+  "consoleErrors": 0,
+  "teardown": {
+    "method": "USER_CONFIRMED_ISOLATED_SITE_DATA_CLEAR",
+    "cards": 0,
+    "batches": 0,
+    "qualityPools": 0,
+    "fingerprintBeforeMutationFreeReload": "9be961d3",
+    "fingerprintAfterMutationFreeReload": "9be961d3",
+    "stable": true
+  }
+}
