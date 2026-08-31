@@ -1,33 +1,31 @@
 # STATUS.md
 
-- Projekt: `sPg Crafting List`
+## Jelenlegi állapot
+
 - Branch: `develop/V003`
-- Stabil release: `V002` (változatlan)
-- Fejlesztési baseline: `V003-dev`
-- Induló C012.5C baseline: `18004a5beb33303d08d7ba3bbc73b1a30cfa78cf`
-- Aktuális ciklus: `V003-C012.5C1`
-- Státusz: `PASS`; checkpoint: `V003-C012.5C1-RECIPE-SLOT-ASSIGNMENT-MODEL`
+- Stabil fallback: `V002` – változatlan single-file release.
+- Aktuális ciklus: `V003-C012.5C2`
+- Státusz: `PASS`
+- Következő: `V003-C012.5C3` – **NOT STARTED**.
+- V003 tag/release/push/main merge: nincs.
 
-## Elkészült
+## C012.5C2 eredmény
 
-- Assignment storage: `craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]`; identity `cardId + recipeSlotId`.
-- Valid módok: `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`.
-- Hiányzó vagy ismeretlen stored érték: nincs explicit assignment, `LEGACY_FALLBACK`; a C012.3 Quality-viselkedés változatlan.
-- FR-86 Shell/Field Array slot-függetlenség, két Card, Duplicate, reload, delete cleanup, backup/restore és régi backup: PASS.
-- Új IndexedDB store, DB-version és backup-schema nincs.
+- Browser Final Card és Crafting List közös `renderRecipeSlotQualityPoolSelect()` UI.
+- Opciók: legacy recipe fallback, `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`.
+- Csak a pool mód persistálódik; Minimum/MAX felirat az aktuális material thresholdból épül.
+- Új blueprint transient `finalCardDraftQualityPoolAssignments` state-et használ; kosárkor az assignment az új Cardra másolódik.
+- Browser/Crafting szinkron kizárólag exact `cardId`; blueprint UUID szerinti automatikus Card-választás nincs.
+- Per-slot, per-card, azonos blueprint és Duplicate függetlenség PASS.
+- Allocation/Max/Combined/standalone logika változatlan; C3 nincs elindítva.
 
 ## Ellenőrzés
 
-- `validate-v003-c0125c1.ps1`: PASS.
-- Static/JS, C012.5C1, C012.5B, C012.5A, C012.3 és V001/V002 integrity: PASS.
-- Log: `test-artifacts/V003-C012.5C1/validation.log`.
-- Chrome és teljes történeti regresszió a C1 scope szerint nem futott.
+- C012.5C2/C1/B/A/C012.3 + static/single-file + V001/V002 integrity: PASS.
+- Chrome localhost: draft→Card, same-card, reload PASS; 1366×768 és 390×844 overflow 0; mobil dropdown 89 px; WARN/ERROR 0.
+- Teardown: csak az egy jóváhagyott ideiglenes JS-300 Card törölve; Card count 5, explicit teszt-assignment 0.
+- Fingerprint: `3e2bcb00 → b965ee32 → f3ad8800`; utolsó változtatásmentes reload `f3ad8800 → f3ad8800`. A biteltérés a meglévő Card-save `updatedAt` frissítése, nem adatvesztés.
 
-## Következő
+## Végső fejlesztési státusz
 
-- `V003-C012.5C2` UI: NOT STARTED.
-- `V003-C012.5C3` allocation/Max/Combined: NOT STARTED.
-- `V003-C012.5D`: NOT STARTED.
-- `C013`: NOT STARTED; V003 tag/release/push/main merge nincs.
-
-Végső státusz: `V003-C012.5C1 – ASSIGNMENT MODEL PASS, C012.5C2 NOT STARTED`
+`V003-C012.5C2 – RECIPE POOL DROPDOWN UI PASS, C012.5C3 NOT STARTED`

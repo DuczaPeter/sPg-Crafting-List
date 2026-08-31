@@ -146,7 +146,6 @@ assert.equal(legacyAllocation.cards[0].requirements[0].allocatedBatches[0].batch
 
 assert.match(html, /recipeSlotQualityPoolAssignments:\s*\{\}/);
 assert.match(html, /async function updateRecipeSlotQualityPoolAssignment/);
-assert.doesNotMatch(html, /spg-c0125c-pool-select|renderRecipeSlotQualityPoolSelect/);
 assert.match(html, /function allocateCardsDeterministically\(cards, batches, materialQualityPlans, canonicalMaterials\)/);
 
 const evidence = {

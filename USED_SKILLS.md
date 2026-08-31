@@ -42,6 +42,15 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fájlokat vagy döntéseket érintett: Cardba ágyazott `cardId + recipeSlotId` assignment storage, C1 fixture/teszt/validator/report és aktuális projektdokumentáció; `uj-projekt` és Chrome skill nem lett használva.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
 
+## V003-C012.5C2 Recipe Pool Dropdown UI
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Az `uj-projekt` skillt a felhasználói tiltásnak megfelelően nem használtuk.
+- Mikor használtuk: `2026-08-31`, a C1 baseline-ról induló szűk dropdown UI, célzott validator és rövid valós Chrome FR-86/desktop/mobile/console ellenőrzés során.
+- Mire segített: a teljes történeti regresszió elkerülésére, az allocation/Max/Combined/standalone határ megtartására, valamint a draft→Card, exact cardId, reload, mobil overflow és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: V003 Browser/Crafting Recipe Slot pool presentation és transient draft state, C2 teszt/validator/report/artifact és aktuális projektdokumentáció; C3 nem indult, V002 változatlan.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5A Inventory Independence Foundation
 
 - Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.

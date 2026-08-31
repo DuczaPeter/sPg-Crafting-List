@@ -672,3 +672,13 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Storage: `craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]`; valid `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`. Hiányzó/ismeretlen érték legacy fallback, automatikus Minimum/MAX migráció nincs.
 - FR-86 Shell/Field Array, két Card, Duplicate, reload, delete cleanup, backup/restore és régi backup céltesztek PASS. C012.5B/A/C012.3, static gate és V001/V002 integritás PASS.
 - Nincs DB/backup schema bump, Chrome/full történeti regresszió nem futott a szűk C1 scope szerint. C012.5C2/C3, C012.5D és C013 NOT STARTED.
+
+### V003-C012.5C2 Recipe Pool Dropdown UI - 2026-08-31
+
+- A C1 assignment map közös Browser/Crafting dropdownot kapott: legacy, ANY, Minimum és MAX mód. Csak az enum persistálódik; a threshold label az aktuális material poolból épül.
+- A Browser új blueprintje transient draftot használ; kosárkor az assignment az új Cardra másolódik, majd kizárólag exact `cardId` köti össze a Browser és Crafting List állapotot. Azonos blueprintű Cardok és Duplicate függetlenek.
+- Allocation/Max/Combined logika és standalone modell változatlan; C3 nem indult.
+- Targeted validator: static, C2, C1, B, A, C012.3 és V001/V002 integrity PASS. A régi C1 „UI még nem létezhet” időzített negatív assertiont a C2 fázis miatt eltávolítottuk; a C1 modell-invariánsok megmaradtak.
+- Valódi Chrome: draft→Card, same-card, same-blueprint independence és reload PASS; 1366×768/390×844 overflow 0, mobil látható dropdown 89 px, WARN/ERROR 0. A Chrome audit által talált 27 px mobil zsugorodást kizárólag a recipe-need mobil mikrolayout javította.
+- Teardown: felhasználói jóváhagyással csak az egy ideiglenes JS-300 Card törölve; count `5→6→5`, explicit assignment `0→1→0`. Fingerprint `3e2bcb00→b965ee32→f3ad8800`, majd változtatásmentes reload `f3ad8800→f3ad8800`; a biteltérés oka a meglévő `saveCraftingCards()` minden Cardot érintő `updatedAt` frissítése, adatvesztés nincs.
+- V003 tag/release/push/main merge nincs. Visszaállás: a C012.5C2 commit revertje; stabil fallback a változatlan V002.

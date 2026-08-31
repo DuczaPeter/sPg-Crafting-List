@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C012.5C2",
+  "status": "PASS",
+  "browser": "Google Chrome",
+  "protocol": "http:",
+  "url": "http://127.0.0.1:4177/",
+  "fixture": "JS-300",
+  "draftAssignment": "MINIMUM_Q_POOL",
+  "persistedAssignment": "MAXIMUM_Q_POOL",
+  "draftToCardCopy": "PASS",
+  "sameCardBrowserCraftingSharedState": "PASS",
+  "sameBlueprintCardIndependence": "PASS",
+  "reloadPersistence": "PASS",
+  "allocationDisplayUnchangedDuringDraftSelection": "PASS",
+  "teardown": {
+    "approvedTemporaryCardsDeleted": 1,
+    "otherUserDataDeleted": false,
+    "cardCountBefore": 5,
+    "cardCountDuring": 6,
+    "cardCountAfter": 5,
+    "explicitAssignmentsAfter": 0
+  },
+  "fingerprint": {
+    "before": "3e2bcb00",
+    "during": "b965ee32",
+    "after": "f3ad8800",
+    "afterNoChangeReload": "f3ad8800",
+    "semanticTeardown": "PASS",
+    "bitIdenticalTeardown": false,
+    "reason": "saveCraftingCards updates updatedAt on every remaining Card snapshot record"
+  },
+  "viewport": {
+    "desktop": { "width": 1366, "height": 768, "horizontalOverflow": 0 },
+    "mobile": { "width": 390, "height": 844, "horizontalOverflow": 0, "visibleDropdownWidth": 89 }
+  },
+  "consoleWarningCount": 0,
+  "consoleErrorCount": 0,
+  "c0125c3Started": false
+}

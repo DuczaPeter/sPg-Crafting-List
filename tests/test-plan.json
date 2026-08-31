@@ -291,6 +291,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125c1.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0125c2-recipe-pool-dropdown-ui",
+      "level": "targeted-regression",
+      "description": "V003-C012.5C2 gate: Browser/Crafting shared Recipe Slot pool dropdown, transient draft-to-Card copy, exact cardId binding without blueprint lookup, per-slot/per-card/duplicate independence, legacy and invalid fallback, dynamic Minimum/MAX labels, reload persistence, unchanged allocation/Max/Combined metrics, non-editable standalone, direct C012.5C1/C012.5B/C012.5A/C012.3 regression and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125c2.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

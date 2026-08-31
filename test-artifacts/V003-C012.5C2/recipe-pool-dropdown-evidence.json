@@ -1,0 +1,34 @@
+{
+  "cycle": "V003-C012.5C2",
+  "status": "PASS",
+  "options": [
+    {
+      "value": "LEGACY_FALLBACK",
+      "label": "Recept szerint · Q800+"
+    },
+    {
+      "value": "ANY_Q",
+      "label": "Bármely Q"
+    },
+    {
+      "value": "MINIMUM_Q_POOL",
+      "label": "Minimum Q · Q500+"
+    },
+    {
+      "value": "MAXIMUM_Q_POOL",
+      "label": "MAX Q · Q950+"
+    }
+  ],
+  "legacyFallbackUi": "PASS",
+  "draftToCardCopy": "PASS",
+  "exactCardBindingOnly": "PASS",
+  "sameCardSharedStateModel": "PASS",
+  "slotIndependence": "PASS",
+  "cardIndependence": "PASS",
+  "duplicateIndependence": "PASS",
+  "dynamicThresholdLabels": "PASS",
+  "invalidStoredFallback": "PASS",
+  "allocationUnchanged": "PASS",
+  "standaloneEditableDropdown": false,
+  "c0125c3Started": false
+}

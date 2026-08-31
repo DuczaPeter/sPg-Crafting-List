@@ -3753,6 +3753,28 @@ code {
   word-break: normal;
 }
 
+.spg-c0125c2-pool-select {
+  width: 154px;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 27px;
+  padding: 3px 22px 3px 7px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 139, 36, 0.54);
+  border-radius: 999px;
+  color: #ffd3a7;
+  background-color: rgba(42, 23, 8, 0.92);
+  font-size: 10px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spg-c0125c2-pool-select:focus-visible {
+  outline: 2px solid rgba(24, 218, 255, 0.78);
+  outline-offset: 2px;
+}
+
 .spg-c0121-bucket-metrics,
 .spg-c0121-material-totals {
   display: grid;
@@ -5116,6 +5138,10 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
   padding: 2px 7px;
 }
 
+.spg-c0121-recipe-need .spg-c0125c2-pool-select {
+  min-height: 25px;
+}
+
 .spg-c010-stock {
   display: grid;
   justify-items: end;
@@ -5331,6 +5357,18 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
   .spg-c010-recipe-row {
     grid-template-columns: minmax(94px, 1.1fr) minmax(76px, 0.9fr) auto;
     gap: 6px;
+  }
+
+  .spg-c0125c2-pool-select {
+    width: 100%;
+    padding-right: 18px;
+    font-size: 9px;
+  }
+
+  .spg-c0121-recipe-need:has(.spg-c0125c2-pool-select) {
+    display: grid;
+    justify-items: end;
+    gap: 2px;
   }
 
   .spg-c010-stock {
@@ -6489,6 +6527,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       lastProbe: null,
       finalCardPreview: null,
       finalCardPreviewAllocation: null,
+      finalCardDraftQualityPoolAssignments: {},
+      finalCardBoundCardId: null,
       finalCardQuantity: 1
     };
 
@@ -8429,6 +8469,67 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       next[recipeSlotId] = normalizedMode;
       return normalizeRecipeSlotQualityPoolAssignments(next);
     }
+
+    function clearRecipeSlotQualityPoolAssignment(assignments, recipeSlotId) {
+      var next = Object.assign({}, normalizeRecipeSlotQualityPoolAssignments(assignments));
+      delete next[recipeSlotId];
+      return normalizeRecipeSlotQualityPoolAssignments(next);
+    }
+
+    /* C0125C2_RECIPE_POOL_DROPDOWN_MODEL_START */
+    var RECIPE_SLOT_QUALITY_POOL_UI_LEGACY = "LEGACY_FALLBACK";
+
+    function applyRecipeSlotQualityPoolAssignmentsToCard(card, assignments) {
+      var next = Object.assign({}, card);
+      next.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(assignments, next.requirements);
+      return next;
+    }
+
+    function resolveFinalCardQualityPoolAssignmentSource(boundCardId, cards, draftAssignments, requirements) {
+      var boundCard = boundCardId ? (Array.isArray(cards) ? cards : []).find(function (card) { return card.id === boundCardId; }) || null : null;
+      var missingBoundCard = Boolean(boundCardId && !boundCard);
+      return {
+        boundCardId: boundCard ? boundCard.id : null,
+        origin: boundCard ? "PERSISTED_CARD" : "TRANSIENT_DRAFT",
+        missingBoundCard: missingBoundCard,
+        assignments: normalizeRecipeSlotQualityPoolAssignments(boundCard ? boundCard.recipeSlotQualityPoolAssignments : (missingBoundCard ? {} : draftAssignments), requirements)
+      };
+    }
+
+    function formatRecipeSlotQualityPoolOptionLabel(mode, pool, effectiveLabel) {
+      var source = normalizeMaterialQualityPool(pool);
+      if (mode === RECIPE_SLOT_QUALITY_POOL_UI_LEGACY) { return "Recept szerint · " + (effectiveLabel || "Q?"); }
+      if (mode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL) {
+        return "Minimum Q" + (hasValidQuality(source.minimumQ) ? " · Q" + source.minimumQ + "+" : " · nincs beállítva");
+      }
+      if (mode === RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL) {
+        return "MAX Q" + (hasValidQuality(source.maximumQ) ? " · Q" + source.maximumQ + "+" : " · nincs beállítva");
+      }
+      return "Bármely Q";
+    }
+
+    function buildRecipeSlotQualityPoolUiModel(input) {
+      var source = input || {};
+      var assignment = recipeSlotQualityPoolAssignmentFor(source.card, source.recipeSlotId);
+      var pool = materialQualityPoolFor(source.materialUuid, source.materialQualityPools, source.canonicalMaterials);
+      var modes = [
+        RECIPE_SLOT_QUALITY_POOL_UI_LEGACY,
+        RECIPE_SLOT_QUALITY_POOL_MODES.ANY_Q,
+        RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL,
+        RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL
+      ];
+      return {
+        recipeSlotId: source.recipeSlotId,
+        selectedValue: assignment.explicit ? assignment.mode : RECIPE_SLOT_QUALITY_POOL_UI_LEGACY,
+        assignmentOrigin: assignment.origin,
+        assignmentExplicit: assignment.explicit,
+        qualityPool: pool,
+        options: modes.map(function (mode) {
+          return { value: mode, label: formatRecipeSlotQualityPoolOptionLabel(mode, pool, source.effectiveLabel) };
+        })
+      };
+    }
+    /* C0125C2_RECIPE_POOL_DROPDOWN_MODEL_END */
     /* C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL_END */
     /* C0125B_COMBINED_QUALITY_POOL_MODEL_END */
 
@@ -13267,6 +13368,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.finalCardQuantity = 1;
         state.finalCardPreview = null;
         state.finalCardPreviewAllocation = null;
+        state.finalCardDraftQualityPoolAssignments = {};
+        state.finalCardBoundCardId = null;
         renderC010FinalCraftingCard();
         renderBlueprint(normalized);
         renderBlueprintBrowserResults();
@@ -13590,9 +13693,26 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       card.id = "final-preview::" + blueprint.uuid;
       card.order = 0;
       card.quantity = Math.max(1, Math.round(Number(quantity) || 1));
+      card.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(state.finalCardDraftQualityPoolAssignments, card.requirements);
       card.createdAt = null;
       card.updatedAt = null;
       return card;
+    }
+
+    function syncC010FinalCardQualityPoolAssignments() {
+      if (!state.finalCardPreview) { return null; }
+      var resolved = resolveFinalCardQualityPoolAssignmentSource(
+        state.finalCardBoundCardId,
+        state.craftingCards,
+        state.finalCardDraftQualityPoolAssignments,
+        state.finalCardPreview.requirements
+      );
+      state.finalCardBoundCardId = resolved.boundCardId;
+      if (resolved.origin === "TRANSIENT_DRAFT") {
+        state.finalCardDraftQualityPoolAssignments = resolved.assignments;
+      }
+      state.finalCardPreview.recipeSlotQualityPoolAssignments = resolved.assignments;
+      return resolved;
     }
 
     function recalculateC010FinalCraftingCard() {
@@ -13603,6 +13723,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return null;
       }
       card.quantity = Math.max(1, Math.round(Number(state.finalCardQuantity) || 1));
+      syncC010FinalCardQualityPoolAssignments();
       var allocation = allocateCardsDeterministically([card], state.materialBatches, state.materialQualityPlans, state.knownMaterials);
       if (allocation.cards && allocation.cards[0]) {
         attachExportMaterialIntelligence(card, allocation.cards[0]);
@@ -13640,7 +13761,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       var card = buildCraftingCard(state.normalizedBlueprint);
       card.quantity = Math.max(1, Math.round(Number(state.finalCardQuantity) || 1));
-      await persistCraftingCards(state.craftingCards.concat(card), "CARD_ADD_FROM_FINAL_PREVIEW");
+      card = applyRecipeSlotQualityPoolAssignmentsToCard(card, state.finalCardPreview.recipeSlotQualityPoolAssignments);
+      var previousBoundCardId = state.finalCardBoundCardId;
+      state.finalCardBoundCardId = card.id;
+      try {
+        await persistCraftingCards(state.craftingCards.concat(card), "CARD_ADD_FROM_FINAL_PREVIEW");
+      } catch (error) {
+        state.finalCardBoundCardId = previousBoundCardId;
+        throw error;
+      }
       setNotice(card.outputName + " · " + card.quantity + " db hozzáadva a Crafting Listhez.", "success");
       navigateToPanel("craftingListNav", "craftingCardsPanel", "addCurrentBlueprintButton");
       return card;
@@ -13968,7 +14097,44 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return container;
     }
 
-    function renderC010RecipeRow(requirement) {
+    function renderRecipeSlotQualityPoolSelect(requirement, settings) {
+      var source = settings || {};
+      var uiModel = buildRecipeSlotQualityPoolUiModel({
+        card: source.assignmentCard,
+        recipeSlotId: requirement.recipeSlotId,
+        materialUuid: requirement.commodityUuid || requirement.materialUuid,
+        materialQualityPools: source.materialQualityPools,
+        canonicalMaterials: source.canonicalMaterials,
+        effectiveLabel: requirement.effectiveQualityLabel || formatEffectiveQualityLabel(requirement.qualityPolicy || requirement)
+      });
+      var select = document.createElement("select");
+      select.className = "spg-c0125c2-pool-select";
+      select.dataset.recipeSlotId = requirement.recipeSlotId;
+      select.dataset.assignmentOrigin = uiModel.assignmentOrigin;
+      select.dataset.assignmentMode = uiModel.selectedValue;
+      select.setAttribute("aria-label", requirement.recipeSlotName + " Quality pool");
+      uiModel.options.forEach(function (optionData) {
+        var option = document.createElement("option");
+        option.value = optionData.value;
+        option.textContent = optionData.label;
+        select.append(option);
+      });
+      select.value = uiModel.selectedValue;
+      select.title = select.options[select.selectedIndex] ? select.options[select.selectedIndex].textContent : "Recipe Slot Quality pool";
+      select.addEventListener("change", function () {
+        if (typeof source.onQualityPoolAssignment !== "function") { return; }
+        var nextMode = select.value;
+        select.disabled = true;
+        Promise.resolve(source.onQualityPoolAssignment(nextMode, requirement)).catch(function (error) {
+          setNotice("Recipe Slot Quality pool mentési hiba: " + error.message, "error");
+        }).finally(function () {
+          select.disabled = false;
+        });
+      });
+      return select;
+    }
+
+    function renderC010RecipeRow(requirement, settings) {
       var row = document.createElement("div");
       row.className = "spg-c010-recipe-row";
       row.dataset.status = requirement.status || "PENDING";
@@ -13980,10 +14146,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var perOne = document.createElement("strong");
       perOne.className = "spg-c010-per-one";
       perOne.textContent = formatInventoryUnits(requirement.unit, requirement.perCraftUnits);
-      var quality = document.createElement("span");
-      quality.className = "spg-c0121-quality-badge";
-      quality.textContent = requirement.effectiveQualityLabel || formatEffectiveQualityLabel(requirement.qualityPolicy || requirement);
-      quality.title = requirement.qualityTooltip || formatEffectiveQualityTooltip(requirement.qualityPolicy || requirement);
+      var quality = renderRecipeSlotQualityPoolSelect(requirement, settings);
       var need = document.createElement("span");
       need.className = "spg-c0121-recipe-need";
       need.append(quality, perOne);
@@ -14102,7 +14265,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (settings.collapsed !== true) {
         var recipe = document.createElement("section");
         recipe.className = "spg-c010-recipe";
-        viewModel.requirements.forEach(function (requirement) { recipe.append(renderC010RecipeRow(requirement)); });
+        viewModel.requirements.forEach(function (requirement) { recipe.append(renderC010RecipeRow(requirement, settings)); });
         var materials = document.createElement("div");
         materials.className = "spg-c010-material-list";
         viewModel.requirements.forEach(function (requirement) {
@@ -14145,6 +14308,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         context: "blueprint-browser",
         cardId: card.id,
         blueprintUuid: card.blueprintUuid,
+        assignmentCard: card,
+        materialQualityPools: state.materialQualityPools,
+        canonicalMaterials: state.knownMaterials,
         detailContext: { sourceCardId: card.id, sourceModule: "blueprintBrowserNav" },
         onCart: function (cart) {
           cart.disabled = true;
@@ -14157,6 +14323,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           state.finalCardQuantity = value;
           document.body.dataset.c010FinalCardQuantity = String(value);
           return recalculateC010FinalCraftingCard();
+        },
+        onQualityPoolAssignment: function (mode, requirement) {
+          return updateC010RecipeSlotQualityPoolAssignment(requirement.recipeSlotId, mode);
         }
       }));
       document.body.dataset.c010FinalCardReady = "true";
@@ -14900,12 +15069,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           className: "spg-c012-final-card",
           cardId: card.id,
           blueprintUuid: card.blueprintUuid,
+          assignmentCard: card,
+          materialQualityPools: state.materialQualityPools,
+          canonicalMaterials: state.knownMaterials,
           collapsed: card.collapsed,
           includeOutputType: true,
           stockStatusText: cardResult.satisfied ? "Készlet rendben" : "Hiány van",
           detailContext: { sourceCardId: card.id, sourceModule: "craftingListNav" },
           onQuantityCommit: function (value) {
             return updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY");
+          },
+          onQualityPoolAssignment: function (mode, requirement) {
+            return updateRecipeSlotQualityPoolAssignment(card.id, requirement.recipeSlotId, mode);
           }
         });
         wrapper.append(management, finalCard);
@@ -15011,6 +15186,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.materialQualityPools = await userDataRepository.saveMaterialQualityPools(next);
         state.userSettings = await userDataRepository.loadUserSettings();
         renderCombinedMaterials();
+        renderC010FinalCraftingCard();
+        renderCraftingCards();
         logger.finish("PASS", {
           materialUuid: resolveMaterialQualityPoolKey(materialUuid, state.knownMaterials),
           pool: materialQualityPoolFor(materialUuid, state.materialQualityPools, state.knownMaterials),
@@ -15096,8 +15273,25 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function updateRecipeSlotQualityPoolAssignment(cardId, requirementId, mode) {
       await updateCraftingCard(cardId, function (card) {
-        card.recipeSlotQualityPoolAssignments = setRecipeSlotQualityPoolAssignment(card.recipeSlotQualityPoolAssignments, requirementId, mode);
+        card.recipeSlotQualityPoolAssignments = mode === RECIPE_SLOT_QUALITY_POOL_UI_LEGACY
+          ? clearRecipeSlotQualityPoolAssignment(card.recipeSlotQualityPoolAssignments, requirementId)
+          : setRecipeSlotQualityPoolAssignment(card.recipeSlotQualityPoolAssignments, requirementId, mode);
       }, "RECIPE_SLOT_QUALITY_POOL_ASSIGNMENT");
+    }
+
+    async function updateC010RecipeSlotQualityPoolAssignment(requirementId, mode) {
+      if (state.finalCardBoundCardId && state.craftingCards.some(function (card) { return card.id === state.finalCardBoundCardId; })) {
+        return updateRecipeSlotQualityPoolAssignment(state.finalCardBoundCardId, requirementId, mode);
+      }
+      var next = mode === RECIPE_SLOT_QUALITY_POOL_UI_LEGACY
+        ? clearRecipeSlotQualityPoolAssignment(state.finalCardDraftQualityPoolAssignments, requirementId)
+        : setRecipeSlotQualityPoolAssignment(state.finalCardDraftQualityPoolAssignments, requirementId, mode);
+      state.finalCardDraftQualityPoolAssignments = next;
+      if (state.finalCardPreview) {
+        state.finalCardPreview.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(next, state.finalCardPreview.requirements);
+      }
+      recalculateC010FinalCraftingCard();
+      return recipeSlotQualityPoolAssignmentFor(state.finalCardPreview, requirementId);
     }
 
     async function updateCardStrategy(cardId, requirementId, mode, targetQuality) {

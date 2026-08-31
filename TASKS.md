@@ -2,14 +2,15 @@
 
 ## Aktualis
 
-### V003-C012.5C1 Recipe Slot assignment model
+### V003-C012.5C2 Recipe Pool Dropdown UI
 
-- [x] Cardon belüli `recipeSlotQualityPoolAssignments[recipeSlotId]` storage; identity `cardId + recipeSlotId`.
-- [x] `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`; hiányzó/ismeretlen értéknél legacy fallback.
-- [x] FR-86 két Stileron slot, két külön Card és Duplicate függetlenség PASS.
-- [x] Reload, Card-delete cleanup, backup/restore és assignment nélküli régi backup PASS.
-- [x] C012.5B/C012.5A/C012.3 célzott regresszió, static gate és V001/V002 integrity PASS.
-- [ ] `V003-C012.5C2` UI – NOT STARTED.
+- [x] Browser Final Card és Crafting List közös Recipe Slot pool dropdown.
+- [x] Legacy / ANY / Minimum / MAX opciók; dinamikus C012.3 és pool-threshold feliratok.
+- [x] Transient draft, draft→Card másolás és kizárólag exact `cardId` Browser/Crafting kötés.
+- [x] Per-slot, per-card, azonos blueprint és Duplicate függetlenség; reload persistence.
+- [x] Allocation/Max/Combined metrikák változatlanok; standalone nem szerkeszthető.
+- [x] C012.5C2/C1/B/A/C012.3 célkapu, static gate, rövid Chrome 1366/390 és V001/V002 integrity PASS.
+- [x] Chrome teardown: csak az egyetlen jóváhagyott teszt-Card törölve; 5 Card visszaállt, post-teardown fingerprint reload-stabil `f3ad8800`.
 - [ ] `V003-C012.5C3` allocation/Max/Combined – NOT STARTED.
 - [ ] `V003-C012.5D` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.

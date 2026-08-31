@@ -2,18 +2,18 @@
     "stableRelease":  "V002",
     "stableFile":  "releases/V002/sPg Crafting List.html",
     "developmentTarget":  "V003-dev",
-    "currentCycle":  "C012.5C1",
-    "currentCycleId":  "V003-C012.5C1",
-    "lastSuccessfulCycle":  "V003-C012.5C1",
+    "currentCycle":  "C012.5C2",
+    "currentCycleId":  "V003-C012.5C2",
+    "lastSuccessfulCycle":  "V003-C012.5C2",
     "branch":  "develop/V003",
     "releaseGate":  "development-cycle-pass-no-release",
-    "lastUpdated":  "2026-08-31T00:00:00+02:00",
-    "currentCyclePurpose":  "Per-Crafting-Card, per-Recipe-Slot Quality pool assignment model and persistence without UI or allocation binding",
-    "currentCycleStartedAt":  "2026-08-31T07:00:00+02:00",
-    "currentTestLevel":  "targeted-regression-no-browser",
+    "lastUpdated":  "2026-08-31T12:38:21+02:00",
+    "currentCyclePurpose":  "Recipe Slot Quality pool dropdown UI with transient draft, exact cardId binding and no allocation binding",
+    "currentCycleStartedAt":  "2026-08-31T12:00:00+02:00",
+    "currentTestLevel":  "targeted-regression-plus-short-real-chrome",
     "currentCycleStatus":  "PASS",
-    "currentCycleStatusReason":  "Embedded cardId + recipeSlotId assignment storage, valid enum normalization, legacy fallback, FR-86 slot/card/duplicate independence, reload/delete/backup/old-backup compatibility, direct C012.5B/C012.5A/C012.3 regressions and V001/V002 integrity passed. C012.5C2/C3 are not started.",
-    "developmentAcceptance":  "V003-C012.5C1 – ASSIGNMENT MODEL PASS, C012.5C2 NOT STARTED",
+    "currentCycleStatusReason":  "Shared Browser/Crafting dropdown, transient draft-to-Card copy, exact cardId binding, per-slot/per-card/duplicate independence, legacy and invalid fallback, dynamic labels, reload persistence, unchanged allocation and targeted C012.5C1/B/A/C012.3 plus V001/V002 gates passed. C012.5C3 is not started.",
+    "developmentAcceptance":  "V003-C012.5C2 – RECIPE POOL DROPDOWN UI PASS, C012.5C3 NOT STARTED",
     "manualFileGate":  {
                            "status":  "PASS",
                            "testedAt":  "2026-08-24",
@@ -39,13 +39,13 @@
 
                                   ],
     "v003DevelopmentGate":  {
-                                "status":  "C012.5C1_PASS_C012.5C2_NOT_STARTED",
-                                "cycle":  "V003-C012.5C1",
-                                "chromeLocalhostTechnicalProbe":  "PASS; 3 inventory-only materials, exact canonical pool sharing, Stileron Minimum Q500/MAX Q950 eligible 3/1 SCU, JS-300 add/remove, reload, 1920x1080 and 390x844 overflow 0, console WARN/ERROR 0",
+                                "status":  "C012.5C2_PASS_C012.5C3_NOT_STARTED",
+                                "cycle":  "V003-C012.5C2",
+                                "chromeLocalhostTechnicalProbe":  "PASS; JS-300 draft-to-Card and exact same-card Browser/Crafting state, same-blueprint independence, reload, 1366x768 and 390x844 overflow 0, visible mobile dropdown 89 px, console WARN/ERROR 0",
                                 "chromeFileGate":  "USER_MANUAL_PASS_NOT_CODEX_AUTOMATION",
                                 "chromeFileGateEvidence":  "USER MANUAL FILE:// PASS reported for C012.1/C012.2 input evidence: the complete Technical Baseline passed and the standalone export was created and opened; user-run, not Codex automation.",
-                                "userDataFingerprintBefore":  "NOT_CAPTURED_BEFORE_C012.5B_USER_EDITS",
-                                "userDataFingerprintAfterReload":  "ea5989f9",
+                                "userDataFingerprintBefore":  "3e2bcb00",
+                                "userDataFingerprintAfterReload":  "f3ad8800",
                                 "consoleWarningErrorCount":  0,
                                 "combinedQualityPools":  {
                                                               "settingKey":  "user:materialQualityPools",
@@ -78,10 +78,18 @@
                                                                                              "MAXIMUM_Q_POOL"
                                                                                          ],
                                                                          "missingOrInvalid":  "LEGACY_FALLBACK",
-                                                                         "uiBinding":  "NOT_STARTED_C012.5C2",
+                                                                         "uiBinding":  "PASS_SHARED_BROWSER_CRAFTING_EXACT_CARD_ID_WITH_TRANSIENT_DRAFT",
                                                                          "allocationBinding":  "NOT_STARTED_C012.5C3",
                                                                          "schemaChanged":  false,
-                                                                         "targetedValidation":  "PASS"
+                                                                         "targetedValidation":  "PASS",
+                                                                         "dropdownOptions":  [
+                                                                                                  "LEGACY_FALLBACK",
+                                                                                                  "ANY_Q",
+                                                                                                  "MINIMUM_Q_POOL",
+                                                                                                  "MAXIMUM_Q_POOL"
+                                                                                              ],
+                                                                         "chromeEvidence":  "test-artifacts/V003-C012.5C2/chrome-localhost-evidence.json",
+                                                                         "nextCycle":  "V003-C012.5C3_NOT_STARTED"
                                                                      },
                                 "consistencyClosure":  {
                                                            "lagrangeFVerdict":  "PRIMARY_ALUMINUM_INCLUDED_AT_SPACE_DENSE_RANK_2; SIBLING_CORUNDUM_SECONDARY_ROWS_EXCLUDED",

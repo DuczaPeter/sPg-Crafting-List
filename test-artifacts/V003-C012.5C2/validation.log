@@ -1,0 +1,71 @@
+V003-C012.5C2 targeted validation
+
+--- static-gate exit=0 ---
+EMBEDDED_APPLICATION_CSS_PASS 8ea4e679d87cbb88618b029e53756cc5573d7c9bde5a47da53feea4e6486b7ce 114265 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+
+--- c0125c2-target exit=0 ---
+V003_C0125C2_TARGET_PASS evidence=test-artifacts/V003-C012.5C2/recipe-pool-dropdown-evidence.json
+
+--- c0125c1-direct exit=0 ---
+V003_C0125C1_TARGET_PASS evidence=test-artifacts/V003-C012.5C1/assignment-model-evidence.json
+
+--- c0125b-direct exit=0 ---
+V003_C0125B_TARGET_PASS evidence=test-artifacts/V003-C012.5B/combined-quality-pools-evidence.json
+
+--- c0125a-direct exit=0 ---
+V003_C0125A_TARGET_PASS evidence=test-artifacts/V003-C012.5A/inventory-independence-evidence.json
+
+--- c0123-quality-direct exit=0 ---
+V003_C0123_USER_MATERIAL_CONSTRAINT_TEST_PASS
+{
+  "cycle": "V003-C012.3",
+  "status": "PASS",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "blueprint": "Metamaterial Test #152",
+  "recipeSemantics": {
+    "Stileron": "FIXED",
+    "Ouratite": "FIXED"
+  },
+  "targetQ800LowOnly": {
+    "stileronQ747Eligible": false,
+    "stileronReservedUnits": 0,
+    "stileronMissingAmountUnits": 0,
+    "stileronMissingQualityUnits": 15000,
+    "ouratiteQ860ReservedUnits": 9000,
+    "cardSatisfied": false,
+    "maxCraftable": 0
+  },
+  "targetQ800WithQ850": {
+    "stileronAllocatedQualities": [
+      850
+    ],
+    "cardSatisfied": true,
+    "maxCraftable": 3
+  },
+  "highestQ": {
+    "stileronAllocatedQualities": [
+      950,
+      850
+    ]
+  },
+  "parity": {
+    "combinedLabel": "Q800+",
+    "finalCardLabel": "Q800+",
+    "standaloneLabel": "Q800+"
+  },
+  "backupRestore": "PASS",
+  "priorityAndNoDoubleCount": "PASS",
+  "standalone": {
+    "path": "test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html",
+    "bytes": 156597,
+    "sha256": "ec16594a69102fa329fcbf987da338ea933d290121853fbefdedbd3dc7f40e4a",
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}
+V001_V002_INTEGRITY=PASS
+V003_TAG_RELEASE=NONE

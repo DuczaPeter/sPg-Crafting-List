@@ -609,3 +609,19 @@ node .\tools\run-v003-c0125c1-tests.mjs
 
 - `v003-c0125c1-recipe-slot-assignment-model`: valid enum/fallback, per-slot/per-card/Duplicate függetlenség, reload/delete/backup/old-backup, változatlan C012.3 allocation, static gate és V001/V002 integrity.
 - Artifactok: `test-artifacts/V003-C012.5C1/`.
+
+V003-C012.5C2 célzott kapu (Recipe Pool dropdown UI; allocation-bekötés nélkül):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125c2.ps1"
+```
+
+Csak a C012.5C2 UI/model célteszt:
+
+```powershell
+node .\tools\run-v003-c0125c2-tests.mjs
+```
+
+- `v003-c0125c2-recipe-pool-dropdown-ui`: transient draft, draft→Card, exact cardId binding, Browser/Crafting same-card állapot, per-slot/per-card/Duplicate függetlenség, legacy/invalid fallback, dinamikus Minimum/MAX label, reload és változatlan allocation/Max/Combined modell.
+- A validator közvetlenül futtatja a C012.5C1/C012.5B/C012.5A/C012.3 kapukat, a static/single-file ellenőrzést és V001/V002 integritást; teljes történeti regressziót nem futtat.
+- Artifactok: `test-artifacts/V003-C012.5C2/`.
