@@ -2,16 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5B Combined Quality Pools
+### V003-C012.5C1 Recipe Slot assignment model
 
-- [x] C012.5A inventory ∪ requirement és exact canonical identity változatlan.
-- [x] Materialonként külön Minimum Q és MAX Q (0–1000 egész) User Data beállítás.
-- [x] `Q >= threshold` eligible inventory előnézet; pool-átfedés mellett nincs készlet-duplázás.
-- [x] Exact commodity/ingredient UUID ugyanazt a beállítást kapja; név/fuzzy merge nincs.
-- [x] Inventory-only, recipe add/remove, reload, backup/restore és régi-backup kompatibilitás PASS.
-- [x] C012.4 committed numeric editor, C012.5A/C012.4/C012.3 targeted regression és V001/V002 integrity PASS.
-- [x] Chrome localhost 1920×1080 és 390×844, overflow 0, console `WARN 0 / ERROR 0` PASS.
-- [ ] `V003-C012.5C` – NOT STARTED; pool-to-recipe/allocation kapcsolat nincs bekötve.
+- [x] Cardon belüli `recipeSlotQualityPoolAssignments[recipeSlotId]` storage; identity `cardId + recipeSlotId`.
+- [x] `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`; hiányzó/ismeretlen értéknél legacy fallback.
+- [x] FR-86 két Stileron slot, két külön Card és Duplicate függetlenség PASS.
+- [x] Reload, Card-delete cleanup, backup/restore és assignment nélküli régi backup PASS.
+- [x] C012.5B/C012.5A/C012.3 célzott regresszió, static gate és V001/V002 integrity PASS.
+- [ ] `V003-C012.5C2` UI – NOT STARTED.
+- [ ] `V003-C012.5C3` allocation/Max/Combined – NOT STARTED.
+- [ ] `V003-C012.5D` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 
 ### V003-dev farm recommendation

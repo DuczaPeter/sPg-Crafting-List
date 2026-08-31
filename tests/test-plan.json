@@ -283,6 +283,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125b.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0125c1-recipe-slot-assignment-model",
+      "level": "targeted-regression",
+      "description": "V003-C012.5C1 gate: Crafting Card embedded per-Recipe-Slot Quality pool assignment storage with ANY_Q/MINIMUM_Q_POOL/MAXIMUM_Q_POOL, legacy fallback for missing/invalid values, FR-86 slot/card/duplicate independence, reload/delete/backup/old-backup compatibility, unchanged allocation/UI, direct C012.5B/C012.5A/C012.3 regression, static gate and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125c1.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

@@ -1,0 +1,22 @@
+{
+  "cycle": "V003-C012.5C1",
+  "status": "PASS",
+  "storage": "craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]",
+  "validModes": [
+    "ANY_Q",
+    "MINIMUM_Q_POOL",
+    "MAXIMUM_Q_POOL"
+  ],
+  "default": {},
+  "invalidFallback": "LEGACY_FALLBACK",
+  "fr86SlotIndependence": "PASS",
+  "fr86CardIndependence": "PASS",
+  "duplicateIndependence": "PASS",
+  "reloadPersistence": "PASS",
+  "deleteCleanup": "PASS",
+  "backupRestore": "PASS",
+  "oldBackupCompatibility": "PASS",
+  "legacyAllocationUnchanged": "PASS",
+  "c0125c2Started": false,
+  "c0125c3Started": false
+}

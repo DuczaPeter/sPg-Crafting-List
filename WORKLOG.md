@@ -665,3 +665,10 @@ Ha a naplo hosszu lesz, regi bejegyzesek mozgathatok az `archive/` mappaba. Arch
 - Targeted validator: C012.5B, C012.5A, C012.4 numeric, C012.3 Quality, static/JS és V001/V002 integrity PASS. Backup/restore és új kulcs nélküli régi backup PASS.
 - Valódi Chrome localhost: 3 inventory-only material; Stileron Q550 2 SCU + Q975 1 SCU, Minimum Q500 eligible 3 SCU, MAX Q950 eligible 1 SCU. JS-300 add/remove és reload után a poolok megmaradtak. 1920×1080 és 390×844 overflow 0; console WARN/ERROR 0; záró fingerprint `ea5989f9`.
 - Standalone, allocation, Quality policy és V002 nem változott. C012.5C/C013 nincs elindítva; V003 tag/release/push/main merge nincs. Visszaállás: a C012.5B commit revertje; stabil fallback a változatlan V002.
+
+### V003-C012.5C1 Recipe Slot assignment model - 2026-08-31
+
+- A félbeszakadt C012.5C dirty diffet megőrizve és célzottan szétválasztva csak az adatmodell/perzisztencia készült el; C2 UI és C3 allocation kód nincs a checkpointban.
+- Storage: `craftingCards[].recipeSlotQualityPoolAssignments[recipeSlotId]`; valid `ANY_Q`, `MINIMUM_Q_POOL`, `MAXIMUM_Q_POOL`. Hiányzó/ismeretlen érték legacy fallback, automatikus Minimum/MAX migráció nincs.
+- FR-86 Shell/Field Array, két Card, Duplicate, reload, delete cleanup, backup/restore és régi backup céltesztek PASS. C012.5B/A/C012.3, static gate és V001/V002 integritás PASS.
+- Nincs DB/backup schema bump, Chrome/full történeti regresszió nem futott a szűk C1 scope szerint. C012.5C2/C3, C012.5D és C013 NOT STARTED.

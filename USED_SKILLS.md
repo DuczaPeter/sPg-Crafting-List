@@ -34,6 +34,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett: `docs/M1_REPORT.md`, `docs/TECHNICAL_BASELINE.md`; a `file://` kapu tovabbra is kezi maradt.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
 
+## V003-C012.5C1 Recipe Slot assignment model
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor hasznaltuk: `2026-08-31`, a félbeszakadt dirty diff célzott auditjára és a kizárólagos C1 adatmodell/perzisztencia checkpoint lezárására.
+- Mire segített: a `18004a5…` baseline, a szűk érintett HTML-részek és a C012.5B/A/C012.3 célzott kapuk használatára teljes projekt- és történeti regresszió ismétlése nélkül.
+- Mely fájlokat vagy döntéseket érintett: Cardba ágyazott `cardId + recipeSlotId` assignment storage, C1 fixture/teszt/validator/report és aktuális projektdokumentáció; `uj-projekt` és Chrome skill nem lett használva.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5A Inventory Independence Foundation
 
 - Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.

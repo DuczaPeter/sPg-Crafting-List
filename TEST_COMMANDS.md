@@ -594,3 +594,18 @@ node .\tools\run-v003-c0125b-tests.mjs
 
 - `v003-c0125b-combined-quality-pools`: két külön 0–1000 egész threshold, átfedő eligible preview készletduplázás nélkül, exact commodity/ingredient közös beállítás, no-fuzzy negatív fixture, inventory-only és recipe add/remove, backup/restore, régi backup és közvetlen C012.5A/C012.4/C012.3 regresszió.
 - Artifactok: `test-artifacts/V003-C012.5B/`.
+
+V003-C012.5C1 célzott kapu (Recipe Slot assignment model/perzisztencia; UI és allocation nélkül):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125c1.ps1"
+```
+
+Csak a C012.5C1 FR-86 assignment modellteszt:
+
+```powershell
+node .\tools\run-v003-c0125c1-tests.mjs
+```
+
+- `v003-c0125c1-recipe-slot-assignment-model`: valid enum/fallback, per-slot/per-card/Duplicate függetlenség, reload/delete/backup/old-backup, változatlan C012.3 allocation, static gate és V001/V002 integrity.
+- Artifactok: `test-artifacts/V003-C012.5C1/`.

@@ -8382,6 +8382,54 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return sum + Number(batch.quantityUnits || 0);
       }, 0);
     }
+
+    /* C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL_START */
+    var RECIPE_SLOT_QUALITY_POOL_MODES = Object.freeze({
+      ANY_Q: "ANY_Q",
+      MINIMUM_Q_POOL: "MINIMUM_Q_POOL",
+      MAXIMUM_Q_POOL: "MAXIMUM_Q_POOL"
+    });
+
+    function normalizeRecipeSlotQualityPoolMode(value) {
+      return value === RECIPE_SLOT_QUALITY_POOL_MODES.ANY_Q || value === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL || value === RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL
+        ? value
+        : null;
+    }
+
+    function normalizeRecipeSlotQualityPoolAssignments(assignments, requirements) {
+      var source = assignments && typeof assignments === "object" && !Array.isArray(assignments) ? assignments : {};
+      var allowed = Array.isArray(requirements) ? new Set(requirements.map(function (requirement) { return String(requirement.id); })) : null;
+      return Object.keys(source).sort().reduce(function (result, recipeSlotId) {
+        var mode = normalizeRecipeSlotQualityPoolMode(source[recipeSlotId]);
+        if (recipeSlotId && mode && (!allowed || allowed.has(String(recipeSlotId)))) {
+          result[recipeSlotId] = mode;
+        }
+        return result;
+      }, {});
+    }
+
+    function recipeSlotQualityPoolAssignmentFor(card, recipeSlotId) {
+      var source = card && card.recipeSlotQualityPoolAssignments && typeof card.recipeSlotQualityPoolAssignments === "object"
+        ? card.recipeSlotQualityPoolAssignments
+        : {};
+      var normalizedMode = normalizeRecipeSlotQualityPoolMode(source[recipeSlotId]);
+      var explicit = Object.prototype.hasOwnProperty.call(source, recipeSlotId) && Boolean(normalizedMode);
+      return {
+        mode: explicit ? normalizedMode : null,
+        explicit: explicit,
+        origin: explicit ? "EXPLICIT_RECIPE_SLOT_ASSIGNMENT" : "LEGACY_FALLBACK"
+      };
+    }
+
+    function setRecipeSlotQualityPoolAssignment(assignments, recipeSlotId, mode) {
+      if (!recipeSlotId) { throw new Error("A Recipe Slot Quality pool hozzárendeléshez slot ID szükséges."); }
+      var normalizedMode = normalizeRecipeSlotQualityPoolMode(mode);
+      if (!normalizedMode) { throw new Error("Ismeretlen Recipe Slot Quality pool assignment: " + mode); }
+      var next = Object.assign({}, normalizeRecipeSlotQualityPoolAssignments(assignments));
+      next[recipeSlotId] = normalizedMode;
+      return normalizeRecipeSlotQualityPoolAssignments(next);
+    }
+    /* C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL_END */
     /* C0125B_COMBINED_QUALITY_POOL_MODEL_END */
 
     function formatEffectiveQualityLabel(policy) {
@@ -13530,6 +13578,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         isAvailableByDefault: blueprint.isAvailableByDefault === true,
         requirements: requirements,
         slotStrategies: slotStrategies,
+        recipeSlotQualityPoolAssignments: {},
         createdAt: createdAt,
         updatedAt: createdAt
       };
@@ -13605,6 +13654,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.quantity = Number.isInteger(Number(card.quantity)) && Number(card.quantity) > 0 ? Number(card.quantity) : 1;
       normalized.requirements = Array.isArray(card.requirements) ? card.requirements : [];
       normalized.slotStrategies = card.slotStrategies && typeof card.slotStrategies === "object" ? card.slotStrategies : {};
+      normalized.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(card.recipeSlotQualityPoolAssignments, normalized.requirements);
       normalized.outputTypeLabel = card.outputTypeLabel || card.outputType || null;
       normalized.blueprintWebUrl = card.blueprintWebUrl || null;
       normalized.outputWebUrl = card.outputWebUrl || null;
@@ -15031,7 +15081,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         }
         found = true;
         var updated = Object.assign({}, card, {
-          slotStrategies: Object.assign({}, card.slotStrategies)
+          slotStrategies: Object.assign({}, card.slotStrategies),
+          recipeSlotQualityPoolAssignments: Object.assign({}, card.recipeSlotQualityPoolAssignments)
         });
         updater(updated);
         updated.updatedAt = nowIso();
@@ -15041,6 +15092,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         throw new Error("A Crafting Card nem található.");
       }
       await persistCraftingCards(next, processType);
+    }
+
+    async function updateRecipeSlotQualityPoolAssignment(cardId, requirementId, mode) {
+      await updateCraftingCard(cardId, function (card) {
+        card.recipeSlotQualityPoolAssignments = setRecipeSlotQualityPoolAssignment(card.recipeSlotQualityPoolAssignments, requirementId, mode);
+      }, "RECIPE_SLOT_QUALITY_POOL_ASSIGNMENT");
     }
 
     async function updateCardStrategy(cardId, requirementId, mode, targetQuality) {

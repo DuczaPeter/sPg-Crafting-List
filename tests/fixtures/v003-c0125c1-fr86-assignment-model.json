@@ -1,0 +1,52 @@
+{
+  "blueprint": {
+    "uuid": "db6460d8-273e-4fe3-bf57-a02a61e7a3e2",
+    "outputUuid": "5fa67088-9677-40c4-b552-46c16bd7162e",
+    "outputName": "FR-86"
+  },
+  "materials": {
+    "stileron": {
+      "ingredientUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "commodityUuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "name": "Stileron"
+    },
+    "feynmaline": {
+      "ingredientUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "name": "Feynmaline"
+    }
+  },
+  "requirements": [
+    {
+      "id": "db6460d8-273e-4fe3-bf57-a02a61e7a3e2:aspect:0",
+      "recipeSlotName": "Shell",
+      "ingredientUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "commodityUuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "materialName": "Stileron",
+      "requiredQuantityUnits": 12000,
+      "unit": "SCU",
+      "qualityCapability": "FIXED",
+      "affectedStats": []
+    },
+    {
+      "id": "db6460d8-273e-4fe3-bf57-a02a61e7a3e2:aspect:1",
+      "recipeSlotName": "Field Array",
+      "ingredientUuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+      "commodityUuid": "32bafbd4-c52a-476d-b31c-97c4b3102471",
+      "materialName": "Stileron",
+      "requiredQuantityUnits": 19000,
+      "unit": "SCU",
+      "qualityCapability": "FIXED",
+      "affectedStats": []
+    },
+    {
+      "id": "db6460d8-273e-4fe3-bf57-a02a61e7a3e2:aspect:2",
+      "recipeSlotName": "Frequency Controller",
+      "ingredientUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "materialName": "Feynmaline",
+      "requiredQuantityUnits": 170,
+      "unit": "ITEM",
+      "qualityCapability": "FIXED",
+      "affectedStats": []
+    }
+  ]
+}
