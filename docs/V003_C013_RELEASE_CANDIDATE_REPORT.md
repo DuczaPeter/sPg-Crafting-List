@@ -1,5 +1,7 @@
 # V003-C013 Fresh Release Candidate Report
 
+> **C013.1 utólagos státusz:** az exact candidate kézi `file://` kapuja `BLOCKED`, mert az FR-86 x17 teszt Quality-starvation hibát bizonyított. A candidate byte-tartalma változatlan, de nem adható ki és nem használható újra. A javítás külön `V003-C013.1` ciklusban készült; friss RC szükséges. Részletek: `docs/V003_C0131_STRICT_QUALITY_ALLOCATION_REPORT.md`.
+
 ## Eredmény
 
 `V003-C013 – FRESH RELEASE CANDIDATE AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
@@ -68,11 +70,11 @@ Eredmény: **PASS** ugyanazon, hash-zárolt candidate fájlon.
 
 Chrome evidence: `test-artifacts/V003-C013/fresh-release-candidate/chrome-localhost-evidence.json`.
 
-## Nyitott kötelező kapu
+## Kézi kapu utólagos eredménye
 
-Az exact candidate közvetlen `file://` kézi gate-je: **NOT RUN**.
+Az exact candidate közvetlen `file://` kézi gate-je: **BLOCKED – QUALITY STARVATION**.
 
-Ezért a candidate nem nevezhető stabil V003 release-nek. A következő munkamenet csak külön felhasználói utasításra készítheti elő ennek az exact, fenti SHA-256 értékű fájlnak a kézi `file://` ellenőrzését.
+A candidate nem nevezhető stabil V003 release-nek és nem használható újra. A C013.1 javítás után külön ciklusban új, friss candidate szükséges.
 
 ## Visszaállás
 

@@ -1,0 +1,77 @@
+V003-C013.1 targeted repair validation
+FULL_RELEASE_REGRESSION=NOT_RUN_BY_SCOPE
+c0131-strict-allocation=PASS
+V003_C0131_TARGET_PASS evidence=test-artifacts/V003-C013.1/strict-quality-allocation-evidence.json
+m2-allocation=PASS
+{
+  "mandatoryCases": 8,
+  "js300Rules": [
+    "HP_MIN_500",
+    "FIXED",
+    "FIXED"
+  ],
+  "hofstedeRules": [
+    "HP_MIN_500",
+    "HIGHEST_Q",
+    "HIGHEST_Q"
+  ],
+  "deterministicPriority": true,
+  "performance": {
+    "batches": 1000,
+    "cards": 100,
+    "requirements": 300,
+    "durationMs": 774.84
+  }
+}
+m4-combined-backup=PASS
+M4_COMBINED_BACKUP_TEST_PASS
+{
+  "mandatoryCases": 12,
+  "backupSchemaVersion": 2,
+  "roundtripFingerprint": "6d8701dc",
+  "performance": {
+    "cards": 1000,
+    "recipeSlots": 3000,
+    "batches": 5000,
+    "materials": 100,
+    "durationMs": 335.76
+  }
+}
+c0123-quality-constraint=PASS
+    "stileronAllocatedQualities": [
+      950,
+      850
+    ]
+  },
+  "parity": {
+    "combinedLabel": "Q800+",
+    "finalCardLabel": "Q800+",
+    "standaloneLabel": "Q800+"
+  },
+  "backupRestore": "PASS",
+  "priorityAndNoDoubleCount": "PASS",
+  "standalone": {
+    "path": "test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html",
+    "bytes": 158851,
+    "sha256": "42131f5704f6a7d7ebf26f5c2d801ff2ded8fddaad26de12375a8e36fdf658a0",
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}
+c0125c3a-pool-allocation=PASS
+V003_C0125C3A_TARGET_PASS evidence=test-artifacts/V003-C012.5C3A/pool-allocation-evidence.json
+c0125c3b1-combined-pools=PASS
+V003_C0125C3B1_TARGET_PASS evidence=test-artifacts/V003-C012.5C3B1/combined-pool-metrics-evidence.json
+c0125c3b2-standalone=PASS
+V003_C0125C3B2_TARGET_PASS evidence=test-artifacts/V003-C012.5C3B2/standalone-effective-quality-evidence.json
+static-single-file=PASS
+EMBEDDED_APPLICATION_CSS_PASS 69f41cf8127742e5d7c7f45ba65b71f814093ddffb56f912d0ca706fe96b3ef7 115124 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+integrated-fr86=PASS
+V003_C0125D1_TARGET_PASS evidence=test-artifacts/V003-C013.1/integrated-fr86/integration-evidence.json
+V001_V002_INTEGRITY=PASS
+BLOCKED_C013_CANDIDATE_UNCHANGED=PASS
+V003_TAG_RELEASE=NONE

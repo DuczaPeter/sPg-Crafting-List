@@ -700,3 +700,14 @@ node .\tools\run-v003-c0125d1-tests.mjs
 - A D1 validator a C012.5 A/B/C1/C2/C3A/C3B1/C3B2, C012.3/C012.4, M4/M6, static/single-file és V001/V002 kaput futtatja.
 - Chrome, localhost, User Data és teljes történeti release-suite nincs a D1 scope-ban.
 - Artifactok: `test-artifacts/V003-C012.5D1/`.
+
+V003-C013.1 célzott repair kapu (strict Quality scheduling + vegyes hiány):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0131.ps1"
+```
+
+- `v003-c0131-strict-quality-allocation-shortage`: Card-prioritás után same-card/canonical-material/unit csoportban magasabb effektív minimum Quality előbb; stabil slot-sorrend azonos küszöbnél.
+- Kötelező FR-86 fixture: Field Q900+ `6 / 9,3 / 17 SCU`, Shell Q500+ `17 / 3,4 / 0 SCU` (reserved / amount shortage / Quality shortage), globális foglalás `23 SCU`, teljes hiány `29,7 SCU`, double reserve `0`.
+- A célkapu lefedi a korábbi FR-86 happy/Q550, reverse-slot, két-Card prioritás, Combined/Final/Crafting/Maximum/standalone parity, M2/M4 és C012.3/C3A/C3B1/C3B2 regressziókat, static single-file és V001/V002 integritást.
+- Teljes release-regresszió és RC rebuild nincs a C013.1 scope-ban. Artifactok: `test-artifacts/V003-C013.1/`.

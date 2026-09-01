@@ -8935,6 +8935,56 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         });
       }
 
+      /* C0131_STRICT_QUALITY_SCHEDULER_START */
+      function schedulingEffectiveMinimum(rule) {
+        if (hasValidQuality(rule && rule.effectiveMinimum)) {
+          return Number(rule.effectiveMinimum);
+        }
+        if (rule && rule.mode === M2_QUALITY_RULES.TARGET_Q && hasValidQuality(rule.targetQuality)) {
+          return Number(rule.targetQuality);
+        }
+        if (rule && rule.mode === M2_QUALITY_RULES.HP_MIN_500) {
+          return 500;
+        }
+        if (rule && rule.mode === M2_QUALITY_RULES.HIGHEST_Q && hasValidQuality(rule.minimumQuality)) {
+          return Number(rule.minimumQuality);
+        }
+        return 0;
+      }
+
+      function scheduledCardRequirements(card) {
+        var stableRequirements = sortedCardRequirements(card);
+        var groups = [];
+        var groupsByMaterialUnit = new Map();
+        stableRequirements.forEach(function (requirement, stableIndex) {
+          var unit = requirement.unit || (requirement.quantity && requirement.quantity.unit) || "UNKNOWN";
+          var groupKey = canonicalAllocationIdentity(requirement) + "::" + unit;
+          if (!groupsByMaterialUnit.has(groupKey)) {
+            var group = { key: groupKey, entries: [] };
+            groupsByMaterialUnit.set(groupKey, group);
+            groups.push(group);
+          }
+          var rule = effectiveRuleFor(requirement, card);
+          groupsByMaterialUnit.get(groupKey).entries.push({
+            requirement: requirement,
+            rule: rule,
+            stableIndex: stableIndex,
+            schedulingEffectiveMinimum: schedulingEffectiveMinimum(rule)
+          });
+        });
+        var scheduled = [];
+        groups.forEach(function (group) {
+          group.entries.sort(function (a, b) {
+            return b.schedulingEffectiveMinimum - a.schedulingEffectiveMinimum || a.stableIndex - b.stableIndex;
+          }).forEach(function (entry) {
+            entry.allocationSequence = scheduled.length;
+            scheduled.push(entry);
+          });
+        });
+        return { stableRequirements: stableRequirements, scheduled: scheduled };
+      }
+      /* C0131_STRICT_QUALITY_SCHEDULER_END */
+
       function evaluateRequirement(requirement, requiredUnits, available, collectTrace, card, rule) {
         var sourceMaterialUuid = materialIdentity(requirement);
         var materialUuid = canonicalAllocationIdentity(requirement);
@@ -8950,6 +9000,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         }).sort(function (a, b) {
           return compareEligibleBatches(rule, a, b);
         });
+        var availableEligibleUnitsAtSlot = eligibleBatches.reduce(function (sum, batch) {
+          return sum + (available.get(batch.id) || 0);
+        }, 0);
         var initialByBatch = new Map();
         exactBatches.forEach(function (batch) {
           initialByBatch.set(batch.id, available.get(batch.id) || 0);
@@ -8974,8 +9027,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           }
         });
         var allocatedUnits = requiredUnits - needed;
-        var missingAmountUnits = Math.max(0, requiredUnits - totalMatchingUnits);
-        var missingQualityUnits = Math.max(0, needed - missingAmountUnits);
+        var missingUnits = Math.max(0, requiredUnits - allocatedUnits);
+        var missingAmountUnits = Math.min(missingUnits, Math.max(0, requiredUnits - totalMatchingUnits));
+        var missingQualityUnits = Math.max(0, missingUnits - missingAmountUnits);
         var shortageKinds = [];
         if (missingAmountUnits > 0) {
           shortageKinds.push("QUANTITY");
@@ -9026,6 +9080,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             allocationStrategy: rule.allocationStrategy,
             userFacingQualityLabel: rule.userFacingLabel,
             requiredUnits: requiredUnits,
+            availablePhysicalUnitsAtSlot: totalMatchingUnits,
+            availableEligibleUnitsAtSlot: availableEligibleUnitsAtSlot,
             available: materialBatches.map(function (batch) {
               var allocation = allocationByBatch.get(batch.id);
               var exactUnit = batch.unit === unit;
@@ -9091,6 +9147,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           userFacingQualityLabel: rule.userFacingLabel,
           qualityPolicy: Object.assign({}, rule),
           requiredUnits: requiredUnits,
+          availablePhysicalUnitsAtSlot: totalMatchingUnits,
+          availableEligibleUnitsAtSlot: availableEligibleUnitsAtSlot,
           allocatedUnits: allocatedUnits,
           allocatedBatches: allocations,
           missingAmountUnits: missingAmountUnits,
@@ -9117,14 +9175,26 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       function simulateCard(card, craftQuantity, startingAvailability, collectTrace) {
         var simulated = new Map(startingAvailability);
-        var requirements = sortedCardRequirements(card);
-        var results = requirements.map(function (requirement) {
+        var schedule = scheduledCardRequirements(card);
+        var evaluated = schedule.scheduled.map(function (entry) {
+          var requirement = entry.requirement;
           var perCraftUnits = requirement.requiredQuantityUnits;
           if (!Number.isInteger(perCraftUnits) || perCraftUnits < 0 || !Number.isSafeInteger(perCraftUnits * craftQuantity)) {
             throw new TypeError("Érvénytelen requirement mennyiség: " + requirement.id);
           }
-          var rule = effectiveRuleFor(requirement, card);
-          return evaluateRequirement(requirement, perCraftUnits * craftQuantity, simulated, collectTrace, card, rule);
+          var result = evaluateRequirement(requirement, perCraftUnits * craftQuantity, simulated, collectTrace, card, entry.rule);
+          result.allocationSequence = entry.allocationSequence;
+          result.schedulingEffectiveMinimum = entry.schedulingEffectiveMinimum;
+          if (result.trace) {
+            result.trace.allocationSequence = entry.allocationSequence;
+            result.trace.schedulingEffectiveMinimum = entry.schedulingEffectiveMinimum;
+          }
+          return { stableIndex: entry.stableIndex, result: result };
+        });
+        var results = evaluated.sort(function (a, b) {
+          return a.stableIndex - b.stableIndex;
+        }).map(function (entry) {
+          return entry.result;
         });
         return {
           availability: simulated,
@@ -14353,6 +14423,26 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return select;
     }
 
+    function formatRequirementShortageSummary(requirement, formatter) {
+      var formatUnits = typeof formatter === "function" ? formatter : formatInventoryUnits;
+      var shortage = Number(requirement.shortageUnits || 0);
+      var amountShortage = Number(requirement.missingAmountUnits || 0);
+      var qualityShortage = Number(requirement.missingQualityUnits || 0);
+      var parts = [];
+      if (amountShortage > 0) {
+        parts.push("Mennyiséghiány: " + formatUnits(requirement.unit, amountShortage));
+      }
+      if (qualityShortage > 0) {
+        parts.push("Quality-hiány: " + formatUnits(requirement.unit, qualityShortage));
+      }
+      if (parts.length) {
+        return parts.join(" · ");
+      }
+      return shortage > 0
+        ? "Hiány: " + formatUnits(requirement.unit, shortage)
+        : "Marad: " + formatUnits(requirement.unit, requirement.remainingUnits || 0);
+    }
+
     function renderC010RecipeRow(requirement, settings) {
       var row = document.createElement("div");
       row.className = "spg-c010-recipe-row";
@@ -14376,9 +14466,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var stockValue = document.createElement("strong");
       stockValue.textContent = formatInventoryUnits(requirement.unit, requirement.suitableInventoryUnits);
       var stockState = document.createElement("small");
-      stockState.textContent = shortage > 0
-        ? "Hiány: " + formatInventoryUnits(requirement.unit, shortage)
-        : "Marad: " + formatInventoryUnits(requirement.unit, requirement.remainingUnits || 0);
+      stockState.textContent = formatRequirementShortageSummary(requirement, formatInventoryUnits);
       stock.append(stockValue, stockState);
       row.append(slot, material, need, stock);
       return row;
@@ -17624,13 +17712,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var shortage = Number(requirement.shortageUnits || 0);
       var qualityShortage = Number(requirement.missingQualityUnits || 0);
       var amountShortage = Number(requirement.missingAmountUnits || 0);
-      var stockState = qualityShortage > 0
-        ? "Quality-hiány: " + m6FormatUnits(requirement.unit, qualityShortage)
-        : (amountShortage > 0
-          ? "Mennyiséghiány: " + m6FormatUnits(requirement.unit, amountShortage)
-          : (shortage > 0
-            ? "Hiány: " + m6FormatUnits(requirement.unit, shortage)
-            : "Marad: " + m6FormatUnits(requirement.unit, requirement.remainingUnits || 0)));
+      var shortageParts = [];
+      if (amountShortage > 0) {
+        shortageParts.push("Mennyiséghiány: " + m6FormatUnits(requirement.unit, amountShortage));
+      }
+      if (qualityShortage > 0) {
+        shortageParts.push("Quality-hiány: " + m6FormatUnits(requirement.unit, qualityShortage));
+      }
+      var stockState = shortageParts.length
+        ? shortageParts.join(" · ")
+        : (shortage > 0
+          ? "Hiány: " + m6FormatUnits(requirement.unit, shortage)
+          : "Marad: " + m6FormatUnits(requirement.unit, requirement.remainingUnits || 0));
       var standaloneQuality = requirement.standaloneQuality || projectStandaloneEffectiveQuality(requirement, requirement.qualityPolicy || requirement);
       return [
         '<div class="spg-c010-recipe-row" data-status="', m6EscapeHtml(requirement.status || "PENDING"), '">',
@@ -18402,7 +18495,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
 
       await check("M4 Combined + backup rollback", async function () {
-        var combined = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches);
+        var combined = buildCombinedMaterials(state.allocationResult, state.craftingCards, state.materialBatches, state.knownMaterials);
         var engineReserved = state.allocationResult.batchUsage.reduce(function (sum, usage) { return sum + usage.reservedUnits; }, 0);
         var combinedReserved = combined.reduce(function (sum, group) { return sum + group.reservedUnits; }, 0);
         assert(engineReserved === combinedReserved, "A Combined Materials eltér az Allocation Engine foglalásától.");

@@ -307,6 +307,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c013-fresh.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0131-strict-quality-allocation-shortage",
+      "level": "targeted-regression",
+      "description": "V003-C013.1 repair gate: Card priority remains primary; within one Card/canonical material/unit stricter effective minimum Quality is allocated first; mixed amount and Quality shortages are classified without overlap; FR-86 Final Card, Crafting List, Combined, Maximum Craftable and standalone parity; M4 Technical Baseline exact canonical identity; no RC rebuild.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0131.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

@@ -460,3 +460,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a minimális kontextusú folytatásra, az alkalmazáskód byte-lockjára, a régi invalidált candidate-ek elkülönítésére, a generated artifact-zaj célzott takarítására, valamint a 1920/1366/390 viewport, nyolc modul és tiszta konzol bizonyítására.
 - Mely fájlokat vagy döntéseket érintett: C013 builder/validator/test harness, fresh candidate/evidence/report és projektállapot-dokumentáció; a fő HTML, V001 és V002 nem változott.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.1 Strict Quality Allocation + Shortage Repair
+
+- Skillek neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-01`, a kézi candidate gate blockeréből induló szűk application repair, célfixture, M4 harness-audit, célzott regresszió és checkpoint lezárása során.
+- Mire segített: a jelenlegi baseline minimális kontextusú folytatására, a teljes release-regresszió és RC rebuild tudatos kihagyására, a generated artifact-zaj elkülönítésére, valamint V001/V002 és a blokkolt C013 candidate védelmére.
+- Mely fájlokat vagy döntéseket érintett: Allocation Engine scheduling/shortage projection, M4 Technical Baseline probe, C013.1 fixture/teszt/validator/report/artifact és projektállapot-dokumentáció; a skillfájlok és stabil V001/V002 nem változtak.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

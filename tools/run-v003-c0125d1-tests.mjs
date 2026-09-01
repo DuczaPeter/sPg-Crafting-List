@@ -25,7 +25,10 @@ const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const baseline = execFileSync("git", ["rev-parse", "HEAD"], { cwd: projectDirectory, encoding: "utf8" }).trim();
 const expectedBaseline = process.env.SPG_EXPECTED_HEAD || "42f94e9ecc40076174ac1c732e70d26402ea291f";
 assert.equal(baseline, expectedBaseline);
-assert.equal(spawnSync("git", ["diff", "--quiet", "--", "sPg Crafting List.html"], { cwd: projectDirectory }).status, 0, "A D1 gate nem módosíthat application code-ot.");
+const applicationCodeChanged = spawnSync("git", ["diff", "--quiet", "--", "sPg Crafting List.html"], { cwd: projectDirectory }).status !== 0;
+if (applicationCodeChanged && process.env.SPG_ALLOW_APP_DIFF !== "1") {
+  assert.fail("A D1 gate nem módosíthat application code-ot explicit repair-cycle engedély nélkül.");
+}
 
 const block = (name) => {
   const match = appHtml.match(new RegExp(`/\\* ${name}_START \\*/([\\s\\S]*?)/\\* ${name}_END \\*/`));
@@ -300,7 +303,7 @@ const evidence = {
   cycle: cycleId,
   status: "TARGET_PASS",
   baseline,
-  applicationCodeChanged: false,
+  applicationCodeChanged,
   fixtureStatuses: {
     fr86HappyPath: "PASS",
     qualityShortage: "PASS",

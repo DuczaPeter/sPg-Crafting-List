@@ -74,6 +74,8 @@
 - V003-C013 fresh candidate kapu: `tools/validate-v003-c013-fresh.ps1`; exact D2B source byte-lock, teljes relevans regresszio, C012.5D1 integralt FR-86, single-file/standalone es V001/V002 integritas.
 - V003-C013 candidate builder/target: `tools/build-v003-c013-fresh-candidate.mjs` es `tools/run-v003-c013-fresh-tests.mjs`; az aktiv candidate az invalidalt torteneti candidate-ektol kulon `test-artifacts/V003-C013/fresh-release-candidate/` alatt van.
 - V003-C013 riport: `docs/V003_C013_RELEASE_CANDIDATE_REPORT.md`; automated/Chrome PASS, exact candidate SHA-zar es a meg nyitott manual candidate `file://` gate.
+- V003-C013.1 strict allocation kapu: `tools/validate-v003-c0131.ps1`, `tools/run-v003-c0131-tests.mjs`; FR-86 vegyes amount/Quality shortage, Card/material Quality scheduling, cross-view parity es M4 canonical harness audit.
+- V003-C013.1 riport: `docs/V003_C0131_STRICT_QUALITY_ALLOCATION_REPORT.md`; fixture: `tests/fixtures/fr86-mixed-amount-quality-shortage.json`.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -143,6 +145,7 @@
 - `test-artifacts/V003-C012.3/`: Metamaterial Q800 allocation/standalone bizonyitek es PASS summary.
 - `test-artifacts/V003-C012.4/`: numeric editor celteszt, valodi Chrome localhost sequential typing/responsive/fingerprint bizonyitek es PASS summary.
 - `test-artifacts/V003-C013/`: a C012.3 release-blokkolo miatt explicit invalidalt, nem aktiv release-candidate bizonyitek; C013 commit nem keszult.
+- `test-artifacts/V003-C013.1/`: strict Quality allocation, vegyes hiányosztályozás, FR-86 cross-view/standalone és célzott validator bizonyíték.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.

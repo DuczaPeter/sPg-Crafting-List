@@ -3,14 +3,15 @@
 ## Jelenlegi állapot
 
 - Branch: `develop/V003`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013`; státusz: **FRESH RELEASE CANDIDATE – AUTOMATED + CHROME PASS**.
-- Exact forráscommit: `6abae928b7d2f81e0b5eee2976a652feb0577c8d`; application code változás: **NO**.
-- Candidate: `test-artifacts/V003-C013/fresh-release-candidate/sPg Crafting List V003 RC.html`.
-- Candidate SHA-256: `d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182`; teszt előtt/után változatlan.
-- Teljes releváns automated regresszió: **PASS**; C012.5D1 integrált FR-86 gate: **PASS**.
-- Valódi Chrome localhost: Technical Baseline `13/13`, 8 fő modul, 1920/1366/390, overflow `0`, console WARN/ERROR `0/0`: **PASS**.
-- Exact candidate kézi `file://` gate: **NOT RUN**.
-- A korábbi C013 candidate-ek invalidáltak; V003 tag/release/push/main merge nincs.
-- Riport: `docs/V003_C013_RELEASE_CANDIDATE_REPORT.md`.
+- Aktuális ciklus: `V003-C013.1`; státusz: **STRICT QUALITY ALLOCATION + MIXED SHORTAGE CLASSIFICATION PASS**.
+- Induló baseline HEAD: `5584f37a48357d666ecfba9ca3358c5d9a7d1f3f`.
+- Javítás: Card-prioritás után same-card/canonical-material/unit csoportban a magasabb effektív minimum Quality kap először készletet; azonos küszöbnél stabil Recipe Slot sorrend.
+- Kötelező `FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE`: Field `6 / 9,3 / 17 SCU`, Shell `17 / 3,4 / 0 SCU`; globális foglalás `23 SCU`, teljes hiány `29,7 SCU`, double reserve `0`: **PASS**.
+- Final Card, Crafting List, Combined, Maximum Craftable és standalone parity: **PASS**; a vegyes hiány mindkét komponense látható.
+- M4 audit: **Technical Baseline harness bug**; a probe nem adta át az exact canonical identity mappinget. Az application Combined parity helyes volt.
+- C013.1 célkapu: M2, M4, C012.3, C3A, C3B1, C3B2, integrált FR-86, static/single-file és V001/V002 integritás: **PASS**.
+- Teljes release-regresszió: **NOT RUN BY SCOPE**. A régi C013 candidate változatlan, de a kézi gate-en talált blocker miatt nem kiadható.
+- Friss RC szükséges; V003 tag/release/push/main merge nincs.
+- Riport: `docs/V003_C0131_STRICT_QUALITY_ALLOCATION_REPORT.md`.
 
-`V003-C013 – FRESH RELEASE CANDIDATE AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C013.1 – STRICT QUALITY ALLOCATION + MIXED SHORTAGE CLASSIFICATION PASS, FRESH RC REQUIRED`

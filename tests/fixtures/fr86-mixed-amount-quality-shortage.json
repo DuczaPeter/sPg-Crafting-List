@@ -1,0 +1,47 @@
+{
+  "name": "FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE",
+  "quantity": 17,
+  "pools": {
+    "minimumQ": 500,
+    "maximumQ": 900
+  },
+  "batches": [
+    {
+      "id": "fr86-q512",
+      "quality": 512,
+      "quantityUnits": 160000,
+      "unit": "SCU"
+    },
+    {
+      "id": "fr86-q517",
+      "quality": 517,
+      "quantityUnits": 10000,
+      "unit": "SCU"
+    },
+    {
+      "id": "fr86-q910",
+      "quality": 910,
+      "quantityUnits": 60000,
+      "unit": "SCU"
+    }
+  ],
+  "expected": {
+    "field": {
+      "reservedUnits": 60000,
+      "missingAmountUnits": 93000,
+      "missingQualityUnits": 170000
+    },
+    "shell": {
+      "reservedUnits": 170000,
+      "missingAmountUnits": 34000,
+      "missingQualityUnits": 0
+    },
+    "global": {
+      "inventoryUnits": 230000,
+      "reservedUnits": 230000,
+      "missingAmountUnits": 127000,
+      "missingQualityUnits": 170000,
+      "missingUnits": 297000
+    }
+  }
+}

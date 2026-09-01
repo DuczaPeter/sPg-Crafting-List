@@ -2,16 +2,17 @@
 
 ## Aktualis
 
-### V003-C013 Fresh release candidate
+### V003-C013.1 Strict Quality Allocation + Shortage Repair
 
-- [x] Fresh candidate az exact D2B forráscommitból: `6abae928b7d2f81e0b5eee2976a652feb0577c8d`.
-- [x] Candidate byte-lock: `802259` byte; SHA-256 `d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182`.
-- [x] Teljes releváns C001–C012.5 + M1–M6.1 + C04 regresszió és integrált FR-86 D1 kapu PASS.
-- [x] Single-file, embedded CSS/JS, runtime sidecar `0`, standalone/backup/two-card/Quality/zero-card kapuk PASS.
-- [x] Valódi Chrome localhost: 13/13, 8 fő modul, 1920/1366/390, overflow 0, console WARN/ERROR 0/0.
-- [x] V001/V002 integritás PASS; application code változás nincs.
-- [ ] Exact candidate kézi `file://` gate – NOT RUN; külön felhasználói ciklus szükséges.
-- [ ] Stabil V003 tag/release – TILOS a kézi candidate gate és külön jóváhagyás előtt.
+- [x] A C013 candidate exact kézi `file://` kapuján talált Quality-starvation blocker rögzítve; stable V003 továbbra is BLOCKED.
+- [x] Card-prioritás elsődleges; same-card/canonical-material/unit groupon belül szigorúbb effektív minimum Quality előbb, azonos thresholdnál stabil slot-sorrend.
+- [x] `FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE`: Field `6 / 9,3 / 17 SCU`, Shell `17 / 3,4 / 0 SCU`; globális reserved `23`, shortage `29,7 SCU`, double reserve `0`.
+- [x] Vegyes amount + Quality shortage külön, átfedés nélkül számolva és együtt megjelenítve a Final Card/standalone sorban.
+- [x] Korábbi FR-86 happy path, Q550-only, reverse-order, két-Card priority, Combined/Final/Crafting/Maximum/standalone parity PASS.
+- [x] M4 hiba audit: harness-only exact canonical identity argument hiány; az application parity helyes.
+- [x] C013.1 célzott validator PASS; teljes release regression szándékosan NOT RUN.
+- [x] V001/V002 és a blokkolt C013 candidate változatlan; V003 tag/release/push/main merge nincs.
+- [ ] Friss V003 release candidate csak külön következő ciklusban.
 
 ### V003-dev farm recommendation
 
