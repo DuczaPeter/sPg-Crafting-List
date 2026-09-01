@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C012.5D2B Exact manual file gate
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-01`, a felhasználó által igazolt exact `file://` kapu dokumentáció-only lezárásához.
+- Mire segített: a változatlan D2A checkpoint minimális folytatására, automated/browser ismétlés nélkül, valamint a WORKLOG byte-azonos archiválására.
+- Mely fájlokat vagy döntéseket érintett: D2B riport és projektmetaadatok; application code, V001/V002 és C013 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5D2A Integrated Chrome localhost gate
 
 - Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`, `computer-use`.

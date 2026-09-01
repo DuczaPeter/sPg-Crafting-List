@@ -2,16 +2,13 @@
 
 ## Aktualis
 
-### V003-C012.5D2A Integrated Chrome localhost gate
+### V003-C012.5D2B Exact manual file gate
 
-- [x] FR-86 happy és Q550-only shortage Chrome localhost paritás Final Card/Crafting List/Allocation/Combined/Max DB rétegeken.
-- [x] Exact Card-kötés, per-card pool assignment, reload, inventory-only és nulla Card melletti canonical material hozzáadás.
-- [x] Standalone read-only snapshot; 1920/1366/390 px overflow 0; console WARN/ERROR 0/0.
-- [x] Jóváhagyott teardown: kizárólag a D2A tesztadatok és a `user:materialQualityPools` setting eltávolítva.
-- [x] Final User Data 0/0/0/0/0; fingerprint `9be961d3 → 9be961d3`; Game Data cache megmaradt.
-- [x] Application code változás nincs; D1 automated gate változatlanul PASS.
-- [ ] Exact kézi `file://` kapu – NOT RUN.
-- [ ] `V003-C012.5D2B` – NOT STARTED.
+- [x] A jelenlegi fő V003 HTML közvetlen `file://` megnyitása: USER MANUAL PASS.
+- [x] 15/15 kézi pont: fő modulok, FR-86 Card, külön Shell/Field Array pool assignment, reload persistence és Combined metrikák.
+- [x] Shell `Minimum Q · Q500+`; Field Array `MAX Q · Q900+`; Frequency Controller `Recept szerint`.
+- [x] Nem blokkoló UX note: reload után JS-300 default; az új transient FR-86 preview nem írja felül a megmaradó bound Cardot.
+- [x] Application code változás nincs; automated regression és Chrome automation nem futott.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 
 ### V003-dev farm recommendation

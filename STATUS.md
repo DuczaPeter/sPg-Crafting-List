@@ -2,25 +2,14 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`
-- Stabil fallback: `V002` – változatlan single-file release.
-- Aktuális ciklus: `V003-C012.5D2A`
-- Státusz: `PASS` – integrated Chrome localhost gate.
-- Következő: `V003-C012.5D2B` – **NOT STARTED**.
-- C013: **NOT STARTED**; a korábbi candidate invalidált marad.
-- V003 tag/release/push/main merge: nincs.
+- Branch: `develop/V003`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C012.5D2B`; státusz: **PASS**.
+- Felhasználói exact `file://` gate: **15/15 MANUAL PASS**, SC `4.10.0-LIVE.12519617`.
+- FR-86 Card, Shell Q500, Field Array Q900, Browser/Crafting parity, reload persistence és Combined metrikák: felhasználó által igazolt PASS.
+- Reload utáni JS-300 default/transient FR-86 preview: nem blokkoló UX note; a bound Card és poolok megmaradnak.
+- Application code változás: **NO**; automated regression/Chrome automation/localhost ebben a lezárásban nem futott.
+- D2A checkpoint: `4a08b3f45a7afb9a27d675f93a152660d2439ad9`; D1/D2A bizonyíték változatlan.
+- C013: **NOT STARTED**; V003 tag/release/push/main merge nincs.
+- Riport: `docs/V003_C0125D2B_MANUAL_FILE_GATE_REPORT.md`.
 
-## D2A Chrome localhost integráció
-
-- Application code változás: **NO**; baseline `b3d2f1a4b7ff1e05c619142b37b68b1a4cc5ae81`.
-- FR-86 happy, Q550-only Quality-shortage, exact Card-kötés, per-card assignment, Combined/Max paritás, reload és inventory-only/zero-card útvonal: PASS.
-- Standalone read-only snapshot, 1920/1366/390 px overflow és Chrome console `0/0`: PASS.
-- Exact kézi `file://`: **NOT RUN**.
-- Teardown: mind az öt User Data store 0; fingerprint `9be961d3 → 9be961d3`; D2A marker 0.
-- Game Data megmaradt: SC `4.10.0-LIVE.12519617`, UEX cache 215 rekord.
-- D1 automated integration és backup/restore bizonyíték változatlanul PASS.
-
-Evidence: `test-artifacts/V003-C012.5D2A/chrome-integration-evidence.json`
-Riport: `docs/V003_C0125D2A_INTEGRATED_CHROME_GATE_REPORT.md`
-
-`V003-C012.5D2A – INTEGRATED CHROME LOCALHOST GATE PASS, MANUAL file:// NOT RUN`
+`V003-C012.5D2B – EXACT MANUAL file:// GATE PASS, C013 NOT STARTED`
