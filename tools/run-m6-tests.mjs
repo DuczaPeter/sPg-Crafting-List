@@ -264,7 +264,8 @@ unsafeSnapshot.card.outputName = '<img src="https://example.invalid/x" onerror="
 const escapedHtml = m6.renderHtml(unsafeSnapshot, offlineCss);
 assert.ok(escapedHtml.includes("&lt;img"));
 assert.doesNotMatch(escapedHtml, /<img\s/i);
-assert.ok(exportedHtml.includes("<strong>Quality:</strong> Q?"));
+assert.ok(exportedHtml.includes("<strong>Quality:</strong> Quality nem feloldható"));
+assert.doesNotMatch(exportedHtml, /<strong>Quality:<\/strong>\s*Q(?:0|1000)\+/);
 assert.ok(exportedHtml.includes("Hiányzó / ellenőrizendő adatok"));
 
 // 13. Every visible Crafting Card gets a card-specific export action.

@@ -1,0 +1,18 @@
+V003-C012.5D1 integrated automated gate
+BASELINE=42f94e9ecc40076174ac1c732e70d26402ea291f
+c0125d1-integrated=PASS
+c0125a-direct=PASS
+c0125b-direct=PASS
+c0125c1-direct=PASS
+c0125c2-direct=PASS
+c0125c3a-direct=PASS
+c0125c3b1-direct=PASS
+c0125c3b2-direct=PASS
+c0123-direct=PASS
+c0124-numeric-direct=PASS
+m4-backup-restore=PASS
+m6-standalone=PASS
+static-single-file=PASS
+V001_V002_INTEGRITY=PASS
+APPLICATION_CODE_CHANGED=NO
+V003_TAG_RELEASE=NONE

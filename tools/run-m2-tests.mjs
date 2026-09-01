@@ -11,18 +11,28 @@ const fixtureDirectory = path.join(projectDirectory, "tests", "fixtures");
 const html = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
 const m1Match = html.match(/\/\* M1_PURE_MODEL_START \*\/([\s\S]*?)\/\* M1_PURE_MODEL_END \*\//);
 const m2Match = html.match(/\/\* M2_ALLOCATION_ENGINE_START \*\/([\s\S]*?)\/\* M2_ALLOCATION_ENGINE_END \*\//);
+const namingMatch = html.match(/\/\* MATERIAL_NAMING_MODEL_START \*\/([\s\S]*?)\/\* MATERIAL_NAMING_MODEL_END \*\//);
+const m4Match = html.match(/\/\* M4_COMBINED_BACKUP_MODEL_START \*\/([\s\S]*?)\/\* M4_COMBINED_BACKUP_MODEL_END \*\//);
+const c0125aMatch = html.match(/\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_START \*\/([\s\S]*?)\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_END \*\//);
 
 assert.ok(m1Match, "Az M1 modellblokk hiányzik.");
 assert.ok(m2Match, "Az M2 Allocation Engine blokk hiányzik.");
+assert.ok(namingMatch, "A Material Naming modellblokk hiányzik.");
+assert.ok(m4Match, "Az M4 Combined/backup modellblokk hiányzik.");
+assert.ok(c0125aMatch, "A C012.5A canonical inventory modellblokk hiányzik.");
 
 const context = vm.createContext({
   console,
   nowIso: () => "2026-08-22T07:00:00.000Z",
-  toScuUnits: (value) => Math.round(Number(value) * 10000)
+  toScuUnits: (value) => Math.round(Number(value) * 10000),
+  foldSearchText: (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 });
 
 vm.runInContext(`${m1Match[1]}
 ${m2Match[1]}
+${namingMatch[1]}
+${m4Match[1]}
+${c0125aMatch[1]}
 globalThis.__M2__ = {
   normalizeBlueprint,
   classifyRequirementQuality,

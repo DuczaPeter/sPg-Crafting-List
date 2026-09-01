@@ -4,27 +4,26 @@
 
 - Branch: `develop/V003`
 - Stabil fallback: `V002` – változatlan single-file release.
-- Aktuális ciklus: `V003-C012.5C3B2`
-- Státusz: `PASS`
-- Következő: `V003-C012.5D` – **NOT STARTED**.
+- Aktuális ciklus: `V003-C012.5D1`
+- Státusz: `PASS` – automated integration gate.
+- Következő: `V003-C012.5D2` – **NOT STARTED**.
 - C013: **NOT STARTED**; a korábbi candidate invalidált marad.
 - V003 tag/release/push/main merge: nincs.
 
-## C012.5C3B2 eredmény
+## D1 integráció
 
-- A standalone Final Card a C3A által feloldott allocation/Quality snapshotot jeleníti meg; nincs második Quality-, eligibility-, allocation- vagy Max DB számítás.
-- FR-86: Shell `Minimum Q · Q500+`, Field Array `MAX Q · Q700+`; ugyanaz az exact Stileron commodity UUID marad mindkét slotban.
-- Q550-only fixture: `Quality-hiány: 1,9 SCU`, Card `UNSATISFIED`.
-- ANY, legacy FIXED, baseline > pool és unresolved fail-safe prezentáció PASS; szerkeszthető pool-vezérlő és User Data írási felület az exportban nincs.
+- Application code változás: **NO**.
+- FR-86 happy: Shell Q550 `1,2 SCU`, Field Array Q750 `1,9 SCU`, Card SATISFIED, Max DB 1; Combined Minimum/MAX required-reserved `1,2/1,2` és `1,9/1,9`.
+- Q550-only: Shell SATISFIED, Field Array `INSUFFICIENT_QUALITY`, amount-hiány 0, Quality-hiány `1,9 SCU`, Card UNSATISFIED, Max DB 0; Combined/standalone egyezik.
+- Legacy C012.3, ANY_Q recipe-minimum, unresolved fail-safe, kétkártyás prioritás/no-double-count, exact UUID, recipe delete/inventory-only, backup/restore és régi backup PASS.
+- Standalone: main computes → snapshot stores → standalone renders; recomputation/editor/User Data write nincs; single-file PASS.
 
 ## Ellenőrzés
 
-- C3B2 target + C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity: PASS.
-- Chrome localhost `127.0.0.1:4185`, 1366×768: két Stileron sor, címkék, shortage és `UNSATISFIED` PASS; editable control 0; console WARN/ERROR `0/0`.
-- Exact kézi Chrome `file://`: **NOT RUN**; security bypass nem történt.
-- Read-only fixture fingerprint: `41ab6696…5a62 → 41ab6696…5a62`.
-- Riport: `docs/V003_C0125C3B2_STANDALONE_EFFECTIVE_QUALITY_REPORT.md`.
+- C012.5 A/B/C1/C2/C3A/C3B1/C3B2 + C012.3/C012.4 + M4/M6 + static/single-file + V001/V002 integrity: PASS.
+- Két elavult tesztharness-függőség/assertion célzottan javítva; application bug nem volt.
+- Chrome/localhost/User Data: D1-ben nem indult, a D2 kapu feladata.
+- Evidence: `test-artifacts/V003-C012.5D1/integration-evidence.json`.
+- Riport: `docs/V003_C0125D1_INTEGRATION_AUTOMATED_GATE_REPORT.md`.
 
-## Végső fejlesztési státusz
-
-`V003-C012.5C3B2 – STANDALONE EFFECTIVE QUALITY PASS, C012.5D NOT STARTED`
+`V003-C012.5D1 – INTEGRATED AUTOMATED GATE PASS, C012.5D2 NOT STARTED`

@@ -4,6 +4,16 @@ Korábbi nyers napló byte-azonosan archiválva: `docs/archive/WORKLOG-through-V
 
 ## Aktuális ciklus
 
+### V003-C012.5D1 Integrated automated gate – 2026-09-01
+
+- Egyetlen FR-86 integrált fixture bizonyítja a Final Card, Crafting List, Allocation, Combined, Max DB és standalone paritását happy és Q550-only shortage állapotban.
+- Legacy C012.3, ANY_Q + HP_MIN_500, unresolved fail-safe, kétkártyás priority/no-double-count, exact UUID és recipe delete/inventory-only PASS.
+- Backup/restore visszaadta az inventoryt, Q500/Q700 thresholdot, slot assignmentet és allocationt; régi backup pool/assignment nélkül LEGACY_FALLBACK.
+- Direkt C012.5 A/B/C1/C2/C3A/C3B1/C3B2, C012.3/C012.4, M4, M6, static/single-file és V001/V002 integrity PASS.
+- Két harness-only javítás: M2 betölti a C012.5 canonical dependency blokkokat; M6 az aktuális unresolved fail-safe feliratot várja. Application HTML nem változott.
+- Chrome/localhost/User Data nem indult; ez D2. Régi tesztek újragenerált artifact-zaja baseline-ra visszaállítva.
+- D2/C013 nem indult; tag/release/push/main merge nincs. Visszaállás: a D1 checkpoint revertje; stabil fallback a változatlan V002.
+
 ### V003-C012.5C3B2 Standalone effective Quality – 2026-09-01
 
 - A standalone Final Card külön presentation projectiont kapott a már feloldott C3A allocation/Quality snapshotból; recomputation, dropdown, editor és User Data írás nincs.

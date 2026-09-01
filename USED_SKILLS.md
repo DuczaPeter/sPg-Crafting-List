@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C012.5D1 Integrated automated gate
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-01`, a C3B2 checkpointból induló, böngésző nélküli C012.5 integrációs kapuhoz.
+- Mire segített: a minimális resume után csak a szükséges A/B/C, C012.3/C012.4, M4/M6 és integritási lánc futott; a teljes történeti release-suite kimaradt.
+- Mely fájlokat vagy döntéseket érintett: D1 teszt/validator/evidence/report, két elavult tesztharness-kapcsolat és aktuális metaadatok; application code és V002 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5C3B2 Standalone effective Quality
 
 - Skill neve: `credit-efficient-project-runner`, `chrome:control-chrome`.

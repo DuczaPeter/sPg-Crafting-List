@@ -673,3 +673,19 @@ node .\tools\run-v003-c0125c3b2-tests.mjs
 - `v003-c0125c3b2-standalone-effective-quality`: tárolt C3A eredményből Minimum/MAX, baseline > pool, ANY, legacy FIXED és unresolved presentation; recomputation nélkül.
 - FR-86 Q550-only fixture: exact két Stileron slot, `Quality-hiány 1,9 SCU`, Card `UNSATISFIED`, editable controls/User Data write surface 0.
 - Artifactok: `test-artifacts/V003-C012.5C3B2/`.
+
+V003-C012.5D1 integrált automated gate:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125d1.ps1"
+```
+
+Csak az integrált FR-86 fixture:
+
+```powershell
+node .\tools\run-v003-c0125d1-tests.mjs
+```
+
+- A D1 validator a C012.5 A/B/C1/C2/C3A/C3B1/C3B2, C012.3/C012.4, M4/M6, static/single-file és V001/V002 kaput futtatja.
+- Chrome, localhost, User Data és teljes történeti release-suite nincs a D1 scope-ban.
+- Artifactok: `test-artifacts/V003-C012.5D1/`.

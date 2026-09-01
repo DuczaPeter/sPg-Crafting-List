@@ -2,15 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5C3B2 Standalone effective Quality
+### V003-C012.5D1 Integrated automated gate
 
-- [x] Standalone projection kizárólag a C3A feloldott allocation/Quality snapshotját használja; nincs recomputation.
-- [x] Minimum/MAX, baseline > pool, ANY, legacy FIXED és unresolved fail-safe címkék.
-- [x] FR-86 Q550-only: két exact Stileron slot, `Quality-hiány 1,9 SCU`, Card `UNSATISFIED`.
-- [x] Editable pool controls 0, User Data write surface 0, external runtime sidecar 0.
-- [x] C3B2 + C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity PASS.
-- [x] Chrome localhost `127.0.0.1:4185`, 1366×768, console WARN/ERROR `0/0`; exact manual `file://` NOT RUN.
-- [ ] `V003-C012.5D` – NOT STARTED.
+- [x] Egy közös FR-86 fixture paritása Final Card/Crafting List/Allocation/Combined/Max DB/standalone rétegeken.
+- [x] Happy és Q550-only Quality-shortage útvonal, exact canonical UUID és no-double-count.
+- [x] Legacy C012.3, ANY_Q recipe baseline, unresolved fail-safe és kétkártyás determinisztikus prioritás.
+- [x] Recipe delete után inventory/pool/eligible preview megmarad; requirement/reservation eltűnik.
+- [x] Backup → módosítás → restore; régi backup explicit pool/assignment nélkül kompatibilis.
+- [x] C012.5 A/B/C1/C2/C3A/C3B1/C3B2 + C012.3/C012.4 + M4/M6 + static/single-file + V001/V002 PASS.
+- [x] Application code változás nincs; két elavult tesztharness-kapcsolat célzottan javítva.
+- [ ] `V003-C012.5D2` Chrome integration gate – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 
 ### V003-dev farm recommendation

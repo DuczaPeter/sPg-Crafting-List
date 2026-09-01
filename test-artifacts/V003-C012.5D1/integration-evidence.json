@@ -1,0 +1,62 @@
+{
+    "cycle":  "V003-C012.5D1",
+    "status":  "PASS",
+    "baseline":  "42f94e9ecc40076174ac1c732e70d26402ea291f",
+    "applicationCodeChanged":  false,
+    "fixtureStatuses":  {
+                            "fr86HappyPath":  "PASS",
+                            "qualityShortage":  "PASS",
+                            "anyQRecipeMinimum":  "PASS",
+                            "unresolvedThreshold":  "PASS_FAIL_SAFE",
+                            "twoCardPriority":  "PASS",
+                            "recipeDeleteInventoryOnly":  "PASS"
+                        },
+    "crossViewParity":  "PASS_FINAL_CARD_CRAFTING_LIST_ALLOCATION_COMBINED_STANDALONE",
+    "canonicalIdentity":  "PASS_EXACT_COMMODITY_UUID_NO_FUZZY",
+    "maxDb":  {
+                  "happy":  1,
+                  "shortage":  0
+              },
+    "combined":  {
+                     "minimumRequiredReservedScu":  "1.2/1.2",
+                     "maximumRequiredReservedScu":  "1.9/1.9",
+                     "shortageQualityScu":  1.9
+                 },
+    "standalone":  {
+                       "source":  "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS",
+                       "recomputation":  false,
+                       "minimumLabel":  "Minimum Q · Q500+",
+                       "maximumLabel":  "MAX Q · Q700+",
+                       "editableControls":  0,
+                       "userDataWrite":  false
+                   },
+    "backupRestore":  "PASS_INVENTORY_POOLS_ASSIGNMENTS_ALLOCATION",
+    "oldBackupCompatibility":  "PASS_EMPTY_POOL_AND_LEGACY_FALLBACK",
+    "legacyCompatibility":  "PASS_C0123_PATH_UNCHANGED_WITH_UNUSED_POOLS",
+    "singleFile":  {
+                       "embeddedCss":  true,
+                       "embeddedJs":  true,
+                       "localRuntimeSidecars":  0
+                   },
+    "inputFingerprintBeforeAfter":  "32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064 -\u003e 32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064",
+    "v001V002Integrity":  {
+                              "status":  "PASS",
+                              "v001Commit":  "b22dbc3c2ef0765e30aa3806537854298c873dff",
+                              "v002Commit":  "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+                              "v002ArtifactSha256":  "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357"
+                          },
+    "gateChain":  {
+                      "C0125A":  "PASS",
+                      "C0125B":  "PASS",
+                      "C0125C1":  "PASS",
+                      "C0125C2":  "PASS",
+                      "C0125C3A":  "PASS",
+                      "C0125C3B1":  "PASS",
+                      "C0125C3B2":  "PASS",
+                      "C0123":  "PASS",
+                      "C0124Numeric":  "PASS",
+                      "M4BackupRestore":  "PASS",
+                      "M6Standalone":  "PASS",
+                      "StaticSingleFile":  "PASS"
+                  }
+}
