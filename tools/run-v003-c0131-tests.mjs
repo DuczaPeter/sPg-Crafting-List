@@ -7,10 +7,14 @@ import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const appPath = path.join(projectDirectory, "sPg Crafting List.html");
+const appPath = process.env.SPG_APP_PATH
+  ? path.resolve(process.env.SPG_APP_PATH)
+  : path.join(projectDirectory, "sPg Crafting List.html");
 const fr86Path = path.join(projectDirectory, "tests", "fixtures", "v003-c0125c1-fr86-assignment-model.json");
 const mixedPath = path.join(projectDirectory, "tests", "fixtures", "fr86-mixed-amount-quality-shortage.json");
-const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V003-C013.1");
+const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
+  ? path.resolve(process.env.SPG_ARTIFACT_DIRECTORY)
+  : path.join(projectDirectory, "test-artifacts", "V003-C013.1");
 const evidencePath = path.join(artifactDirectory, "strict-quality-allocation-evidence.json");
 const html = fs.readFileSync(appPath, "utf8");
 const appCss = extractEmbeddedApplicationCss(html);

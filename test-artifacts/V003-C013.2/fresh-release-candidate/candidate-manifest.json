@@ -1,0 +1,19 @@
+{
+  "cycle": "V003-C013.2",
+  "status": "FRESH_RC_AUTOMATED_CHROME_PASS_MANUAL_FILE_PENDING",
+  "sourceHead": "9a07de34643fed477399b070462aeb2be3d4f11a",
+  "source": "sPg Crafting List.html",
+  "output": "test-artifacts/V003-C013.2/fresh-release-candidate/sPg Crafting List V003 RC.html",
+  "bytes": 806499,
+  "sha256": "cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31",
+  "generatedAt": "2026-09-01T10:38:25.080Z",
+  "buildModel": "GIT_COMMIT_RAW_BYTE_COPY",
+  "sourceByteIdentical": true,
+  "applicationCodeChanged": false,
+  "localRuntimeSidecars": 0,
+  "automatedRegression": "PASS",
+  "chromeLocalhost": "PASS_15_OF_15_8_MODULES_1920_1366_390_OVERFLOW_0_CONSOLE_0_0",
+  "sha256AfterChrome": "cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31",
+  "stableRelease": false,
+  "manualCandidateFileGate": "NOT_RUN"
+}

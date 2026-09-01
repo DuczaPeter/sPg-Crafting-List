@@ -711,3 +711,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c
 - Kötelező FR-86 fixture: Field Q900+ `6 / 9,3 / 17 SCU`, Shell Q500+ `17 / 3,4 / 0 SCU` (reserved / amount shortage / Quality shortage), globális foglalás `23 SCU`, teljes hiány `29,7 SCU`, double reserve `0`.
 - A célkapu lefedi a korábbi FR-86 happy/Q550, reverse-slot, két-Card prioritás, Combined/Final/Crafting/Maximum/standalone parity, M2/M4 és C012.3/C3A/C3B1/C3B2 regressziókat, static single-file és V001/V002 integritást.
 - Teljes release-regresszió és RC rebuild nincs a C013.1 scope-ban. Artifactok: `test-artifacts/V003-C013.1/`.
+
+V003-C013.2 friss release-candidate teljes kapu az exact C013.1 checkpointból:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0132-fresh.ps1"
+```
+
+- Exact source HEAD: `9a07de34643fed477399b070462aeb2be3d4f11a`; a builder Git-commit raw-byte copyval dolgozik.
+- `v003-c0132-fresh-release-candidate`: determinisztikus single-file build, teljes releváns C001-C012.5C3B2 + D1 + M1-M6.1 + C04 + C013.1 regresszió, kötelező FR-86 mixed-shortage/parity és V001/V002 integritás.
+- Candidate: `test-artifacts/V003-C013.2/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- A Chrome localhost evidence külön, ugyanazon hash-zárolt candidate-en készül; exact manual candidate `file://` gate nincs automatizálva.

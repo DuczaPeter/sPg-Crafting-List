@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V003-C013.2 Fresh Release Candidate
+
+- [x] Exact source lock: `9a07de34643fed477399b070462aeb2be3d4f11a`; application code byte-változatlan.
+- [x] Új, determinisztikus single-file candidate külön C013.2 artifactban; a régi C013 candidate változatlan és BLOCKED.
+- [x] Teljes releváns C001-C012.5C3B2 + D1 + M1-M6.1 + C04 + C013.1 regresszió PASS.
+- [x] `FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE`, reverse-row, Card priority, no-double-reserve és cross-view parity PASS.
+- [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
+- [x] Candidate SHA-256 a Chrome-kapu után is `cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31`.
+- [x] V001/V002 integritás PASS; V003 tag/release/push/main merge nincs.
+- [ ] Exact manual candidate `file://` gate külön következő felhasználói ciklusban.
+
 ### V003-C013.1 Strict Quality Allocation + Shortage Repair
 
 - [x] A C013 candidate exact kézi `file://` kapuján talált Quality-starvation blocker rögzítve; stable V003 továbbra is BLOCKED.
@@ -12,7 +23,7 @@
 - [x] M4 hiba audit: harness-only exact canonical identity argument hiány; az application parity helyes.
 - [x] C013.1 célzott validator PASS; teljes release regression szándékosan NOT RUN.
 - [x] V001/V002 és a blokkolt C013 candidate változatlan; V003 tag/release/push/main merge nincs.
-- [ ] Friss V003 release candidate csak külön következő ciklusban.
+- [x] Friss V003 release candidate elkészült a külön `V003-C013.2` ciklusban.
 
 ### V003-dev farm recommendation
 

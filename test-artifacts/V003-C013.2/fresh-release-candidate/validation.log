@@ -1,0 +1,14 @@
+V003-C013.2 fresh release candidate validation
+static-single-file=PASS
+candidate-build=PASS
+candidate-rebuild=PASS
+full-c001-c0122-m1-m61-c04=PASS
+c0123-quality-semantics=PASS
+c0124-numeric-lifecycle=PASS
+c0125a-through-c3b2=PASS
+candidate-c0131-d1-target=PASS
+CANDIDATE_SHA_BEFORE_AFTER=PASS
+BLOCKED_C013_CANDIDATE_UNCHANGED=PASS
+V001_V002_INTEGRITY=PASS
+APPLICATION_CODE_CHANGED=NO
+V003_TAG_RELEASE=NONE

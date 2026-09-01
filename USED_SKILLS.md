@@ -468,3 +468,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a jelenlegi baseline minimális kontextusú folytatására, a teljes release-regresszió és RC rebuild tudatos kihagyására, a generated artifact-zaj elkülönítésére, valamint V001/V002 és a blokkolt C013 candidate védelmére.
 - Mely fájlokat vagy döntéseket érintett: Allocation Engine scheduling/shortage projection, M4 Technical Baseline probe, C013.1 fixture/teszt/validator/report/artifact és projektállapot-dokumentáció; a skillfájlok és stabil V001/V002 nem változtak.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.2 Fresh Release Candidate
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Mikor használtuk: `2026-09-01`, az exact C013.1 checkpointból épített friss candidate minimális resume-jához, teljes release-regressziójához és valódi Chrome localhost kapujához.
+- Mire segített: a candidate byte-lock, a régi blokkolt C013 artifact elkülönítése, a generált regressziós zaj célzott visszaállítása, valamint a 15/15 Technical Baseline, nyolc modul, három viewport és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C013.2 builder/validator/target harness, candidate/evidence/report és projektmetaadatok; a fő alkalmazás HTML, V001 és V002 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

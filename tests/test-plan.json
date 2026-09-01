@@ -315,6 +315,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0131.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0132-fresh-release-candidate",
+      "level": "full-regression",
+      "description": "V003-C013.2 fresh candidate gate from exact C013.1 checkpoint: deterministic single-file byte copy, complete relevant C001-C012.5C3B2 plus D1/M1-M6.1/C04/C013.1 regression, mandatory FR-86 mixed shortage and cross-view parity, SHA immutability, blocked old C013 preservation and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0132-fresh.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {
