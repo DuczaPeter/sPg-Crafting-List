@@ -2,16 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5D1 Integrated automated gate
+### V003-C012.5D2A Integrated Chrome localhost gate
 
-- [x] Egy közös FR-86 fixture paritása Final Card/Crafting List/Allocation/Combined/Max DB/standalone rétegeken.
-- [x] Happy és Q550-only Quality-shortage útvonal, exact canonical UUID és no-double-count.
-- [x] Legacy C012.3, ANY_Q recipe baseline, unresolved fail-safe és kétkártyás determinisztikus prioritás.
-- [x] Recipe delete után inventory/pool/eligible preview megmarad; requirement/reservation eltűnik.
-- [x] Backup → módosítás → restore; régi backup explicit pool/assignment nélkül kompatibilis.
-- [x] C012.5 A/B/C1/C2/C3A/C3B1/C3B2 + C012.3/C012.4 + M4/M6 + static/single-file + V001/V002 PASS.
-- [x] Application code változás nincs; két elavult tesztharness-kapcsolat célzottan javítva.
-- [ ] `V003-C012.5D2` Chrome integration gate – NOT STARTED.
+- [x] FR-86 happy és Q550-only shortage Chrome localhost paritás Final Card/Crafting List/Allocation/Combined/Max DB rétegeken.
+- [x] Exact Card-kötés, per-card pool assignment, reload, inventory-only és nulla Card melletti canonical material hozzáadás.
+- [x] Standalone read-only snapshot; 1920/1366/390 px overflow 0; console WARN/ERROR 0/0.
+- [x] Jóváhagyott teardown: kizárólag a D2A tesztadatok és a `user:materialQualityPools` setting eltávolítva.
+- [x] Final User Data 0/0/0/0/0; fingerprint `9be961d3 → 9be961d3`; Game Data cache megmaradt.
+- [x] Application code változás nincs; D1 automated gate változatlanul PASS.
+- [ ] Exact kézi `file://` kapu – NOT RUN.
+- [ ] `V003-C012.5D2B` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 
 ### V003-dev farm recommendation

@@ -4,6 +4,16 @@ Korábbi nyers napló byte-azonosan archiválva: `docs/archive/WORKLOG-through-V
 
 ## Aktuális ciklus
 
+### V003-C012.5D2A Integrated Chrome localhost gate – 2026-09-01
+
+- Izolált `127.0.0.1:41986` originen FR-86 happy és Q550-only Quality-shortage, exact Card-kötés, per-card assignment, Combined/Max paritás és reload PASS.
+- Standalone read-only snapshot PASS; 1920/1366/390 px overflow 0; Chrome console WARN/ERROR 0/0. Exact kézi `file://` NOT RUN.
+- Nulla Card mellett inventory-only/canonical material útvonal PASS.
+- Felhasználói jóváhagyással kizárólag a D2A tesztadatok törölve; import preview csak a `user:materialQualityPools` setting egy törlését mutatta.
+- Teardown után minden User Data store 0; mutation-free fingerprint `9be961d3 → 9be961d3`; SC 4.10 és UEX 215 rekord Game Data cache megmaradt.
+- Application code nem változott; D1 automated backup/restore evidence újrahasznosítva. D2B/C013 nem indult, tag/release/push/main merge nincs.
+- Visszaállás: a D2A checkpoint revertje; stabil fallback a változatlan V002.
+
 ### V003-C012.5D1 Integrated automated gate – 2026-09-01
 
 - Egyetlen FR-86 integrált fixture bizonyítja a Final Card, Crafting List, Allocation, Combined, Max DB és standalone paritását happy és Q550-only shortage állapotban.

@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C012.5D2A Integrated Chrome localhost gate
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`, `computer-use`.
+- Mikor használtuk: `2026-09-01`, a D1 baseline célzott Chrome localhost integrációjához, teardownjához és lezárásához.
+- Mire segített: a teljes történeti regresszió ismétlése nélkül az FR-86 happy/shortage, shared Card state, responsive, standalone, console és fingerprint kapu bizonyítására. A `computer-use` kizárólag a natív fájlválasztó korlátozott fallback-kísérlete volt; a fájlt végül a felhasználó választotta ki.
+- Mely fájlokat vagy döntéseket érintett: D2A evidence/report és projektmetaadatok; alkalmazáskód, V001/V002, D2B és C013 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5D1 Integrated automated gate
 
 - Skill neve: `credit-efficient-project-runner`.

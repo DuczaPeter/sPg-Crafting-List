@@ -1,0 +1,90 @@
+{
+  "cycle": "V003-C012.5D2A",
+  "status": "PASS",
+  "branch": "develop/V003",
+  "baselineCommit": "b3d2f1a4b7ff1e05c619142b37b68b1a4cc5ae81",
+  "origin": "http://127.0.0.1:41986",
+  "applicationCodeChanged": false,
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "chromeLocalhost": {
+    "status": "PASS",
+    "consoleWarnings": 0,
+    "consoleErrors": 0,
+    "happyPath": {
+      "status": "PASS",
+      "item": "FR-86",
+      "shell": "MINIMUM_Q_POOL Q500, reserved Q550 1.2 SCU",
+      "fieldArray": "MAXIMUM_Q_POOL Q700, reserved Q750 1.9 SCU",
+      "feynmaline": "170 ITEM supplied",
+      "cardStatus": "SATISFIED",
+      "maximumCraftable": 1
+    },
+    "shortagePath": {
+      "status": "PASS",
+      "inventory": "Stileron Q550 3.1 SCU",
+      "shellStatus": "SATISFIED",
+      "fieldArrayStatus": "INSUFFICIENT_QUALITY",
+      "missingAmountScu": 0,
+      "missingQualityScu": 1.9,
+      "cardStatus": "UNSATISFIED",
+      "maximumCraftable": 0
+    },
+    "sharedExactCardState": "PASS",
+    "perCardAssignmentIndependence": "PASS",
+    "combinedAllocationParity": "PASS",
+    "reloadPersistence": "PASS",
+    "inventoryOnlyZeroCardState": "PASS",
+    "canonicalMaterialAddWithZeroCards": "PASS"
+  },
+  "standalone": {
+    "status": "PASS",
+    "file": "sPg Crafting List - FR-86.html",
+    "bytes": 488664,
+    "sha256": "6855908f0bff95a8c7a104449d54b5fe656073f855981a258d713123dcaafc53",
+    "cardStatus": "UNSATISFIED",
+    "minimumLabel": "Minimum Q · Q500+",
+    "maximumLabel": "MAX Q · Q700+",
+    "qualityShortageScu": 1.9,
+    "editableControls": 0,
+    "indexedDbReferences": 0,
+    "runtimeRecomputation": 0,
+    "manualFileOpen": "NOT_RUN"
+  },
+  "responsive": {
+    "desktop1920": { "documentOverflowPx": 0, "browserOverflowPx": 0, "craftingOverflowPx": 0, "combinedOverflowPx": 0 },
+    "desktop1366": { "documentOverflowPx": 0, "browserOverflowPx": 0, "craftingOverflowPx": 0, "combinedOverflowPx": 0 },
+    "mobile390": { "documentOverflowPx": 0, "browserOverflowPx": 0, "craftingOverflowPx": 0, "combinedOverflowPx": 0 }
+  },
+  "teardown": {
+    "status": "PASS",
+    "importPreview": {
+      "userInventoryChanges": 0,
+      "materialBatchesChanges": 0,
+      "craftingCardsChanges": 0,
+      "miningLoadoutsChanges": 0,
+      "userSettingsDeletes": 1,
+      "deletedKey": "user:materialQualityPools"
+    },
+    "finalUserDataCounts": {
+      "userInventory": 0,
+      "materialBatches": 0,
+      "craftingCards": 0,
+      "miningLoadouts": 0,
+      "userSettings": 0
+    },
+    "d2aMarkersRemaining": 0,
+    "fingerprintBeforeReload": "9be961d3",
+    "fingerprintAfterReload": "9be961d3",
+    "gameDataCachePreserved": true,
+    "uexCacheRecords": 215
+  },
+  "backupRestoreChromeRoundtrip": "NOT_RUN_FILE_PICKER_BOUNDARY; D1_AUTOMATED_BACKUP_RESTORE_PASS_REUSED",
+  "exactManualFileGate": "NOT_RUN",
+  "v001V002Integrity": {
+    "status": "PASS",
+    "v001Commit": "b22dbc3c2ef0765e30aa3806537854298c873dff",
+    "v002Commit": "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+    "v002ArtifactSha256": "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357"
+  },
+  "nextCycle": "V003-C012.5D2B_NOT_STARTED"
+}
