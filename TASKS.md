@@ -2,14 +2,16 @@
 
 ## Aktualis
 
-### V003-C012.5D2B Exact manual file gate
+### V003-C013 Fresh release candidate
 
-- [x] A jelenlegi fő V003 HTML közvetlen `file://` megnyitása: USER MANUAL PASS.
-- [x] 15/15 kézi pont: fő modulok, FR-86 Card, külön Shell/Field Array pool assignment, reload persistence és Combined metrikák.
-- [x] Shell `Minimum Q · Q500+`; Field Array `MAX Q · Q900+`; Frequency Controller `Recept szerint`.
-- [x] Nem blokkoló UX note: reload után JS-300 default; az új transient FR-86 preview nem írja felül a megmaradó bound Cardot.
-- [x] Application code változás nincs; automated regression és Chrome automation nem futott.
-- [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
+- [x] Fresh candidate az exact D2B forráscommitból: `6abae928b7d2f81e0b5eee2976a652feb0577c8d`.
+- [x] Candidate byte-lock: `802259` byte; SHA-256 `d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182`.
+- [x] Teljes releváns C001–C012.5 + M1–M6.1 + C04 regresszió és integrált FR-86 D1 kapu PASS.
+- [x] Single-file, embedded CSS/JS, runtime sidecar `0`, standalone/backup/two-card/Quality/zero-card kapuk PASS.
+- [x] Valódi Chrome localhost: 13/13, 8 fő modul, 1920/1366/390, overflow 0, console WARN/ERROR 0/0.
+- [x] V001/V002 integritás PASS; application code változás nincs.
+- [ ] Exact candidate kézi `file://` gate – NOT RUN; külön felhasználói ciklus szükséges.
+- [ ] Stabil V003 tag/release – TILOS a kézi candidate gate és külön jóváhagyás előtt.
 
 ### V003-dev farm recommendation
 

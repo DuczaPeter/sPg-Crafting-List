@@ -299,6 +299,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125c2.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c013-fresh-release-candidate",
+      "level": "full-regression",
+      "description": "Fresh V003-C013 release candidate from exact D2B source HEAD: deterministic single-file artifact, complete C001-C012.4/M1-M6.1/C04 and C012.5A-C3B2 gates, candidate-scoped D1 FR-86 happy/shortage/backup/standalone parity, SHA immutability and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c013-fresh.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

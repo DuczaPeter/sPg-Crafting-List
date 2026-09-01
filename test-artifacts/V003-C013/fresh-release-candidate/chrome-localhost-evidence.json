@@ -1,0 +1,52 @@
+{
+  "cycle": "V003-C013",
+  "status": "CHROME_LOCALHOST_PASS",
+  "testedAt": "2026-09-01T09:30:30.8061137+02:00",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:41988",
+  "candidate": {
+    "path": "test-artifacts/V003-C013/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "bytes": 802259,
+    "sha256Before": "d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182",
+    "sha256After": "d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182",
+    "immutableDuringChromeGate": true
+  },
+  "runtime": {
+    "activeScVersion": "4.10.0-LIVE.12519617",
+    "wikiApi": "PASS",
+    "uexRefineryRecords": 215,
+    "indexedDb": "AVAILABLE_SCHEMA_4",
+    "technicalBaseline": "13_PASS_0_FAIL"
+  },
+  "modules": {
+    "Crafting List": "PASS",
+    "Blueprint Browser": "PASS",
+    "My Materials": "PASS",
+    "Material Database": "PASS",
+    "Mining Loadouts": "PASS_WITHIN_MATERIAL_DATABASE_VIEW",
+    "UEX Refinery": "PASS",
+    "Combined Materials": "PASS",
+    "Data / Settings": "PASS"
+  },
+  "responsive": {
+    "1920x1080": {
+      "status": "PASS",
+      "horizontalOverflowPx": 0
+    },
+    "1366x768": {
+      "status": "PASS",
+      "horizontalOverflowPx": 0
+    },
+    "390x844": {
+      "status": "PASS",
+      "horizontalOverflowPx": 0
+    }
+  },
+  "console": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "automation": "CODEX_CONTROLLED_REAL_CHROME_LOCALHOST",
+  "exactManualCandidateFileGate": "NOT_RUN",
+  "stableRelease": false
+}

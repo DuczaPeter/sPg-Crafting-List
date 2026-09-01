@@ -71,6 +71,9 @@
 - V003-C012.4 kapu: `tools/validate-v003-c0124.ps1`; C012.3 teljes kapu + minden numerikus editor draft/commit lifecycle, Chrome-bizonyitek es V002-integritas.
 - V003-C012.4 celteszt: `tools/run-v003-c0124-tests.mjs`; replacement matrix, temporary empty, selection/caret, Enter/change/blur/Tab, decimal/unit audit es nulla draftkori User Data iras.
 - V003-C012.4 riport: `docs/V003_C0124_NUMERIC_INPUT_EDITING_REPORT.md`; gyokerok, kozos helper, inputaudit, Chrome sequential typing, responsive es visszaallas.
+- V003-C013 fresh candidate kapu: `tools/validate-v003-c013-fresh.ps1`; exact D2B source byte-lock, teljes relevans regresszio, C012.5D1 integralt FR-86, single-file/standalone es V001/V002 integritas.
+- V003-C013 candidate builder/target: `tools/build-v003-c013-fresh-candidate.mjs` es `tools/run-v003-c013-fresh-tests.mjs`; az aktiv candidate az invalidalt torteneti candidate-ektol kulon `test-artifacts/V003-C013/fresh-release-candidate/` alatt van.
+- V003-C013 riport: `docs/V003_C013_RELEASE_CANDIDATE_REPORT.md`; automated/Chrome PASS, exact candidate SHA-zar es a meg nyitott manual candidate `file://` gate.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.

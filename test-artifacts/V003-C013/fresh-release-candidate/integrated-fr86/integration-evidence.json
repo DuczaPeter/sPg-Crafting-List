@@ -1,0 +1,45 @@
+{
+  "cycle": "V003-C013",
+  "status": "TARGET_PASS",
+  "baseline": "6abae928b7d2f81e0b5eee2976a652feb0577c8d",
+  "applicationCodeChanged": false,
+  "fixtureStatuses": {
+    "fr86HappyPath": "PASS",
+    "qualityShortage": "PASS",
+    "anyQRecipeMinimum": "PASS",
+    "unresolvedThreshold": "PASS_FAIL_SAFE",
+    "twoCardPriority": "PASS",
+    "recipeDeleteInventoryOnly": "PASS"
+  },
+  "crossViewParity": "PASS_FINAL_CARD_CRAFTING_LIST_ALLOCATION_COMBINED_STANDALONE",
+  "canonicalIdentity": "PASS_EXACT_COMMODITY_UUID_NO_FUZZY",
+  "maxDb": {
+    "happy": 1,
+    "shortage": 0
+  },
+  "combined": {
+    "minimumRequiredReservedScu": "1.2/1.2",
+    "maximumRequiredReservedScu": "1.9/1.9",
+    "shortageQualityScu": 1.9
+  },
+  "standalone": {
+    "source": "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS",
+    "recomputation": false,
+    "minimumLabel": "Minimum Q · Q500+",
+    "maximumLabel": "MAX Q · Q700+",
+    "editableControls": 0,
+    "userDataWrite": false,
+    "artifact": "test-artifacts/V003-C013/fresh-release-candidate/standalone/sPg Crafting List - FR-86 shortage.html"
+  },
+  "backupRestore": "PASS_INVENTORY_POOLS_ASSIGNMENTS_ALLOCATION",
+  "oldBackupCompatibility": "PASS_EMPTY_POOL_AND_LEGACY_FALLBACK",
+  "legacyCompatibility": "PASS_C0123_PATH_UNCHANGED_WITH_UNUSED_POOLS",
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJs": true,
+    "localRuntimeSidecars": 0
+  },
+  "inputFingerprintBeforeAfter": "32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064 -> 32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064",
+  "v001V002Integrity": "PASS",
+  "gateChain": "TARGET_ONLY_PENDING_VALIDATOR"
+}

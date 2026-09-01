@@ -1,0 +1,93 @@
+{
+    "cycle":  "V003-C013",
+    "status":  "AUTOMATED_AND_CHROME_PASS_MANUAL_FILE_PENDING",
+    "sourceHead":  "6abae928b7d2f81e0b5eee2976a652feb0577c8d",
+    "candidate":  {
+                      "path":  "test-artifacts/V003-C013/fresh-release-candidate/sPg Crafting List V003 RC.html",
+                      "bytes":  802259,
+                      "sha256Before":  "d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182",
+                      "sha256After":  "d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182",
+                      "immutable":  true,
+                      "singleFile":  true,
+                      "localRuntimeSidecars":  0
+                  },
+    "regression":  {
+                       "C001_C0124_M1_M61_C04":  "PASS",
+                       "C0125A_C0125C3B2":  "PASS",
+                       "C0125D1IntegratedFr86":  "PASS",
+                       "staticSingleFile":  "PASS"
+                   },
+    "fr86":  {
+                 "cycle":  "V003-C013",
+                 "status":  "TARGET_PASS",
+                 "baseline":  "6abae928b7d2f81e0b5eee2976a652feb0577c8d",
+                 "applicationCodeChanged":  false,
+                 "fixtureStatuses":  {
+                                         "fr86HappyPath":  "PASS",
+                                         "qualityShortage":  "PASS",
+                                         "anyQRecipeMinimum":  "PASS",
+                                         "unresolvedThreshold":  "PASS_FAIL_SAFE",
+                                         "twoCardPriority":  "PASS",
+                                         "recipeDeleteInventoryOnly":  "PASS"
+                                     },
+                 "crossViewParity":  "PASS_FINAL_CARD_CRAFTING_LIST_ALLOCATION_COMBINED_STANDALONE",
+                 "canonicalIdentity":  "PASS_EXACT_COMMODITY_UUID_NO_FUZZY",
+                 "maxDb":  {
+                               "happy":  1,
+                               "shortage":  0
+                           },
+                 "combined":  {
+                                  "minimumRequiredReservedScu":  "1.2/1.2",
+                                  "maximumRequiredReservedScu":  "1.9/1.9",
+                                  "shortageQualityScu":  1.9
+                              },
+                 "standalone":  {
+                                    "source":  "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS",
+                                    "recomputation":  false,
+                                    "minimumLabel":  "Minimum Q · Q500+",
+                                    "maximumLabel":  "MAX Q · Q700+",
+                                    "editableControls":  0,
+                                    "userDataWrite":  false,
+                                    "artifact":  "test-artifacts/V003-C013/fresh-release-candidate/standalone/sPg Crafting List - FR-86 shortage.html"
+                                },
+                 "backupRestore":  "PASS_INVENTORY_POOLS_ASSIGNMENTS_ALLOCATION",
+                 "oldBackupCompatibility":  "PASS_EMPTY_POOL_AND_LEGACY_FALLBACK",
+                 "legacyCompatibility":  "PASS_C0123_PATH_UNCHANGED_WITH_UNUSED_POOLS",
+                 "singleFile":  {
+                                    "embeddedCss":  true,
+                                    "embeddedJs":  true,
+                                    "localRuntimeSidecars":  0
+                                },
+                 "inputFingerprintBeforeAfter":  "32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064 -\u003e 32c157a3d9bd150cc26b56b11706b83f4c7071e20ce17bb9b98fba5a1debf064",
+                 "v001V002Integrity":  "PASS",
+                 "gateChain":  "TARGET_ONLY_PENDING_VALIDATOR"
+             },
+    "standalone":  {
+                       "path":  "test-artifacts/V003-C013/fresh-release-candidate/standalone/sPg Crafting List - FR-86 shortage.html",
+                       "bytes":  165556,
+                       "sha256":  "cb57208d9c390ec6cbcf2beb932d41161baa131c1fbf26912b6806a56c7e02e1",
+                       "readOnly":  true,
+                       "editorControls":  0,
+                       "indexedDbWriteSurface":  0,
+                       "allocationRecomputation":  0,
+                       "effectiveQualityAndShortage":  "PASS"
+                   },
+    "v001V002Integrity":  {
+                              "status":  "PASS",
+                              "v001Commit":  "b22dbc3c2ef0765e30aa3806537854298c873dff",
+                              "v002Commit":  "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+                              "v002ArtifactSha256":  "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357"
+                          },
+    "applicationCodeChanged":  false,
+    "chrome":  {
+                    "status":  "PASS",
+                    "origin":  "http://127.0.0.1:41988",
+                    "technicalBaseline":  "13_PASS_0_FAIL",
+                    "viewports":  "1920x1080_1366x768_390x844",
+                    "horizontalOverflow":  0,
+                    "consoleWarningError":  "0/0",
+                    "evidence":  "test-artifacts/V003-C013/fresh-release-candidate/chrome-localhost-evidence.json"
+                },
+    "exactManualCandidateFileGate":  "NOT_RUN",
+    "stableRelease":  false
+}

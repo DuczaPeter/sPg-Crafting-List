@@ -9,15 +9,22 @@ import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const appPath = path.join(projectDirectory, "sPg Crafting List.html");
+const appPath = process.env.SPG_APP_PATH
+  ? path.resolve(process.env.SPG_APP_PATH)
+  : path.join(projectDirectory, "sPg Crafting List.html");
 const fixturePath = path.join(projectDirectory, "tests", "fixtures", "v003-c0125c1-fr86-assignment-model.json");
-const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V003-C012.5D1");
+const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
+  ? path.resolve(process.env.SPG_ARTIFACT_DIRECTORY)
+  : path.join(projectDirectory, "test-artifacts", "V003-C012.5D1");
 const evidencePath = path.join(artifactDirectory, "integration-evidence.json");
+const standaloneOutputPath = process.env.SPG_STANDALONE_OUTPUT ? path.resolve(process.env.SPG_STANDALONE_OUTPUT) : null;
+const cycleId = process.env.SPG_CYCLE_ID || "V003-C012.5D1";
 const appHtml = fs.readFileSync(appPath, "utf8");
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const baseline = execFileSync("git", ["rev-parse", "HEAD"], { cwd: projectDirectory, encoding: "utf8" }).trim();
-assert.equal(baseline, "42f94e9ecc40076174ac1c732e70d26402ea291f");
+const expectedBaseline = process.env.SPG_EXPECTED_HEAD || "42f94e9ecc40076174ac1c732e70d26402ea291f";
+assert.equal(baseline, expectedBaseline);
 assert.equal(spawnSync("git", ["diff", "--quiet", "--", "sPg Crafting List.html"], { cwd: projectDirectory }).status, 0, "A D1 gate nem módosíthat application code-ot.");
 
 const block = (name) => {
@@ -276,6 +283,10 @@ assert.doesNotMatch(runtimeMarkup, /<select\b|<input\b|contenteditable\s*=|spg-c
 assert.doesNotMatch(runtimeMarkup, /indexedDB|userDataRepository|saveCraftingCards|persistMaterialQualityPoolValue/);
 assert.doesNotMatch(shortage.standalone, /<link\b[^>]*stylesheet|<script\b[^>]*\bsrc\s*=|@import\s+url/i);
 assertSingleFileRuntimeMarkup(shortage.standalone);
+if (standaloneOutputPath) {
+  fs.mkdirSync(path.dirname(standaloneOutputPath), { recursive: true });
+  fs.writeFileSync(standaloneOutputPath, shortage.standalone, "utf8");
+}
 
 const v001Commit = execFileSync("git", ["rev-parse", "V001^{}"], { cwd: projectDirectory, encoding: "utf8" }).trim();
 const v002Commit = execFileSync("git", ["rev-parse", "V002^{}"], { cwd: projectDirectory, encoding: "utf8" }).trim();
@@ -286,7 +297,7 @@ assert.equal(v002Commit, "b326aaff5838aafd5b1f13b16982c29a0e150e35");
 assert.equal(v002Sha256, "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357");
 
 const evidence = {
-  cycle: "V003-C012.5D1",
+  cycle: cycleId,
   status: "TARGET_PASS",
   baseline,
   applicationCodeChanged: false,
@@ -302,7 +313,15 @@ const evidence = {
   canonicalIdentity: "PASS_EXACT_COMMODITY_UUID_NO_FUZZY",
   maxDb: { happy: 1, shortage: 0 },
   combined: { minimumRequiredReservedScu: "1.2/1.2", maximumRequiredReservedScu: "1.9/1.9", shortageQualityScu: 1.9 },
-  standalone: { source: "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS", recomputation: false, minimumLabel: "Minimum Q · Q500+", maximumLabel: "MAX Q · Q700+", editableControls: 0, userDataWrite: false },
+  standalone: {
+    source: "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS",
+    recomputation: false,
+    minimumLabel: "Minimum Q · Q500+",
+    maximumLabel: "MAX Q · Q700+",
+    editableControls: 0,
+    userDataWrite: false,
+    artifact: standaloneOutputPath ? path.relative(projectDirectory, standaloneOutputPath).replaceAll("\\", "/") : null
+  },
   backupRestore: "PASS_INVENTORY_POOLS_ASSIGNMENTS_ALLOCATION",
   oldBackupCompatibility: "PASS_EMPTY_POOL_AND_LEGACY_FALLBACK",
   legacyCompatibility: "PASS_C0123_PATH_UNCHANGED_WITH_UNUSED_POOLS",

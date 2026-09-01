@@ -3,13 +3,14 @@
 ## Jelenlegi állapot
 
 - Branch: `develop/V003`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C012.5D2B`; státusz: **PASS**.
-- Felhasználói exact `file://` gate: **15/15 MANUAL PASS**, SC `4.10.0-LIVE.12519617`.
-- FR-86 Card, Shell Q500, Field Array Q900, Browser/Crafting parity, reload persistence és Combined metrikák: felhasználó által igazolt PASS.
-- Reload utáni JS-300 default/transient FR-86 preview: nem blokkoló UX note; a bound Card és poolok megmaradnak.
-- Application code változás: **NO**; automated regression/Chrome automation/localhost ebben a lezárásban nem futott.
-- D2A checkpoint: `4a08b3f45a7afb9a27d675f93a152660d2439ad9`; D1/D2A bizonyíték változatlan.
-- C013: **NOT STARTED**; V003 tag/release/push/main merge nincs.
-- Riport: `docs/V003_C0125D2B_MANUAL_FILE_GATE_REPORT.md`.
+- Aktuális ciklus: `V003-C013`; státusz: **FRESH RELEASE CANDIDATE – AUTOMATED + CHROME PASS**.
+- Exact forráscommit: `6abae928b7d2f81e0b5eee2976a652feb0577c8d`; application code változás: **NO**.
+- Candidate: `test-artifacts/V003-C013/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- Candidate SHA-256: `d4ce0fb9caea5e2f77597ce76ae05321d8d8a5c3721dfb91ebf431a7ebeef182`; teszt előtt/után változatlan.
+- Teljes releváns automated regresszió: **PASS**; C012.5D1 integrált FR-86 gate: **PASS**.
+- Valódi Chrome localhost: Technical Baseline `13/13`, 8 fő modul, 1920/1366/390, overflow `0`, console WARN/ERROR `0/0`: **PASS**.
+- Exact candidate kézi `file://` gate: **NOT RUN**.
+- A korábbi C013 candidate-ek invalidáltak; V003 tag/release/push/main merge nincs.
+- Riport: `docs/V003_C013_RELEASE_CANDIDATE_REPORT.md`.
 
-`V003-C012.5D2B – EXACT MANUAL file:// GATE PASS, C013 NOT STARTED`
+`V003-C013 – FRESH RELEASE CANDIDATE AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`

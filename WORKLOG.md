@@ -1,13 +1,14 @@
 # WORKLOG.md
 
-Korábbi nyers napló byte-azonosan archiválva: `docs/archive/WORKLOG-through-V003-C012.5D2A.md`.
+Korábbi nyers napló byte-azonosan archiválva: `docs/archive/WORKLOG-through-V003-C012.5D2B.md`.
 
 ## Aktuális ciklus
 
-### V003-C012.5D2B Exact manual file gate – 2026-09-01
+### V003-C013 Fresh release candidate – 2026-09-01
 
-- A felhasználó a fő V003 HTML-t közvetlen `file://` módban ellenőrizte: 15/15 pont PASS, aktív SC `4.10.0-LIVE.12519617`.
-- FR-86 Card, Shell Minimum Q500, Field Array MAX Q900, Frequency Controller recipe baseline, bound Browser/Crafting parity, reload persistence és Combined metrikák PASS.
-- Nem blokkoló UX note: reload után a Browser JS-300 default; az új transient FR-86 preview recept szerinti állapota nem érinti a megmaradó bound Cardot/poolokat.
-- Application code nem változott; automated regression, Chrome automation és localhost ebben a lezárásban nem futott.
-- C013 nem indult; V003 tag/release/push/main merge nincs. Visszaállás: a D2B checkpoint revertje; stabil fallback a változatlan V002.
+- Az exact `6abae928...` D2B HTML byte-másolatából új candidate készült; `802259` byte, SHA-256 `d4ce0fb9...f182`.
+- Teljes releváns automated regresszió, C012.5D1 integrált FR-86, standalone, backup, Quality, priority, zero-card és V001/V002 integritás PASS.
+- A történeti isolated runnerek jelenlegi C012.5 modellfüggőségei és a C013 manifest-életciklus assertje harness-only korrekciót kaptak; a fő alkalmazás HTML nem változott.
+- Valódi Chrome localhost: Technical Baseline 13/13, Wiki/UEX/IndexedDB, 8 modul, 1920/1366/390 overflow 0, console WARN/ERROR 0/0 PASS.
+- Candidate hash a teljes automated és Chrome futás előtt/után változatlan; exact manual candidate `file://` gate NOT RUN.
+- V003 tag/release/push/main merge nincs. Visszaállás: a C013 checkpoint revertje; baseline a `6abae928...`, stabil fallback a változatlan V002.

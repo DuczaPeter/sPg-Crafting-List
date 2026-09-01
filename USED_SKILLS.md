@@ -452,3 +452,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segitett: a C013 validacio-only scope, a tiltott application-code modositas, a ket kulon invalidalt candidate es a fagyasztott V001/V002 vedelmenek megtartasara; valamint a PASS evidence megorzese mellett a kiadhatosagi statusz valosaghu lezárasara.
 - Mely fajlokat vagy donteseket erintett: csak C013 builder/teszt/validator, candidate/standalone/evidence, release-candidate riport es projekt statuszdokumentacio; `sPg Crafting List.html`, C012.5, V001 es V002 nem valtozott.
 - Kell-e kesobb tanulsagot visszairni a skillbe: `nem`.
+
+## V003-C013 fresh Release Candidate
+
+- Skillek neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Mikor hasznaltuk: `2026-09-01`, az exact D2B baseline-ból épített fresh candidate célzott resume-ja, teljes release-regressziója és valódi Chrome localhost gate-je során.
+- Mire segített: a minimális kontextusú folytatásra, az alkalmazáskód byte-lockjára, a régi invalidált candidate-ek elkülönítésére, a generated artifact-zaj célzott takarítására, valamint a 1920/1366/390 viewport, nyolc modul és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C013 builder/validator/test harness, fresh candidate/evidence/report és projektállapot-dokumentáció; a fő HTML, V001 és V002 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

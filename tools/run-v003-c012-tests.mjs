@@ -84,9 +84,12 @@ assert.equal(tenCardStress.filter((card) => card.collapsed).length, 8, "A 10-car
 
 const m1Match = appHtml.match(/\/\* M1_PURE_MODEL_START \*\/([\s\S]*?)\/\* M1_PURE_MODEL_END \*\//);
 const m2Match = appHtml.match(/\/\* M2_ALLOCATION_ENGINE_START \*\/([\s\S]*?)\/\* M2_ALLOCATION_ENGINE_END \*\//);
-assert.ok(m1Match && m2Match, "Az allocation priority modellblokk nem auditálható.");
+const m4Match = appHtml.match(/\/\* M4_COMBINED_BACKUP_MODEL_START \*\/([\s\S]*?)\/\* M4_COMBINED_BACKUP_MODEL_END \*\//);
+const c0125aMatch = appHtml.match(/\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_START \*\/([\s\S]*?)\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_END \*\//);
+const c0125bMatch = appHtml.match(/\/\* C0125B_COMBINED_QUALITY_POOL_MODEL_START \*\/([\s\S]*?)\/\* C0125B_COMBINED_QUALITY_POOL_MODEL_END \*\//);
+assert.ok(m1Match && m2Match && m4Match && c0125aMatch && c0125bMatch, "Az allocation priority modellblokk vagy aktualis dependency-je nem auditálható.");
 const context = vm.createContext({ console, nowIso: () => "2026-08-25T12:00:00.000Z", toScuUnits: (value) => Math.round(Number(value) * 10000) });
-vm.runInContext(`${m1Match[1]}\n${m2Match[1]}\nglobalThis.__C012__={allocateCardsDeterministically};`, context, { filename: "spg-v003-c012-allocation.js" });
+vm.runInContext(`${m1Match[1]}\n${m2Match[1]}\n${m4Match[1]}\n${c0125aMatch[1]}\n${c0125bMatch[1]}\nglobalThis.__C012__={allocateCardsDeterministically};`, context, { filename: "spg-v003-c012-allocation.js" });
 const allocationFixture = JSON.parse(fs.readFileSync(path.join(fixtureDirectory, "m2-allocation-cases.json"), "utf8"));
 const requirement = structuredClone(allocationFixture.baseRequirement);
 requirement.requiredQuantityUnits = 8000;

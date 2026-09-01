@@ -565,6 +565,17 @@ node .\tools\run-v003-c013-tests.mjs
 - A teljes C001-C012.4/M1-M6.1/C04 kapu az invalidalas elott PASS volt; ezt az evidence orzi, a lezaro integritas-kapu nem futtatja ujra a teljes torteneti lancot.
 - C013 artifactok: `test-artifacts/V003-C013/`; exact candidate manual `file://` `NOT_RUN`, candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`. A regi `388a...` candidate kulon `INVALIDATED_BY_C012.3_RELEASE_BLOCKER`.
 
+V003-C013 friss release-candidate kapu a lezart D2B source HEAD-bol:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c013-fresh.ps1"
+```
+
+- Forras: exact `6abae928b7d2f81e0b5eee2976a652feb0577c8d`; a fo HTML elterese azonnali STOP.
+- Friss artifact: `test-artifacts/V003-C013/fresh-release-candidate/sPg Crafting List V003 RC.html`; a regi invalidalt candidate-ekhez nem nyul.
+- Futtatja a teljes C001-C012.4/M1-M6.1/C04 kaput, a C012.5A-C3B2 lancot, valamint a candidate-en a D1 integralt FR-86 happy/shortage/backup/standalone tesztet.
+- Candidate build/rebuild es SHA before/after byte-azonossag, single-file runtime, V001/V002 integritas es V003 tag/release hianya kotelezo.
+
 V003-C012.5A célzott kapu (inventory independence, exact UUID identity, közvetlen Quality/numeric regresszió és stabil release-integritás):
 
 ```powershell

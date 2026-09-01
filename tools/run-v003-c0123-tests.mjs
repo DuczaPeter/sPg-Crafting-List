@@ -30,6 +30,8 @@ const context = vm.createContext({
 vm.runInContext(`${block("M1_PURE_MODEL")}
 ${block("M2_ALLOCATION_ENGINE")}
 ${block("M4_COMBINED_BACKUP_MODEL")}
+${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
+${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 ${block("MATERIAL_NAMING_MODEL")}
 ${block("MATERIAL_COLOR_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
