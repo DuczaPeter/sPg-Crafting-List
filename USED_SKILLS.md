@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C012.5C3B2 Standalone effective Quality
+
+- Skill neve: `credit-efficient-project-runner`, `chrome:control-chrome`.
+- Mikor használtuk: `2026-09-01`, a félbemaradt dirty C3B2 diff célzott lezárásához és az elkészült standalone artifact rövid Chrome localhost ellenőrzéséhez.
+- Mire segített: a már PASS direkt tesztlánc megőrzésére teljes regresszió ismétlése nélkül, valamint a renderelt Quality címkék, shortage, read-only felület és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: standalone Quality presentation, C3B2 célteszt/validator/evidence/report és aktuális projektmetaadatok; V002, allocation, Combined és User Data nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## Kezdo allapot
 
 - Skill neve: `uj-projekt`

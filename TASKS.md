@@ -2,16 +2,14 @@
 
 ## Aktualis
 
-### V003-C012.5C3B1 Combined real pool metrics
+### V003-C012.5C3B2 Standalone effective Quality
 
-- [x] A Minimum/MAX blokkok a C3A valódi allocation usage eredményét aggregálják, külön Combined-allocation nélkül.
-- [x] `ANY_Q` / `LEGACY_FALLBACK` explicit poolból kizárva, globális totalban megtartva.
-- [x] Required/reserved/mennyiséghiány/Quality-hiány és unresolved fail-safe material-szinten.
-- [x] Exact canonical UUID, multiple Card/prioritás, közös fizikai inventory és no-double-count.
-- [x] FR-86 happy path, Q550-only Quality-hiány, recipe delete és inventory-only persistence.
-- [x] C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity PASS.
-- [x] Chrome `127.0.0.1:4184`: happy/shortage/delete/reload, responsive overflow 0, WARN/ERROR 0; fingerprint `ab900bdc → ab900bdc`.
-- [ ] `V003-C012.5C3B2` standalone pool presentation – NOT STARTED.
+- [x] Standalone projection kizárólag a C3A feloldott allocation/Quality snapshotját használja; nincs recomputation.
+- [x] Minimum/MAX, baseline > pool, ANY, legacy FIXED és unresolved fail-safe címkék.
+- [x] FR-86 Q550-only: két exact Stileron slot, `Quality-hiány 1,9 SCU`, Card `UNSATISFIED`.
+- [x] Editable pool controls 0, User Data write surface 0, external runtime sidecar 0.
+- [x] C3B2 + C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity PASS.
+- [x] Chrome localhost `127.0.0.1:4185`, 1366×768, console WARN/ERROR `0/0`; exact manual `file://` NOT RUN.
 - [ ] `V003-C012.5D` – NOT STARTED.
 - [ ] Új C013 candidate – NOT STARTED; a korábbi candidate invalidált marad.
 

@@ -181,7 +181,7 @@ assert.match(poolRenderer[0], /Mennyiséghiány/);
 assert.match(poolRenderer[0], /Quality-hiány/);
 assert.match(poolRenderer[0], /allocation feloldatlan/);
 assert.doesNotMatch(poolRenderer[0], /recipeSlotName|Shell|Field Array|Voltage Regulator|Stator Cores/);
-assert.doesNotMatch(html, /C0125C3B2_/);
+assert.doesNotMatch(poolRenderer[0], /C0125C3B2_/);
 
 const evidence = {
   cycle: "V003-C012.5C3B1",
@@ -203,7 +203,7 @@ const evidence = {
   inventoryOnlyPersistence: "PASS",
   recipeSlotNamesInPoolUi: false,
   standaloneChanged: false,
-  c0125c3b2Started: false
+  c0125c3b2TouchesCombinedRenderer: false
 };
 fs.mkdirSync(artifactDirectory, { recursive: true });
 fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");

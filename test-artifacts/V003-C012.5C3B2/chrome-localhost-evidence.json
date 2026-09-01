@@ -1,0 +1,25 @@
+{
+  "cycle": "V003-C012.5C3B2",
+  "status": "PASS",
+  "evidenceType": "CHROME_LOCALHOST_AUTOMATED_DESKTOP",
+  "origin": "http://127.0.0.1:4185",
+  "artifact": "test-artifacts/V003-C012.5C3B2/standalone-fr86-quality-shortage.html",
+  "viewport": "1366x768",
+  "title": "sPg Crafting List – FR-86",
+  "shellMinimumQ": "Minimum Q · Q500+",
+  "fieldArrayMaximumQ": "MAX Q · Q700+",
+  "stileronRecipeRows": 2,
+  "canonicalCommodityUuids": [
+    "32bafbd4-c52a-476d-b31c-97c4b3102471"
+  ],
+  "qualityShortage": "1.9 SCU",
+  "cardStatus": "UNSATISFIED",
+  "editableControlCount": 0,
+  "userDataWriteSurface": false,
+  "consoleWarnings": 0,
+  "consoleErrors": 0,
+  "staticSingleFile": "PASS",
+  "localRuntimeSidecars": 0,
+  "manualFileGate": "NOT_RUN",
+  "manualFileGateReason": "Direct file navigation was blocked by the browser-control security boundary; no bypass was attempted."
+}

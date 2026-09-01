@@ -657,3 +657,19 @@ node .\tools\run-v003-c0125c3b1-tests.mjs
 - `v003-c0125c3b1-combined-pool-metrics`: explicit Minimum/MAX allocation részösszegek, eligible/global no-double-count, Quality-hiány, unresolved threshold, ANY/legacy exclusion, multiple Card/prioritás, exact UUID és recipe delete/inventory-only.
 - A validator közvetlenül futtatja a C3A/C2/C1/B/A regressziókat, a static/single-file kaput és V001/V002 integritást; teljes történeti regressziót nem futtat.
 - Artifactok: `test-artifacts/V003-C012.5C3B1/`.
+
+V003-C012.5C3B2 célzott kapu (standalone effective Quality projection):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0125c3b2.ps1"
+```
+
+Csak a C012.5C3B2 standalone célteszt:
+
+```powershell
+node .\tools\run-v003-c0125c3b2-tests.mjs
+```
+
+- `v003-c0125c3b2-standalone-effective-quality`: tárolt C3A eredményből Minimum/MAX, baseline > pool, ANY, legacy FIXED és unresolved presentation; recomputation nélkül.
+- FR-86 Q550-only fixture: exact két Stileron slot, `Quality-hiány 1,9 SCU`, Card `UNSATISFIED`, editable controls/User Data write surface 0.
+- Artifactok: `test-artifacts/V003-C012.5C3B2/`.

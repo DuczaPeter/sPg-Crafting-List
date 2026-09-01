@@ -5168,6 +5168,21 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
   padding: 2px 7px;
 }
 
+.spg-c0125c3b2-standalone-quality {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  white-space: normal;
+}
+
+.spg-c0125c3b2-quality-context {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+}
+
 .spg-c0121-recipe-need .spg-c0125c2-pool-select {
   min-height: 25px;
 }
@@ -16415,8 +16430,81 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function m6QualityRuleLabel(requirement) {
-      return formatEffectiveQualityLabel(requirement && requirement.qualityPolicy || requirement);
+      return requirement && requirement.standaloneQuality && requirement.standaloneQuality.displayLabel
+        ? requirement.standaloneQuality.displayLabel
+        : formatEffectiveQualityLabel(requirement && requirement.qualityPolicy || requirement);
     }
+
+    /* C0125C3B2_STANDALONE_QUALITY_PROJECTION_START */
+    function c0125c3b2BaselineLabel(rule, target) {
+      if (rule === M2_QUALITY_RULES.FIXED) { return "FIXED recept · Bármely Q"; }
+      if (rule === M2_QUALITY_RULES.HP_MIN_500) { return "HP/Integrity recept · Q500+"; }
+      if (rule === M2_QUALITY_RULES.TARGET_Q && hasValidQuality(target)) { return "Recept · Q" + Number(target) + "+"; }
+      if (rule === M2_QUALITY_RULES.HIGHEST_Q) { return "Recept · Legjobb Q"; }
+      return "Recept · Quality nem feloldható";
+    }
+
+    function projectStandaloneEffectiveQuality(allocation, qualityPolicy) {
+      var source = allocation || {};
+      var policy = qualityPolicy || source.qualityPolicy || {};
+      var assignmentMode = source.recipePoolAssignmentMode || policy.recipePoolAssignmentMode || null;
+      var assignmentExplicit = Boolean(assignmentMode || policy.recipePoolAssignmentExplicit);
+      var assignmentSource = source.recipePoolAssignmentOrigin || policy.recipePoolAssignmentOrigin || "LEGACY_FALLBACK";
+      var baselineRule = source.baselineRule || policy.baselineRule || M2_QUALITY_RULES.UNKNOWN;
+      var baselineTarget = source.baselineTarget === undefined ? (policy.baselineTarget === undefined ? null : policy.baselineTarget) : source.baselineTarget;
+      var poolThreshold = source.recipePoolThreshold === undefined ? (policy.recipePoolThreshold === undefined ? null : policy.recipePoolThreshold) : source.recipePoolThreshold;
+      var poolThresholdField = source.recipePoolThresholdField || policy.recipePoolThresholdField || null;
+      var effectiveRule = source.effectiveRule || policy.effectiveRule || source.rule || M2_QUALITY_RULES.UNKNOWN;
+      var effectiveTarget = source.effectiveTarget === undefined ? (policy.effectiveTarget === undefined ? source.targetQuality : policy.effectiveTarget) : source.effectiveTarget;
+      var effectiveMinimum = source.finalEffectiveMinimum === undefined
+        ? (source.effectiveMinimum === undefined ? (policy.effectiveMinimum === undefined ? null : policy.effectiveMinimum) : source.effectiveMinimum)
+        : source.finalEffectiveMinimum;
+      var resolutionStatus = source.recipePoolResolutionStatus || policy.recipePoolResolutionStatus || (assignmentExplicit ? "RESOLVED" : "LEGACY_RESOLVED");
+      var blockReason = source.allocationBlockReason || policy.allocationBlockReason || null;
+      var unresolved = effectiveRule === M2_QUALITY_RULES.UNKNOWN || blockReason === "POOL_THRESHOLD_UNRESOLVED" || /^UNRESOLVED|^BLOCKED/.test(String(resolutionStatus));
+      var effectiveLabel = unresolved
+        ? "Quality nem feloldható"
+        : (source.userFacingQualityLabel || policy.userFacingLabel || formatEffectiveQualityLabel({ effectiveRule: effectiveRule, effectiveTarget: effectiveTarget }));
+      var displayLabel;
+      if (unresolved) {
+        displayLabel = "Quality nem feloldható";
+      } else if (assignmentExplicit && (assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL || assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL)) {
+        var poolLabel = assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "Minimum Q" : "MAX Q";
+        var thresholdDiffers = hasValidQuality(poolThreshold) && hasValidQuality(effectiveMinimum) && Number(poolThreshold) !== Number(effectiveMinimum);
+        displayLabel = poolLabel + " · " + (thresholdDiffers ? "effektív " : "") + effectiveLabel;
+      } else if (assignmentExplicit && assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.ANY_Q) {
+        displayLabel = effectiveLabel === "Bármely Q"
+          ? "Bármely Q"
+          : "Bármely Q user constraint · effektív " + effectiveLabel;
+      } else {
+        displayLabel = "Recept szerint · " + effectiveLabel;
+      }
+      var baselineLabel = c0125c3b2BaselineLabel(baselineRule, baselineTarget);
+      var tooltipParts = [displayLabel, baselineLabel];
+      if (assignmentExplicit && hasValidQuality(poolThreshold)) {
+        tooltipParts.push((assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "Minimum Q" : "MAX Q") + " pool: Q" + Number(poolThreshold) + "+");
+      }
+      if (blockReason) { tooltipParts.push(blockReason); }
+      return {
+        assignmentSource: assignmentSource,
+        assignmentMode: assignmentMode,
+        assignmentExplicit: assignmentExplicit,
+        baselineRule: baselineRule,
+        baselineTarget: baselineTarget,
+        baselineLabel: baselineLabel,
+        poolThreshold: poolThreshold,
+        poolThresholdField: poolThresholdField,
+        effectiveRule: effectiveRule,
+        effectiveTarget: effectiveTarget,
+        effectiveMinimum: effectiveMinimum,
+        resolutionStatus: resolutionStatus,
+        blockReason: blockReason,
+        unresolved: unresolved,
+        displayLabel: displayLabel,
+        tooltip: tooltipParts.join(" · ")
+      };
+    }
+    /* C0125C3B2_STANDALONE_QUALITY_PROJECTION_END */
 
     function m6FormatMetric(value, suffix) {
       return value === null || value === undefined || !Number.isFinite(Number(value))
@@ -17201,6 +17289,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           baselineTarget: allocation.baselineTarget === undefined ? allocation.targetQuality : allocation.baselineTarget,
           materialPlan: source.materialQualityPlans && source.materialQualityPlans[requirement.ingredientUuid]
         });
+        var standaloneQuality = projectStandaloneEffectiveQuality(allocation, qualityPolicy);
         return {
           recipeSlotId: requirement.id,
           recipeSlotName: requirement.recipeSlotName,
@@ -17246,6 +17335,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           effectiveMinimum: qualityPolicy.effectiveMinimum,
           allocationStrategy: qualityPolicy.allocationStrategy,
           qualityPolicy: Object.assign({}, qualityPolicy),
+          standaloneQuality: standaloneQuality,
           effectiveQualityLabel: qualityPolicy.userFacingLabel,
           qualityTooltip: qualityPolicy.tooltip,
           affectedStats: (requirement.affectedStats || []).map(function (stat) { return stat.label || stat.key || "Ismeretlen stat"; }),
@@ -17532,14 +17622,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var targetId = requirement.commodityUuid || requirement.materialUuid;
       var colorStyle = materialColorInlineStyle(requirement.materialColor || resolveMaterialColor(targetId, requirement.materialName));
       var shortage = Number(requirement.shortageUnits || 0);
-      var stockState = shortage > 0
-        ? "Hiány: " + m6FormatUnits(requirement.unit, shortage)
-        : "Marad: " + m6FormatUnits(requirement.unit, requirement.remainingUnits || 0);
+      var qualityShortage = Number(requirement.missingQualityUnits || 0);
+      var amountShortage = Number(requirement.missingAmountUnits || 0);
+      var stockState = qualityShortage > 0
+        ? "Quality-hiány: " + m6FormatUnits(requirement.unit, qualityShortage)
+        : (amountShortage > 0
+          ? "Mennyiséghiány: " + m6FormatUnits(requirement.unit, amountShortage)
+          : (shortage > 0
+            ? "Hiány: " + m6FormatUnits(requirement.unit, shortage)
+            : "Marad: " + m6FormatUnits(requirement.unit, requirement.remainingUnits || 0)));
+      var standaloneQuality = requirement.standaloneQuality || projectStandaloneEffectiveQuality(requirement, requirement.qualityPolicy || requirement);
       return [
         '<div class="spg-c010-recipe-row" data-status="', m6EscapeHtml(requirement.status || "PENDING"), '">',
         '<span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span>',
         c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link").replace('class="spg-c010-material-link spg-c009-material-api-link"', 'class="spg-c010-material-link spg-c009-material-api-link" style="' + m6EscapeHtml(colorStyle) + '"'),
-        '<span class="spg-c0121-recipe-need"><span class="spg-c0121-quality-badge" title="', m6EscapeHtml(requirement.qualityTooltip || formatEffectiveQualityTooltip(requirement.qualityPolicy || requirement)), '">', m6EscapeHtml(requirement.effectiveQualityLabel || formatEffectiveQualityLabel(requirement.qualityPolicy || requirement)), '</span><strong class="spg-c010-per-one">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
+        '<span class="spg-c0121-recipe-need spg-c0125c3b2-standalone-quality" data-quality-assignment="', m6EscapeHtml(standaloneQuality.assignmentMode || "LEGACY_FALLBACK"), '" data-quality-resolution="', m6EscapeHtml(standaloneQuality.resolutionStatus), '"><span class="spg-c0121-quality-badge" title="', m6EscapeHtml(standaloneQuality.tooltip), '">', m6EscapeHtml(standaloneQuality.displayLabel), '</span><small class="spg-c0125c3b2-quality-context">', m6EscapeHtml(standaloneQuality.baselineLabel), '</small><strong class="spg-c010-per-one">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
         '<span class="spg-c010-stock" data-status="', shortage > 0 ? "SHORTAGE" : "AVAILABLE", '"><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong><small>', m6EscapeHtml(stockState), '</small></span>',
         '</div>'
       ].join("");
@@ -17573,9 +17670,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         '<style>', String(cssText || "").replace(/<\/style/gi, "<\\/style"), '</style>',
         '</head><body data-spg-standalone-export="true" data-export-schema="1" data-card-id="', m6EscapeHtml(snapshot.card.id), '">',
         '<main class="spg-export-page">',
-        '<article class="spg-c010-final-card spg-c010-standalone-card" data-final-card-only="true">',
+        '<article class="spg-c010-final-card spg-c010-standalone-card" data-final-card-only="true" data-card-satisfied="', snapshot.card.satisfied ? "true" : "false", '">',
         '<div class="spg-c010-topline"><div class="spg-c010-meta"><span>S', m6EscapeHtml(snapshot.card.outputSize), '</span><span>', m6EscapeHtml(snapshot.card.outputClass), '</span><span>', m6EscapeHtml(snapshot.card.outputGrade), '</span></div><div class="spg-c010-time-cart"><span class="spg-c010-craft-time">◷ ', m6EscapeHtml(c009FormatCraftTime(snapshot.card.craftTimeSeconds)), '</span></div></div>',
-        '<div class="spg-c010-titleline">', c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-c010-item-api-link"), '<div class="spg-c010-quantity"><span class="spg-c010-quantity-box">', m6EscapeHtml(snapshot.card.requestedQuantity), ' DB</span><span class="spg-c010-max">Max: ', m6EscapeHtml(snapshot.card.maxCraftable), ' DB</span></div></div>',
+        '<div class="spg-c010-titleline">', c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-c010-item-api-link"), '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "SATISFIED" : "UNSATISFIED", '</span><div class="spg-c010-quantity"><span class="spg-c010-quantity-box">', m6EscapeHtml(snapshot.card.requestedQuantity), ' DB</span><span class="spg-c010-max">Max: ', m6EscapeHtml(snapshot.card.maxCraftable), ' DB</span></div></div>',
         '<section class="spg-c010-recipe">', snapshot.requirements.map(c010RenderStandaloneRecipeRow).join(""), '</section>',
         '<div class="spg-c010-material-list">', snapshot.requirements.map(c010RenderStandaloneMaterial).join(""), '</div>',
         '</article>',

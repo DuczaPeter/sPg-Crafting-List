@@ -4,6 +4,15 @@ Korábbi nyers napló byte-azonosan archiválva: `docs/archive/WORKLOG-through-V
 
 ## Aktuális ciklus
 
+### V003-C012.5C3B2 Standalone effective Quality – 2026-09-01
+
+- A standalone Final Card külön presentation projectiont kapott a már feloldott C3A allocation/Quality snapshotból; recomputation, dropdown, editor és User Data írás nincs.
+- Minimum/MAX, baseline > pool, ANY, legacy FIXED és unresolved fail-safe megjelenítés PASS.
+- FR-86 Q550-only fixture: Shell `Q500+`, Field Array `Q700+`, ugyanaz az exact Stileron commodity UUID, `Quality-hiány 1,9 SCU`, Card `UNSATISFIED`.
+- C3B2 target + C3B1/C3A/C2/C1/B/A + static/single-file + V001/V002 integrity PASS.
+- Chrome `127.0.0.1:4185`, 1366×768: két Stileron sor, editable control 0, User Data write surface 0, console WARN/ERROR 0/0 PASS. Kézi `file://` NOT RUN; bypass nem történt.
+- C012.5D/C013 nem indult; tag/release/push/main merge nincs. Visszaállás: a C3B2 checkpoint revertje; stabil fallback a változatlan V002.
+
 ### V003-C012.5C3B1 Combined real pool metrics – 2026-08-31
 
 - A Combined Materials két meglévő Quality-pool blokkja a C3A valódi allocation usage eredményét aggregálja; külön allocation-logika nem készült.
