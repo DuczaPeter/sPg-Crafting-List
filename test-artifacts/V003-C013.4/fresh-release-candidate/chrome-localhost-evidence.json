@@ -1,0 +1,53 @@
+{
+  "cycle": "V003-C013.4",
+  "status": "PASS_REAL_GOOGLE_CHROME_LOCALHOST",
+  "automationSurface": "Codex unified computer-use extension control",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:41991",
+  "candidate": {
+    "path": "test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "bytes": 815774,
+    "sha256Before": "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+    "sha256After": "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+    "immutable": true
+  },
+  "technicalBaseline": {
+    "passed": 15,
+    "failed": 0,
+    "summary": "Minden próba sikeres"
+  },
+  "modules": {
+    "passed": 8,
+    "failed": 0,
+    "names": [
+      "Blueprint Browser",
+      "Crafting List",
+      "My Materials",
+      "Combined Materials",
+      "Material Database",
+      "Mining Loadouts",
+      "UEX Refinery",
+      "Data / Settings"
+    ]
+  },
+  "viewports": [
+    { "width": 1920, "height": 1080, "horizontalOverflow": 0, "modules": "8/8 PASS" },
+    { "width": 1366, "height": 768, "horizontalOverflow": 0, "modules": "8/8 PASS" },
+    { "width": 390, "height": 844, "horizontalOverflow": 0, "modules": "8/8 PASS" }
+  ],
+  "runtime": {
+    "activeScVersion": "4.10.0-LIVE.12519617",
+    "wiki": "PASS_AVAILABLE",
+    "uex": "PASS_215_YIELD_RECORDS",
+    "indexedDb": "PASS_SCHEMA_4",
+    "reloadPersistence": "PASS_DATASET_AND_TECHNICAL_PROBE_PERSISTED",
+    "externalStylesheets": 0,
+    "externalScripts": 0
+  },
+  "console": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "exactManualCandidateFileGate": "NOT_RUN",
+  "applicationCodeChanged": false
+}

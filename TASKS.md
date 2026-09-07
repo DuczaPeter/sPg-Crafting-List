@@ -2,6 +2,15 @@
 
 ## Aktualis
 
+### V003-C013.4 Fresh RC after Disjoint Pool + Canonical Grouping Repair
+
+- [x] Exact `2c138cf8...` source HEAD-ből determinisztikus, új single-file candidate külön C013.4 artifactban; application code változatlan.
+- [x] Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + M1–M6.1 + C04 release-regresszió PASS.
+- [x] Diszjunkt Titanium Q784/Q866, Q866-only, Minimum-only, MAX-only, invalid-range, no-borrow/no-double-reserve és exact canonical UUID fixture PASS.
+- [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
+- [x] Candidate SHA-256 változatlan; C013.2 BLOCKED/INVALIDATED és V001/V002 változatlan.
+- [ ] Exact C013.4 candidate `file://` manual gate külön következő felhasználói ciklusban.
+
 ### V003-C013.3 Disjoint Quality Pools + Canonical Grouping Repair
 
 - [x] Minimum pool `[minimumQ, maximumQ)`, MAX pool `[maximumQ, +∞)`; borrowing és magasabb tartományú fallback nincs.
@@ -10,7 +19,7 @@
 - [x] Allocation, Combined, My Materials, Maximum Craftable, Final/Crafting, standalone, reload, backup/restore és no-double-reserve céltesztek PASS.
 - [x] M2/M4, C012.5A–C3B2, D1 és C013.1 közvetlen regresszió PASS; teljes release-regresszió scope szerint nem futott.
 - [x] C013.2 candidate változatlan, de BLOCKED/INVALIDATED; V001/V002 integritás PASS.
-- [ ] Friss RC csak külön következő ciklusban.
+- [x] Friss RC a külön `V003-C013.4` ciklusban elkészült és automated + Chrome localhost kapuja PASS.
 
 ### V003-C013.2 Fresh Release Candidate – BLOCKED / INVALIDATED
 

@@ -2,15 +2,16 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C013.3 baseline: `5bcfd32b29539010108b4ccfcde2e29e04eddf2c`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013.3`; diszjunkt Quality pool és exact canonical material grouping repair: **PASS**.
-- Minimum/MAX pool: Minimum `[minimumQ, maximumQ)`, MAX `[maximumQ, +∞)`; nincs borrowing/fallback. MAX threshold nélkül a Minimum felső korlát nélküli. `minimumQ >= maximumQ` esetén fail-safe `POOL_RANGE_INVALID`.
-- Titanium exact mapping: ingredient `07570c9f-fdf6-4bca-a56b-c42809ec0e01` → canonical commodity `64978449-1d87-4a16-ba55-4b5f94fee217`; My Materials egy kártya, két batch, `4,868 SCU`, source provenance megőrizve.
-- C013.3 célzott suite, M2/M4, C012.5A–C3B2, D1 és C013.1 közvetlen regresszió: **PASS**. Teljes release-regresszió: **NOT RUN BY SCOPE**.
-- Combined/My Materials/Final Card/Crafting List/Maximum Craftable/standalone/reload/backup/no-double-reserve parity: **PASS**.
-- Fő HTML SHA-256 teszt előtt/után: `38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b`.
-- C013.2 RC változatlan SHA-256 mellett **BLOCKED / INVALIDATED**; új RC szükséges külön ciklusban.
+- Branch: `develop/V003`; C013.4 source HEAD: `2c138cf8cdaccb5a746bc0de7b6537259cc8985d`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C013.4`; friss exact single-file release candidate automated + valódi Chrome localhost kapuja: **PASS**.
+- Candidate: `test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html`; `815774` byte; SHA-256 `38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b`.
+- Single-file: embedded CSS/JavaScript, helyi runtime sidecar `0`; candidate a source commit nyers byte-másolata, az alkalmazáskód nem változott.
+- Teljes releváns C001–C012.5, D1, C013.1, C013.3, M1–M6.1, C04, static/single-file és backup/standalone regresszió: **PASS**.
+- C013.1 vegyes hiány és C013.3 Titanium diszjunkt pool/canonical grouping fixture: **PASS**; borrowing, fuzzy/name-only merge és double reserve nincs.
+- Valódi Chrome localhost: Technical Baseline `15/15`, modulok `8/8`, 1920×1080 / 1366×768 / 390×844 overflow `0`, konzol WARN/ERROR `0/0`, Wiki/UEX/IndexedDB/reload **PASS**.
+- Aktív SC-verzió: `4.10.0-LIVE.12519617`; RC hash a Chrome-kapu előtt/után azonos.
+- C013.2 candidate változatlanul **BLOCKED / INVALIDATED**. Exact C013.4 candidate `file://` manual gate: **NOT RUN**.
 - V001/V002 integritás **PASS**; V003 tag/release/push/main merge nincs.
-- Riport: `docs/V003_C0133_DISJOINT_POOLS_CANONICAL_GROUPING_REPORT.md`.
+- Riport: `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`.
 
-`V003-C013.3 – DISJOINT QUALITY POOLS + CANONICAL MATERIAL GROUPING REPAIR PASS, FRESH RC REQUIRED`
+`V003-C013.4 – FRESH RC AFTER DISJOINT POOL + CANONICAL GROUPING REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`

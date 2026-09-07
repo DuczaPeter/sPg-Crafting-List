@@ -1,0 +1,16 @@
+{
+  "cycle": "V003-C013.4",
+  "status": "BUILT_PENDING_GATES",
+  "sourceHead": "2c138cf8cdaccb5a746bc0de7b6537259cc8985d",
+  "source": "sPg Crafting List.html",
+  "output": "test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html",
+  "bytes": 815774,
+  "sha256": "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+  "generatedAt": "2026-09-07T11:47:11.627Z",
+  "buildModel": "GIT_COMMIT_RAW_BYTE_COPY",
+  "sourceByteIdentical": true,
+  "applicationCodeChanged": false,
+  "localRuntimeSidecars": 0,
+  "stableRelease": false,
+  "manualCandidateFileGate": "NOT_RUN"
+}

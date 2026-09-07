@@ -739,3 +739,20 @@ node .\tools\run-v003-c0133-tests.mjs
 - `CANONICAL_MATERIAL_MULTI_SOURCE_UUID_GROUPING`: exact commodity↔ingredient UUID bridge, egy Titanium kártya/két batch/4,868 SCU, provenance megőrzéssel és fuzzy/name merge nélkül.
 - A validator közvetlen M2/M4, C012.5A–C3B2, D1 és C013.1 regressziót, static single-file kaput, candidate immutabilityt és V001/V002 integritást ellenőriz. Teljes release-regresszió és Chrome nem része a scope-nak.
 - Artifactok: `test-artifacts/V003-C013.3/`.
+
+V003-C013.4 friss release-candidate teljes kapu az exact C013.3 checkpointból:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0134-fresh.ps1"
+```
+
+Csak a candidate-re kötött D1/C013.1/C013.3 célkapu:
+
+```powershell
+node .\tools\run-v003-c0134-fresh-tests.mjs
+```
+
+- Exact source HEAD: `2c138cf8cdaccb5a746bc0de7b6537259cc8985d`; Git-commit raw-byte copy, SHA-zár és determinisztikus rebuild.
+- Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + M1–M6.1 + C04, static/single-file, standalone és V001/V002 kapu.
+- Candidate: `test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en külön készül; exact manual candidate `file://` gate nincs automatizálva.

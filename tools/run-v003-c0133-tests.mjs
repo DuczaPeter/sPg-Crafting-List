@@ -6,9 +6,13 @@ import { fileURLToPath } from "node:url";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const appPath = path.join(projectDirectory, "sPg Crafting List.html");
+const appPath = process.env.SPG_APP_PATH
+  ? path.resolve(process.env.SPG_APP_PATH)
+  : path.join(projectDirectory, "sPg Crafting List.html");
 const fixturePath = path.join(projectDirectory, "tests", "fixtures", "v003-c0133-disjoint-pools-canonical-grouping.json");
-const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V003-C013.3");
+const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
+  ? path.resolve(process.env.SPG_ARTIFACT_DIRECTORY)
+  : path.join(projectDirectory, "test-artifacts", "V003-C013.3");
 const evidencePath = path.join(artifactDirectory, "disjoint-pools-canonical-grouping-evidence.json");
 const html = fs.readFileSync(appPath, "utf8");
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
@@ -84,6 +88,9 @@ assert.equal(model.formatRange(fixture.qualityPool, modes.MINIMUM_Q_POOL), "Q500
 assert.equal(model.formatRange(fixture.qualityPool, modes.MAXIMUM_Q_POOL), "Q800+");
 assert.equal(model.eligibleUnits(fixture.batches, material.commodityUuid, "SCU", fixture.qualityPool, modes.MINIMUM_Q_POOL, canonical), 17440);
 assert.equal(model.eligibleUnits(fixture.batches, material.commodityUuid, "SCU", fixture.qualityPool, modes.MAXIMUM_Q_POOL, canonical), 31240);
+const q866Only = fixture.batches.filter((batch) => batch.quality === 866);
+assert.equal(model.eligibleUnits(q866Only, material.commodityUuid, "SCU", fixture.qualityPool, modes.MINIMUM_Q_POOL, canonical), 0);
+assert.equal(model.eligibleUnits(q866Only, material.commodityUuid, "SCU", fixture.qualityPool, modes.MAXIMUM_Q_POOL, canonical), 31240);
 
 const invalidPool = { minimumQ: 800, maximumQ: 800 };
 assert.equal(model.resolveRange(invalidPool, modes.MINIMUM_Q_POOL).status, model.rangeStatus.INVALID);
@@ -92,6 +99,9 @@ assert.equal(model.eligibleUnits(fixture.batches, material.commodityUuid, "SCU",
 const minimumOnlyPool = { minimumQ: 500, maximumQ: null };
 assert.equal(model.resolveRange(minimumOnlyPool, modes.MINIMUM_Q_POOL).maximumExclusive, null);
 assert.equal(model.eligibleUnits(fixture.batches, material.commodityUuid, "SCU", minimumOnlyPool, modes.MINIMUM_Q_POOL, canonical), 48680);
+const maximumOnlyPool = { minimumQ: null, maximumQ: 800 };
+assert.equal(model.resolveRange(maximumOnlyPool, modes.MAXIMUM_Q_POOL).minimumInclusive, 800);
+assert.equal(model.eligibleUnits(fixture.batches, material.commodityUuid, "SCU", maximumOnlyPool, modes.MAXIMUM_Q_POOL, canonical), 31240);
 
 const known = model.buildKnown(canonical, clone(fixture.batches), [], null);
 assert.equal(known.length, 1, "Az exact commodity/ingredient bridge egy logical materialt kell adjon.");
@@ -206,7 +216,11 @@ const evidence = {
     batches: inventoryGroups[0].batches.length,
     totalInventoryUnits: 48680,
     minimumEligibleUnits: 17440,
-    maximumEligibleUnits: 31240
+    maximumEligibleUnits: 31240,
+    q866OnlyMinimumEligibleUnits: 0,
+    q866OnlyMaximumEligibleUnits: 31240,
+    minimumOnlyUnboundedEligibleUnits: 48680,
+    maximumOnlyEligibleUnits: 31240
   },
   poolSemantics: "MINIMUM_Q_INCLUSIVE_AND_MAXIMUM_Q_EXCLUSIVE; MAXIMUM_Q_INCLUSIVE",
   invalidRange: "POOL_RANGE_INVALID",

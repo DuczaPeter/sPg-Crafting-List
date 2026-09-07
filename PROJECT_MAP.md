@@ -79,6 +79,9 @@
 - V003-C013.2 friss candidate kapu: `tools/validate-v003-c0132-fresh.ps1`; exact `9a07de3...` source-lock, determinisztikus single-file build, teljes releváns regresszió, C013.1 mixed-shortage/parity és V001/V002 integritás.
 - V003-C013.2 builder/target: `tools/build-v003-c0132-fresh-candidate.mjs`, `tools/run-v003-c0132-fresh-tests.mjs`; artifact: `test-artifacts/V003-C013.2/fresh-release-candidate/`.
 - V003-C013.2 riport: `docs/V003_C0132_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact manual candidate `file://` gate NOT RUN.
+- V003-C013.4 friss candidate kapu: `tools/validate-v003-c0134-fresh.ps1`; exact `2c138cf8...` source-lock, teljes releváns történeti regresszió, C013.1/C013.3 release fixture és V001/V002 integritás.
+- V003-C013.4 builder/target: `tools/build-v003-c0134-fresh-candidate.mjs`, `tools/run-v003-c0134-fresh-tests.mjs`; artifact: `test-artifacts/V003-C013.4/fresh-release-candidate/`.
+- V003-C013.4 riport: `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact candidate `file://` manual gate NOT RUN.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -151,6 +154,7 @@
 - `test-artifacts/V003-C013.1/`: strict Quality allocation, vegyes hiányosztályozás, FR-86 cross-view/standalone és célzott validator bizonyíték.
 - `test-artifacts/V003-C013.2/`: exact C013.1 source-ból épített friss candidate, teljes regressziós, mixed-shortage, standalone és valódi Chrome localhost evidence.
 - `test-artifacts/V003-C013.3/`: diszjunkt Minimum/MAX pool, Titanium exact canonical multi-source grouping, standalone parity és célzott regressziós evidence.
+- `test-artifacts/V003-C013.4/`: exact C013.3 source-ból épített friss candidate, teljes regressziós, C013.1/C013.3, standalone és valódi Chrome localhost evidence.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.
@@ -161,6 +165,13 @@
 - `tools/run-v003-c0133-tests.mjs`: diszjunkt eligibility, canonical My Materials grouping és cross-view parity célteszt.
 - `tools/validate-v003-c0133.ps1`: csak a közvetlenül érintett regressziókat és release-integritást futtató bounded validator.
 - `docs/V003_C0133_DISJOINT_POOLS_CANONICAL_GROUPING_REPORT.md`: gyökérok, szabály, exact UUID evidence és eredmények.
+
+## V003-C013.4 friss release candidate
+
+- `tools/build-v003-c0134-fresh-candidate.mjs`: exact source commitból byte-azonos single-file RC builder.
+- `tools/run-v003-c0134-fresh-tests.mjs`: candidate-scoped D1, C013.1 és kibővített C013.3 fixture/parity kapu.
+- `tools/validate-v003-c0134-fresh.ps1`: teljes releváns release-regresszió, SHA-immutability, invalidált C013.2 és V001/V002 integrity validator.
+- `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`: exact candidate és automated/Chrome acceptance riport.
 
 ## Iranyito fajlok
 

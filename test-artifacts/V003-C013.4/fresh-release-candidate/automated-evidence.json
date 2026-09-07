@@ -1,0 +1,140 @@
+{
+    "cycle":  "V003-C013.4",
+    "status":  "AUTOMATED_AND_CHROME_PASS_MANUAL_FILE_GATE_NOT_RUN",
+    "sourceHead":  "2c138cf8cdaccb5a746bc0de7b6537259cc8985d",
+    "candidate":  {
+                      "path":  "test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html",
+                      "bytes":  815774,
+                      "sha256Before":  "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+                      "sha256After":  "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+                      "immutable":  true,
+                      "singleFile":  true,
+                      "embeddedCss":  true,
+                      "embeddedJavaScript":  true,
+                      "localRuntimeSidecars":  0
+                  },
+    "regression":  {
+                       "C001_C0122_M1_M61_C04":  "PASS",
+                       "C0123":  "PASS",
+                       "C0124":  "PASS",
+                       "C0125A_C0125C3B2":  "PASS",
+                       "C0125D1":  "PASS",
+                       "C0131":  "PASS",
+                       "C0133":  "PASS",
+                       "staticSingleFile":  "PASS",
+                       "backupRestore":  "PASS"
+                   },
+    "mixedShortage":  {
+                          "cycle":  "V003-C013.1",
+                          "status":  "TARGET_PASS",
+                          "fixture":  "FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE",
+                          "scheduling":  "CARD_PRIORITY -\u003e CANONICAL_MATERIAL_UNIT_GROUP -\u003e EFFECTIVE_MINIMUM_DESC -\u003e STABLE_RECIPE_SLOT",
+                          "field":  {
+                                        "reservedUnits":  60000,
+                                        "missingAmountUnits":  93000,
+                                        "missingQualityUnits":  170000,
+                                        "availablePhysicalUnitsAtSlot":  230000,
+                                        "availableEligibleUnitsAtSlot":  60000
+                                    },
+                          "shell":  {
+                                        "reservedUnits":  170000,
+                                        "missingAmountUnits":  34000,
+                                        "missingQualityUnits":  0,
+                                        "availablePhysicalUnitsAtSlot":  170000,
+                                        "availableEligibleUnitsAtSlot":  170000
+                                    },
+                          "global":  {
+                                         "inventoryUnits":  230000,
+                                         "reservedUnits":  230000,
+                                         "missingAmountUnits":  127000,
+                                         "missingQualityUnits":  170000,
+                                         "missingUnits":  297000
+                                     },
+                          "reverseRecipeRows":  "PASS",
+                          "cardPriority":  "PASS",
+                          "noDoubleReserve":  "PASS",
+                          "m4Audit":  "TECHNICAL_BASELINE_HARNESS_CANONICAL_ARGUMENT_MISSING",
+                          "applicationCombinedParity":  "PASS_EXACT_CANONICAL_UUID",
+                          "crossViewParity":  "PASS_FINAL_CARD_CRAFTING_LIST_COMBINED_MAXIMUM_CRAFTABLE_STANDALONE",
+                          "maxCraftable":  3,
+                          "standalone":  "PASS_SINGLE_FILE_MIXED_SHORTAGE"
+                      },
+    "disjointPoolsCanonicalGrouping":  {
+                                           "cycle":  "V003-C013.3",
+                                           "status":  "PASS",
+                                           "fixtures":  {
+                                                            "DISJOINT_MINIMUM_MAX_QUALITY_POOLS":  "PASS",
+                                                            "CANONICAL_MATERIAL_MULTI_SOURCE_UUID_GROUPING":  "PASS",
+                                                            "sameCardTwoSlotPool":  "PASS",
+                                                            "twoCardPriority":  "PASS",
+                                                            "reverseRecipeRow":  "PASS",
+                                                            "combinedParity":  "PASS",
+                                                            "myMaterialsGroupingParity":  "PASS",
+                                                            "maxCraftableParity":  "PASS",
+                                                            "finalCardCraftingListParity":  "PASS_SHARED_ALLOCATION_MODEL",
+                                                            "standaloneParity":  "PASS_READ_ONLY_PROJECTION",
+                                                            "reloadPersistence":  "PASS",
+                                                            "backupRestore":  "PASS_SOURCE_UUID_PRESERVED",
+                                                            "noDoubleReserve":  "PASS",
+                                                            "canonicalExactMapping":  "PASS_NO_NAME_MERGE"
+                                                        },
+                                           "titanium":  {
+                                                            "canonicalMaterialUuid":  "64978449-1d87-4a16-ba55-4b5f94fee217",
+                                                            "sourceMaterialUuid":  "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+                                                            "logicalMaterials":  1,
+                                                            "displayedCards":  1,
+                                                            "batches":  2,
+                                                            "totalInventoryUnits":  48680,
+                                                            "minimumEligibleUnits":  17440,
+                                                            "maximumEligibleUnits":  31240,
+                                                            "q866OnlyMinimumEligibleUnits":  0,
+                                                            "q866OnlyMaximumEligibleUnits":  31240,
+                                                            "minimumOnlyUnboundedEligibleUnits":  48680,
+                                                            "maximumOnlyEligibleUnits":  31240
+                                                        },
+                                           "poolSemantics":  "MINIMUM_Q_INCLUSIVE_AND_MAXIMUM_Q_EXCLUSIVE; MAXIMUM_Q_INCLUSIVE",
+                                           "invalidRange":  "POOL_RANGE_INVALID",
+                                           "applicationCodeChanged":  true,
+                                           "fullReleaseRegression":  "NOT_RUN_BY_SCOPE",
+                                           "freshReleaseCandidateRequired":  true
+                                       },
+    "standalone":  {
+                       "d1Path":  "test-artifacts/V003-C013.4/fresh-release-candidate/standalone/sPg Crafting List - FR-86 shortage.html",
+                       "mixedPath":  "test-artifacts/V003-C013.4/fresh-release-candidate/c0131-mixed-shortage/standalone/sPg Crafting List - FR-86 mixed shortage.html",
+                       "readOnly":  true,
+                       "editorControls":  0,
+                       "indexedDbWriteSurface":  0,
+                       "allocationRecomputation":  0,
+                       "parity":  "PASS"
+                   },
+    "blockedC0132Candidate":  {
+                                  "status":  "UNCHANGED_BLOCKED_INVALIDATED",
+                                  "sha256":  "cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31"
+                              },
+    "v001V002Integrity":  {
+                              "status":  "PASS",
+                              "v001Commit":  "b22dbc3c2ef0765e30aa3806537854298c873dff",
+                              "v002Commit":  "b326aaff5838aafd5b1f13b16982c29a0e150e35",
+                              "v002ArtifactSha256":  "de2d59b4203862167d90f8aa598ec6b043ea0556ead1afe7e067f69d659f2357"
+                          },
+    "applicationCodeChanged":  false,
+    "chrome":  {
+                   "status":  "PASS_REAL_GOOGLE_CHROME_LOCALHOST",
+                   "origin":  "http://127.0.0.1:41991",
+                   "technicalBaseline":  "15/15 PASS",
+                   "modules":  "8/8 PASS",
+                   "viewports":  "1920x1080; 1366x768; 390x844",
+                   "horizontalOverflow":  "0/0/0",
+                   "consoleWarnError":  "0/0",
+                   "activeScVersion":  "4.10.0-LIVE.12519617",
+                   "wiki":  "PASS",
+                   "uex":  "PASS_215_YIELD_RECORDS",
+                   "indexedDb":  "PASS_SCHEMA_4",
+                   "reload":  "PASS_DATASET_AND_TECHNICAL_PROBE_PERSISTED",
+                   "externalStylesheets":  0,
+                   "externalScripts":  0,
+                   "evidence":  "test-artifacts/V003-C013.4/fresh-release-candidate/chrome-localhost-evidence.json"
+               },
+    "exactManualCandidateFileGate":  "NOT_RUN",
+    "stableRelease":  false
+}

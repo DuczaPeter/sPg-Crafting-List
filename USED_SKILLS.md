@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C013.4 Fresh release candidate
+
+- Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.
+- Mikor használtuk: `2026-09-07`, az exact C013.3 checkpointból készített friss single-file RC teljes release-regressziójához és valódi Chrome localhost kapujához.
+- Mire segített: a minimális resume, determinisztikus source/hash lock, bounded tesztlánc, valamint a nyolc modul, három viewport, konzol, Wiki/UEX/IndexedDB és reload böngészős bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C013.4 builder/validator/evidence/report és ciklusmetaadatok; application code, V001/V002 és távoli Git nem változott.
+- Kell-e később tanulsagot visszaírni a skillbe: `nem`.
+
 ## V003-C012.5D2B Exact manual file gate
 
 - Skill neve: `credit-efficient-project-runner`.
