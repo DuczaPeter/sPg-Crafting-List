@@ -1,0 +1,16 @@
+{
+    "cycle":  "V003-C013.3",
+    "status":  "PASS",
+    "targetedRegression":  "PASS",
+    "fullReleaseRegression":  "NOT_RUN_BY_SCOPE",
+    "applicationSha256Before":  "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+    "applicationSha256After":  "38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b",
+    "blockedC0132Candidate":  {
+                                  "status":  "INVALIDATED",
+                                  "sha256":  "cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31",
+                                  "unchanged":  true
+                              },
+    "v001V002Integrity":  "PASS",
+    "stableRelease":  false,
+    "freshReleaseCandidateRequired":  true
+}

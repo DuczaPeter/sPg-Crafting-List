@@ -122,8 +122,8 @@ const reversed = model.allocate([card("reverse", 0, [fieldArray, shell])], clone
 assert.equal(findSlot(reversed, "reverse", fieldArray.id).allocatedUnits, 60000);
 assert.equal(findSlot(reversed, "reverse", shell.id).allocatedUnits, 170000);
 
-// Card priority stays above same-material Quality strictness across Cards.
-const highPriority = card("priority-high", 0, [shell], { [shell.id]: model.poolModes.MINIMUM_Q_POOL });
+// Card priority remains primary when Cards compete inside the same disjoint pool.
+const highPriority = card("priority-high", 0, [shell], { [shell.id]: model.poolModes.MAXIMUM_Q_POOL });
 highPriority.quantity = 5;
 const lowPriority = card("priority-low", 1, [fieldArray], { [fieldArray.id]: model.poolModes.MAXIMUM_Q_POOL });
 lowPriority.quantity = 1;

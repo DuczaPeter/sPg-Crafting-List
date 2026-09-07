@@ -1,0 +1,59 @@
+{
+  "name": "DISJOINT_MINIMUM_MAX_QUALITY_POOLS_AND_CANONICAL_MATERIAL_MULTI_SOURCE_UUID_GROUPING",
+  "scVersion": "4.10.0-LIVE.12519617",
+  "material": {
+    "name": "Titanium",
+    "ingredientUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+    "commodityUuid": "64978449-1d87-4a16-ba55-4b5f94fee217"
+  },
+  "qualityPool": {
+    "minimumQ": 500,
+    "maximumQ": 800
+  },
+  "batches": [
+    {
+      "id": "c0133-titanium-q866",
+      "materialUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "sourceMaterialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "materialName": "Titanium",
+      "quality": 866,
+      "quantityUnits": 31240,
+      "unit": "SCU",
+      "createdAt": "2026-09-07T08:00:00.000Z"
+    },
+    {
+      "id": "c0133-titanium-q784",
+      "materialUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "sourceMaterialUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "materialName": "Titanium",
+      "quality": 784,
+      "quantityUnits": 17440,
+      "unit": "SCU",
+      "createdAt": "2026-09-07T08:00:01.000Z"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "c0133-minimum-slot",
+      "ingredientUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "commodityUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "materialName": "Titanium",
+      "recipeSlotName": "Minimum Pool Slot",
+      "requiredQuantityUnits": 20000,
+      "unit": "SCU",
+      "qualityCapability": "FIXED",
+      "affectedStats": []
+    },
+    {
+      "id": "c0133-maximum-slot",
+      "ingredientUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "commodityUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "materialName": "Titanium",
+      "recipeSlotName": "MAX Pool Slot",
+      "requiredQuantityUnits": 10000,
+      "unit": "SCU",
+      "qualityCapability": "FIXED",
+      "affectedStats": []
+    }
+  ]
+}

@@ -176,7 +176,7 @@ assert.equal(happyCombined.totals.availableUnits, 31000);
 assert.ok(happy.allocation.batchUsage.every((entry) => entry.reservedUnits <= entry.quantityUnits));
 assert.deepEqual(clone(happy.finalCard.requirements.map((entry) => [entry.recipeSlotId, entry.standaloneQuality.assignmentMode])), clone(happy.craftingListCard.requirements.map((entry) => [entry.recipeSlotId, entry.standaloneQuality.assignmentMode])));
 assert.deepEqual(clone(happy.finalCard.requirements.map((entry) => entry.standaloneQuality.displayLabel)), clone(happy.snapshot.requirements.map((entry) => entry.standaloneQuality.displayLabel)));
-assert.match(happy.standalone, /Shell[\s\S]*Minimum Q · Q500\+/);
+assert.match(happy.standalone, /Shell[\s\S]*Minimum Q · Q500–Q699/);
 assert.match(happy.standalone, /Field Array[\s\S]*MAX Q · Q700\+/);
 assertSingleFileRuntimeMarkup(happy.standalone);
 assert.equal(fingerprint({ card, pools, happyBatches }), happyInputFingerprint);
@@ -245,7 +245,7 @@ assert.ok(inventoryOnly);
 assert.equal(inventoryOnly.poolMetrics.minimum.requiredUnits, 0);
 assert.equal(inventoryOnly.poolMetrics.maximum.reservedUnits, 0);
 assert.deepEqual(clone(inventoryOnly.qualityPool), { minimumQ: 500, maximumQ: 700 });
-assert.equal(inventoryOnly.eligibleInventory.minimumUnits, 31000);
+assert.equal(inventoryOnly.eligibleInventory.minimumUnits, 12000);
 assert.equal(inventoryOnly.eligibleInventory.maximumUnits, 19000);
 assert.equal(inventoryOnly.totals.availableUnits, 31000);
 
@@ -319,7 +319,7 @@ const evidence = {
   standalone: {
     source: "MAIN_COMPUTES_SNAPSHOT_STORES_STANDALONE_RENDERS",
     recomputation: false,
-    minimumLabel: "Minimum Q · Q500+",
+    minimumLabel: "Minimum Q · Q500–Q699",
     maximumLabel: "MAX Q · Q700+",
     editableControls: 0,
     userDataWrite: false,

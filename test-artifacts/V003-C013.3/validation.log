@@ -1,0 +1,18 @@
+V003-C013.3 targeted validation
+static-single-file=PASS
+c0133-disjoint-pools-canonical-grouping=PASS
+m2-allocation-regression=PASS
+m4-combined-backup-regression=PASS
+c0125a-canonical-inventory=PASS
+c0125b-disjoint-preview=PASS
+c0125c2-dropdown-labels=PASS
+c0125c3a-pool-allocation-max=PASS
+c0125c3b1-combined-pool-metrics=PASS
+c0125c3b2-standalone-parity=PASS
+c0125d1-integrated-parity=PASS
+c0131-strict-quality-shortage=PASS
+APPLICATION_SHA_BEFORE_AFTER=PASS
+C0132_BLOCKED_CANDIDATE_UNCHANGED=PASS
+V001_V002_INTEGRITY=PASS
+FULL_RELEASE_REGRESSION=NOT_RUN_BY_SCOPE
+V003_TAG_RELEASE=NONE

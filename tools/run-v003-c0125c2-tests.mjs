@@ -110,7 +110,7 @@ assert.equal(uiFor(duplicate, shell).selectedValue, modes.MAXIMUM_Q_POOL);
 const cleared = model.clearRecipeSlotQualityPoolAssignment(cardA.recipeSlotQualityPoolAssignments, shell.id);
 assert.equal(model.recipeSlotQualityPoolAssignmentFor({ recipeSlotQualityPoolAssignments: cleared }, shell.id).explicit, false);
 assert.equal(uiFor({ ...cardA, recipeSlotQualityPoolAssignments: cleared }, shell).selectedValue, legacy);
-assert.equal(uiFor(cardA, shell, "Q500+", { [stileron.commodityUuid]: { minimumQ: 700, maximumQ: 990 } }).options[2].label, "Minimum Q · Q700+");
+assert.equal(uiFor(cardA, shell, "Q500+", { [stileron.commodityUuid]: { minimumQ: 700, maximumQ: 990 } }).options[2].label, "Minimum Q · Q700–Q989");
 assert.equal(uiFor(cardA, shell, "Q500+", { [stileron.commodityUuid]: { minimumQ: 700, maximumQ: 990 } }).options[3].label, "MAX Q · Q990+");
 assert.equal(cardA.recipeSlotQualityPoolAssignments[shell.id], modes.MINIMUM_Q_POOL, "A threshold változás nem írhat numerikus értéket az assignmentbe.");
 

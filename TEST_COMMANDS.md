@@ -603,7 +603,7 @@ Csak a C012.5B model/fixture teszt:
 node .\tools\run-v003-c0125b-tests.mjs
 ```
 
-- `v003-c0125b-combined-quality-pools`: két külön 0–1000 egész threshold, átfedő eligible preview készletduplázás nélkül, exact commodity/ingredient közös beállítás, no-fuzzy negatív fixture, inventory-only és recipe add/remove, backup/restore, régi backup és közvetlen C012.5A/C012.4/C012.3 regresszió.
+- `v003-c0125b-combined-quality-pools`: két külön 0–1000 egész threshold, a C013.3 aktuális szemantikája szerint diszjunkt eligible preview, exact commodity/ingredient közös beállítás, no-fuzzy negatív fixture, inventory-only és recipe add/remove, backup/restore, régi backup és közvetlen C012.5A/C012.4/C012.3 regresszió.
 - Artifactok: `test-artifacts/V003-C012.5B/`.
 
 V003-C012.5C1 célzott kapu (Recipe Slot assignment model/perzisztencia; UI és allocation nélkül):
@@ -722,3 +722,20 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c
 - `v003-c0132-fresh-release-candidate`: determinisztikus single-file build, teljes releváns C001-C012.5C3B2 + D1 + M1-M6.1 + C04 + C013.1 regresszió, kötelező FR-86 mixed-shortage/parity és V001/V002 integritás.
 - Candidate: `test-artifacts/V003-C013.2/fresh-release-candidate/sPg Crafting List V003 RC.html`.
 - A Chrome localhost evidence külön, ugyanazon hash-zárolt candidate-en készül; exact manual candidate `file://` gate nincs automatizálva.
+
+V003-C013.3 célzott repair kapu (diszjunkt poolok + exact canonical grouping):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0133.ps1"
+```
+
+Csak a C013.3 modellfixture:
+
+```powershell
+node .\tools\run-v003-c0133-tests.mjs
+```
+
+- `DISJOINT_MINIMUM_MAX_QUALITY_POOLS`: Minimum `[minimumQ, maximumQ)`, MAX `[maximumQ, +∞)`, borrowing/fallback nélkül; invalid tartomány fail-safe.
+- `CANONICAL_MATERIAL_MULTI_SOURCE_UUID_GROUPING`: exact commodity↔ingredient UUID bridge, egy Titanium kártya/két batch/4,868 SCU, provenance megőrzéssel és fuzzy/name merge nélkül.
+- A validator közvetlen M2/M4, C012.5A–C3B2, D1 és C013.1 regressziót, static single-file kaput, candidate immutabilityt és V001/V002 integritást ellenőriz. Teljes release-regresszió és Chrome nem része a scope-nak.
+- Artifactok: `test-artifacts/V003-C013.3/`.

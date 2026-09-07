@@ -2,16 +2,15 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; source checkpoint: `9a07de34643fed477399b070462aeb2be3d4f11a`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013.2`; alkalmazáskód-módosítás: **NINCS**.
-- Friss candidate: `test-artifacts/V003-C013.2/fresh-release-candidate/sPg Crafting List V003 RC.html`.
-- Candidate: `806499` byte; SHA-256 előtte/utána `cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31`; single-file runtime sidecar `0`.
-- Teljes releváns regresszió: **PASS** (C001-C012.4, C012.5A-C3B2, D1, M1-M6.1, C04 és C013.1).
-- Kötelező FR-86 vegyes hiány: Field `6 / 9,3 / 17 SCU`, Shell `17 / 3,4 / 0 SCU`; globális reserved `23`, shortage `29,7 SCU`, double reserve `0`: **PASS**.
-- Final Card/Crafting List/Combined/Maximum Craftable/standalone parity: **PASS**.
-- Valódi Chrome localhost: Technical Baseline `15/15`, 8/8 modul, 1920/1366/390 overflow `0`, konzol WARN/ERROR `0/0`, Wiki/UEX/IndexedDB/reload: **PASS**.
-- Exact manual candidate `file://` gate: **NOT RUN**.
-- A régi C013 candidate változatlan és BLOCKED; V001/V002 integritás **PASS**.
-- V003 tag/release/push/main merge nincs. Riport: `docs/V003_C0132_RELEASE_CANDIDATE_REPORT.md`.
+- Branch: `develop/V003`; C013.3 baseline: `5bcfd32b29539010108b4ccfcde2e29e04eddf2c`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C013.3`; diszjunkt Quality pool és exact canonical material grouping repair: **PASS**.
+- Minimum/MAX pool: Minimum `[minimumQ, maximumQ)`, MAX `[maximumQ, +∞)`; nincs borrowing/fallback. MAX threshold nélkül a Minimum felső korlát nélküli. `minimumQ >= maximumQ` esetén fail-safe `POOL_RANGE_INVALID`.
+- Titanium exact mapping: ingredient `07570c9f-fdf6-4bca-a56b-c42809ec0e01` → canonical commodity `64978449-1d87-4a16-ba55-4b5f94fee217`; My Materials egy kártya, két batch, `4,868 SCU`, source provenance megőrizve.
+- C013.3 célzott suite, M2/M4, C012.5A–C3B2, D1 és C013.1 közvetlen regresszió: **PASS**. Teljes release-regresszió: **NOT RUN BY SCOPE**.
+- Combined/My Materials/Final Card/Crafting List/Maximum Craftable/standalone/reload/backup/no-double-reserve parity: **PASS**.
+- Fő HTML SHA-256 teszt előtt/után: `38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b`.
+- C013.2 RC változatlan SHA-256 mellett **BLOCKED / INVALIDATED**; új RC szükséges külön ciklusban.
+- V001/V002 integritás **PASS**; V003 tag/release/push/main merge nincs.
+- Riport: `docs/V003_C0133_DISJOINT_POOLS_CANONICAL_GROUPING_REPORT.md`.
 
-`V003-C013.2 – FRESH RC AFTER QUALITY REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C013.3 – DISJOINT QUALITY POOLS + CANONICAL MATERIAL GROUPING REPAIR PASS, FRESH RC REQUIRED`

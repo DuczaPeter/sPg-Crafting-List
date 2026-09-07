@@ -8456,6 +8456,47 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return normalizeMaterialQualityPools(next);
     }
 
+    /* C0133_DISJOINT_QUALITY_POOL_RANGE_START */
+    var MATERIAL_QUALITY_POOL_RANGE_STATUS = Object.freeze({
+      RESOLVED: "RESOLVED",
+      MISSING_THRESHOLD: "MISSING_THRESHOLD",
+      INVALID: "POOL_RANGE_INVALID"
+    });
+
+    function resolveMaterialQualityPoolRange(pool, assignmentMode) {
+      var source = normalizeMaterialQualityPool(pool);
+      var minimum = hasValidQuality(source.minimumQ) ? Number(source.minimumQ) : null;
+      var maximum = hasValidQuality(source.maximumQ) ? Number(source.maximumQ) : null;
+      if (minimum !== null && maximum !== null && minimum >= maximum) {
+        return {
+          status: MATERIAL_QUALITY_POOL_RANGE_STATUS.INVALID,
+          minimumInclusive: null,
+          maximumExclusive: null,
+          reason: "POOL_RANGE_INVALID"
+        };
+      }
+      if (assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL) {
+        return minimum === null
+          ? { status: MATERIAL_QUALITY_POOL_RANGE_STATUS.MISSING_THRESHOLD, minimumInclusive: null, maximumExclusive: maximum, reason: "POOL_THRESHOLD_UNRESOLVED" }
+          : { status: MATERIAL_QUALITY_POOL_RANGE_STATUS.RESOLVED, minimumInclusive: minimum, maximumExclusive: maximum, reason: "MINIMUM_POOL_DISJOINT_RANGE" };
+      }
+      if (assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL) {
+        return maximum === null
+          ? { status: MATERIAL_QUALITY_POOL_RANGE_STATUS.MISSING_THRESHOLD, minimumInclusive: null, maximumExclusive: null, reason: "POOL_THRESHOLD_UNRESOLVED" }
+          : { status: MATERIAL_QUALITY_POOL_RANGE_STATUS.RESOLVED, minimumInclusive: maximum, maximumExclusive: null, reason: "MAXIMUM_POOL_RANGE" };
+      }
+      return { status: MATERIAL_QUALITY_POOL_RANGE_STATUS.MISSING_THRESHOLD, minimumInclusive: null, maximumExclusive: null, reason: "POOL_MODE_UNSUPPORTED" };
+    }
+
+    function formatMaterialQualityPoolRange(pool, assignmentMode) {
+      var range = resolveMaterialQualityPoolRange(pool, assignmentMode);
+      if (range.status === MATERIAL_QUALITY_POOL_RANGE_STATUS.INVALID) { return "érvénytelen tartomány"; }
+      if (range.status !== MATERIAL_QUALITY_POOL_RANGE_STATUS.RESOLVED) { return "nincs beállítva"; }
+      return range.maximumExclusive === null
+        ? "Q" + range.minimumInclusive + "+"
+        : "Q" + range.minimumInclusive + "–Q" + (range.maximumExclusive - 1);
+    }
+
     function calculateQualityEligibleInventoryUnits(batches, materialUuid, unit, threshold, canonicalMaterials) {
       if (!hasValidQuality(threshold)) { return null; }
       var canonicalKey = resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials);
@@ -8468,6 +8509,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }, 0);
     }
 
+    function calculateQualityPoolEligibleInventoryUnits(batches, materialUuid, unit, pool, assignmentMode, canonicalMaterials) {
+      var range = resolveMaterialQualityPoolRange(pool, assignmentMode);
+      if (range.status !== MATERIAL_QUALITY_POOL_RANGE_STATUS.RESOLVED) { return null; }
+      var canonicalKey = resolveMaterialQualityPoolKey(materialUuid, canonicalMaterials);
+      return (Array.isArray(batches) ? batches : []).reduce(function (sum, batch) {
+        var batchKey = resolveMaterialQualityPoolKey(materialIdentity(batch) || batch.sourceMaterialUuid, canonicalMaterials);
+        var quality = hasValidQuality(batch.quality) ? Number(batch.quality) : null;
+        if (batchKey !== canonicalKey || (batch.unit || "UNKNOWN") !== unit || quality === null || quality < range.minimumInclusive || (range.maximumExclusive !== null && quality >= range.maximumExclusive)) {
+          return sum;
+        }
+        return sum + Number(batch.quantityUnits || 0);
+      }, 0);
+    }
+    /* C0133_DISJOINT_QUALITY_POOL_RANGE_END */
+
     /* C0125C3B1_COMBINED_POOL_METRICS_START */
     function buildCombinedPoolAllocationMetrics(usages, assignmentMode) {
       var matching = (Array.isArray(usages) ? usages : []).filter(function (usage) {
@@ -8479,7 +8535,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         result.missingUnits += Number(usage.missingUnits || 0);
         result.missingAmountUnits += Number(usage.missingAmountUnits || 0);
         result.missingQualityUnits += Number(usage.missingQualityUnits || 0);
-        if (usage.status === "POOL_THRESHOLD_UNRESOLVED" || usage.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED") {
+        if (usage.status === "POOL_THRESHOLD_UNRESOLVED" || usage.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED" || usage.status === "POOL_RANGE_INVALID" || usage.allocationBlockReason === "POOL_RANGE_INVALID") {
           result.unresolvedCount += 1;
         }
         return result;
@@ -8493,11 +8549,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         missingQualityUnits: 0,
         unresolvedCount: 0
       });
-      metrics.status = metrics.unresolvedCount > 0
-        ? "UNRESOLVED"
+      var invalidRange = matching.some(function (usage) {
+        return usage.status === "POOL_RANGE_INVALID" || usage.allocationBlockReason === "POOL_RANGE_INVALID";
+      });
+      metrics.status = invalidRange
+        ? "INVALID_RANGE"
+        : (metrics.unresolvedCount > 0
+          ? "UNRESOLVED"
         : (metrics.missingQualityUnits > 0
           ? "INSUFFICIENT_QUALITY"
-          : (metrics.missingAmountUnits > 0 ? "INSUFFICIENT_QUANTITY" : (metrics.requirementCount ? "SATISFIED" : "NO_ASSIGNMENT")));
+          : (metrics.missingAmountUnits > 0 ? "INSUFFICIENT_QUANTITY" : (metrics.requirementCount ? "SATISFIED" : "NO_ASSIGNMENT"))));
       return metrics;
     }
     /* C0125C3B1_COMBINED_POOL_METRICS_END */
@@ -8579,10 +8640,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var source = normalizeMaterialQualityPool(pool);
       if (mode === RECIPE_SLOT_QUALITY_POOL_UI_LEGACY) { return "Recept szerint · " + (effectiveLabel || "Q?"); }
       if (mode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL) {
-        return "Minimum Q" + (hasValidQuality(source.minimumQ) ? " · Q" + source.minimumQ + "+" : " · nincs beállítva");
+        return "Minimum Q · " + formatMaterialQualityPoolRange(source, mode);
       }
       if (mode === RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL) {
-        return "MAX Q" + (hasValidQuality(source.maximumQ) ? " · Q" + source.maximumQ + "+" : " · nincs beállítva");
+        return "MAX Q · " + formatMaterialQualityPoolRange(source, mode);
       }
       return "Bármely Q";
     }
@@ -8762,10 +8823,36 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return anyPolicy;
       }
 
+      var poolRange = resolveMaterialQualityPoolRange(pool, assignment.mode);
       var thresholdField = assignment.mode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "minimumQ" : "maximumQ";
       var threshold = pool[thresholdField];
       common.recipePoolThresholdField = thresholdField;
-      if (!hasValidQuality(threshold)) {
+      common.recipePoolRangeStatus = poolRange.status;
+      common.recipePoolMinimumInclusive = poolRange.minimumInclusive;
+      common.recipePoolMaximumExclusive = poolRange.maximumExclusive;
+      if (poolRange.status === MATERIAL_QUALITY_POOL_RANGE_STATUS.INVALID) {
+        var invalidRangePolicy = Object.assign({}, baselinePolicy, common, {
+          effectiveRule: M2_QUALITY_RULES.UNKNOWN,
+          effectiveTarget: null,
+          effectiveMinimum: null,
+          allocationRule: M2_QUALITY_RULES.UNKNOWN,
+          allocationTarget: null,
+          allocationMinimum: null,
+          allocationMaximumExclusive: null,
+          allocationStrategy: "FAIL_SAFE_INVALID_POOL_RANGE",
+          mode: M2_QUALITY_RULES.UNKNOWN,
+          targetQuality: null,
+          minimumQuality: null,
+          userMaterialQualityConstraint: { mode: assignment.mode, targetQuality: null },
+          recipePoolResolutionStatus: "POOL_RANGE_INVALID",
+          allocationBlockReason: "POOL_RANGE_INVALID",
+          reason: "RECIPE_SLOT_POOL_RANGE_INVALID"
+        });
+        invalidRangePolicy.userFacingLabel = "Érvénytelen Quality pool tartomány";
+        invalidRangePolicy.tooltip = "A Minimum Q értéknek kisebbnek kell lennie a MAX Q értéknél; allocation blokkolva.";
+        return invalidRangePolicy;
+      }
+      if (poolRange.status !== MATERIAL_QUALITY_POOL_RANGE_STATUS.RESOLVED || !hasValidQuality(threshold)) {
         var unresolvedPolicy = Object.assign({}, baselinePolicy, common, {
           effectiveRule: M2_QUALITY_RULES.UNKNOWN,
           effectiveTarget: null,
@@ -8793,6 +8880,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         allocationRule: M2_QUALITY_RULES.TARGET_Q,
         allocationTarget: effectiveMinimum,
         allocationMinimum: effectiveMinimum,
+        allocationMaximumExclusive: poolRange.maximumExclusive,
         allocationStrategy: "LOWEST_QUALITY_AT_OR_ABOVE_MINIMUM",
         mode: M2_QUALITY_RULES.TARGET_Q,
         targetQuality: effectiveMinimum,
@@ -8807,8 +8895,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           ? "RECIPE_SLOT_MINIMUM_Q_POOL"
           : "RECIPE_SLOT_MAXIMUM_Q_POOL"
       });
-      thresholdPolicy.userFacingLabel = formatEffectiveQualityLabel(thresholdPolicy);
-      thresholdPolicy.tooltip = formatEffectiveQualityTooltip(thresholdPolicy);
+      thresholdPolicy.userFacingLabel = formatMaterialQualityPoolRange(pool, assignment.mode);
+      thresholdPolicy.tooltip = (assignment.mode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "Minimum Q pool: " : "MAX Q pool: ") + thresholdPolicy.userFacingLabel + " · " + formatEffectiveQualityTooltip(thresholdPolicy);
       return thresholdPolicy;
     }
     /* C0125C3A_POOL_ALLOCATION_POLICY_END */
@@ -8831,8 +8919,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function batchEligibility(batch, rule) {
-      if (rule.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED") {
-        return { eligible: false, reason: "POOL_THRESHOLD_UNRESOLVED" };
+      if (rule.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED" || rule.allocationBlockReason === "POOL_RANGE_INVALID") {
+        return { eligible: false, reason: rule.allocationBlockReason };
       }
       if (rule.mode === M2_QUALITY_RULES.FIXED) {
         return { eligible: true, reason: "FIXED_QUALITY_NOT_APPLICABLE" };
@@ -8842,6 +8930,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       if (!hasValidQuality(batch.quality)) {
         return { eligible: false, reason: "BATCH_QUALITY_UNKNOWN" };
+      }
+      if (hasValidQuality(rule.allocationMaximumExclusive) && Number(batch.quality) >= Number(rule.allocationMaximumExclusive)) {
+        return { eligible: false, reason: "QUALITY_AT_OR_ABOVE_POOL_MAXIMUM" };
       }
       if (rule.mode === M2_QUALITY_RULES.HIGHEST_Q && hasValidQuality(rule.minimumQuality) && Number(batch.quality) < Number(rule.minimumQuality)) {
         return { eligible: false, reason: "QUALITY_BELOW_RECIPE_MINIMUM" };
@@ -8883,14 +8974,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
       function canonicalAllocationIdentity(value) {
         var sourceUuid = materialIdentity(value);
-        return canonicalBySourceUuid.get(sourceUuid) || sourceUuid;
+        return canonicalBySourceUuid.get(sourceUuid) || canonicalBySourceUuid.get(value && value.sourceMaterialUuid) || canonicalBySourceUuid.get(value && value.materialUuid) || (value && value.materialUuid) || sourceUuid;
       }
       var normalizedBatches = batches.map(function (batch) {
         if (!batch || !batch.id || !materialIdentity(batch) || !Number.isInteger(batch.quantityUnits) || batch.quantityUnits < 0) {
           throw new TypeError("Érvénytelen material batch az allocation bemenetben.");
         }
         return Object.assign({}, batch, {
-          sourceMaterialUuid: materialIdentity(batch),
+          sourceMaterialUuid: batch.sourceMaterialUuid || materialIdentity(batch),
           materialUuid: canonicalAllocationIdentity(batch),
           unit: batch.unit || "UNKNOWN",
           quality: hasValidQuality(batch.quality) ? Number(batch.quality) : null
@@ -9037,11 +9128,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (missingQualityUnits > 0 || rule.mode === M2_QUALITY_RULES.UNKNOWN) {
           shortageKinds.push(rule.allocationBlockReason === "POOL_THRESHOLD_UNRESOLVED"
             ? "POOL_THRESHOLD_UNRESOLVED"
-            : (rule.mode === M2_QUALITY_RULES.UNKNOWN ? "QUALITY_UNKNOWN" : "QUALITY"));
+            : (rule.allocationBlockReason === "POOL_RANGE_INVALID"
+              ? "POOL_RANGE_INVALID"
+              : (rule.mode === M2_QUALITY_RULES.UNKNOWN ? "QUALITY_UNKNOWN" : "QUALITY")));
         }
         var status = "SATISFIED";
         if (shortageKinds.indexOf("POOL_THRESHOLD_UNRESOLVED") !== -1) {
           status = "POOL_THRESHOLD_UNRESOLVED";
+        } else if (shortageKinds.indexOf("POOL_RANGE_INVALID") !== -1) {
+          status = "POOL_RANGE_INVALID";
         } else if (shortageKinds.indexOf("QUALITY_UNKNOWN") !== -1) {
           status = "QUALITY_UNKNOWN";
         } else if (missingAmountUnits > 0 && missingQualityUnits > 0) {
@@ -11407,6 +11502,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         },
         materials: sourceGroups.map(function (group) {
           var pool = materialQualityPoolFor(group.materialUuid, materialQualityPools, canonicalMaterials);
+          var minimumRange = resolveMaterialQualityPoolRange(pool, RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL);
+          var maximumRange = resolveMaterialQualityPoolRange(pool, RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL);
           return {
             key: group.key,
             materialUuid: group.materialUuid,
@@ -11414,9 +11511,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             unit: group.unit,
             plan: normalizeMaterialQualityPlan(materialQualityPlans && materialQualityPlans[group.materialUuid]),
             qualityPool: pool,
+            qualityPoolRanges: {
+              minimum: minimumRange,
+              maximum: maximumRange
+            },
             eligibleInventory: {
-              minimumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.minimumQ, canonicalMaterials),
-              maximumUnits: calculateQualityEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool.maximumQ, canonicalMaterials)
+              minimumUnits: calculateQualityPoolEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool, RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL, canonicalMaterials),
+              maximumUnits: calculateQualityPoolEligibleInventoryUnits(batches, group.materialUuid, group.unit, pool, RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL, canonicalMaterials)
             },
             poolMetrics: {
               minimum: buildCombinedPoolAllocationMetrics(group.usages, RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL),
@@ -14117,7 +14218,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         addOption(record, "ACTIVE_COMMODITY_CACHE");
       });
       (materialBatches || []).forEach(function (batch) {
-        addOption({ uuid: batch.materialUuid, materialName: batch.materialName }, "USER_INVENTORY");
+        addOption({
+          uuid: batch.materialUuid || batch.sourceMaterialUuid,
+          sourceUuids: [batch.materialUuid, batch.sourceMaterialUuid, batch.ingredientUuid],
+          materialName: batch.materialName
+        }, "USER_INVENTORY");
       });
       (craftingCards || []).forEach(function (card) {
         (card.requirements || []).forEach(function (requirement) {
@@ -14140,6 +14245,40 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid);
       });
     }
+
+    /* C0133_CANONICAL_INVENTORY_GROUPING_START */
+    function buildMaterialInventoryGroups(materialBatches, canonicalMaterials) {
+      var canonicalLookup = buildCombinedCanonicalMaterialLookup(canonicalMaterials);
+      var groups = new Map();
+      (Array.isArray(materialBatches) ? materialBatches : []).forEach(function (batch) {
+        if (!batch) { return; }
+        var sourceUuid = batch.sourceMaterialUuid || batch.ingredientUuid || batch.materialUuid;
+        var identity = canonicalLookup.get(sourceUuid) || canonicalLookup.get(batch.materialUuid) || {
+          uuid: batch.materialUuid || sourceUuid,
+          name: batch.materialName || "Ismeretlen material",
+          sourceUuids: [sourceUuid].filter(Boolean)
+        };
+        var unit = batch.unit || "UNKNOWN";
+        var key = identity.uuid + "::" + unit;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            key: key,
+            materialUuid: identity.uuid,
+            materialName: identity.name || batch.materialName || "Ismeretlen material",
+            unit: unit,
+            sourceUuids: [],
+            batches: []
+          });
+        }
+        var group = groups.get(key);
+        group.sourceUuids = Array.from(new Set(group.sourceUuids.concat([sourceUuid, batch.materialUuid, batch.ingredientUuid].filter(Boolean))));
+        group.batches.push(batch);
+      });
+      return Array.from(groups.values()).sort(function (a, b) {
+        return a.materialName.localeCompare(b.materialName, "hu") || a.unit.localeCompare(b.unit) || a.materialUuid.localeCompare(b.materialUuid);
+      });
+    }
+    /* C0133_CANONICAL_INVENTORY_GROUPING_END */
 
     function resolveKnownMaterialSelection(materialName, materialUuid, knownMaterials) {
       var records = Array.isArray(knownMaterials) ? knownMaterials : [];
@@ -14751,12 +14890,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function renderCombinedQualityPool(material, field, label) {
       var threshold = material.qualityPool[field];
+      var assignmentMode = field === "minimumQ" ? RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL : RECIPE_SLOT_QUALITY_POOL_MODES.MAXIMUM_Q_POOL;
+      var range = field === "minimumQ" ? material.qualityPoolRanges.minimum : material.qualityPoolRanges.maximum;
       var eligibleUnits = field === "minimumQ" ? material.eligibleInventory.minimumUnits : material.eligibleInventory.maximumUnits;
       var poolMetrics = field === "minimumQ" ? material.poolMetrics.minimum : material.poolMetrics.maximum;
       var section = document.createElement("section");
       section.className = "spg-c0125b-quality-pool";
       section.dataset.pool = field;
       section.dataset.poolStatus = poolMetrics.status;
+      section.dataset.poolRangeStatus = range.status;
       section.dataset.requirementCount = String(poolMetrics.requirementCount);
       section.dataset.requiredUnits = String(poolMetrics.requiredUnits);
       section.dataset.reservedUnits = String(poolMetrics.reservedUnits);
@@ -14792,7 +14934,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var eligible = document.createElement("span");
       eligible.className = "spg-c0125b-eligible";
       var eligibleCaption = document.createElement("small");
-      eligibleCaption.textContent = hasValidQuality(threshold) ? "Q" + threshold + "+ eligible készlet" : "Eligible készlet";
+      eligibleCaption.textContent = formatMaterialQualityPoolRange(material.qualityPool, assignmentMode) + " eligible készlet";
       var eligibleValue = document.createElement("strong");
       eligibleValue.textContent = eligibleUnits === null ? "—" : formatInventoryUnits(material.unit, eligibleUnits);
       eligible.append(eligibleCaption, eligibleValue);
@@ -14806,11 +14948,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       );
       var note = document.createElement("p");
       note.className = "spg-c0125b-pool-note";
-      note.textContent = poolMetrics.status === "UNRESOLVED"
+      note.textContent = range.status === MATERIAL_QUALITY_POOL_RANGE_STATUS.INVALID
+        ? "POOL_RANGE_INVALID · a Minimum Q értéknek kisebbnek kell lennie a MAX Q értéknél; allocation blokkolva."
+        : (poolMetrics.status === "UNRESOLVED"
         ? "Küszöb nincs beállítva · allocation feloldatlan."
         : (poolMetrics.requirementCount
           ? poolMetrics.requirementCount + " explicit pool requirement · allocation utáni részösszeg."
-          : "Nincs explicit " + label + " hozzárendelés.");
+          : "Nincs explicit " + label + " hozzárendelés."));
       section.append(inputLabel, eligible, metrics, note);
       return section;
     }
@@ -14961,23 +15105,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           usageByBatch.set(usage.batchId, usage);
         });
       }
-      var groups = new Map();
-      state.materialBatches.forEach(function (batch) {
-        var key = batch.materialUuid + "::" + batch.unit;
-        if (!groups.has(key)) {
-          groups.set(key, {
-            materialUuid: batch.materialUuid,
-            materialName: batch.materialName,
-            unit: batch.unit,
-            batches: []
-          });
-        }
-        groups.get(key).batches.push(batch);
-      });
+      var groups = buildMaterialInventoryGroups(state.materialBatches, state.knownMaterials);
       var summary = document.getElementById("materialInventorySummary");
       summary.replaceChildren();
       var summaryValues = [
-        ["Material / unit", groups.size],
+        ["Material / unit", groups.length],
         ["Quality batch", state.materialBatches.length],
         ["Tervezetten használt", state.allocationResult ? state.allocationResult.batchUsage.filter(function (batch) { return batch.reservedUnits > 0; }).length : 0]
       ];
@@ -14993,14 +15125,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       var container = document.getElementById("materialBatchList");
       container.replaceChildren();
-      if (!groups.size) {
+      if (!groups.length) {
         var empty = document.createElement("p");
         empty.className = "spg-muted";
         empty.textContent = "Még nincs rögzített Quality batch.";
         container.append(empty);
         return;
       }
-      Array.from(groups.values()).sort(function (a, b) {
+      groups.slice().sort(function (a, b) {
         return resolveMaterialDisplayName({ uuid: a.materialUuid, materialName: a.materialName }, "").localeCompare(resolveMaterialDisplayName({ uuid: b.materialUuid, materialName: b.materialName }, ""), "hu") || a.unit.localeCompare(b.unit);
       }).forEach(function (group) {
         var article = document.createElement("article");
@@ -15073,6 +15205,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var labels = {
         QUALITY_BELOW_500: "kihagyva: Q500 alatt",
         QUALITY_BELOW_TARGET: "kihagyva: cél-Q alatt",
+        QUALITY_AT_OR_ABOVE_POOL_MAXIMUM: "kihagyva: a Minimum Q pool felső határán vagy felette",
+        POOL_RANGE_INVALID: "kihagyva: érvénytelen Quality pool tartomány",
         BATCH_QUALITY_UNKNOWN: "kihagyva: Quality ismeretlen",
         QUALITY_RULE_UNKNOWN: "kihagyva: Quality szabály ismeretlen",
         UNIT_MISMATCH: "kihagyva: eltérő unit",
@@ -16542,6 +16676,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var baselineTarget = source.baselineTarget === undefined ? (policy.baselineTarget === undefined ? null : policy.baselineTarget) : source.baselineTarget;
       var poolThreshold = source.recipePoolThreshold === undefined ? (policy.recipePoolThreshold === undefined ? null : policy.recipePoolThreshold) : source.recipePoolThreshold;
       var poolThresholdField = source.recipePoolThresholdField || policy.recipePoolThresholdField || null;
+      var poolMaximumExclusive = source.recipePoolMaximumExclusive === undefined
+        ? (policy.recipePoolMaximumExclusive === undefined ? policy.allocationMaximumExclusive : policy.recipePoolMaximumExclusive)
+        : source.recipePoolMaximumExclusive;
       var effectiveRule = source.effectiveRule || policy.effectiveRule || source.rule || M2_QUALITY_RULES.UNKNOWN;
       var effectiveTarget = source.effectiveTarget === undefined ? (policy.effectiveTarget === undefined ? source.targetQuality : policy.effectiveTarget) : source.effectiveTarget;
       var effectiveMinimum = source.finalEffectiveMinimum === undefined
@@ -16549,7 +16686,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         : source.finalEffectiveMinimum;
       var resolutionStatus = source.recipePoolResolutionStatus || policy.recipePoolResolutionStatus || (assignmentExplicit ? "RESOLVED" : "LEGACY_RESOLVED");
       var blockReason = source.allocationBlockReason || policy.allocationBlockReason || null;
-      var unresolved = effectiveRule === M2_QUALITY_RULES.UNKNOWN || blockReason === "POOL_THRESHOLD_UNRESOLVED" || /^UNRESOLVED|^BLOCKED/.test(String(resolutionStatus));
+      var unresolved = effectiveRule === M2_QUALITY_RULES.UNKNOWN || blockReason === "POOL_THRESHOLD_UNRESOLVED" || blockReason === "POOL_RANGE_INVALID" || /^UNRESOLVED|^BLOCKED|^POOL_RANGE_INVALID/.test(String(resolutionStatus));
       var effectiveLabel = unresolved
         ? "Quality nem feloldható"
         : (source.userFacingQualityLabel || policy.userFacingLabel || formatEffectiveQualityLabel({ effectiveRule: effectiveRule, effectiveTarget: effectiveTarget }));
@@ -16570,7 +16707,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var baselineLabel = c0125c3b2BaselineLabel(baselineRule, baselineTarget);
       var tooltipParts = [displayLabel, baselineLabel];
       if (assignmentExplicit && hasValidQuality(poolThreshold)) {
-        tooltipParts.push((assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "Minimum Q" : "MAX Q") + " pool: Q" + Number(poolThreshold) + "+");
+        var poolRangeLabel = assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL && hasValidQuality(poolMaximumExclusive)
+          ? "Q" + Number(poolThreshold) + "–Q" + (Number(poolMaximumExclusive) - 1)
+          : "Q" + Number(poolThreshold) + "+";
+        tooltipParts.push((assignmentMode === RECIPE_SLOT_QUALITY_POOL_MODES.MINIMUM_Q_POOL ? "Minimum Q" : "MAX Q") + " pool: " + poolRangeLabel);
       }
       if (blockReason) { tooltipParts.push(blockReason); }
       return {
@@ -16582,6 +16722,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         baselineLabel: baselineLabel,
         poolThreshold: poolThreshold,
         poolThresholdField: poolThresholdField,
+        poolMaximumExclusive: poolMaximumExclusive === undefined ? null : poolMaximumExclusive,
         effectiveRule: effectiveRule,
         effectiveTarget: effectiveTarget,
         effectiveMinimum: effectiveMinimum,

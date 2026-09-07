@@ -279,7 +279,7 @@
     {
       "id": "v003-c0125b-combined-quality-pools",
       "level": "targeted-regression",
-      "description": "V003-C012.5B gate: per-canonical-material Minimum Q and MAX Q user settings, integer 0..1000 committed numeric editing, overlapping eligible-inventory previews without double-counting physical inventory, exact commodityUuid-to-ingredientUuid sharing without fuzzy matching, inventory-only and recipe add/remove persistence, backup/restore and older-backup compatibility, direct C012.5A/C012.4/C012.3 regression, static gate and frozen V001/V002 integrity.",
+      "description": "V003-C012.5B compatibility gate under current C013.3 semantics: per-canonical-material Minimum Q and MAX Q user settings, integer 0..1000 committed numeric editing, disjoint eligible-inventory previews, exact commodityUuid-to-ingredientUuid sharing without fuzzy matching, inventory-only and recipe add/remove persistence, backup/restore and older-backup compatibility, direct C012.5A/C012.4/C012.3 regression, static gate and frozen V001/V002 integrity.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0125b.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
@@ -322,6 +322,14 @@
       "description": "V003-C013.2 fresh candidate gate from exact C013.1 checkpoint: deterministic single-file byte copy, complete relevant C001-C012.5C3B2 plus D1/M1-M6.1/C04/C013.1 regression, mandatory FR-86 mixed shortage and cross-view parity, SHA immutability, blocked old C013 preservation and frozen V001/V002 integrity.",
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0132-fresh.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0133-disjoint-pools-canonical-grouping",
+      "level": "targeted-regression",
+      "description": "V003-C013.3 repair gate: disjoint Minimum [minimumQ, maximumQ) and MAX [maximumQ, infinity) pool eligibility without borrowing; fail-safe invalid ranges; exact commodity-to-ingredient canonical grouping with source provenance; My Materials/Combined/Allocation/Maximum/Final/Crafting/standalone/reload/backup parity; blocked C013.2 candidate and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0133.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],

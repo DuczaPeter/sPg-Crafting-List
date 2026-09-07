@@ -2,7 +2,17 @@
 
 ## Aktualis
 
-### V003-C013.2 Fresh Release Candidate
+### V003-C013.3 Disjoint Quality Pools + Canonical Grouping Repair
+
+- [x] Minimum pool `[minimumQ, maximumQ)`, MAX pool `[maximumQ, +∞)`; borrowing és magasabb tartományú fallback nincs.
+- [x] MAX threshold nélkül a Minimum pool felső korlát nélküli; `minimumQ >= maximumQ` fail-safe `POOL_RANGE_INVALID` és látható UI-státusz.
+- [x] Exact commodity↔ingredient canonical UUID mapping alapján a Titanium multi-source batch-ek egy My Materials kártyába kerülnek; name/fuzzy merge nincs.
+- [x] Allocation, Combined, My Materials, Maximum Craftable, Final/Crafting, standalone, reload, backup/restore és no-double-reserve céltesztek PASS.
+- [x] M2/M4, C012.5A–C3B2, D1 és C013.1 közvetlen regresszió PASS; teljes release-regresszió scope szerint nem futott.
+- [x] C013.2 candidate változatlan, de BLOCKED/INVALIDATED; V001/V002 integritás PASS.
+- [ ] Friss RC csak külön következő ciklusban.
+
+### V003-C013.2 Fresh Release Candidate – BLOCKED / INVALIDATED
 
 - [x] Exact source lock: `9a07de34643fed477399b070462aeb2be3d4f11a`; application code byte-változatlan.
 - [x] Új, determinisztikus single-file candidate külön C013.2 artifactban; a régi C013 candidate változatlan és BLOCKED.
@@ -11,7 +21,7 @@
 - [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
 - [x] Candidate SHA-256 a Chrome-kapu után is `cdbac1a7977845061494aa148e6603db2597270bcbcf49c587009bd6b3a0ca31`.
 - [x] V001/V002 integritás PASS; V003 tag/release/push/main merge nincs.
-- [ ] Exact manual candidate `file://` gate külön következő felhasználói ciklusban.
+- [x] Exact manual candidate `file://` gate két C013.3 blockerrel megállt; a candidate nem újrahasználható és nem releaselhető.
 
 ### V003-C013.1 Strict Quality Allocation + Shortage Repair
 

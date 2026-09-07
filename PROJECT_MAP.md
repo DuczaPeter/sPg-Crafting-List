@@ -150,9 +150,17 @@
 - `test-artifacts/V003-C013/`: a C012.3 release-blokkolo miatt explicit invalidalt, nem aktiv release-candidate bizonyitek; C013 commit nem keszult.
 - `test-artifacts/V003-C013.1/`: strict Quality allocation, vegyes hiányosztályozás, FR-86 cross-view/standalone és célzott validator bizonyíték.
 - `test-artifacts/V003-C013.2/`: exact C013.1 source-ból épített friss candidate, teljes regressziós, mixed-shortage, standalone és valódi Chrome localhost evidence.
+- `test-artifacts/V003-C013.3/`: diszjunkt Minimum/MAX pool, Titanium exact canonical multi-source grouping, standalone parity és célzott regressziós evidence.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.
+
+## V003-C013.3 célzott repair
+
+- `tests/fixtures/v003-c0133-disjoint-pools-canonical-grouping.json`: Titanium Q784/Q866, Minimum Q500/MAX Q800 exact canonical fixture.
+- `tools/run-v003-c0133-tests.mjs`: diszjunkt eligibility, canonical My Materials grouping és cross-view parity célteszt.
+- `tools/validate-v003-c0133.ps1`: csak a közvetlenül érintett regressziókat és release-integritást futtató bounded validator.
+- `docs/V003_C0133_DISJOINT_POOLS_CANONICAL_GROUPING_REPORT.md`: gyökérok, szabály, exact UUID evidence és eredmények.
 
 ## Iranyito fajlok
 

@@ -121,7 +121,8 @@ assert.equal(shellSnapshot.standaloneQuality.assignmentMode, model.modes.MINIMUM
 assert.equal(shellSnapshot.standaloneQuality.baselineRule, model.rules.FIXED);
 assert.equal(shellSnapshot.standaloneQuality.poolThreshold, 500);
 assert.equal(shellSnapshot.standaloneQuality.effectiveMinimum, 500);
-assert.equal(shellSnapshot.standaloneQuality.displayLabel, "Minimum Q · Q500+");
+assert.equal(shellSnapshot.standaloneQuality.poolMaximumExclusive, 700);
+assert.equal(shellSnapshot.standaloneQuality.displayLabel, "Minimum Q · Q500–Q699");
 assert.equal(shellSnapshot.standaloneQuality.baselineLabel, "FIXED recept · Bármely Q");
 assert.equal(fieldSnapshot.standaloneQuality.assignmentMode, model.modes.MAXIMUM_Q_POOL);
 assert.equal(fieldSnapshot.standaloneQuality.poolThreshold, 700);
@@ -191,7 +192,7 @@ assert.equal(resolved({
   userFacingQualityLabel: "Q?"
 }).displayLabel, "Quality nem feloldható");
 
-assert.match(standaloneHtml, /Shell[\s\S]*Minimum Q · Q500\+/);
+assert.match(standaloneHtml, /Shell[\s\S]*Minimum Q · Q500–Q699/);
 assert.match(standaloneHtml, /Field Array[\s\S]*MAX Q · Q700\+/);
 assert.match(standaloneHtml, /FIXED recept · Bármely Q/);
 assert.match(standaloneHtml, /Quality-hiány: 1,9 SCU/);

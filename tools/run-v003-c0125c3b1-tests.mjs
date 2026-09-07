@@ -106,7 +106,7 @@ assert.deepEqual(JSON.parse(JSON.stringify(happyStileron.poolMetrics.minimum)), 
 assert.equal(happyStileron.poolMetrics.maximum.requiredUnits, 19000);
 assert.equal(happyStileron.poolMetrics.maximum.reservedUnits, 19000);
 assert.equal(happyStileron.poolMetrics.maximum.missingUnits, 0);
-assert.equal(happyStileron.eligibleInventory.minimumUnits, 31000);
+assert.equal(happyStileron.eligibleInventory.minimumUnits, 12000);
 assert.equal(happyStileron.eligibleInventory.maximumUnits, 19000);
 assert.equal(happyStileron.totals.availableUnits, 31000);
 assert.equal(happyStileron.totals.requiredUnits, 31000);
@@ -171,7 +171,7 @@ assert.equal(inventoryStileron.poolMetrics.minimum.requirementCount, 0);
 assert.equal(inventoryStileron.poolMetrics.maximum.requirementCount, 0);
 assert.equal(inventoryStileron.poolMetrics.minimum.requiredUnits, 0);
 assert.deepEqual(JSON.parse(JSON.stringify(inventoryStileron.qualityPool)), { minimumQ: 500, maximumQ: 700 });
-assert.equal(inventoryStileron.eligibleInventory.minimumUnits, 31000);
+assert.equal(inventoryStileron.eligibleInventory.minimumUnits, 12000);
 assert.equal(inventoryStileron.eligibleInventory.maximumUnits, 19000);
 
 // Renderer scope: material-level metrics only, no recipe-slot names and no standalone work.
@@ -188,7 +188,7 @@ const evidence = {
   status: "PASS",
   minimumQRealMetrics: "PASS",
   maximumQRealMetrics: "PASS",
-  eligiblePreview: "PASS_OVERLAP_NOT_PHYSICAL_TOTAL",
+  eligiblePreview: "PASS_DISJOINT_MINIMUM_MAX",
   globalTotal: "PASS",
   anyQExcludedFromPools: "PASS",
   legacyFallbackExcludedFromPools: "PASS",

@@ -1,0 +1,35 @@
+{
+  "cycle": "V003-C013.1",
+  "status": "TARGET_PASS",
+  "fixture": "FR86_MIXED_AMOUNT_AND_QUALITY_SHORTAGE",
+  "scheduling": "CARD_PRIORITY -> CANONICAL_MATERIAL_UNIT_GROUP -> EFFECTIVE_MINIMUM_DESC -> STABLE_RECIPE_SLOT",
+  "field": {
+    "reservedUnits": 60000,
+    "missingAmountUnits": 93000,
+    "missingQualityUnits": 170000,
+    "availablePhysicalUnitsAtSlot": 230000,
+    "availableEligibleUnitsAtSlot": 60000
+  },
+  "shell": {
+    "reservedUnits": 170000,
+    "missingAmountUnits": 34000,
+    "missingQualityUnits": 0,
+    "availablePhysicalUnitsAtSlot": 170000,
+    "availableEligibleUnitsAtSlot": 170000
+  },
+  "global": {
+    "inventoryUnits": 230000,
+    "reservedUnits": 230000,
+    "missingAmountUnits": 127000,
+    "missingQualityUnits": 170000,
+    "missingUnits": 297000
+  },
+  "reverseRecipeRows": "PASS",
+  "cardPriority": "PASS",
+  "noDoubleReserve": "PASS",
+  "m4Audit": "TECHNICAL_BASELINE_HARNESS_CANONICAL_ARGUMENT_MISSING",
+  "applicationCombinedParity": "PASS_EXACT_CANONICAL_UUID",
+  "crossViewParity": "PASS_FINAL_CARD_CRAFTING_LIST_COMBINED_MAXIMUM_CRAFTABLE_STANDALONE",
+  "maxCraftable": 3,
+  "standalone": "PASS_SINGLE_FILE_MIXED_SHORTAGE"
+}

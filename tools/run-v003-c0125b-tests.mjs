@@ -64,9 +64,9 @@ const stileronView = overview.materials.find((material) => material.materialUuid
 assert.ok(stileronView);
 assert.deepEqual(JSON.parse(JSON.stringify(stileronView.qualityPool)), { minimumQ: 500, maximumQ: 950 });
 assert.equal(stileronView.totals.availableUnits, 30000);
-assert.equal(stileronView.eligibleInventory.minimumUnits, 30000);
+assert.equal(stileronView.eligibleInventory.minimumUnits, 20000);
 assert.equal(stileronView.eligibleInventory.maximumUnits, 10000);
-assert.notEqual(stileronView.eligibleInventory.minimumUnits + stileronView.eligibleInventory.maximumUnits, stileronView.totals.availableUnits, "Az átfedő eligible previewt tilos fizikai inventoryként összeadni.");
+assert.equal(stileronView.eligibleInventory.minimumUnits + stileronView.eligibleInventory.maximumUnits, stileronView.totals.availableUnits, "A diszjunkt Minimum/MAX eligible previewnak pontosan egyszer kell lefednie a fizikai inventoryt.");
 
 assert.deepEqual(
   JSON.parse(JSON.stringify(model.materialQualityPoolFor(stileron.ingredientUuid, fixture.qualityPools, canonicalMaterials))),
@@ -153,7 +153,7 @@ const evidence = {
   status: "PASS",
   inventoryOnlyMaterialCount: inventoryOnly.length,
   stileronPool: fixture.qualityPools[stileron.commodityUuid],
-  eligibleInventory: { totalUnits: 30000, minimumUnits: 30000, maximumUnits: 10000, noDoubleCount: "PASS" },
+  eligibleInventory: { totalUnits: 30000, minimumUnits: 20000, maximumUnits: 10000, disjoint: "PASS" },
   canonicalCommodityIngredientSharedSetting: "PASS",
   unlinkedSameNameRemainsSeparate: "PASS",
   independentMaterialSettings: "PASS",

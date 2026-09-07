@@ -476,3 +476,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a candidate byte-lock, a régi blokkolt C013 artifact elkülönítése, a generált regressziós zaj célzott visszaállítása, valamint a 15/15 Technical Baseline, nyolc modul, három viewport és tiszta konzol bizonyítására.
 - Mely fájlokat vagy döntéseket érintett: C013.2 builder/validator/target harness, candidate/evidence/report és projektmetaadatok; a fő alkalmazás HTML, V001 és V002 nem változott.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.3 Disjoint Quality Pools + Canonical Grouping Repair
+
+- Skillek neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-07`, a C013.2 kézi kapuján talált két blocker minimális resume-jához, célzott application repairjéhez és checkpoint lezárásához.
+- Mire segített: a szűk célteszt-scope, a teljes release-regresszió tudatos kihagyása, a generált történeti artifact-zaj elkülönítése, valamint a blokkolt C013.2 candidate és a stabil V001/V002 védelme.
+- Mely fájlokat vagy döntéseket érintett: Quality pool range/allocation/Combined/standalone és exact canonical My Materials grouping, C013.3 fixture/teszt/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
