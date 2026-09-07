@@ -339,6 +339,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0134-fresh.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0135-canonical-material-picker-dedup",
+      "level": "targeted-regression",
+      "description": "V003-C013.5 repair gate: exact versioned item/harvestable-to-commodity identity deduplicates the My Materials picker, preserves canonical UUID plus source provenance, hides unresolved same-name UUID choices without fuzzy merge, and keeps canonical inventory/Combined/allocation/backup parity; C013.4 remains blocked and no fresh RC is built.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0135.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

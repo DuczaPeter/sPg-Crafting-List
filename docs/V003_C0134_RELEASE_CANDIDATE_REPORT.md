@@ -4,6 +4,8 @@
 
 `V003-C013.4 – FRESH RC AFTER DISJOINT POOL + CANONICAL GROUPING REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
 
+> Utólagos státusz (`V003-C013.5`): az exact manual `file://` kapu Feynmaline canonical-picker duplikációt talált. Ez a candidate `BLOCKED / INVALIDATED`, nem folytatható és nem használható stabil release-hez. Az artifact byte-változatlan maradt.
+
 A C013.2 release candidate változatlanul `BLOCKED / INVALIDATED`; nem lett újrahasználva vagy patch-elve. Az új candidate kizárólag a `develop/V003` branch `2c138cf8cdaccb5a746bc0de7b6537259cc8985d` C013.3 checkpointjából készült.
 
 ## Exact candidate

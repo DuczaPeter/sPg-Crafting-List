@@ -81,7 +81,10 @@
 - V003-C013.2 riport: `docs/V003_C0132_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact manual candidate `file://` gate NOT RUN.
 - V003-C013.4 friss candidate kapu: `tools/validate-v003-c0134-fresh.ps1`; exact `2c138cf8...` source-lock, teljes releváns történeti regresszió, C013.1/C013.3 release fixture és V001/V002 integritás.
 - V003-C013.4 builder/target: `tools/build-v003-c0134-fresh-candidate.mjs`, `tools/run-v003-c0134-fresh-tests.mjs`; artifact: `test-artifacts/V003-C013.4/fresh-release-candidate/`.
-- V003-C013.4 riport: `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact candidate `file://` manual gate NOT RUN.
+- V003-C013.4 riport: `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact candidate `file://` manual gate canonical-picker blocker miatt BLOCKED/INVALIDATED.
+- V003-C013.5 exact picker kapu: `tools/validate-v003-c0135.ps1`; Feynmaline/Titanium canonical picker, aktív 4.10 identity audit, C013.3/C012.5A/M2/M4 és V001/V002 integritás.
+- V003-C013.5 célteszt/audit: `tools/run-v003-c0135-tests.mjs`, `tools/audit-v003-c0135-active-materials.mjs`; fixture: `tests/fixtures/v003-c0135-canonical-material-picker.json`.
+- V003-C013.5 riport: `docs/V003_C0135_CANONICAL_MATERIAL_PICKER_DEDUP_REPORT.md`; exact item→commodity identity, unresolved duplicate diagnosztika, friss RC szükséges.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -155,6 +158,7 @@
 - `test-artifacts/V003-C013.2/`: exact C013.1 source-ból épített friss candidate, teljes regressziós, mixed-shortage, standalone és valódi Chrome localhost evidence.
 - `test-artifacts/V003-C013.3/`: diszjunkt Minimum/MAX pool, Titanium exact canonical multi-source grouping, standalone parity és célzott regressziós evidence.
 - `test-artifacts/V003-C013.4/`: exact C013.3 source-ból épített friss candidate, teljes regressziós, C013.1/C013.3, standalone és valódi Chrome localhost evidence.
+- `test-artifacts/V003-C013.5/`: canonical picker célfixture, aktív 4.10 live identity audit és bounded validator evidence; új RC nincs.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.
@@ -172,6 +176,14 @@
 - `tools/run-v003-c0134-fresh-tests.mjs`: candidate-scoped D1, C013.1 és kibővített C013.3 fixture/parity kapu.
 - `tools/validate-v003-c0134-fresh.ps1`: teljes releváns release-regresszió, SHA-immutability, invalidált C013.2 és V001/V002 integrity validator.
 - `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`: exact candidate és automated/Chrome acceptance riport.
+
+## V003-C013.5 canonical material picker dedup
+
+- `tests/fixtures/v003-c0135-canonical-material-picker.json`: Feynmaline exact item→commodity, Titanium refined relation és unresolved same-name UUID fixture.
+- `tools/run-v003-c0135-tests.mjs`: picker/name→UUID/canonical batch/inventory/Combined/Allocation/reload/backup/no-fuzzy célteszt.
+- `tools/audit-v003-c0135-active-materials.mjs`: aktív 4.10 Wiki commodity + exact same-name Harvestable item-detail read-only audit.
+- `tools/validate-v003-c0135.ps1`: bounded célkapu, történeti artifact isolation, C013.4 immutability és stabil V001/V002 integritás.
+- `docs/V003_C0135_CANONICAL_MATERIAL_PICKER_DEDUP_REPORT.md`: gyökérok, identity szabály, exact/unresolved listák és eredmények.
 
 ## Iranyito fajlok
 

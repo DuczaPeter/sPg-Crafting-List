@@ -1,16 +1,17 @@
 # WORKLOG.md
 
-Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-through-V003-C013.3.md`.
+Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-V003-C013.4.md`.
 
 ## Aktuális ciklus
 
-### V003-C013.4 Fresh RC after Disjoint Pool + Canonical Grouping Repair – 2026-09-07
+### V003-C013.5 Canonical Material Picker Dedup Repair – 2026-09-07
 
-- Az exact `2c138cf8cdaccb5a746bc0de7b6537259cc8985d` C013.3 checkpointból nyers byte-másolattal új, külön C013.4 single-file candidate készült; a C013.2 candidate változatlanul BLOCKED/INVALIDATED.
-- Candidate: `815774` byte, SHA-256 `38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b`; embedded CSS/JS, runtime sidecar 0, source byte-identical.
-- A teljes releváns C001–C012.5/D1/C013.1/C013.3/M1–M6.1/C04/static/single-file/backup/standalone regresszió PASS.
-- A Titanium diszjunkt Q784/Q866, Q866-only, Minimum-only, MAX-only és invalid-range fixture, valamint a C013.1 mixed-shortage parity PASS.
-- Ugyanez az exact hash-zárolt RC valódi Google Chrome localhoston: Technical Baseline 15/15, nyolc modul, három viewport overflow 0, konzol 0/0, aktív 4.10-es dataset, Wiki/UEX/IndexedDB/reload PASS.
-- Alkalmazáskód nem módosult; V001/V002 integritás PASS; V003 tag/release/push/main merge nincs.
-- Exact candidate `file://` manual gate nem futott; következő külön felhasználói ellenőrzés.
-- Visszaállás: a C013.4 checkpoint commit revertje; stabil fallback a változatlan V002.
+- A C013.4 exact manual `file://` kapu Feynmaline duplicate picker blockernél megállt; az RC BLOCKED/INVALIDATED maradt, artifactja nem változott.
+- Root cause: `buildKnownMaterialOptions()` csak előre átfedő source-UUID halmazokat egyesített; külön item és commodity forrás esetén az exact relation nem került a picker lookupba.
+- Beépült a verziózott exact identity modell: egyetlen weight-1 `default_composition` item→commodity relation, meglévő `refined_version` és verified source UUID; fuzzy/name-only merge nincs.
+- Feynmaline és Titanium egy-egy canonical picker-opció; name→UUID autofill és canonical new-batch save PASS, source UUID provenance megmarad. Régi batch destruktív migráció nincs.
+- Aktív 4.10 live audit: 40 mineable + 32 harvestable commodity, 84 harvestable item, 18 exact detail relation; 128 név, 126 látható picker-opció, 24 exact multi-UUID identity, 2 unresolved duplicate név.
+- Unresolved: `Leyland's Tortoise` és `Yormandi Tongue`; egyikhez sem készült kitalált canonical UUID, a megtévesztő duplikált picker-sorok rejtve maradnak.
+- C013.5 target, static single-file, C013.3 Titanium, C012.5A, M2, M4, reload/backup/Combined/allocation/no-double-reserve és V001/V002 integritás PASS.
+- Teljes release-regresszió és friss RC scope szerint nem futott; V003 tag/release/push/main merge nincs.
+- Visszaállás: a C013.5 checkpoint commit revertje; stabil fallback a változatlan V002.

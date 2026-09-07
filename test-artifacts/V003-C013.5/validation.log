@@ -1,0 +1,14 @@
+V003-C013.5 targeted validation
+static-single-file=PASS
+c0135-canonical-material-picker=PASS
+c0135-active-4.10-identity-audit=PASS
+c0133-titanium-canonical-regression=PASS
+c0125a-known-material-regression=PASS
+m2-allocation-regression=PASS
+m4-combined-backup-regression=PASS
+git-diff-check=PASS
+result=PASS
+applicationSha256=4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed
+activeAuditNames=128
+activeAuditExactMultiUuid=24
+activeAuditUnresolved=2

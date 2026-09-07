@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V003-C013.5 Canonical Material Picker Dedup Repair
+
+- [x] C013.4 exact manual `file://` gate canonical-picker blockere rögzítve; a candidate BLOCKED/INVALIDATED és változatlan.
+- [x] Verziózott exact item/harvestable→commodity identity modell, Feynmaline canonical UUID és source UUID provenance.
+- [x] My Materials picker: egy exact logical material = egy opció; name change canonical UUID autofill; új batch canonical mentés.
+- [x] Bizonyítatlan azonos nevű UUID-k name/fuzzy merge nélkül `UNRESOLVED_DUPLICATE_MATERIAL_IDENTITY` státusszal rejtve és auditálva.
+- [x] Aktív 4.10 audit: 128 név, 126 látható opció, 24 exact multi-UUID identity, 2 unresolved duplicate név.
+- [x] Feynmaline/Titanium, inventory grouping, reload, backup, Combined, Allocation, no-double-reserve és célzott regresszió PASS.
+- [x] V001/V002 és C013.4 artifact változatlan; teljes release-regresszió/új RC scope szerint nem futott.
+- [ ] Friss V003 release candidate külön következő ciklusban.
+
 ### V003-C013.4 Fresh RC after Disjoint Pool + Canonical Grouping Repair
 
 - [x] Exact `2c138cf8...` source HEAD-ből determinisztikus, új single-file candidate külön C013.4 artifactban; application code változatlan.
@@ -9,7 +20,7 @@
 - [x] Diszjunkt Titanium Q784/Q866, Q866-only, Minimum-only, MAX-only, invalid-range, no-borrow/no-double-reserve és exact canonical UUID fixture PASS.
 - [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
 - [x] Candidate SHA-256 változatlan; C013.2 BLOCKED/INVALIDATED és V001/V002 változatlan.
-- [ ] Exact C013.4 candidate `file://` manual gate külön következő felhasználói ciklusban.
+- [x] Exact C013.4 candidate `file://` manual gate canonical-picker blocker miatt megállt; candidate BLOCKED/INVALIDATED, nem folytatható.
 
 ### V003-C013.3 Disjoint Quality Pools + Canonical Grouping Repair
 

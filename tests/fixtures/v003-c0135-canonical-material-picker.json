@@ -1,0 +1,111 @@
+{
+  "name": "CANONICAL_MATERIAL_PICKER_DEDUP",
+  "scVersion": "4.10.0-LIVE.12519617",
+  "feynmaline": {
+    "name": "Feynmaline",
+    "canonicalCommodityUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "itemUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+  },
+  "titanium": {
+    "name": "Titanium",
+    "canonicalCommodityUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "relatedUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01"
+  },
+  "miningCommodityIndex": [
+    {
+      "uuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "name": "Feynmaline",
+      "display_name": "Feynmaline",
+      "kind": "mineable",
+      "categories": ["FPS_MINING"],
+      "refinedVersion": null,
+      "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+    },
+    {
+      "uuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "name": "Titanium",
+      "display_name": "Titanium",
+      "kind": "mineable",
+      "categories": ["SHIP_MINING"],
+      "refinedVersion": { "uuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01", "name": "Titanium" },
+      "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+    },
+    {
+      "uuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "name": "Titanium",
+      "display_name": "Titanium",
+      "kind": "refined",
+      "categories": ["UNKNOWN"],
+      "refinedVersion": null,
+      "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+    },
+    {
+      "uuid": "c0135-unresolved-a",
+      "name": "Unprovenium",
+      "display_name": "Unprovenium",
+      "kind": "mineable",
+      "categories": ["SHIP_MINING"],
+      "refinedVersion": null,
+      "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+    },
+    {
+      "uuid": "c0135-unresolved-b",
+      "name": "Unprovenium",
+      "display_name": "Unprovenium",
+      "kind": "harvestable",
+      "categories": ["HARVESTABLE"],
+      "refinedVersion": null,
+      "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+    }
+  ],
+  "feynmalineItem": {
+    "uuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+    "name": "Feynmaline",
+    "display_name": "Feynmaline",
+    "sub_type": "Harvestable",
+    "resource_container": {
+      "default_composition": [
+        {
+          "weight": 1,
+          "commodity": {
+            "uuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+            "name": "Feynmaline",
+            "display_name": "Feynmaline"
+          }
+        }
+      ]
+    }
+  },
+  "batches": [
+    {
+      "id": "c0135-feynmaline-item-q600",
+      "materialUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "sourceMaterialUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "materialName": "Feynmaline",
+      "quality": 600,
+      "quantityUnits": 6000,
+      "unit": "SCU",
+      "createdAt": "2026-09-07T09:00:00.000Z"
+    },
+    {
+      "id": "c0135-feynmaline-canonical-q700",
+      "materialUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "materialName": "Feynmaline",
+      "quality": 700,
+      "quantityUnits": 7000,
+      "unit": "SCU",
+      "createdAt": "2026-09-07T09:00:01.000Z"
+    }
+  ],
+  "requirement": {
+    "id": "c0135-feynmaline-slot",
+    "ingredientUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+    "commodityUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "materialName": "Feynmaline",
+    "recipeSlotName": "Feynmaline Slot",
+    "requiredQuantityUnits": 10000,
+    "unit": "SCU",
+    "qualityCapability": "FIXED",
+    "affectedStats": []
+  }
+}

@@ -2,16 +2,16 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C013.4 source HEAD: `2c138cf8cdaccb5a746bc0de7b6537259cc8985d`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013.4`; friss exact single-file release candidate automated + valódi Chrome localhost kapuja: **PASS**.
-- Candidate: `test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html`; `815774` byte; SHA-256 `38e5533da6b4699b98c3cf7c7f481f5755167fbab515336dd71e6d691bf9149b`.
-- Single-file: embedded CSS/JavaScript, helyi runtime sidecar `0`; candidate a source commit nyers byte-másolata, az alkalmazáskód nem változott.
-- Teljes releváns C001–C012.5, D1, C013.1, C013.3, M1–M6.1, C04, static/single-file és backup/standalone regresszió: **PASS**.
-- C013.1 vegyes hiány és C013.3 Titanium diszjunkt pool/canonical grouping fixture: **PASS**; borrowing, fuzzy/name-only merge és double reserve nincs.
-- Valódi Chrome localhost: Technical Baseline `15/15`, modulok `8/8`, 1920×1080 / 1366×768 / 390×844 overflow `0`, konzol WARN/ERROR `0/0`, Wiki/UEX/IndexedDB/reload **PASS**.
-- Aktív SC-verzió: `4.10.0-LIVE.12519617`; RC hash a Chrome-kapu előtt/után azonos.
-- C013.2 candidate változatlanul **BLOCKED / INVALIDATED**. Exact C013.4 candidate `file://` manual gate: **NOT RUN**.
-- V001/V002 integritás **PASS**; V003 tag/release/push/main merge nincs.
-- Riport: `docs/V003_C0134_RELEASE_CANDIDATE_REPORT.md`.
+- Branch: `develop/V003`; C013.5 baseline: `75950192ff73b49672aaf459de6ac3dffc3daf38`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C013.5`; canonical My Materials picker dedup repair: **PASS**, friss RC szükséges.
+- Root cause: a picker csak már átfedő `sourceUuids` halmazokat merge-elt; külön érkező commodity és item/harvestable UUID két azonos nevű opció maradhatott.
+- Új verziózott exact identity modell: API `default_composition` weight `1`, meglévő `refined_version` és verified source-UUID kapcsolat; fuzzy/name-only merge továbbra sincs.
+- Feynmaline: picker `1`, canonical UUID `7310c15d-359c-42b4-b61e-7da3d0da3384`; source item UUID megőrzött. Titanium picker/grouping regresszió **PASS**.
+- Új batch canonical UUID-val mentődik; eltérő source UUID provenance megmarad. Régi batch-eket a runtime projection kezel, destruktív User Data migráció nincs.
+- Aktív `4.10.0-LIVE.12519617` audit: `128` materialnév, `126` látható picker-opció, `24` exact multi-UUID identity, `2` unresolved duplicate név. Utóbbiak rejtve és név+UUID diagnosztikával maradnak.
+- C013.5 targeted validator, C013.3 Titanium, C012.5A, M2/M4, static single-file, reload/backup/Combined/allocation/no-double-reserve, V001/V002 integritás: **PASS**.
+- Teljes release-regresszió: scope szerint **NOT RUN**. C013.4 RC: **BLOCKED / INVALIDATED**, byte-változatlan; manual gate nem folytatódott.
+- V003 tag/release/push/main merge és új RC nincs.
+- Riport: `docs/V003_C0135_CANONICAL_MATERIAL_PICKER_DEDUP_REPORT.md`.
 
-`V003-C013.4 – FRESH RC AFTER DISJOINT POOL + CANONICAL GROUPING REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C013.5 – CANONICAL MATERIAL PICKER DEDUP REPAIR PASS, FRESH RC REQUIRED`

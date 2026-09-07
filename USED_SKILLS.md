@@ -492,3 +492,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a szűk célteszt-scope, a teljes release-regresszió tudatos kihagyása, a generált történeti artifact-zaj elkülönítése, valamint a blokkolt C013.2 candidate és a stabil V001/V002 védelme.
 - Mely fájlokat vagy döntéseket érintett: Quality pool range/allocation/Combined/standalone és exact canonical My Materials grouping, C013.3 fixture/teszt/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.5 Canonical Material Picker Dedup Repair
+
+- Skillek neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-07`, a C013.4 kézi kapuján talált canonical picker blocker minimális resume-jához, célzott application repairjéhez, aktív 4.10 API-auditjához és checkpoint lezárásához.
+- Mire segített: a szűk affected-path olvasásra, a teljes release-regresszió és RC rebuild tudatos kihagyására, a generált történeti artifact-zaj elkülönítésére, valamint a blokkolt C013.4 candidate és a stabil V001/V002 védelmére.
+- Mely fájlokat vagy döntéseket érintett: exact item→commodity identity/cache/picker/batch projection, C013.5 fixture/teszt/live audit/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

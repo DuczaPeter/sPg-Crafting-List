@@ -1,0 +1,460 @@
+{
+  "cycle": "V003-C013.5",
+  "status": "PASS",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "fetched": {
+    "mineableCommodities": 40,
+    "harvestableCommodities": 32,
+    "uniqueCommodityRecords": 72,
+    "harvestableItems": 84,
+    "sameNameIdentityCandidates": 18,
+    "fetchedIdentityDetails": 18,
+    "exactItemCommodityRelations": 18
+  },
+  "picker": {
+    "modelVersion": "V003-C013.5-1",
+    "userFacingMaterialNameCount": 128,
+    "visiblePickerOptionCount": 126,
+    "exactCanonicalMultiUuidMaterialCount": 24,
+    "duplicatePickerOptionNames": [
+      "Amioshi Plague",
+      "Aphorite",
+      "Bluemoon Fungus",
+      "Carinite",
+      "Copper",
+      "Dolivine",
+      "Feynmaline",
+      "Glacosite",
+      "Gold",
+      "Golden Medmon",
+      "Hadanite",
+      "Heart of the Woods",
+      "Iron",
+      "Jaclium",
+      "Janalite",
+      "Leyland's Tortoise",
+      "Lindinium",
+      "Pitambu",
+      "Prota",
+      "Ranta Dung",
+      "Riccite",
+      "Sadaryx",
+      "Saldynium",
+      "Silicon",
+      "Tungsten",
+      "Yormandi Tongue"
+    ],
+    "exactMergedMaterials": [
+      {
+        "name": "Amioshi Plague",
+        "canonicalUuid": "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+        "sourceUuids": [
+          "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+          "96e0eec0-d989-4093-9405-2a1577d689b4"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Aphorite",
+        "canonicalUuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a",
+        "sourceUuids": [
+          "3f137385-dd8f-410b-b5f3-7b4d283c09cd",
+          "9b47bacf-8efa-42e2-8d84-dee64983a00a"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Bluemoon Fungus",
+        "canonicalUuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+        "sourceUuids": [
+          "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+          "f0e84bd5-6205-491c-ab80-9cf377032c14"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Carinite",
+        "canonicalUuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+        "sourceUuids": [
+          "0b83f4b2-1d15-4843-aa94-29f2b40a5cbe",
+          "9904aaa2-9a13-48d2-a48d-7494e60d012f",
+          "d7d39082-ba27-470c-bc9a-d9e82ce838ae"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Copper",
+        "canonicalUuid": "d4ba4af8-80f1-4a8a-b8cd-5ba7e37c005c",
+        "sourceUuids": [
+          "a789f57a-e12b-4bcd-8132-e0c03d84fc89",
+          "d4ba4af8-80f1-4a8a-b8cd-5ba7e37c005c"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Dolivine",
+        "canonicalUuid": "7e86e2f4-6c31-41f8-9438-0fd8ad037426",
+        "sourceUuids": [
+          "20094ded-ad04-46a3-b734-9e37aa3154b3",
+          "7e86e2f4-6c31-41f8-9438-0fd8ad037426"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Feynmaline",
+        "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        "sourceUuids": [
+          "7310c15d-359c-42b4-b61e-7da3d0da3384",
+          "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Glacosite",
+        "canonicalUuid": "960eda23-d77c-425e-8cbd-89d94ca6e2aa",
+        "sourceUuids": [
+          "960eda23-d77c-425e-8cbd-89d94ca6e2aa",
+          "ae6d8d74-04fa-4d21-9991-4232f8eb2cfe"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Gold",
+        "canonicalUuid": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+        "sourceUuids": [
+          "21825507-7923-4683-9bf3-9cfe316940e3",
+          "57aba429-cf97-4fdd-8042-94b1d643f5bd"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Golden Medmon",
+        "canonicalUuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8",
+        "sourceUuids": [
+          "57d8986e-d354-4a22-bcf8-f38f80630974",
+          "d99498e8-1464-4ff7-8177-afd05d75c3d8"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Hadanite",
+        "canonicalUuid": "3e5fdc37-cb59-4fd3-8168-e3c538ab9722",
+        "sourceUuids": [
+          "125dd723-95ad-488d-830f-62c954445ca1",
+          "3e5fdc37-cb59-4fd3-8168-e3c538ab9722"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Heart of the Woods",
+        "canonicalUuid": "293cbddc-9515-456e-8090-bdc94f746619",
+        "sourceUuids": [
+          "1ca5798b-0e46-426e-b50c-773422c30a81",
+          "293cbddc-9515-456e-8090-bdc94f746619"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Iron",
+        "canonicalUuid": "32c57a12-5de5-49b1-827a-9fd80278fbc4",
+        "sourceUuids": [
+          "32c57a12-5de5-49b1-827a-9fd80278fbc4",
+          "f386a33c-ac9a-400a-a7b8-fe1fc7c8d270"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Jaclium",
+        "canonicalUuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+        "sourceUuids": [
+          "118652a7-cc27-44ea-b362-96fcfeef8774",
+          "2c1e1693-4d19-446c-8224-ebad36feb618"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Janalite",
+        "canonicalUuid": "f3379bda-0520-4c75-920a-c29a50eb6b50",
+        "sourceUuids": [
+          "e954d75e-fb1e-487e-90a8-170f0284b502",
+          "f3379bda-0520-4c75-920a-c29a50eb6b50"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Lindinium",
+        "canonicalUuid": "87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f",
+        "sourceUuids": [
+          "392b4dca-449a-4d4d-8fef-beab024d9ee7",
+          "87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Pitambu",
+        "canonicalUuid": "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+        "sourceUuids": [
+          "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+          "60deb833-f312-4d9d-bcac-247de330384f"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Prota",
+        "canonicalUuid": "70684af3-55f1-43db-8aca-eae33cfac445",
+        "sourceUuids": [
+          "0b45378f-af70-46a0-a6de-c156c6ff9d1d",
+          "70684af3-55f1-43db-8aca-eae33cfac445"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Ranta Dung",
+        "canonicalUuid": "5cc98bf3-8edd-4184-9e47-2ff40e4c556b",
+        "sourceUuids": [
+          "4ecdaee3-2886-4b77-90fa-372cbe88fb84",
+          "5cc98bf3-8edd-4184-9e47-2ff40e4c556b"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Riccite",
+        "canonicalUuid": "c3697191-8ad0-43a9-af7a-29c0ad58de34",
+        "sourceUuids": [
+          "86d00bd8-08f7-4231-b375-a609803fc46d",
+          "c3697191-8ad0-43a9-af7a-29c0ad58de34"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Sadaryx",
+        "canonicalUuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+        "sourceUuids": [
+          "51b456cd-e73e-42a8-b36e-0bf6fbe29ce6",
+          "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Saldynium",
+        "canonicalUuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+        "sourceUuids": [
+          "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+          "ee704f52-8794-434d-bcd7-47fec365ffbd"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Silicon",
+        "canonicalUuid": "d137b905-b3bc-4721-a790-830499263c0c",
+        "sourceUuids": [
+          "7bbd3197-a6e1-49b3-a495-0b7ef4f8ce40",
+          "d137b905-b3bc-4721-a790-830499263c0c"
+        ],
+        "origins": []
+      },
+      {
+        "name": "Tungsten",
+        "canonicalUuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+        "sourceUuids": [
+          "60f116f4-c02a-45b2-9ded-333747795124",
+          "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6"
+        ],
+        "origins": []
+      }
+    ],
+    "unresolvedDuplicateCount": 2,
+    "unresolvedDuplicates": [
+      {
+        "name": "Leyland's Tortoise",
+        "uuids": [
+          "0e19caaa-44b9-4708-a86e-e4301ecdd0f8",
+          "a0a4e1f8-8c68-486f-b828-5b241d02337a"
+        ]
+      },
+      {
+        "name": "Yormandi Tongue",
+        "uuids": [
+          "2845e7ee-2f52-471b-a0a7-05ca11908fe6",
+          "6d8c8c22-12ce-4433-af1e-5c38f54ced1b"
+        ]
+      }
+    ]
+  },
+  "exactRelationList": [
+    {
+      "name": "Amioshi Plague",
+      "canonicalUuid": "6c45b24e-bb2d-45f1-9622-f7ef9359dc77",
+      "sourceUuid": "96e0eec0-d989-4093-9405-2a1577d689b4",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Aphorite",
+      "canonicalUuid": "9b47bacf-8efa-42e2-8d84-dee64983a00a",
+      "sourceUuid": "3f137385-dd8f-410b-b5f3-7b4d283c09cd",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Bluemoon Fungus",
+      "canonicalUuid": "1996b79b-14bc-42ad-9cc4-36b0705fd284",
+      "sourceUuid": "f0e84bd5-6205-491c-ab80-9cf377032c14",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Carinite",
+      "canonicalUuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+      "sourceUuid": "0b83f4b2-1d15-4843-aa94-29f2b40a5cbe",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Carinite",
+      "canonicalUuid": "d7d39082-ba27-470c-bc9a-d9e82ce838ae",
+      "sourceUuid": "9904aaa2-9a13-48d2-a48d-7494e60d012f",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Dolivine",
+      "canonicalUuid": "7e86e2f4-6c31-41f8-9438-0fd8ad037426",
+      "sourceUuid": "20094ded-ad04-46a3-b734-9e37aa3154b3",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Feynmaline",
+      "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "sourceUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Glacosite",
+      "canonicalUuid": "960eda23-d77c-425e-8cbd-89d94ca6e2aa",
+      "sourceUuid": "ae6d8d74-04fa-4d21-9991-4232f8eb2cfe",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Golden Medmon",
+      "canonicalUuid": "d99498e8-1464-4ff7-8177-afd05d75c3d8",
+      "sourceUuid": "57d8986e-d354-4a22-bcf8-f38f80630974",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Hadanite",
+      "canonicalUuid": "3e5fdc37-cb59-4fd3-8168-e3c538ab9722",
+      "sourceUuid": "125dd723-95ad-488d-830f-62c954445ca1",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Heart of the Woods",
+      "canonicalUuid": "293cbddc-9515-456e-8090-bdc94f746619",
+      "sourceUuid": "1ca5798b-0e46-426e-b50c-773422c30a81",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Jaclium (Ore)",
+      "canonicalUuid": "2c1e1693-4d19-446c-8224-ebad36feb618",
+      "sourceUuid": "118652a7-cc27-44ea-b362-96fcfeef8774",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Janalite",
+      "canonicalUuid": "f3379bda-0520-4c75-920a-c29a50eb6b50",
+      "sourceUuid": "e954d75e-fb1e-487e-90a8-170f0284b502",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Pitambu",
+      "canonicalUuid": "1e4ca7fc-bb70-4080-b94f-7ad24ba4f520",
+      "sourceUuid": "60deb833-f312-4d9d-bcac-247de330384f",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Prota",
+      "canonicalUuid": "70684af3-55f1-43db-8aca-eae33cfac445",
+      "sourceUuid": "0b45378f-af70-46a0-a6de-c156c6ff9d1d",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Ranta Dung",
+      "canonicalUuid": "5cc98bf3-8edd-4184-9e47-2ff40e4c556b",
+      "sourceUuid": "4ecdaee3-2886-4b77-90fa-372cbe88fb84",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Sadaryx",
+      "canonicalUuid": "93feeedc-6d17-4b86-b8ae-8e0f4ba56cbf",
+      "sourceUuid": "51b456cd-e73e-42a8-b36e-0bf6fbe29ce6",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    },
+    {
+      "name": "Saldynium (Ore)",
+      "canonicalUuid": "5fdfdea8-3d75-4287-85c7-f29a722ee351",
+      "sourceUuid": "ee704f52-8794-434d-bcd7-47fec365ffbd",
+      "origin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+    }
+  ],
+  "unresolvedDuplicateList": [
+    {
+      "name": "Leyland's Tortoise",
+      "uuids": [
+        "0e19caaa-44b9-4708-a86e-e4301ecdd0f8",
+        "a0a4e1f8-8c68-486f-b828-5b241d02337a"
+      ]
+    },
+    {
+      "name": "Yormandi Tongue",
+      "uuids": [
+        "2845e7ee-2f52-471b-a0a7-05ca11908fe6",
+        "6d8c8c22-12ce-4433-af1e-5c38f54ced1b"
+      ]
+    }
+  ],
+  "feynmaline": {
+    "visibleCount": 1,
+    "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "sourceUuids": [
+      "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+    ]
+  },
+  "titanium": {
+    "visibleCount": 1,
+    "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "sourceUuids": [
+      "64978449-1d87-4a16-ba55-4b5f94fee217"
+    ]
+  },
+  "userDataMutation": false
+}

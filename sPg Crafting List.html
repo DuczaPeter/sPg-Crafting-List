@@ -6528,6 +6528,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       blueprintIndexSyncing: false,
       materialBatches: [],
       knownMaterials: [],
+      materialIdentityRelations: [],
+      knownMaterialIdentityAudit: null,
       craftingCards: [],
       allocationResult: null,
       combinedMaterials: [],
@@ -7074,6 +7076,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             headCount: payload.headCount,
             moduleCount: payload.moduleCount,
             gadgetCount: payload.gadgetCount,
+            materialIdentityRelationCount: payload.materialIdentityRelationCount || 0,
+            materialIdentityModelVersion: payload.materialIdentityModelVersion || null,
             systems: payload.systems,
             fetchedAt: payload.fetchedAt,
             activatedAt: nowIso(),
@@ -7610,6 +7614,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       getItemsByClassification(classification, gameVersion) {
         return this.getAllPages("/items", { "filter[classification]": classification }, gameVersion);
+      }
+
+      getItemsBySubType(subType, gameVersion) {
+        return this.getAllPages("/items", { "filter[sub_type]": subType }, gameVersion);
       }
 
       async getItem(identifier, gameVersion) {
@@ -9717,6 +9725,162 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         duplicateCanonical: duplicateCanonical
       };
     }
+
+    /* C0135_CANONICAL_MATERIAL_IDENTITY_MODEL_START */
+    var MATERIAL_IDENTITY_MODEL_VERSION = "V003-C013.5-1";
+    var MATERIAL_IDENTITY_STATUS = Object.freeze({
+      VERIFIED: "VERIFIED_EXACT_MATERIAL_IDENTITY",
+      UNRESOLVED_DUPLICATE: "UNRESOLVED_DUPLICATE_MATERIAL_IDENTITY"
+    });
+    var VERIFIED_CANONICAL_MATERIAL_IDENTITY_RELATIONS = Object.freeze([
+      Object.freeze({
+        recordType: "MATERIAL_IDENTITY_RELATION",
+        status: MATERIAL_IDENTITY_STATUS.VERIFIED,
+        canonicalUuid: "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        sourceUuid: "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+        sourceUuids: Object.freeze([
+          "7310c15d-359c-42b4-b61e-7da3d0da3384",
+          "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+        ]),
+        canonicalName: "Feynmaline",
+        sourceName: "Feynmaline",
+        relationOrigin: "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1",
+        verifiedScVersions: Object.freeze(["4.10.0-LIVE.12519617"]),
+        evidence: Object.freeze({
+          commodityEndpoint: "https://api.star-citizen.wiki/api/commodities/7310c15d-359c-42b4-b61e-7da3d0da3384",
+          itemEndpoint: "https://api.star-citizen.wiki/api/items/d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+          relationField: "resource_container.default_composition[0].commodity.uuid",
+          relationWeight: 1
+        })
+      })
+    ]);
+
+    function normalizeExactMaterialIdentityRelation(raw, provenance) {
+      var compositions = raw && raw.resource_container && Array.isArray(raw.resource_container.default_composition)
+        ? raw.resource_container.default_composition
+        : [];
+      if (!raw || !raw.uuid || compositions.length !== 1) { return null; }
+      var composition = compositions[0] || {};
+      var commodity = composition.commodity || {};
+      var weight = Number(composition.weight);
+      if (!commodity.uuid || commodity.uuid === raw.uuid || !Number.isFinite(weight) || weight !== 1) { return null; }
+      var gameVersion = provenance && provenance.gameVersion || null;
+      return {
+        cacheKey: gameVersion + "::material-identity::" + raw.uuid + "::" + commodity.uuid,
+        recordType: "MATERIAL_IDENTITY_RELATION",
+        status: MATERIAL_IDENTITY_STATUS.VERIFIED,
+        canonicalUuid: commodity.uuid,
+        sourceUuid: raw.uuid,
+        sourceUuids: [commodity.uuid, raw.uuid],
+        canonicalName: commodity.display_name || commodity.name || raw.display_name || raw.name || "Ismeretlen material",
+        sourceName: raw.display_name || raw.name || null,
+        relationOrigin: "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1",
+        relationField: "resource_container.default_composition[0].commodity.uuid",
+        relationWeight: weight,
+        provenance: Object.assign({}, provenance || {}, { rawItemUuid: raw.uuid, canonicalCommodityUuid: commodity.uuid })
+      };
+    }
+
+    function selectExactMaterialIdentityAuditCandidates(itemRecords, commodityRecords) {
+      var commodityNames = new Set((commodityRecords || []).map(function (record) {
+        var resolved = resolveMaterialName(record);
+        return resolved.nameStatus === MATERIAL_NAME_STATUS.RESOLVED ? foldSearchText(resolved.displayName) : null;
+      }).filter(Boolean));
+      return (itemRecords || []).filter(function (record) {
+        var resolved = resolveMaterialName(record);
+        return resolved.nameStatus === MATERIAL_NAME_STATUS.RESOLVED && commodityNames.has(foldSearchText(resolved.displayName));
+      });
+    }
+
+    function c0135MaterialIdentityRelationVersion(record) {
+      return record && (record.scVersion || record.gameVersion || record.provenance && record.provenance.gameVersion) || null;
+    }
+
+    function materialIdentityRelationsForVersion(records, activeScVersion) {
+      var candidates = (activeScVersion ? VERIFIED_CANONICAL_MATERIAL_IDENTITY_RELATIONS : []).concat(Array.isArray(records) ? records : []);
+      var unique = new Map();
+      candidates.forEach(function (record) {
+        if (!record || record.status !== MATERIAL_IDENTITY_STATUS.VERIFIED || !record.canonicalUuid || !record.sourceUuid) { return; }
+        var verifiedVersions = Array.isArray(record.verifiedScVersions) ? record.verifiedScVersions : [];
+        var recordVersion = c0135MaterialIdentityRelationVersion(record);
+        var versionMatches = !activeScVersion || verifiedVersions.indexOf(activeScVersion) !== -1 || recordVersion === activeScVersion;
+        if (!versionMatches) { return; }
+        var key = record.canonicalUuid + "::" + record.sourceUuid;
+        if (!unique.has(key) || recordVersion === activeScVersion) {
+          unique.set(key, Object.assign({}, record, {
+            sourceUuids: Array.from(new Set([record.canonicalUuid, record.sourceUuid].concat(record.sourceUuids || []).filter(Boolean)))
+          }));
+        }
+      });
+      return Array.from(unique.values()).sort(function (a, b) {
+        return String(a.canonicalUuid).localeCompare(String(b.canonicalUuid)) || String(a.sourceUuid).localeCompare(String(b.sourceUuid));
+      });
+    }
+
+    function buildCanonicalMaterialCatalog(records, materialIdentityRelations, activeScVersion) {
+      var projected = buildMaterialDisplayIndex(records || []);
+      var bySourceUuid = new Map();
+      projected.forEach(function (record) {
+        (record.sourceUuids || [record.uuid]).forEach(function (uuid) { bySourceUuid.set(uuid, record); });
+      });
+      materialIdentityRelationsForVersion(materialIdentityRelations, activeScVersion).forEach(function (relation) {
+        var canonical = bySourceUuid.get(relation.canonicalUuid);
+        if (!canonical) { return; }
+        canonical.sourceUuids = Array.from(new Set((canonical.sourceUuids || [canonical.uuid]).concat(relation.sourceUuids || [])));
+        canonical.identityStatus = MATERIAL_IDENTITY_STATUS.VERIFIED;
+        canonical.identityRelationOrigins = Array.from(new Set((canonical.identityRelationOrigins || []).concat(relation.relationOrigin).filter(Boolean)));
+        canonical.sourceUuids.forEach(function (uuid) { bySourceUuid.set(uuid, canonical); });
+      });
+      return projected;
+    }
+
+    function finalizeKnownMaterialPickerVisibility(options) {
+      var byDisplayName = new Map();
+      (options || []).forEach(function (option) {
+        var key = foldSearchText(option && option.name);
+        if (!byDisplayName.has(key)) { byDisplayName.set(key, []); }
+        byDisplayName.get(key).push(option);
+      });
+      byDisplayName.forEach(function (sameNameOptions) {
+        var unresolved = sameNameOptions.length > 1;
+        sameNameOptions.forEach(function (option) {
+          option.pickerVisible = !unresolved;
+          if (unresolved) {
+            option.identityStatus = MATERIAL_IDENTITY_STATUS.UNRESOLVED_DUPLICATE;
+          } else if (!option.identityStatus) {
+            option.identityStatus = option.sourceUuids.length > 1 ? MATERIAL_IDENTITY_STATUS.VERIFIED : "SINGLE_SOURCE_IDENTITY";
+          }
+        });
+      });
+      return options;
+    }
+
+    function auditKnownMaterialOptions(options) {
+      var records = Array.isArray(options) ? options : [];
+      var unresolvedByName = new Map();
+      records.filter(function (record) { return record.identityStatus === MATERIAL_IDENTITY_STATUS.UNRESOLVED_DUPLICATE; }).forEach(function (record) {
+        var key = foldSearchText(record.name);
+        if (!unresolvedByName.has(key)) { unresolvedByName.set(key, { name: record.name, uuids: [] }); }
+        unresolvedByName.get(key).uuids = Array.from(new Set(unresolvedByName.get(key).uuids.concat(record.sourceUuids || [record.uuid]))).sort();
+      });
+      var exactMerged = records.filter(function (record) {
+        return record.identityStatus === MATERIAL_IDENTITY_STATUS.VERIFIED && record.sourceUuids.length > 1;
+      }).map(function (record) {
+        return { name: record.name, canonicalUuid: record.uuid, sourceUuids: record.sourceUuids.slice().sort(), origins: (record.identityRelationOrigins || []).slice().sort() };
+      });
+      var unresolved = Array.from(unresolvedByName.values()).sort(function (a, b) { return a.name.localeCompare(b.name, "hu"); });
+      return {
+        modelVersion: MATERIAL_IDENTITY_MODEL_VERSION,
+        userFacingMaterialNameCount: new Set(records.map(function (record) { return foldSearchText(record.name); })).size,
+        visiblePickerOptionCount: records.filter(function (record) { return record.pickerVisible !== false; }).length,
+        exactCanonicalMultiUuidMaterialCount: exactMerged.length,
+        duplicatePickerOptionNames: exactMerged.map(function (record) { return record.name; }).concat(unresolved.map(function (record) { return record.name; })).sort(function (a, b) { return a.localeCompare(b, "hu"); }),
+        exactMergedMaterials: exactMerged,
+        unresolvedDuplicateCount: unresolved.length,
+        unresolvedDuplicates: unresolved
+      };
+    }
+    /* C0135_CANONICAL_MATERIAL_IDENTITY_MODEL_END */
     /* MATERIAL_NAMING_MODEL_END */
 
     var M3_MINING_CATEGORIES = Object.freeze({
@@ -12213,9 +12377,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }).sort(function (a, b) {
         return String(resolveMaterialDisplayName(a, a.rawName || a.name)).localeCompare(String(resolveMaterialDisplayName(b, b.rawName || b.name)), "hu") || a.uuid.localeCompare(b.uuid);
       });
+      state.materialIdentityRelations = materialIdentityRelationsForVersion(records.filter(function (record) {
+        return record.recordType === "MATERIAL_IDENTITY_RELATION";
+      }), version);
       state.materialNamingAudit = auditMaterialNames(state.miningCommodityIndex);
       state.radarSignatureAudit = auditRadarSignatures(state.miningCommodityIndex);
-      state.materialColorAudit = auditMaterialColors(buildMaterialDisplayIndex(state.miningCommodityIndex));
+      state.materialColorAudit = auditMaterialColors(buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, version));
       updateKnownMaterials();
       var equipment = records.filter(function (record) { return record.recordType === "EQUIPMENT_INDEX"; });
       state.miningEquipment = {
@@ -12245,6 +12412,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         }
       });
       logger.event("INFO", "MATERIAL_NAMING_AUDIT", "A központi materialnév-projekció elkészült.", state.materialNamingAudit);
+      logger.event(state.knownMaterialIdentityAudit && state.knownMaterialIdentityAudit.unresolvedDuplicateCount ? "WARN" : "INFO", "KNOWN_MATERIAL_IDENTITY_AUDIT", "Az exact canonical material picker identity audit elkészült.", state.knownMaterialIdentityAudit);
       logger.event("INFO", "RADAR_SIGNATURE_AUDIT", "A curated Radar Signature registry lefedettségi auditja elkészült; a Wiki mező csak API_RAW diagnosztika.", state.radarSignatureAudit);
       logger.event("INFO", "MATERIAL_COLOR_AUDIT", "A canonical Radar Signature képből ellenőrzött materialszín-registry lefedettségi auditja elkészült.", state.materialColorAudit);
       return records;
@@ -12271,11 +12439,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       document.body.dataset.materialNamingHidden = String(namingAudit.hiddenInvalidRecords);
       document.body.dataset.materialNamingAmbiguous = String(namingAudit.ambiguous);
       document.body.dataset.materialNamingRegistry = namingAudit.registryVersion;
+      var identityAudit = state.knownMaterialIdentityAudit || auditKnownMaterialOptions(state.knownMaterials);
+      document.body.dataset.knownMaterialPickerOptions = String(identityAudit.visiblePickerOptionCount);
+      document.body.dataset.knownMaterialExactMultiUuid = String(identityAudit.exactCanonicalMultiUuidMaterialCount);
+      document.body.dataset.knownMaterialUnresolvedDuplicates = String(identityAudit.unresolvedDuplicateCount);
+      document.body.dataset.materialIdentityModel = identityAudit.modelVersion;
       var radarAudit = state.radarSignatureAudit || auditRadarSignatures(state.miningCommodityIndex);
       document.body.dataset.radarSignatureVerified = String(radarAudit.verified);
       document.body.dataset.radarSignatureUnmapped = String(radarAudit.unmapped);
       document.body.dataset.radarSignatureRegistry = radarAudit.registryVersion;
-      var colorAudit = state.materialColorAudit || auditMaterialColors(buildMaterialDisplayIndex(state.miningCommodityIndex));
+      var colorAudit = state.materialColorAudit || auditMaterialColors(buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state)));
       document.body.dataset.materialColorVerified = String(colorAudit.verified);
       document.body.dataset.materialColorUnmapped = String(colorAudit.unmapped);
       document.body.dataset.materialColorRegistry = colorAudit.registryVersion;
@@ -12296,7 +12469,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function visibleMaterialDatabaseIndex() {
       return m61FilterMaterialIndex(
-        buildMaterialDisplayIndex(state.miningCommodityIndex),
+        buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state)),
         document.getElementById("materialDatabaseSearch").value,
         document.getElementById("materialDatabaseCategory").value
       );
@@ -12348,7 +12521,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     function populateMiningCommoditySelect() {
       var select = document.getElementById("miningCommoditySelect");
       var selected = state.selectedMiningCommodity ? state.selectedMiningCommodity.uuid : select.value;
-      var displayIndex = buildMaterialDisplayIndex(state.miningCommodityIndex);
+      var displayIndex = buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state));
       select.replaceChildren();
       var empty = document.createElement("option");
       empty.value = "";
@@ -12421,15 +12594,28 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           state.activeMiningDataset = existingDataset;
           state.miningSystems = existingDataset.systems || [];
           await loadMiningIndexFromCache(version);
-          populateMiningCommoditySelect();
-          renderMiningDatasetState();
-          if (state.activeUexRefineryDataset) {
-            await rebuildUexRefineryProjection("MINING_CACHE_RELOAD");
+          var identityBackfillRequired = existingDataset.materialIdentityModelVersion !== MATERIAL_IDENTITY_MODEL_VERSION;
+          if (!identityBackfillRequired || navigator.onLine !== true) {
+            populateMiningCommoditySelect();
+            renderMiningDatasetState();
+            if (state.activeUexRefineryDataset) {
+              await rebuildUexRefineryProjection("MINING_CACHE_RELOAD");
+            }
+            if (ownsProcess) {
+              logger.finish("PASS", {
+                origin: identityBackfillRequired ? "CACHE_WITH_VERIFIED_IDENTITY_FALLBACK" : "CACHE",
+                version: version,
+                commodityCount: state.miningCommodityIndex.length,
+                materialIdentityModelVersion: existingDataset.materialIdentityModelVersion || "LEGACY"
+              });
+            }
+            return existingDataset;
           }
-          if (ownsProcess) {
-            logger.finish("PASS", { origin: "CACHE", version: version, commodityCount: state.miningCommodityIndex.length });
-          }
-          return existingDataset;
+          logger.event("INFO", "MATERIAL_IDENTITY_CACHE_BACKFILL_REQUIRED", "A legacy mining cache exact item–commodity identity indexe frissítésre szorul; az előző cache a tranzakció végéig aktív marad.", {
+            version: version,
+            cachedModelVersion: existingDataset.materialIdentityModelVersion || null,
+            targetModelVersion: MATERIAL_IDENTITY_MODEL_VERSION
+          });
         }
         userFingerprintBefore = await userDataRepository.fingerprint();
         loadoutFingerprintBefore = await userDataRepository.miningLoadoutFingerprint();
@@ -12451,17 +12637,25 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var miningRoles = (vehicleFilters.filters.role || []).filter(function (facet) {
           return facet && /mining/i.test(String(facet.value || facet.label || ""));
         });
-        if (!commodityKinds.length || !equipmentFacets.length || !miningRoles.length) {
+        var harvestableItemFacet = (itemFilters.filters.sub_type || []).find(function (facet) {
+          return facet && /^harvestable$/i.test(String(facet.value || facet.label || ""));
+        });
+        if (!commodityKinds.length || !equipmentFacets.length || !miningRoles.length || !harvestableItemFacet) {
           throw new Error("A mining API-facetek nem tartalmazzák a szükséges dinamikus kategóriákat.");
         }
         var pageGroups = await Promise.all([
           Promise.all(commodityKinds.map(function (facet) { return api.getCommoditiesByKind(facet.value, version); })),
           Promise.all(equipmentFacets.map(function (entry) { return api.getItemsByClassification(entry.facet.value, version); })),
-          Promise.all(miningRoles.map(function (facet) { return api.getVehiclesByRole(facet.value, version); }))
+          Promise.all(miningRoles.map(function (facet) { return api.getVehiclesByRole(facet.value, version); })),
+          api.getItemsBySubType(harvestableItemFacet.value, version)
         ]);
         var commodityRecords = miningRecordMap(pageGroups[0].reduce(function (all, page) { return all.concat(page.records); }, []));
         var equipmentRecords = miningRecordMap(pageGroups[1].reduce(function (all, page) { return all.concat(page.records); }, []));
         var vehicleRecords = miningRecordMap(pageGroups[2].reduce(function (all, page) { return all.concat(page.records); }, []));
+        var materialIdentityAuditCandidates = selectExactMaterialIdentityAuditCandidates(pageGroups[3].records || [], commodityRecords);
+        var materialIdentityItemRecords = miningRecordMap(await Promise.all(materialIdentityAuditCandidates.map(function (record) {
+          return api.getItem(record.uuid, version);
+        })));
         var rawRecords = [
           { cacheKey: version + "::filters::commodities", version: version, recordType: "RAW_FILTERS", endpoint: APP.apiBase + "/commodities/filters", fetchedAt: fetchedAt, raw: commodityFilters },
           { cacheKey: version + "::filters::items", version: version, recordType: "RAW_FILTERS", endpoint: APP.apiBase + "/items/filters", fetchedAt: fetchedAt, raw: itemFilters },
@@ -12476,13 +12670,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         vehicleRecords.forEach(function (record) {
           rawRecords.push({ cacheKey: version + "::raw::vehicle-index::" + record.uuid, version: version, recordType: "RAW_VEHICLE_INDEX", endpoint: APP.apiBase + "/vehicles", fetchedAt: fetchedAt, raw: record });
         });
+        materialIdentityItemRecords.forEach(function (record) {
+          rawRecords.push({ cacheKey: version + "::raw::material-identity-item::" + record.uuid, version: version, recordType: "RAW_MATERIAL_IDENTITY_ITEM", endpoint: APP.apiBase + "/items", fetchedAt: fetchedAt, raw: record });
+        });
         var normalizedRecords = commodityRecords.map(function (record) {
           return normalizeMiningCommodityIndex(record, miningProvenance(version, APP.apiBase + "/commodities", fetchedAt));
         }).concat(equipmentRecords.map(function (record) {
           return normalizeMiningEquipmentIndex(record, miningProvenance(version, APP.apiBase + "/items", fetchedAt));
         })).concat(vehicleRecords.map(function (record) {
           return normalizeMiningVehicleIndex(record, miningProvenance(version, APP.apiBase + "/vehicles", fetchedAt));
-        }));
+        })).concat(materialIdentityItemRecords.map(function (record) {
+          return normalizeExactMaterialIdentityRelation(record, miningProvenance(version, APP.apiBase + "/items", fetchedAt));
+        }).filter(Boolean));
         var previousRawKeys = (await database.getAll("miningRawCache")).filter(function (record) { return record.version === version; }).map(function (record) { return record.cacheKey; });
         var previousNormalizedKeys = (await database.getAll("miningNormalizedCache")).filter(function (record) {
           return record.provenance && record.provenance.gameVersion === version;
@@ -12500,6 +12699,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           headCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.HEAD; }).length,
           moduleCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.MODULE; }).length,
           gadgetCount: normalizedRecords.filter(function (record) { return record.equipmentType === M3_EQUIPMENT_TYPES.GADGET; }).length,
+          materialIdentityRelationCount: normalizedRecords.filter(function (record) { return record.recordType === "MATERIAL_IDENTITY_RELATION"; }).length,
+          materialIdentityModelVersion: MATERIAL_IDENTITY_MODEL_VERSION,
           systems: systems,
           endpoints: ["/commodities/filters", "/commodities", "/items/filters", "/items", "/vehicles/filters", "/vehicles"]
         });
@@ -12522,6 +12723,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           commodityCount: commodityRecords.length,
           vehicleCount: vehicleRecords.length,
           equipmentCount: equipmentRecords.length,
+          materialIdentityRelationCount: normalizedRecords.filter(function (record) {
+            return record.recordType === "MATERIAL_IDENTITY_RELATION";
+          }).length,
+          materialIdentityModelVersion: MATERIAL_IDENTITY_MODEL_VERSION,
           commodityClassificationCounts: normalizedRecords.filter(function (record) {
             return record.recordType === "COMMODITY_INDEX";
           }).reduce(function (counts, record) {
@@ -12617,7 +12822,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!normalized) {
         throw new Error("A mining részlet offline és nincs cache-ben.");
       }
-      var displayProjection = buildMaterialDisplayIndex(state.miningCommodityIndex).find(function (record) {
+      var displayProjection = buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state)).find(function (record) {
         return record.uuid === normalized.uuid || (record.sourceUuids || []).indexOf(normalized.uuid) !== -1;
       });
       state.selectedMiningCommodity = Object.assign({}, normalized, displayProjection ? {
@@ -12675,7 +12880,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return null;
       }
       var selectedUuid = state.selectedMiningCommodity && state.selectedMiningCommodity.uuid;
-      var displayIndex = buildMaterialDisplayIndex(state.miningCommodityIndex);
+      var displayIndex = buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state));
       var candidate = displayIndex.find(function (commodity) {
         return commodity.uuid === selectedUuid || (commodity.sourceUuids || []).indexOf(selectedUuid) !== -1;
       }) || displayIndex.find(function (commodity) {
@@ -14183,9 +14388,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     /* C0125A_INVENTORY_INDEPENDENCE_MODEL_START */
-    function buildKnownMaterialOptions(miningCommodityIndex, materialBatches, craftingCards, normalizedBlueprint) {
+    function buildKnownMaterialOptions(miningCommodityIndex, materialBatches, craftingCards, normalizedBlueprint, materialIdentityRelations, activeScVersion) {
       var options = [];
       var canonicalBySourceUuid = new Map();
+      if (materialIdentityRelations === undefined && typeof state !== "undefined") {
+        materialIdentityRelations = state.materialIdentityRelations;
+      }
+      if (!activeScVersion && typeof state !== "undefined" && typeof resolveActiveScVersion === "function") {
+        activeScVersion = resolveActiveScVersion(state);
+      }
       function addOption(record, origin) {
         if (!record || !record.uuid) { return; }
         var sourceUuids = Array.from(new Set([record.uuid].concat(record.sourceUuids || []).filter(Boolean)));
@@ -14201,6 +14412,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           });
           existing.sourceUuids = Array.from(new Set(existing.sourceUuids.concat(sourceUuids)));
           existing.aliases = materialUniqueNames(existing.aliases.concat([name]).concat(record.aliases || []));
+          existing.identityRelationOrigins = Array.from(new Set((existing.identityRelationOrigins || []).concat(record.identityRelationOrigins || []).filter(Boolean)));
+          if (record.identityStatus === MATERIAL_IDENTITY_STATUS.VERIFIED) {
+            existing.identityStatus = MATERIAL_IDENTITY_STATUS.VERIFIED;
+            existing.uuid = record.uuid;
+            existing.name = name;
+          }
           existing.sourceUuids.forEach(function (uuid) { canonicalBySourceUuid.set(uuid, existing); });
           return existing;
         }
@@ -14209,12 +14426,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           name: name,
           aliases: materialUniqueNames([name].concat(record.aliases || [])),
           sourceUuids: sourceUuids,
-          origin: origin
+          origin: origin,
+          identityStatus: record.identityStatus || null,
+          identityRelationOrigins: Array.from(new Set((record.identityRelationOrigins || []).filter(Boolean)))
         };
         options.push(option);
         sourceUuids.forEach(function (uuid) { canonicalBySourceUuid.set(uuid, option); });
       }
-      buildMaterialDisplayIndex(miningCommodityIndex || []).forEach(function (record) {
+      var versionedMaterialRecord = (miningCommodityIndex || []).find(function (record) {
+        return record && record.provenance && record.provenance.gameVersion;
+      });
+      var inferredVersion = activeScVersion || versionedMaterialRecord && versionedMaterialRecord.provenance.gameVersion || null;
+      buildCanonicalMaterialCatalog(miningCommodityIndex || [], materialIdentityRelations, inferredVersion).forEach(function (record) {
         addOption(record, "ACTIVE_COMMODITY_CACHE");
       });
       (materialBatches || []).forEach(function (batch) {
@@ -14241,6 +14464,20 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           materialName: requirement.materialName
         }, "BLUEPRINT_PREVIEW");
       });
+      materialIdentityRelationsForVersion(materialIdentityRelations, inferredVersion).forEach(function (relation) {
+        if (!canonicalBySourceUuid.has(relation.canonicalUuid) && !canonicalBySourceUuid.has(relation.sourceUuid)) { return; }
+        addOption({
+          uuid: relation.canonicalUuid,
+          sourceUuids: relation.sourceUuids,
+          canonicalName: relation.canonicalName,
+          displayName: relation.canonicalName,
+          name: relation.canonicalName,
+          aliases: [relation.canonicalName, relation.sourceName].filter(Boolean),
+          identityStatus: MATERIAL_IDENTITY_STATUS.VERIFIED,
+          identityRelationOrigins: [relation.relationOrigin]
+        }, "EXACT_MATERIAL_IDENTITY");
+      });
+      finalizeKnownMaterialPickerVisibility(options);
       return options.sort(function (a, b) {
         return a.name.localeCompare(b.name, "hu") || a.uuid.localeCompare(b.uuid);
       });
@@ -14290,17 +14527,48 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       var foldedName = foldSearchText(materialName);
       var nameMatches = records.filter(function (record) {
+        if (record.pickerVisible === false) { return false; }
         return record.aliases.some(function (alias) { return foldSearchText(alias) === foldedName; });
       });
       return nameMatches.length === 1 ? nameMatches[0] : null;
+    }
+
+    function buildCanonicalMaterialBatchRecord(draft, knownMaterials, existing, timestamp, generatedId) {
+      var source = draft || {};
+      var submittedMaterialUuid = source.materialUuid;
+      var knownMaterial = resolveKnownMaterialSelection(source.materialName, submittedMaterialUuid, knownMaterials);
+      var materialUuid = knownMaterial ? knownMaterial.uuid : submittedMaterialUuid;
+      var materialName = knownMaterial ? knownMaterial.name : source.materialName;
+      var record = {
+        id: existing ? existing.id : generatedId,
+        materialUuid: materialUuid,
+        materialName: materialName,
+        quality: source.quality,
+        quantityUnits: source.quantityUnits,
+        unit: source.unit,
+        note: source.note || null,
+        createdAt: existing ? existing.createdAt : timestamp,
+        updatedAt: timestamp
+      };
+      var sourceMaterialUuid = null;
+      if (existing) {
+        sourceMaterialUuid = existing.sourceMaterialUuid || (existing.materialUuid !== materialUuid ? existing.materialUuid : null);
+      } else if (submittedMaterialUuid !== materialUuid) {
+        sourceMaterialUuid = submittedMaterialUuid;
+      }
+      if (sourceMaterialUuid) {
+        record.sourceMaterialUuid = sourceMaterialUuid;
+      }
+      return record;
     }
     /* C0125A_INVENTORY_INDEPENDENCE_MODEL_END */
 
     function updateKnownMaterials() {
       var datalist = document.getElementById("knownMaterials");
       state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint);
+      state.knownMaterialIdentityAudit = auditKnownMaterialOptions(state.knownMaterials);
       datalist.replaceChildren();
-      state.knownMaterials.forEach(function (record) {
+      state.knownMaterials.filter(function (record) { return record.pickerVisible !== false; }).forEach(function (record) {
         var option = document.createElement("option");
         option.value = record.name;
         option.dataset.uuid = record.uuid;
@@ -14308,6 +14576,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         option.label = record.uuid;
         datalist.append(option);
       });
+      document.body.dataset.knownMaterialPickerOptions = String(state.knownMaterialIdentityAudit.visiblePickerOptionCount);
+      document.body.dataset.knownMaterialExactMultiUuid = String(state.knownMaterialIdentityAudit.exactCanonicalMultiUuidMaterialCount);
+      document.body.dataset.knownMaterialUnresolvedDuplicates = String(state.knownMaterialIdentityAudit.unresolvedDuplicateCount);
     }
 
     function renderAllocationSummary() {
@@ -15832,11 +16103,6 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!materialName || !materialUuid) {
         throw new Error("A material neve és UUID-je kötelező.");
       }
-      var knownMaterial = resolveKnownMaterialSelection(materialName, materialUuid, state.knownMaterials);
-      if (knownMaterial) {
-        materialName = knownMaterial.name;
-        materialUuid = knownMaterial.uuid;
-      }
       var quality = qualityText === "" ? null : Number(qualityText);
       if (quality !== null && !hasValidQuality(quality)) {
         throw new Error("A Quality 0 és 1000 közötti egész szám legyen.");
@@ -15855,17 +16121,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return batch.id === state.editingBatchId;
       }) : null;
       var timestamp = nowIso();
-      var record = {
-        id: existing ? existing.id : makeId("batch"),
+      var record = buildCanonicalMaterialBatchRecord({
         materialUuid: materialUuid,
         materialName: materialName,
         quality: quality,
         quantityUnits: quantityUnits,
         unit: unit,
-        note: note || null,
-        createdAt: existing ? existing.createdAt : timestamp,
-        updatedAt: timestamp
-      };
+        note: note
+      }, state.knownMaterials, existing, timestamp, makeId("batch"));
       var next = existing ? state.materialBatches.map(function (batch) {
         return batch.id === existing.id ? record : batch;
       }) : state.materialBatches.concat(record);
@@ -18605,7 +18868,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         assert(invalid.nameStatus === MATERIAL_NAME_STATUS.UNMAPPED && invalid.diagnosticStatus === MATERIAL_NAME_INVALID_REASON.TECHNICAL_FRAGMENT_ONLY, "A technikai fragment kizárása hibás.");
         var audit = state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex);
         assert(audit.ambiguous === 0, "Az aktív materialnév-indexben név-ambiguitás maradt.");
-        assert(buildMaterialDisplayIndex(state.miningCommodityIndex).every(function (record) {
+        assert(buildCanonicalMaterialCatalog(state.miningCommodityIndex, state.materialIdentityRelations, resolveActiveScVersion(state)).every(function (record) {
           return Boolean(record.displayName) && !/(?:\(Ore\)|\(Raw\)|\(UnrefinedOres\)|\(Raw_Minerals\))/.test(record.displayName);
         }), "A Material Database user-facing indexében technikai név maradt.");
         return audit.resolvedCanonicalNames + " resolved · " + audit.hiddenInvalidRecords + " hidden · registry " + audit.registryVersion;
@@ -18824,6 +19087,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           results: m4Clone(state.combinedMaterials || [])
         },
         materialNaming: m4Clone(state.materialNamingAudit || auditMaterialNames(state.miningCommodityIndex)),
+        materialIdentity: m4Clone(state.knownMaterialIdentityAudit || auditKnownMaterialOptions(state.knownMaterials)),
         radarSignature: m4Clone(state.radarSignatureAudit || auditRadarSignatures(state.miningCommodityIndex)),
         miningRecommendation: selectedFarmRecommendation ? {
           schemaVersion: selectedFarmRecommendation.schemaVersion,
@@ -19377,10 +19641,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     document.getElementById("batchMaterialName").addEventListener("change", function () {
       var uuidInput = document.getElementById("batchMaterialUuid");
-      var selected = resolveKnownMaterialSelection(this.value, uuidInput.value.trim(), state.knownMaterials);
+      var selected = resolveKnownMaterialSelection(this.value, "", state.knownMaterials);
       if (selected) {
         this.value = selected.name;
         uuidInput.value = selected.uuid;
+      } else {
+        uuidInput.value = "";
       }
     });
 

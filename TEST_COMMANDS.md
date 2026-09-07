@@ -756,3 +756,21 @@ node .\tools\run-v003-c0134-fresh-tests.mjs
 - Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + M1–M6.1 + C04, static/single-file, standalone és V001/V002 kapu.
 - Candidate: `test-artifacts/V003-C013.4/fresh-release-candidate/sPg Crafting List V003 RC.html`.
 - A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en külön készül; exact manual candidate `file://` gate nincs automatizálva.
+
+V003-C013.5 célzott repair kapu (exact canonical material picker dedup):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0135.ps1"
+```
+
+Külön célfixture és aktív 4.10 live audit:
+
+```powershell
+node .\tools\run-v003-c0135-tests.mjs
+node .\tools\audit-v003-c0135-active-materials.mjs
+```
+
+- Feynmaline/Titanium picker dedup, exact UUID/name→UUID feloldás, canonical batch save, source provenance, runtime inventory grouping, reload/backup, Combined/Allocation/no-double-reserve és unresolved duplicate audit.
+- A live audit csak exact same-name item-detail candidate-eket kér le és kizárólag bizonyított weight-1 `default_composition` kapcsolatot merge-el; fuzzy/name-only merge nincs.
+- A validator C013.3, C012.5A, M2/M4, static single-file, C013.4 immutability és V001/V002 integritás regressziót futtat. Teljes release-regresszió és RC build nincs a C013.5 scope-ban.
+- Artifactok: `test-artifacts/V003-C013.5/`.
