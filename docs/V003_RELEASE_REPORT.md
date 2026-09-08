@@ -1,8 +1,14 @@
-# V003 Stable Release Report
+# V003 Local Release Report — Pre-publication Invalidated
 
 Date: 2026-09-08
 
-Status: `V003 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS`
+Status: `PRE-PUBLICATION INVALIDATED BY V003 VERSION IDENTITY BLOCKER`
+
+## Pre-publication invalidation
+
+The local release commit `045bd8ce38dde5e2ef43999a038c4d835d644b9a` and its local annotated `V003` tag are retained unchanged as historical evidence. Publication is blocked because the byte-identical accepted artifact still identifies its runtime as `V003-dev`. C014 repairs the development application identity, but this report, the tagged release artifact and the tag are not rewritten. A fresh release candidate is required before a replacement stable V003 can be approved.
+
+No remote push or `main` merge occurred.
 
 ## Release identity
 
@@ -24,7 +30,7 @@ Status: `V003 STABLE RELEASE – SINGLE-FILE RELEASE GATE PASS`
 - Backup/restore and read-only import preview: PASS in the accepted evidence.
 - Combined Materials / Allocation Engine parity and no double reserve: PASS.
 
-The automated and Chrome localhost gates were not rerun during this release-only cycle. Their PASS evidence is reused because the application HTML, accepted RC and stable artifact are byte-identical.
+The automated and Chrome localhost gates were not rerun during the original release-only cycle. Their historical PASS evidence remains valid for the tagged bytes, but does not waive the subsequently identified stable-version identity blocker.
 
 ## V003 repair summary
 

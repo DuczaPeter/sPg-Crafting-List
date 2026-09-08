@@ -371,6 +371,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0138-fresh.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c014-stable-version-identity-repair",
+      "level": "targeted-regression",
+      "description": "V003-C014 targeted pre-publication repair: exactly three V003-dev runtime identities become V003; UI, backup and diagnostic propagation plus static single-file, frozen V001/V002 and unchanged invalidated local V003 release/tag integrity; no full regression or fresh RC.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c014.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

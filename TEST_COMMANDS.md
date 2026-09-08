@@ -833,3 +833,11 @@ V003-C013.9 exact manual candidate `file://` gate:
 - Nincs automatizált parancs: a felhasználó az exact C013.8 RC-t közvetlen fájlból ellenőrizte.
 - M1–M12 eredmény: PASS; evidence: `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md` és `test-artifacts/V003-C013.9/summary.json`.
 - Az automated és Chrome localhost kapu nem fut újra, ha az application HTML és az RC hash változatlan.
+
+V003-C014 célzott stable version identity repair kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c014.ps1"
+```
+
+Csak az exact három `V003-dev` → `V003` runtime identity-cserét, az UI/backup/diagnosztika `APP.version` továbbadását, a single-file statikus kaput, valamint a változatlan V001/V002 és invalidált helyi V003 release/tag integritását ellenőrzi. Teljes történeti regressziót és fresh RC buildet nem futtat; a Technical Probe/IndexedDB/reload/standalone külön célzott Chrome localhost evidence.

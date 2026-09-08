@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V003-C014 Stable Version Identity Repair
+
+- Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.
+- Mikor használtuk: `2026-09-08`, a szűk runtime identity javításhoz, célzott statikus kapuhoz és valódi Chrome localhost ellenőrzéshez.
+- Mire segített: a három verzióazonosító pontos javítására teljes történeti regresszió nélkül, valamint az UI/backup/diagnosztika, IndexedDB reload, standalone és konzol valódi böngészős bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: fő HTML három identity értéke, C014 teszt/validator/evidence/report és projektmeta; business logic, V001/V002, régi V003 tag/artifact, remote és `main` nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## Format
 
 - Skill neve:

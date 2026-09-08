@@ -1,0 +1,26 @@
+{
+  "cycle": "V003-C014",
+  "status": "PASS_STATIC_VERSION_IDENTITY",
+  "baselineHead": "045bd8ce38dde5e2ef43999a038c4d835d644b9a",
+  "applicationSha256": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+  "exactRepair": {
+    "baselineV003DevOccurrences": 3,
+    "currentV003DevOccurrences": 0,
+    "onlyThreeIdentityReplacements": true,
+    "applicationStatus": "V003",
+    "footerRuntime": "V003",
+    "appVersion": "V003"
+  },
+  "propagation": {
+    "runtimeUiUsesAppVersion": true,
+    "backupApplicationVersionUsesAppVersion": true,
+    "diagnosticApplicationVersionUsesAppVersion": true
+  },
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "localRuntimeSidecars": 0
+  },
+  "fullHistoricalRegression": "NOT_RUN_BY_SCOPE",
+  "freshReleaseCandidate": "NOT_CREATED"
+}

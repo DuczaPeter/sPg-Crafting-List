@@ -2,13 +2,23 @@
 
 ## Aktualis
 
-### V003 Stable Release
+### V003-C014 Stable Version Identity Repair
+
+- [x] A három aktuális runtime identity `V003-dev` → `V003`; más application logic változás nincs.
+- [x] UI, backup `applicationVersion` és diagnosztikai `application.version` egységesen `V003`.
+- [x] Célzott statikus/single-file kapu és valódi Chrome localhost Technical Probe `15/15`, IndexedDB reload, standalone és konzol `0/0` PASS.
+- [x] V001/V002 és a régi V003 release artifact változatlan; teljes történeti regresszió scope szerint nem futott.
+- [x] A helyi `045bd8c...` release/tag pre-publication invalidált evidence; tag nem mozdult, push/main merge nincs.
+- [ ] Friss RC és új stable V003 lezárás külön későbbi ciklusban.
+
+### V003 Stable Release — PRE-PUBLICATION INVALIDATED
 
 - [x] Az elfogadott C013.8 RC `835832` byte és SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469` invariánsa release előtt PASS.
 - [x] `releases/V003/sPg Crafting List.html` byte-pontos RC-másolat; embedded CSS/JS, egy runtime HTML, sidecar `0`.
 - [x] Automated, Chrome localhost és exact manual `file://` kapu PASS bizonyítéka a változatlan candidate-ről újrafelhasználva.
 - [x] Stable release report, `RELEASE.md` és `SHA256SUMS` elkészült; V001/V002 változatlan.
 - [x] Helyi `V003-STABLE-RELEASE` commit és annotált `V003` tag; push/main merge nincs.
+- [x] C014 audit: a tagged artifact runtime identityje `V003-dev`, ezért publikálás előtt invalidált; az evidence változatlanul megőrizve.
 
 ### V003-C013.9 Exact Manual file:// Gate Evidence Closure
 

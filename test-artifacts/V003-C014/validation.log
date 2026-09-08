@@ -1,0 +1,8 @@
+V003-C014 targeted stable version identity validation
+static-single-file=PASS
+c014-version-identity=PASS
+git-diff-check=PASS
+result=PASS_TARGETED_STATIC_AND_CHROME
+applicationSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+invalidatedV003ReleaseSha256=bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469
+fullHistoricalRegression=NOT_RUN_BY_SCOPE

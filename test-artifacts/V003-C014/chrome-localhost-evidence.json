@@ -1,0 +1,34 @@
+{
+  "cycle": "V003-C014",
+  "status": "PASS",
+  "testedAt": "2026-09-08",
+  "origin": "http://127.0.0.1:42014/",
+  "browser": "Google Chrome",
+  "applicationStatus": "V003 · schema 6",
+  "footerRuntime": "V003 · cache schema 4",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "indexedDbStartup": "PASS_SCHEMA_4",
+  "reload": "PASS",
+  "technicalProbe": {
+    "status": "PASS",
+    "passed": 15,
+    "failed": 0,
+    "standaloneHtmlExport": "PASS_538_KIB_EMBEDDED_CSS_NO_EXTERNAL_RESOURCE"
+  },
+  "backupExport": {
+    "status": "PASS",
+    "applicationVersion": "V003",
+    "schemaVersion": 2,
+    "temporaryDownloadRemoved": true
+  },
+  "diagnosticBundle": {
+    "status": "PASS",
+    "applicationVersion": "V003"
+  },
+  "runtimeV003DevOccurrences": 0,
+  "console": {
+    "applicationWarnings": 0,
+    "applicationErrors": 0
+  },
+  "fullHistoricalRegression": "NOT_RUN_BY_SCOPE"
+}

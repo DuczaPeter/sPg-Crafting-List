@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## V003 - 2026-09-08
+## V003 - PRE-PUBLICATION INVALIDATED (2026-09-08)
+
+The local `V003` release commit/tag is retained as evidence but must not be published: its embedded runtime identity still reports `V003-dev`. C014 repairs the development application identity to `V003`; a fresh RC and a new stable-release decision are required.
 
 - Exact canonical material identity és source/legacy UUID provenance fuzzy vagy name-only merge nélkül.
 - Diszjunkt Minimum/MAX Quality pool szemantika, mixed amount/Quality shortage és cross-view allocation parity.

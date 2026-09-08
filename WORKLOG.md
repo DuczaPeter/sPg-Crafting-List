@@ -1,16 +1,15 @@
 # WORKLOG.md
 
-Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260908-124105-960190-WORKLOG.md`.
+Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260908-130300-572448-WORKLOG.md`.
 
-## Aktuális ciklus
+## 2026-09-08 — V003-C014 Stable Version Identity Repair
 
-### V003 Stable Release – 2026-09-08
-
-- Pre-release: `develop/V003 @ b10462d27e67ac0f6b6aae1e7ec9a2eaa3c2983b`, clean; V003 tag és stable mappa nem létezett.
-- Az accepted C013.8 RC `835832` byte és SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469` invariánsa PASS.
-- Stable HTML exact raw-byte copy; embedded CSS/JS, local runtime sidecar `0`, localhost/test-artifact runtime dependency `0`.
-- Az accepted RC és stable HTML `-text` Git attribútuma védi az exact bytesorozatot a line-ending normalizálástól.
-- C013.8 automated + Chrome localhost és C013.9 manual M1–M12 PASS újrafuttatás nélkül érvényes a változatlan bytesorozatra.
-- Application code/RC change `NO`; V001/V002 változatlan; release docs/checksum/meta frissült.
-- Helyi `V003-STABLE-RELEASE` commit és annotált `V003` tag; push/main merge `NO`.
-- Visszaállás: a release commit revertje a `b10462d...` checkpoint fölött; V001/V002 továbbra is külön fagyasztott fallback.
+- Baseline: `develop/V003 @ 045bd8ce38dde5e2ef43999a038c4d835d644b9a`, clean; local `V003` tag ugyanide mutatott, push/main merge nem történt.
+- Root cause: a byte-pontos C013.8 candidate promóciója a három embedded `V003-dev` runtime identity értéket is változatlanul vitte a helyi release-be.
+- Módosítás: csak a fő HTML `applicationStatus`, `footerRuntime` és `APP.version` értéke lett `V003`; business logic és schema nem változott.
+- Célzott statikus validator: PASS; `V003-dev` runtime occurrence `0`, single-file sidecar `0`, V001/V002 és régi V003 artifact/tag változatlan.
+- Valódi Chrome localhost: Technical Probe `15/15 PASS`, UI `V003 · schema 6`, footer `V003 · cache schema 4`, IndexedDB startup/reload, backup `applicationVersion=V003`, diagnosztika `application.version=V003`, standalone PASS, konzol `0/0`.
+- A teljes történeti release regression scope szerint nem futott; új RC nem készült.
+- A régi helyi V003 release/tag státusza: `PRE-PUBLICATION INVALIDATED BY V003 VERSION IDENTITY BLOCKER`; tag nem mozdult és release artifact nem változott.
+- Következő lépés: külön fresh-RC ciklus, majd új release-döntés.
+- Visszaállás: a C014 checkpoint commit normál revertje; a régi invalidált tag/artifact evidence változatlanul megmarad.

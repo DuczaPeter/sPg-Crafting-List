@@ -89,6 +89,8 @@
 - V003-C013.8 builder/target: `tools/build-v003-c0138-fresh-candidate.mjs`, `tools/run-v003-c0138-fresh-tests.mjs`; artifact: `test-artifacts/V003-C013.8/fresh-release-candidate/`.
 - V003-C013.8 riport: `docs/V003_C0138_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact manual candidate `file://` gate a C013.9 user evidence alapján PASS.
 - V003-C013.9 manual evidence riport: `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md`; ugyanazon C013.8 candidate felhasználói `file://` M1–M12 PASS, application/RC változás nélkül.
+- V003-C014 identity kapu: `tools/validate-v003-c014.ps1`, `tools/run-v003-c014-tests.mjs`; pontosan három runtime `V003-dev` → `V003` csere, backup/diagnosztika/UI propagáció, single-file és V001/V002 integritás.
+- V003-C014 riport/evidence: `docs/V003_C014_STABLE_VERSION_IDENTITY_REPAIR_REPORT.md`, `test-artifacts/V003-C014/`; a helyi `045bd8c...` release/tag pre-publication invalidált, változatlan evidence, friss RC szükséges.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
