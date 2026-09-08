@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003-C013.9 Exact manual file gate evidence closure
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-08`, a felhasználó által igazolt exact C013.8 `file://` kapu dokumentáció-only lezárásához.
+- Mire segített: a változatlan RC hash/integritás rövid ellenőrzésére, a költséges automated/Chrome kapuk ismétlésének elkerülésére és a manuális evidence elkülönítésére.
+- Mely fájlokat vagy döntéseket érintett: C013.8/C013.9 riport, manual summary és ciklusmetaadatok; application code, RC, V001/V002 és remote Git nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C013.8 Fresh release candidate
 
 - Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.

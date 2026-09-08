@@ -2,7 +2,7 @@
 
 ## Eredmény
 
-`V003-C013.8 – FRESH RC AFTER USER-DATA-INDEPENDENT CANONICAL PICKER REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C013.8 – FRESH RC AFTER USER-DATA-INDEPENDENT CANONICAL PICKER REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE PASS`
 
 Az exact `develop/V003 @ 490ed6fc3e94f2361c7448650a08752fa5f3c8c7` forrásból új, byte-azonos single-file release candidate készült. Application code nem változott; a C013.6 jelölt továbbra is blokkolt és változatlan.
 
@@ -13,7 +13,7 @@ Az exact `develop/V003 @ 490ed6fc3e94f2361c7448650a08752fa5f3c8c7` forrásból �
 - SHA-256 teszt előtt/után: `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`
 - Build: exact Git-commit raw-byte copy
 - Runtime sidecar: `0`; CSS és JavaScript a HTML-ben
-- Közvetlen `file://` kompatibilitás: statikus/automatizált kapu PASS; az exact candidate manuális `file://` kapuja még `NOT RUN`.
+- Közvetlen `file://` kompatibilitás: statikus/automatizált kapu PASS; az exact candidate felhasználói manuális `file://` kapuja `M1–M12 PASS`.
 
 ## Automatizált release regression
 
@@ -55,9 +55,11 @@ Kritikus böngészős fixture: izolált legacy Titanium `07570c9f-...` Q784 batc
 - Push/main merge: nem történt
 - Application code: NO CHANGE
 
-## Nyitott kapu
+## Exact manual candidate `file://` kapu
 
-Az exact candidate manuális, közvetlen `file://` kapuja még nincs lefuttatva. A C013.8 ezért nem stabil release.
+`EXACT MANUAL CANDIDATE file:// GATE: PASS`
+
+A felhasználó ugyanazt a hash-zárolt candidate-et közvetlen `file://` módban ellenőrizte. Direct startup, legacy Titanium melletti canonical picker, új Q920 batch, reload, Combined parity, Feynmaline/Tungsten/Gold picker, Technical Probe `15/15`, backup preview, standalone export és tesztadat-takarítás: `M1–M12 PASS`. A részletes, kizárólag felhasználói manuális evidence a `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md` riportban van. A release gate teljes, de stabil V003 kiadás/tag csak külön ciklusban és engedéllyel készülhet.
 
 ## Visszaállás
 

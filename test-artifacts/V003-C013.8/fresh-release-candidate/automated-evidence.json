@@ -1,6 +1,6 @@
 {
     "cycle":  "V003-C013.8",
-    "status":  "AUTOMATED_AND_CHROME_PASS_MANUAL_FILE_PENDING",
+    "status":  "AUTOMATED_CHROME_AND_EXACT_MANUAL_FILE_GATES_PASS",
     "sourceHead":  "490ed6fc3e94f2361c7448650a08752fa5f3c8c7",
     "candidate":  {
                       "path":  "test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html",
@@ -734,6 +734,6 @@
                           },
     "applicationCodeChanged":  false,
     "chrome":  "PASS_15_OF_15_8_MODULES_1920_1366_390_OVERFLOW_0_CONSOLE_0_0_LEGACY_TITANIUM_CANONICAL_PICKER_RELOAD_PASS",
-    "exactManualCandidateFileGate":  "NOT_RUN",
+    "exactManualCandidateFileGate":  "PASS_USER_MANUAL_M1_M12",
     "stableRelease":  false
 }

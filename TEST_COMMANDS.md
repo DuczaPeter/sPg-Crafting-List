@@ -827,3 +827,9 @@ node .\tools\run-v003-c0138-fresh-tests.mjs
 - Live aktív 4.10 audit: látható picker-duplikátum `0`, guessed canonical UUID `0`; a C013.6 countokkal való eltérés külön rögzül.
 - Candidate: `test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html`.
 - A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készül; exact manual candidate `file://` gate nincs automatizálva.
+
+V003-C013.9 exact manual candidate `file://` gate:
+
+- Nincs automatizált parancs: a felhasználó az exact C013.8 RC-t közvetlen fájlból ellenőrizte.
+- M1–M12 eredmény: PASS; evidence: `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md` és `test-artifacts/V003-C013.9/summary.json`.
+- Az automated és Chrome localhost kapu nem fut újra, ha az application HTML és az RC hash változatlan.

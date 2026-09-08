@@ -1,16 +1,15 @@
 # WORKLOG.md
 
-Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-V003-C013.7.md`.
+Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-V003-C013.8.md`.
 
 ## Aktuális ciklus
 
-### V003-C013.8 Fresh RC after User-Data-Independent Canonical Picker Repair – 2026-09-08
+### V003-C013.9 Exact Manual file:// Gate Evidence Closure – 2026-09-08
 
-- Exact source baseline: `490ed6fc3e94f2361c7448650a08752fa5f3c8c7`; application code nem változott.
-- Determinisztikus single-file candidate: `835832` byte, SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`, runtime sidecar `0`.
-- Teljes releváns C001–C012.5/D1/C013.1/.3/.5/.7/M1–M6.1/C04/static/single-file/standalone/backup/V001/V002 kapu PASS.
-- Live 4.10 audit: 128 név, 126 látható opció, 43 exact canonical multi-UUID, 2 unresolved, 0 látható duplikált picker és 0 guessed canonical UUID.
-- Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, Wiki/UEX/IndexedDB/reload és legacy Titanium canonical picker PASS, console 0/0.
-- Candidate hash a teszt előtt/után azonos; V001/V002 és az invalidált C013.6 candidate változatlan.
-- Exact candidate manual `file://` kapu NOT RUN; stable V003 tag/release/push/main merge nincs.
-- Visszaállás: a C013.8 checkpoint commit revertje; stabil fallback a változatlan V002.
+- Baseline: `4b51db7c797ddc5705e03509b19e749149f835a9`; exact C013.8 candidate SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`.
+- A felhasználó ugyanazt az RC-t közvetlen `file://` módban M1–M12 ellenőrzéssel PASS-ra zárta; ez nem Codex automation.
+- Legacy Titanium melletti canonical UUID, Q920 batch add/reload, Combined parity, Feynmaline/Tungsten/Gold picker, Technical Probe 15/15, backup preview és standalone PASS.
+- A Q920 / 0.1000 SCU tesztbatch törölve; valódi batch-ek megmaradtak, egy logical Titanium és canonical UUID változatlan.
+- Application code és RC nem változott; C013.8 automated + Chrome localhost PASS újrafuttatás nélkül újrafelhasználva.
+- V001/V002 és C013.6 invalidált RC változatlan; V003 tag/release/push/main merge nincs.
+- Visszaállás: a C013.9 checkpoint commit revertje; baseline a változatlan C013.8 checkpoint.

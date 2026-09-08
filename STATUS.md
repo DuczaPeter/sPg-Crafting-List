@@ -2,16 +2,14 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C013.8 source baseline: `490ed6fc3e94f2361c7448650a08752fa5f3c8c7`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013.8`; fresh exact single-file RC a C013.7 canonical picker repair után: **AUTOMATED + CHROME PASS**.
-- Candidate: `test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html`; `835832` byte; SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`; runtime sidecar `0`.
-- Teljes releváns C001–C012.5, D1, C013.1/.3/.5/.7, M1–M6.1, C04, static/single-file/standalone/backup és V001/V002 regresszió: **PASS**.
-- Aktív 4.10 audit: `128` név / `126` látható opció / `43` exact canonical multi-UUID / `2` unresolved; látható duplikált picker `0`, bizonyíték nélküli canonical UUID `0`.
-- C013.7 invariancia Feynmaline/Titanium/Tungsten/Gold: **PASS**; legacy Titanium Q784 mellett canonical picker `64978449-...`, reload után is **PASS**.
-- Valódi Chrome localhost: Technical Baseline `15/15`, 8 modul, 1920/1366/390 overflow `0`, Wiki/UEX/IndexedDB/reload **PASS**, konzol WARN/ERROR `0/0`.
-- Application code nem változott; candidate SHA a Chrome-kapu után változatlan.
-- Exact candidate manuális `file://` kapu: **NOT RUN**; stabil V003 tag/release/push/main merge nincs.
-- C013.6 RC: **BLOCKED / INVALIDATED**, SHA változatlan `4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed`.
-- Riport: `docs/V003_C0138_RELEASE_CANDIDATE_REPORT.md`.
+- Branch: `develop/V003`; C013.9 baseline: `4b51db7c797ddc5705e03509b19e749149f835a9`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C013.9`; az exact C013.8 release candidate felhasználói manuális `file://` evidence-zárása: **M1–M12 PASS**.
+- Candidate: `test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html`; `835832` byte; SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`; RC change `NO`.
+- Direct startup, legacy Titanium canonical picker, új Q920 batch, reload, Combined parity, Feynmaline/Tungsten/Gold picker, Technical Probe `15/15`, backup preview, standalone és tesztbatch-takarítás: **PASS**.
+- A Q920 / 0.1000 SCU manuális Titanium tesztbatch törölve; valódi batch-ek, egy logical Titanium és canonical UUID megmaradt.
+- C013.8 automated és Chrome localhost PASS újrafuttatás nélkül érvényes: application HTML és RC byte-változatlan.
+- Application code change: `NO`; V001/V002 és C013.6 invalidált RC változatlan.
+- V003 release gate: **COMPLETE**; stabil V003 release/tag még nincs, push/main merge nem történt.
+- Riport: `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md`.
 
-`V003-C013.8 – FRESH RC AFTER USER-DATA-INDEPENDENT CANONICAL PICKER REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C013.9 – EXACT MANUAL CANDIDATE file:// GATE PASS, V003 RELEASE GATE COMPLETE`

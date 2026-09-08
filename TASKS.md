@@ -2,6 +2,14 @@
 
 ## Aktualis
 
+### V003-C013.9 Exact Manual file:// Gate Evidence Closure
+
+- [x] A felhasználó az exact C013.8 candidate-et közvetlen `file://` módban ellenőrizte: M1–M12 PASS.
+- [x] Legacy Titanium melletti canonical picker, új Q920 batch, reload, Combined parity és Feynmaline/Tungsten/Gold picker PASS.
+- [x] Technical Probe 15/15, backup preview és standalone export PASS; Q920 tesztbatch törölve, valódi batch-ek megmaradtak.
+- [x] Application code és RC változatlan; automated és Chrome localhost eredmény újrafuttatás nélkül újrafelhasználva.
+- [x] V003 release gate complete; stable release/tag továbbra is külön engedélyhez és ciklushoz kötött.
+
 ### V003-C013.8 Fresh RC after User-Data-Independent Canonical Picker Repair
 
 - [x] Exact `490ed6fc...` source HEAD-ből determinisztikus, byte-azonos single-file candidate; application code változatlan.
@@ -10,7 +18,7 @@
 - [x] Aktív 4.10 identity audit: 128 név, 126 látható opció, 43 exact canonical multi-UUID, 2 unresolved, 0 látható duplikátum és 0 guessed canonical UUID.
 - [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
 - [x] Legacy Titanium batch mellett a user-facing picker canonical UUID-ja és reload-invarianciája PASS.
-- [ ] Exact C013.8 candidate manuális `file://` kapu; stable V003 továbbra sem készíthető.
+- [x] Exact C013.8 candidate manuális `file://` kapu M1–M12 PASS; stable V003 továbbra is külön release-ciklushoz kötött.
 
 ### V003-C013.7 User-Data-Independent Canonical Picker Repair
 

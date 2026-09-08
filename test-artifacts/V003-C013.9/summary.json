@@ -1,0 +1,20 @@
+{
+  "cycle": "V003-C013.9",
+  "status": "EXACT_MANUAL_CANDIDATE_FILE_GATE_PASS_RELEASE_GATE_COMPLETE",
+  "verifiedBy": "USER",
+  "automation": false,
+  "c0138Checkpoint": "4b51db7c797ddc5705e03509b19e749149f835a9",
+  "candidatePath": "test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html",
+  "candidateBytes": 835832,
+  "candidateSha256": "bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469",
+  "manualChecks": "M1-M12 PASS",
+  "temporaryTitaniumQ920BatchRemoved": true,
+  "applicationCodeChanged": false,
+  "candidateChanged": false,
+  "automatedRegression": "REUSED_PASS_UNCHANGED_C0138_CANDIDATE",
+  "chromeLocalhost": "REUSED_PASS_UNCHANGED_C0138_CANDIDATE",
+  "v001V002Integrity": "PASS",
+  "stableV003Release": false,
+  "v003Tag": false,
+  "pushOrMainMerge": false
+}
