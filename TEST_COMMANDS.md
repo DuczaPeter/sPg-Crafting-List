@@ -809,3 +809,21 @@ node .\tools\run-v003-c0137-tests.mjs
 - My Materials, Combined, Allocation, no-double-reserve, no-fuzzy és unresolved duplicate viselkedés; közvetlen C013.5/C013.3/C012.5A/M2/M4 regresszió.
 - A validator a C013.6 candidate változatlan SHA-ját és a stabil V001/V002 integritását ellenőrzi. Teljes release-regresszió, Chrome és új RC nem része a scope-nak.
 - Artifactok: `test-artifacts/V003-C013.7/`.
+
+V003-C013.8 teljes fresh release-candidate kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0138-fresh.ps1"
+```
+
+Csak a candidate-re kötött D1/C013.1/C013.3/C013.5/C013.7 célkapu:
+
+```powershell
+node .\tools\run-v003-c0138-fresh-tests.mjs
+```
+
+- Exact source HEAD: `490ed6fc3e94f2361c7448650a08752fa5f3c8c7`; determinisztikus Git-commit raw-byte copy és SHA-zár.
+- Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + M1–M6.1 + C04, static/single-file, standalone, backup és V001/V002 kapu.
+- Live aktív 4.10 audit: látható picker-duplikátum `0`, guessed canonical UUID `0`; a C013.6 countokkal való eltérés külön rögzül.
+- Candidate: `test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készül; exact manual candidate `file://` gate nincs automatizálva.

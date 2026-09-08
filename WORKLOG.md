@@ -1,17 +1,16 @@
 # WORKLOG.md
 
-Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-V003-C013.6.md`.
+Korábbi aktuális napló archiválva: `docs/archive/WORKLOG-V003-C013.7.md`.
 
 ## Aktuális ciklus
 
-### V003-C013.7 User-Data-Independent Canonical Picker Repair – 2026-09-08
+### V003-C013.8 Fresh RC after User-Data-Independent Canonical Picker Repair – 2026-09-08
 
-- Baseline: `87ae7d18aaa2bf3020654bc79ada433f6c8771a6`; a C013.6 exact manual kapun talált blocker miatt az RC BLOCKED/INVALIDATED lett, HTML-je változatlan.
-- Gyökérok: a fizikailag hiányzó source rekord `refinedVersion.uuid` relationje kimaradt az identity graphból, így egy legacy User Data batch külön picker identityként visszaszivároghatott.
-- Javítás: exact refined-version source relation és explicit canonical authority; User Data csak provenance/batch source, bizonyított canonical UUID-t nem írhat felül.
-- Feynmaline, Titanium, Tungsten és Gold picker canonical UUID-ja legacy batch nélkül és mellett azonos: PASS.
-- Titanium legacy Q784 megmaradt; canonical Q866/Q920 batch-ekkel `1` logical material / `3` batch, reload és backup/restore PASS.
-- My Materials grouping, Combined/Allocation parity, no-double-reserve, no-fuzzy és unresolved duplicate fail-safe PASS.
-- C013.7 célkapu és C013.5/C013.3/C012.5A/M2/M4 regresszió PASS; teljes release-regresszió és Chrome scope szerint nem futott.
-- V001/V002 változatlan; V003 tag/release/push/main merge nincs; friss RC külön ciklusban szükséges.
-- Visszaállás: a C013.7 checkpoint commit revertje; stabil fallback a változatlan V002.
+- Exact source baseline: `490ed6fc3e94f2361c7448650a08752fa5f3c8c7`; application code nem változott.
+- Determinisztikus single-file candidate: `835832` byte, SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`, runtime sidecar `0`.
+- Teljes releváns C001–C012.5/D1/C013.1/.3/.5/.7/M1–M6.1/C04/static/single-file/standalone/backup/V001/V002 kapu PASS.
+- Live 4.10 audit: 128 név, 126 látható opció, 43 exact canonical multi-UUID, 2 unresolved, 0 látható duplikált picker és 0 guessed canonical UUID.
+- Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, Wiki/UEX/IndexedDB/reload és legacy Titanium canonical picker PASS, console 0/0.
+- Candidate hash a teszt előtt/után azonos; V001/V002 és az invalidált C013.6 candidate változatlan.
+- Exact candidate manual `file://` kapu NOT RUN; stable V003 tag/release/push/main merge nincs.
+- Visszaállás: a C013.8 checkpoint commit revertje; stabil fallback a változatlan V002.

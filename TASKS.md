@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V003-C013.8 Fresh RC after User-Data-Independent Canonical Picker Repair
+
+- [x] Exact `490ed6fc...` source HEAD-ből determinisztikus, byte-azonos single-file candidate; application code változatlan.
+- [x] Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + M1–M6.1 + C04 release-regresszió PASS.
+- [x] Feynmaline/Titanium/Tungsten/Gold picker invariancia, Titanium legacy/new batch, Combined/Allocation/no-double-reserve/reload/backup/standalone PASS.
+- [x] Aktív 4.10 identity audit: 128 név, 126 látható opció, 43 exact canonical multi-UUID, 2 unresolved, 0 látható duplikátum és 0 guessed canonical UUID.
+- [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
+- [x] Legacy Titanium batch mellett a user-facing picker canonical UUID-ja és reload-invarianciája PASS.
+- [ ] Exact C013.8 candidate manuális `file://` kapu; stable V003 továbbra sem készíthető.
+
 ### V003-C013.7 User-Data-Independent Canonical Picker Repair
 
 - [x] C013.6 exact manual `file://` canonical identity blockere rögzítve; a candidate BLOCKED/INVALIDATED, HTML-je változatlan.

@@ -1,0 +1,17 @@
+{
+  "cycle": "V003-C013.8",
+  "status": "AUTOMATED_AND_CHROME_GATES_PASS_EXACT_MANUAL_FILE_NOT_RUN",
+  "sourceHead": "490ed6fc3e94f2361c7448650a08752fa5f3c8c7",
+  "candidatePath": "test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html",
+  "candidateBytes": 835832,
+  "candidateSha256": "bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469",
+  "automatedRegression": "PASS_COMPLETE_RELEVANT_C001_C0137_M1_M61_C04",
+  "canonicalPickerInvariance": "PASS_FEYNMALINE_TITANIUM_TUNGSTEN_GOLD",
+  "activeIdentityAudit": "PASS_128_NAMES_126_VISIBLE_43_EXACT_2_UNRESOLVED_0_VISIBLE_DUPLICATES_0_GUESSED",
+  "chromeLocalhost": "PASS_15_OF_15_8_MODULES_3_VIEWPORTS_OVERFLOW_0_CONSOLE_0_0_LEGACY_TITANIUM_RELOAD",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "applicationCodeChanged": false,
+  "stableRelease": false,
+  "exactManualCandidateFileGate": "NOT_RUN",
+  "v001V002Integrity": "PASS"
+}

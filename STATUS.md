@@ -2,16 +2,16 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C013.7 baseline: `87ae7d18aaa2bf3020654bc79ada433f6c8771a6`; stabil fallback: változatlan `V002`.
-- Aktuális ciklus: `V003-C013.7`; User Data-tól független, exact canonical material picker repair: **PASS**.
-- Gyökérok: az aktív commodity `refinedVersion.uuid` relationje kimaradt az identity graphból, ha a source rekord nem volt külön jelen; egy legacy batch emiatt külön picker identityvé válhatott.
-- Canonical authority: verified exact API relation → canonical commodity record → verified source relation → User Data provenance; User Data bizonyított canonical UUID-t nem írhat felül.
-- Feynmaline, Titanium, Tungsten és Gold legacy-batch nélküli/melletti canonical invariance: **PASS**; fuzzy/name-only merge továbbra sincs.
-- Titanium: legacy Q784 megmaradt, canonical Q866 és Q920 hozzáadható; `1` logical material / `3` batch, provenance/reload/backup **PASS**.
-- C013.7 + C013.5 + C013.3 + C012.5A + M2 + M4 célzott validatorlánc, Combined/Allocation/no-double-reserve és V001/V002 integritás: **PASS**.
-- Teljes release-regresszió és Chrome gate: scope szerint **NOT RUN**; friss RC külön későbbi ciklusban szükséges.
-- C013.6 RC: **BLOCKED / INVALIDATED**; HTML változatlan, SHA-256 `4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed`.
-- V003 tag/release/push/main merge nincs.
-- Riport: `docs/V003_C0137_USER_DATA_INDEPENDENT_CANONICAL_PICKER_REPORT.md`.
+- Branch: `develop/V003`; C013.8 source baseline: `490ed6fc3e94f2361c7448650a08752fa5f3c8c7`; stabil fallback: változatlan `V002`.
+- Aktuális ciklus: `V003-C013.8`; fresh exact single-file RC a C013.7 canonical picker repair után: **AUTOMATED + CHROME PASS**.
+- Candidate: `test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html`; `835832` byte; SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`; runtime sidecar `0`.
+- Teljes releváns C001–C012.5, D1, C013.1/.3/.5/.7, M1–M6.1, C04, static/single-file/standalone/backup és V001/V002 regresszió: **PASS**.
+- Aktív 4.10 audit: `128` név / `126` látható opció / `43` exact canonical multi-UUID / `2` unresolved; látható duplikált picker `0`, bizonyíték nélküli canonical UUID `0`.
+- C013.7 invariancia Feynmaline/Titanium/Tungsten/Gold: **PASS**; legacy Titanium Q784 mellett canonical picker `64978449-...`, reload után is **PASS**.
+- Valódi Chrome localhost: Technical Baseline `15/15`, 8 modul, 1920/1366/390 overflow `0`, Wiki/UEX/IndexedDB/reload **PASS**, konzol WARN/ERROR `0/0`.
+- Application code nem változott; candidate SHA a Chrome-kapu után változatlan.
+- Exact candidate manuális `file://` kapu: **NOT RUN**; stabil V003 tag/release/push/main merge nincs.
+- C013.6 RC: **BLOCKED / INVALIDATED**, SHA változatlan `4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed`.
+- Riport: `docs/V003_C0138_RELEASE_CANDIDATE_REPORT.md`.
 
-`V003-C013.7 – USER-DATA-INDEPENDENT CANONICAL PICKER REPAIR PASS, FRESH RC REQUIRED`
+`V003-C013.8 – FRESH RC AFTER USER-DATA-INDEPENDENT CANONICAL PICKER REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`

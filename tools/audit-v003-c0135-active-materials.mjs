@@ -100,6 +100,16 @@ const potentialSourceOptions = harvestableItems.map((raw, index) => ({
 }));
 const known = model.buildKnown(commodityRecords, potentialSourceOptions, [], null, relations, activeScVersion);
 const audit = model.auditKnown(known);
+const visibleNameCounts = new Map();
+known.filter((record) => record.pickerVisible !== false).forEach((record) => {
+  const key = String(record.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  visibleNameCounts.set(key, (visibleNameCounts.get(key) || 0) + 1);
+});
+const visibleDuplicatePickerNames = Array.from(visibleNameCounts.entries())
+  .filter(([, count]) => count > 1)
+  .map(([name]) => name)
+  .sort();
+const guessedCanonicalUuidCount = audit.exactMergedMaterials.filter((record) => !Array.isArray(record.origins) || record.origins.length === 0).length;
 const feynmaline = known.filter((record) => record.name === "Feynmaline");
 const titanium = known.filter((record) => record.name === "Titanium");
 assert.equal(feynmaline.length, 1, "Az active 4.10 auditban egy Feynmaline logical identity kell.");
@@ -123,6 +133,11 @@ const report = {
     exactItemCommodityRelations: relations.length
   },
   picker: audit,
+  pickerSafety: {
+    visibleDuplicatePickerNames,
+    visibleDuplicatePickerCount: visibleDuplicatePickerNames.length,
+    guessedCanonicalUuidCount
+  },
   exactRelationList: relations.map((record) => ({
     name: record.canonicalName,
     canonicalUuid: record.canonicalUuid,

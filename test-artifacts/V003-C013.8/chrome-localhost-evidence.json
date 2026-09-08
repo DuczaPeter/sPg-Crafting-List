@@ -1,0 +1,61 @@
+{
+  "cycle": "V003-C013.8",
+  "status": "PASS",
+  "testedAt": "2026-09-08T07:24:26+02:00",
+  "origin": "http://127.0.0.1:42008",
+  "candidate": {
+    "path": "test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "sourceHead": "490ed6fc3e94f2361c7448650a08752fa5f3c8c7",
+    "bytes": 835832,
+    "sha256Before": "bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469",
+    "sha256After": "bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469",
+    "immutable": true
+  },
+  "runtime": {
+    "activeScVersion": "4.10.0-LIVE.12519617",
+    "wiki": "PASS",
+    "uex": "PASS",
+    "indexedDb": "PASS_SCHEMA_4",
+    "reload": "PASS",
+    "technicalBaseline": "PASS_15_OF_15",
+    "consoleWarnings": 0,
+    "consoleErrors": 0
+  },
+  "modules": {
+    "count": 8,
+    "status": "PASS",
+    "names": [
+      "Blueprint Browser",
+      "Crafting List",
+      "My Materials",
+      "Combined Materials",
+      "Material Database",
+      "Mining Loadouts",
+      "UEX Refinery",
+      "Data / Settings"
+    ]
+  },
+  "viewports": [
+    { "width": 1920, "height": 1080, "modules": "8/8 PASS", "horizontalOverflow": 0 },
+    { "width": 1366, "height": 768, "modules": "8/8 PASS", "horizontalOverflow": 0 },
+    { "width": 390, "height": 844, "modules": "8/8 PASS", "horizontalOverflow": 0 }
+  ],
+  "legacyTitaniumFixture": {
+    "fixtureOrigin": "ISOLATED_LOCALHOST_42008",
+    "seedMethod": "TEST_ONLY_SAME_ORIGIN_INDEXEDDB_SEED_PAGE",
+    "legacyBatch": {
+      "materialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "quality": 784,
+      "quantityScu": 1.744
+    },
+    "legacyBatchPreserved": true,
+    "logicalMaterialCount": 1,
+    "pickerInput": "Titanium",
+    "pickerCanonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "pickerCanonicalUuidAfterReload": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "destructiveMigration": false,
+    "status": "PASS"
+  },
+  "applicationCodeChanged": false,
+  "manualExactCandidateFileGate": "NOT_RUN"
+}
