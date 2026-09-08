@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V003-C015 Fresh Release Candidate
+
+- Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.
+- Mikor használtuk: `2026-09-08`, az exact C014 checkpointból épített fresh single-file RC teljes release-regressziójához és valódi Chrome localhost kapujához.
+- Mire segített: minimális resume, determinisztikus source/hash lock, izolált regressziós clone, legacy Titanium és diszjunkt Quality pool browser fixture, három exact viewport, backup/standalone/version identity és tiszta konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C015 builder/validator/test harness, candidate/evidence/report és ciklusmeta; application code, V001/V002, a régi invalidált V003 tag/release, remote és `main` nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C014 Stable Version Identity Repair
 
 - Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.

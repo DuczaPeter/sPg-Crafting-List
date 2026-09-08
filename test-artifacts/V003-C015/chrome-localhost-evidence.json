@@ -1,0 +1,99 @@
+{
+  "cycle": "V003-C015",
+  "status": "PASS",
+  "testedAt": "2026-09-08T17:47:00+02:00",
+  "origin": "http://127.0.0.1:42015",
+  "candidate": {
+    "path": "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "sourceHead": "37f8852b4ddfd5b628d952a445f97ee5a5179a11",
+    "bytes": 835820,
+    "sha256Before": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+    "sha256After": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+    "immutable": true,
+    "runtimeIdentity": "V003",
+    "v003DevRuntimeIdentityOccurrences": 0
+  },
+  "runtime": {
+    "applicationStatus": "V003 · schema 6",
+    "footer": "V003 · cache schema 4",
+    "activeScVersion": "4.10.0-LIVE.12519617",
+    "wiki": "PASS",
+    "uex": "PASS_215_RECORD_CACHE",
+    "indexedDb": "PASS_SCHEMA_4",
+    "reload": "PASS",
+    "technicalBaseline": "PASS_15_OF_15",
+    "consoleWarnings": 0,
+    "consoleErrors": 0
+  },
+  "modules": {
+    "count": 8,
+    "status": "PASS",
+    "names": [
+      "Blueprint Browser",
+      "Crafting List",
+      "My Materials",
+      "Combined Materials",
+      "Material Database",
+      "Mining Loadouts",
+      "UEX Refinery",
+      "Data / Settings"
+    ]
+  },
+  "viewports": [
+    { "width": 1920, "height": 1080, "modules": "8/8 PASS", "horizontalOverflow": 0 },
+    { "width": 1366, "height": 768, "modules": "8/8 PASS", "horizontalOverflow": 0 },
+    { "width": 390, "height": 844, "modules": "8/8 PASS", "horizontalOverflow": 0 }
+  ],
+  "legacyTitaniumFixture": {
+    "fixtureOrigin": "ISOLATED_LOCALHOST_42015",
+    "seedMethod": "TEST_ONLY_SAME_ORIGIN_INDEXEDDB_SEED_PAGE",
+    "legacySourceUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+    "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "quality": 784,
+    "quantityScu": 1.744,
+    "logicalMaterialCount": 1,
+    "pickerOptionCount": 1,
+    "pickerCanonicalUuidBeforeReload": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "pickerCanonicalUuidAfterReload": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "destructiveMigration": false,
+    "status": "PASS"
+  },
+  "disjointTitaniumPoolFixture": {
+    "minimumPool": "Q500–Q799",
+    "maximumPool": "Q800+",
+    "physicalInventoryScu": 4.868,
+    "minimumEligibleScu": 1.744,
+    "maximumEligibleScu": 3.124,
+    "minimumRequiredScu": 2.0,
+    "minimumReservedScu": 1.744,
+    "minimumQualityShortageScu": 0.256,
+    "maximumRequiredScu": 1.0,
+    "maximumReservedScu": 1.0,
+    "combinedReservedScu": 2.744,
+    "combinedShortageScu": 0.256,
+    "noBorrowing": true,
+    "noDoubleReserve": true,
+    "reloadParity": "PASS",
+    "status": "PASS"
+  },
+  "backup": {
+    "applicationVersion": "V003",
+    "schemaVersion": 2,
+    "fingerprint": "6f821aa6",
+    "status": "PASS"
+  },
+  "standalone": {
+    "downloadedFile": "sPg Crafting List - C015 Titanium Pool Browser Fixture.html",
+    "bytes": 632856,
+    "sha256": "f478601256170b6d97e7f7d6f1af11ecb6fef4ae17186201f19a61e0e4b829e6",
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "localCssJsReferences": 0,
+    "localhostReferences": 0,
+    "testArtifactReferences": 0,
+    "v003DevRuntimeIdentityOccurrences": 0,
+    "status": "PASS"
+  },
+  "applicationCodeChanged": false,
+  "exactManualCandidateFileGate": "NOT_RUN"
+}

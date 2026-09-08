@@ -2,6 +2,19 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260908-130300-572448-WORKLOG.md`.
 
+## 2026-09-08 — V003-C015 Fresh Release Candidate
+
+- Baseline: `develop/V003 @ 37f8852b4ddfd5b628d952a445f97ee5a5179a11`, clean; a régi helyi `V003` tag továbbra is `045bd8c...`, push/main merge nincs.
+- Exact Git-commit raw-byte candidate készült: `835820` byte, SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`; runtime identity `V003`, sidecar `0`.
+- Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04 regression PASS; V001/V002 és régi V003 release/tag változatlan.
+- Valódi Chrome localhost: 15/15 Technical Probe, 8/8 modul, 1920/1366/390 overflow `0`, aktív 4.10, Wiki/UEX/IndexedDB/reload és console `0/0` PASS.
+- Legacy Titanium melletti canonical picker egy opcióval `64978449-...`; reload PASS, destructive migration nincs.
+- Diszjunkt Titanium pool: Q500–Q799 `1,744 SCU`, Q800+ `3,124 SCU`; Combined foglalás `2,744 SCU`, hiány `0,256 SCU`, borrowing/double reserve nincs.
+- Backup `applicationVersion=V003`; tényleges standalone export embedded CSS/JS, local/localhost/test-artifact runtime ref `0`, `V003-dev` occurrence `0`.
+- Application code nem változott; exact manual candidate `file://` gate `NOT RUN`; stabil helyettesítő release/tag nincs.
+- Következő lépés: az exact C015 RC felhasználói manuális `file://` kapuja külön ciklusban.
+- Visszaállás: a C015 checkpoint normál revertje; a C014 forrás és a régi invalidált release evidence változatlan.
+
 ## 2026-09-08 — V003-C014 Stable Version Identity Repair
 
 - Baseline: `develop/V003 @ 045bd8ce38dde5e2ef43999a038c4d835d644b9a`, clean; local `V003` tag ugyanide mutatott, push/main merge nem történt.

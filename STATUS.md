@@ -2,13 +2,14 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C014 baseline/local release commit: `045bd8ce38dde5e2ef43999a038c4d835d644b9a`.
-- Aktuális ciklus: `V003-C014`; a három runtime identity érték `V003-dev` → `V003`, más application logic változás nélkül.
-- Célzott statikus kapu és valódi Chrome localhost Technical Probe `15/15`: **PASS**; IndexedDB startup/reload, backup, diagnosztika és standalone PASS; konzol `0/0`.
-- Full historical release regression: `NOT RUN BY SCOPE`; friss V003 RC még nincs.
-- A helyi `045bd8c...` release és az azt célzó `V003` tag: `PRE-PUBLICATION INVALIDATED BY V003 VERSION IDENTITY BLOCKER`.
-- A régi tag és `releases/V003/` evidence változatlan; tagmozgatás/törlés, push és `main` merge: `NO`.
+- Branch: `develop/V003`; C015 source baseline: `37f8852b4ddfd5b628d952a445f97ee5a5179a11`.
+- Exact fresh RC: `test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html`; `835820` byte; SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`.
+- Runtime identity: `V003`; `V003-dev` runtime occurrence `0`; application code C015-ben nem változott.
+- Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04 release-regresszió: **PASS**.
+- Valódi Chrome localhost: Technical Probe `15/15`, 8/8 modul, 1920/1366/390 overflow `0`, Wiki/UEX/IndexedDB/reload/backup/standalone és konzol `0/0`: **PASS**.
+- Exact candidate manual `file://` gate: `NOT RUN`; stabil helyettesítő V003 release/tag még nem készülhet.
+- A régi `045bd8c...` helyi V003 release/tag és `releases/V003/` evidence változatlanul pre-publication invalidált; push/main merge: `NO`.
 - V001/V002 integritás: **PASS**; a legutóbbi érvényes stable release továbbra is V002.
-- Riport: `docs/V003_C014_STABLE_VERSION_IDENTITY_REPAIR_REPORT.md`; rollback: a C014 commit normál revertje.
+- Riport: `docs/V003_C015_FRESH_RELEASE_CANDIDATE_REPORT.md`; rollback: a C015 checkpoint normál revertje.
 
-`V003-C014 – STABLE VERSION IDENTITY REPAIR PASS, FRESH RC REQUIRED`
+`V003-C015 – FRESH RC AFTER VERSION IDENTITY REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`

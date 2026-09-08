@@ -841,3 +841,20 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c
 ```
 
 Csak az exact három `V003-dev` → `V003` runtime identity-cserét, az UI/backup/diagnosztika `APP.version` továbbadását, a single-file statikus kaput, valamint a változatlan V001/V002 és invalidált helyi V003 release/tag integritását ellenőrzi. Teljes történeti regressziót és fresh RC buildet nem futtat; a Technical Probe/IndexedDB/reload/standalone külön célzott Chrome localhost evidence.
+
+V003-C015 teljes fresh release-candidate kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c015-fresh.ps1"
+```
+
+Csak a candidate-re kötött D1/C013.1/C013.3/C013.5/C013.7/C014 célkapu:
+
+```powershell
+node .\tools\run-v003-c015-fresh-tests.mjs
+```
+
+- Exact source HEAD: `37f8852b4ddfd5b628d952a445f97ee5a5179a11`; Git-commit raw-byte copy és SHA-zár.
+- Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04, static/single-file, standalone, backup és V001/V002 kapu.
+- Candidate: `test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készült; exact manual candidate `file://` gate nincs automatizálva.

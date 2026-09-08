@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V003-C015 Fresh RC after Version Identity Repair
+
+- [x] Exact `37f8852...` C014 source HEAD-ből determinisztikus, byte-azonos single-file candidate; application code változatlan.
+- [x] Runtime identity `V003`; `V003-dev` occurrence `0`; embedded CSS/JS és runtime sidecar `0`.
+- [x] Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04 release-regresszió PASS.
+- [x] Legacy Titanium canonical picker és diszjunkt Q500–Q799 / Q800+ pool Combined/Allocation/no-double-reserve fixture valódi Chrome-ban PASS.
+- [x] Chrome localhost 15/15, nyolc modul, 1920/1366/390 overflow 0, Wiki/UEX/IndexedDB/reload/backup/standalone és console 0/0 PASS.
+- [ ] Exact C015 candidate kézi `file://` gate külön következő ciklusban.
+- [ ] Stabil helyettesítő V003 release/tag csak a manual gate és külön engedély után.
+
 ### V003-C014 Stable Version Identity Repair
 
 - [x] A három aktuális runtime identity `V003-dev` → `V003`; más application logic változás nincs.
@@ -9,7 +19,7 @@
 - [x] Célzott statikus/single-file kapu és valódi Chrome localhost Technical Probe `15/15`, IndexedDB reload, standalone és konzol `0/0` PASS.
 - [x] V001/V002 és a régi V003 release artifact változatlan; teljes történeti regresszió scope szerint nem futott.
 - [x] A helyi `045bd8c...` release/tag pre-publication invalidált evidence; tag nem mozdult, push/main merge nincs.
-- [ ] Friss RC és új stable V003 lezárás külön későbbi ciklusban.
+- [x] Friss RC C015-ben elkészült és automated + Chrome localhost kaput teljesített; új stable V003 lezárás még külön ciklus.
 
 ### V003 Stable Release — PRE-PUBLICATION INVALIDATED
 

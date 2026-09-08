@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="hu">
+<meta charset="utf-8">
+<title>C015 disjoint Titanium pool seed</title>
+<body>
+  <h1 id="status">SEEDING</h1>
+  <script>
+    "use strict";
+    const canonicalUuid = "64978449-1d87-4a16-ba55-4b5f94fee217";
+    const sourceUuid = "07570c9f-fdf6-4bca-a56b-c42809ec0e01";
+    const q866Batch = {
+      id: "c015-canonical-titanium-q866",
+      materialUuid: canonicalUuid,
+      sourceMaterialUuid: sourceUuid,
+      materialName: "Titanium",
+      quality: 866,
+      quantityUnits: 31240,
+      unit: "SCU",
+      note: "C015 isolated disjoint-pool fixture",
+      createdAt: "2026-09-08T15:31:00.000Z"
+    };
+    const requirements = [
+      {
+        id: "c015-titanium-minimum-slot",
+        ingredientUuid: sourceUuid,
+        commodityUuid: canonicalUuid,
+        materialName: "Titanium",
+        recipeSlotName: "Minimum Pool Slot",
+        requiredQuantityUnits: 20000,
+        unit: "SCU",
+        qualityCapability: "FIXED",
+        affectedStats: []
+      },
+      {
+        id: "c015-titanium-maximum-slot",
+        ingredientUuid: sourceUuid,
+        commodityUuid: canonicalUuid,
+        materialName: "Titanium",
+        recipeSlotName: "MAX Pool Slot",
+        requiredQuantityUnits: 10000,
+        unit: "SCU",
+        qualityCapability: "FIXED",
+        affectedStats: []
+      }
+    ];
+    const card = {
+      id: "c015-titanium-pool-card",
+      order: 0,
+      active: true,
+      collapsed: false,
+      quantity: 1,
+      blueprintUuid: "c015-titanium-pool-blueprint",
+      outputName: "C015 Titanium Pool Browser Fixture",
+      outputTypeLabel: "Test fixture",
+      requirements,
+      slotStrategies: {},
+      recipeSlotQualityPoolAssignments: {
+        "c015-titanium-minimum-slot": "MINIMUM_Q_POOL",
+        "c015-titanium-maximum-slot": "MAXIMUM_Q_POOL"
+      }
+    };
+    const poolSetting = {
+      key: "user:materialQualityPools",
+      scope: "USER",
+      value: { [canonicalUuid]: { minimumQ: 500, maximumQ: 800 } },
+      updatedAt: "2026-09-08T15:31:00.000Z"
+    };
+    const request = indexedDB.open("spg-crafting-list", 4);
+    request.onerror = () => { document.getElementById("status").textContent = `SEED FAIL: ${request.error}`; };
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction(["materialBatches", "craftingCards", "settings"], "readwrite");
+      transaction.objectStore("materialBatches").put(q866Batch);
+      transaction.objectStore("craftingCards").put(card);
+      transaction.objectStore("settings").put(poolSetting);
+      transaction.oncomplete = () => {
+        db.close();
+        document.getElementById("status").textContent = "SEED PASS · disjoint Titanium pools";
+      };
+      transaction.onerror = () => {
+        db.close();
+        document.getElementById("status").textContent = `SEED FAIL: ${transaction.error}`;
+      };
+    };
+  </script>
+</body>
+</html>

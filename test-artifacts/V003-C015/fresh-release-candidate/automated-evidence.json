@@ -1,0 +1,66 @@
+{
+    "cycle":  "V003-C015",
+    "status":  "AUTOMATED_AND_CHROME_PASS_MANUAL_PENDING",
+    "sourceHead":  "37f8852b4ddfd5b628d952a445f97ee5a5179a11",
+    "candidate":  {
+                      "path":  "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
+                      "bytes":  835820,
+                      "sha256Before":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+                      "sha256After":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+                      "mainSha256":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+                      "sourceByteIdentical":  true,
+                      "immutable":  true,
+                      "runtimeIdentity":  "V003",
+                      "v003DevRuntimeIdentityOccurrences":  0,
+                      "singleFile":  true,
+                      "embeddedCss":  true,
+                      "embeddedJavaScript":  true,
+                      "localRuntimeSidecars":  0
+                  },
+    "regression":  {
+                       "C001_C0122_M1_M61_C04":  "PASS",
+                       "C0123":  "PASS",
+                       "C0124":  "PASS",
+                       "C0125A_C0125C3B2":  "PASS",
+                       "C0125D1":  "PASS",
+                       "C0131":  "PASS",
+                       "C0133":  "PASS",
+                       "C0135":  "PASS",
+                       "C0137":  "PASS",
+                       "C014":  "PASS",
+                       "staticSingleFile":  "PASS",
+                       "standalone":  "PASS",
+                       "backupRestore":  "PASS",
+                       "combinedAllocationNoDoubleReserve":  "PASS"
+                   },
+    "canonicalPicker":  {
+                            "activeScVersion":  "4.10.0-LIVE.12519617",
+                            "feynmalineCanonicalUuid":  "7310c15d-359c-42b4-b61e-7da3d0da3384",
+                            "titaniumCanonicalUuid":  "64978449-1d87-4a16-ba55-4b5f94fee217",
+                            "titaniumLegacySourceUuid":  "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+                            "tungstenCanonicalUuid":  "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+                            "goldCanonicalUuid":  "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+                            "visibleDuplicatePickerCount":  0,
+                            "guessedCanonicalUuidCount":  0,
+                            "userDataIndependent":  "PASS"
+                        },
+    "qualityPools":  {
+                         "minimumRange":  "Q_GTE_MINIMUM_AND_Q_LT_MAXIMUM",
+                         "maximumRange":  "Q_GTE_MAXIMUM",
+                         "overlap":  false,
+                         "borrowing":  false,
+                         "invalidRange":  "POOL_RANGE_INVALID",
+                         "allocationBlockedOnInvalidRange":  true
+                     },
+    "v001V002Integrity":  "PASS",
+    "oldInvalidatedV003":  {
+                               "tagTarget":  "045bd8ce38dde5e2ef43999a038c4d835d644b9a",
+                               "artifactSha256":  "bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469",
+                               "tagMovedOrDeleted":  false,
+                               "releaseTreeChanged":  false
+                           },
+    "applicationCodeChanged":  false,
+    "chrome":  "PASS_15_OF_15_8_MODULES_1920_1366_390_OVERFLOW_0_CONSOLE_0_0",
+    "exactManualCandidateFileGate":  "NOT_RUN",
+    "stableReplacementRelease":  false
+}

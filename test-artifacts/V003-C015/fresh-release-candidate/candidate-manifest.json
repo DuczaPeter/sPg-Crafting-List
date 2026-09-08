@@ -1,0 +1,18 @@
+{
+  "cycle": "V003-C015",
+  "status": "AUTOMATED_AND_CHROME_GATES_PASS_MANUAL_PENDING",
+  "sourceHead": "37f8852b4ddfd5b628d952a445f97ee5a5179a11",
+  "source": "sPg Crafting List.html",
+  "output": "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
+  "bytes": 835820,
+  "sha256": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+  "generatedAt": "2026-09-08T15:22:04.525Z",
+  "buildModel": "GIT_COMMIT_RAW_BYTE_COPY",
+  "sourceByteIdentical": true,
+  "runtimeIdentity": "V003",
+  "v003DevRuntimeIdentityOccurrences": 0,
+  "applicationCodeChanged": false,
+  "localRuntimeSidecars": 0,
+  "stableRelease": false,
+  "manualCandidateFileGate": "NOT_RUN"
+}

@@ -1,0 +1,20 @@
+V003-C015 fresh release candidate validation
+static-single-file=PASS
+candidate-raw-byte-copy=PASS
+c014-runtime-identity=PASS
+isolated-regression-clone=PASS
+full-c001-c0122-m1-m61-c04=PASS
+c0123-quality-semantics=PASS
+c0124-numeric-lifecycle=PASS
+c0125a-through-c3b2=PASS
+candidate-d1-c0131-c0133-c0135-c0137-c014-target=PASS
+active-4.10-identity-audit=PASS
+git-diff-check=PASS
+CANDIDATE_MAIN_BYTE_IDENTITY=PASS
+CANDIDATE_BYTES=835820
+CANDIDATE_SHA256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+FULL_RELEVANT_RELEASE_REGRESSION=PASS
+C014_RUNTIME_IDENTITY=PASS
+OLD_INVALIDATED_V003_TAG_ARTIFACT_UNCHANGED=PASS
+V001_V002_INTEGRITY=PASS
+CHROME=PENDING

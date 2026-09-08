@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="hu">
+<meta charset="utf-8">
+<title>C015 legacy Titanium seed</title>
+<body>
+  <h1 id="status">SEEDING</h1>
+  <script>
+    "use strict";
+    const batch = {
+      id: "c015-legacy-titanium-q784",
+      materialUuid: "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      sourceMaterialUuid: "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      materialName: "Titanium",
+      quality: 784,
+      quantityUnits: 17440,
+      unit: "SCU",
+      note: "C015 isolated browser fixture",
+      createdAt: "2026-09-08T15:30:00.000Z"
+    };
+    const request = indexedDB.open("spg-crafting-list", 4);
+    request.onerror = () => { document.getElementById("status").textContent = `SEED FAIL: ${request.error}`; };
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction("materialBatches", "readwrite");
+      transaction.objectStore("materialBatches").put(batch);
+      transaction.oncomplete = () => {
+        db.close();
+        document.getElementById("status").textContent = "SEED PASS · legacy Titanium Q784";
+      };
+      transaction.onerror = () => {
+        db.close();
+        document.getElementById("status").textContent = `SEED FAIL: ${transaction.error}`;
+      };
+    };
+  </script>
+</body>
+</html>

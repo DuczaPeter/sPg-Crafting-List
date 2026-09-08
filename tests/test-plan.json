@@ -379,6 +379,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c014.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c015-fresh-release-candidate",
+      "level": "full-regression",
+      "description": "V003-C015 fresh candidate gate from exact C014 checkpoint: deterministic V003 single-file byte copy, complete relevant C001-C012.5 plus D1/M1-M6.1/C04/C013.1/C013.3/C013.5/C013.7/C014 regression, SHA immutability, unchanged pre-publication-invalidated V003 release/tag and frozen V001/V002 integrity.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c015-fresh.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {
