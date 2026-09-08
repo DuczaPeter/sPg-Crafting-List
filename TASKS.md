@@ -2,6 +2,15 @@
 
 ## Aktualis
 
+### V003-C013.6 Fresh RC after Canonical Picker Dedup Repair
+
+- [x] Exact `e4bc5167...` source HEAD-ből determinisztikus single-file candidate; application code változatlan.
+- [x] Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + C013.5 + M1–M6.1 + C04 release-regresszió PASS.
+- [x] Titanium diszjunkt poolok, mixed shortage, Feynmaline/Titanium picker dedup, 24 exact identity és 2 unresolved duplicate gate PASS.
+- [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
+- [x] Candidate SHA változatlan; C013.4 invalidált RC és V001/V002 változatlan.
+- [ ] Exact C013.6 candidate kézi `file://` kapu külön következő lépésben.
+
 ### V003-C013.5 Canonical Material Picker Dedup Repair
 
 - [x] C013.4 exact manual `file://` gate canonical-picker blockere rögzítve; a candidate BLOCKED/INVALIDATED és változatlan.
@@ -11,7 +20,7 @@
 - [x] Aktív 4.10 audit: 128 név, 126 látható opció, 24 exact multi-UUID identity, 2 unresolved duplicate név.
 - [x] Feynmaline/Titanium, inventory grouping, reload, backup, Combined, Allocation, no-double-reserve és célzott regresszió PASS.
 - [x] V001/V002 és C013.4 artifact változatlan; teljes release-regresszió/új RC scope szerint nem futott.
-- [ ] Friss V003 release candidate külön következő ciklusban.
+- [x] Friss V003 release candidate a külön `V003-C013.6` ciklusban elkészült; automated + Chrome localhost gate PASS.
 
 ### V003-C013.4 Fresh RC after Disjoint Pool + Canonical Grouping Repair
 

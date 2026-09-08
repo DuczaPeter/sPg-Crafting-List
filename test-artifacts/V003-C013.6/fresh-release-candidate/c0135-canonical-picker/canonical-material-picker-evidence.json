@@ -1,0 +1,83 @@
+{
+  "cycle": "V003-C013.5",
+  "status": "PASS",
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "feynmaline": {
+    "visiblePickerOptions": 1,
+    "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "sourceUuids": [
+      "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+    ],
+    "nameToUuidAutofill": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "canonicalNewBatch": {
+      "materialUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "sourceMaterialUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+    }
+  },
+  "titanium": {
+    "visiblePickerOptions": 1,
+    "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "sourceUuids": [
+      "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "07570c9f-fdf6-4bca-a56b-c42809ec0e01"
+    ]
+  },
+  "audit": {
+    "modelVersion": "V003-C013.5-1",
+    "userFacingMaterialNameCount": 3,
+    "visiblePickerOptionCount": 2,
+    "exactCanonicalMultiUuidMaterialCount": 2,
+    "duplicatePickerOptionNames": [
+      "Feynmaline",
+      "Titanium",
+      "Unprovenium"
+    ],
+    "exactMergedMaterials": [
+      {
+        "name": "Feynmaline",
+        "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        "sourceUuids": [
+          "7310c15d-359c-42b4-b61e-7da3d0da3384",
+          "d7a21cac-3c2b-4695-95b7-2042d8f5755e"
+        ],
+        "origins": [
+          "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1"
+        ]
+      },
+      {
+        "name": "Titanium",
+        "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+        "sourceUuids": [
+          "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+          "64978449-1d87-4a16-ba55-4b5f94fee217"
+        ],
+        "origins": []
+      }
+    ],
+    "unresolvedDuplicateCount": 1,
+    "unresolvedDuplicates": [
+      {
+        "name": "Unprovenium",
+        "uuids": [
+          "c0135-unresolved-a",
+          "c0135-unresolved-b"
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "canonicalInventoryGrouping": "PASS",
+    "exactUuidResolution": "PASS",
+    "materialNameToUuidAutofill": "PASS",
+    "canonicalBatchSave": "PASS",
+    "existingBatchDestructiveMigration": "NO",
+    "reload": "PASS",
+    "backupRestoreSourceProvenance": "PASS",
+    "combinedParity": "PASS",
+    "allocationParity": "PASS",
+    "noDoubleReserve": "PASS",
+    "noFuzzyOrNameOnlyMerge": "PASS",
+    "unresolvedDuplicateAudit": "PASS"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "cycle": "V003-C013.6",
+  "status": "PASS_REAL_GOOGLE_CHROME_LOCALHOST",
+  "automationSurface": "Codex unified computer-use Chrome extension control",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:41996",
+  "candidate": {
+    "path": "test-artifacts/V003-C013.6/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "bytes": 832924,
+    "sha256Before": "4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed",
+    "sha256After": "4489a48ff50e6652b89684dce522e35203557e33753d73b1c98aa5588193a7ed",
+    "immutable": true
+  },
+  "technicalBaseline": { "passed": 15, "failed": 0, "summary": "Minden próba sikeres" },
+  "modules": {
+    "passed": 8,
+    "failed": 0,
+    "names": ["Blueprint Browser", "Crafting List", "My Materials", "Combined Materials", "Material Database", "Mining Loadouts", "UEX Refinery", "Data / Settings"]
+  },
+  "canonicalPicker": {
+    "visibleOptionsInCurrentPickerProjection": 64,
+    "feynmalineVisibleCount": 1,
+    "feynmalineCanonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+    "titaniumVisibleCount": 1,
+    "titaniumCanonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "unresolvedLeylandYormandiVisibleCount": 0,
+    "feynmalineNameSelectionAutofill": "PASS",
+    "feynmalineCanonicalBatchSave": "PASS",
+    "reloadPersistence": "PASS",
+    "combinedCanonicalProjection": "PASS"
+  },
+  "viewports": [
+    { "width": 1920, "height": 1080, "horizontalOverflow": 0, "status": "PASS" },
+    { "width": 1366, "height": 768, "horizontalOverflow": 0, "status": "PASS" },
+    { "width": 390, "height": 844, "horizontalOverflow": 0, "modulesPassed": 8, "status": "PASS" }
+  ],
+  "runtime": {
+    "activeScVersion": "4.10.0-LIVE.12519617",
+    "wikiApi": "PASS",
+    "uexApi": "PASS_215_RECORDS",
+    "indexedDb": "PASS_SCHEMA_4",
+    "reload": "PASS",
+    "externalStylesheets": 0,
+    "externalScripts": 0
+  },
+  "console": { "warnings": 0, "errors": 0, "entries": [] },
+  "exactManualCandidateFileGate": "NOT_RUN",
+  "applicationCodeChanged": false
+}

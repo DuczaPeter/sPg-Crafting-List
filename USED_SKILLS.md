@@ -500,3 +500,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a szűk affected-path olvasásra, a teljes release-regresszió és RC rebuild tudatos kihagyására, a generált történeti artifact-zaj elkülönítésére, valamint a blokkolt C013.4 candidate és a stabil V001/V002 védelmére.
 - Mely fájlokat vagy döntéseket érintett: exact item→commodity identity/cache/picker/batch projection, C013.5 fixture/teszt/live audit/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.6 Fresh Release Candidate
+
+- Skillek neve: `credit-efficient-project-runner`, `computer-use`.
+- Mikor használtuk: `2026-09-08`, az exact C013.5 checkpointból épített új candidate minimális resume-jához, teljes release-regressziójához és valódi Chrome localhost kapujához.
+- Mire segített: a candidate byte-lock, az invalidált C013.4 artifact elkülönítése, a generált történeti artifact-zaj visszaállítása, valamint a 15/15 baseline, nyolc modul, három viewport és 0/0 konzol bizonyítására.
+- Mely fájlokat vagy döntéseket érintett: C013.6 builder/validator/target harness, candidate/evidence/report és projektállapot-dokumentáció; a fő HTML, V001 és V002 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

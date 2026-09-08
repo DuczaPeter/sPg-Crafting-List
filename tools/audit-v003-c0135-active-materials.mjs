@@ -6,8 +6,12 @@ import { fileURLToPath } from "node:url";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const appPath = path.join(projectDirectory, "sPg Crafting List.html");
-const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V003-C013.5");
+const appPath = process.env.SPG_APP_PATH
+  ? path.resolve(process.env.SPG_APP_PATH)
+  : path.join(projectDirectory, "sPg Crafting List.html");
+const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
+  ? path.resolve(process.env.SPG_ARTIFACT_DIRECTORY)
+  : path.join(projectDirectory, "test-artifacts", "V003-C013.5");
 const evidencePath = path.join(artifactDirectory, "active-4.10-material-identity-audit.json");
 const html = fs.readFileSync(appPath, "utf8");
 const activeScVersion = "4.10.0-LIVE.12519617";

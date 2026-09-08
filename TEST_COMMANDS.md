@@ -774,3 +774,20 @@ node .\tools\audit-v003-c0135-active-materials.mjs
 - A live audit csak exact same-name item-detail candidate-eket kér le és kizárólag bizonyított weight-1 `default_composition` kapcsolatot merge-el; fuzzy/name-only merge nincs.
 - A validator C013.3, C012.5A, M2/M4, static single-file, C013.4 immutability és V001/V002 integritás regressziót futtat. Teljes release-regresszió és RC build nincs a C013.5 scope-ban.
 - Artifactok: `test-artifacts/V003-C013.5/`.
+
+V003-C013.6 teljes fresh release-candidate kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0136-fresh.ps1"
+```
+
+Csak a candidate-re kötött D1/C013.1/C013.3/C013.5 célkapu:
+
+```powershell
+node .\tools\run-v003-c0136-fresh-tests.mjs
+```
+
+- Exact source HEAD: `e4bc51672c072a8c8ecb4c5cc0db8ed622cde057`; determinisztikus Git-commit raw-byte copy és SHA-zár.
+- Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + C013.5 + M1–M6.1 + C04, static/single-file, standalone és V001/V002 kapu.
+- Candidate: `test-artifacts/V003-C013.6/fresh-release-candidate/sPg Crafting List V003 RC.html`.
+- A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készült; exact manual candidate `file://` gate nem futott.

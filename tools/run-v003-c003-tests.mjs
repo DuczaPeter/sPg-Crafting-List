@@ -94,7 +94,7 @@ for (const forbidden of ["(Ore)", "(Raw)", "(Mineral)", "(UnrefinedOres)", "(Raw
 }
 assert.match(html, /materialName:\s*materialDisplayName/, "A standalone snapshot nem a közös display-name resolvert használja.");
 assert.match(html, /resolveMaterialDisplayName\(\{ uuid: requirement\.ingredientUuid, materialName: requirement\.materialName \}/, "A Crafting List nem a közös resolvert használja.");
-assert.match(html, /buildMaterialDisplayIndex\(state\.miningCommodityIndex\)/, "A Material Database nem a közös user-facing projekciót használja.");
+assert.match(html, /function visibleMaterialDatabaseIndex\(\)[\s\S]*?buildCanonicalMaterialCatalog\(state\.miningCommodityIndex/, "A Material Database nem a közös exact canonical user-facing projekciót használja.");
 
 console.log("V003_C003_MATERIAL_NAMING_TEST_PASS");
 console.log(JSON.stringify({
