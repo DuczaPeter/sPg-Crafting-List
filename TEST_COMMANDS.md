@@ -791,3 +791,21 @@ node .\tools\run-v003-c0136-fresh-tests.mjs
 - Teljes releváns C001–C012.5 + D1 + C013.1 + C013.3 + C013.5 + M1–M6.1 + C04, static/single-file, standalone és V001/V002 kapu.
 - Candidate: `test-artifacts/V003-C013.6/fresh-release-candidate/sPg Crafting List V003 RC.html`.
 - A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készült; exact manual candidate `file://` gate nem futott.
+
+V003-C013.7 célzott repair kapu (User Data-tól független canonical picker):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v003-c0137.ps1"
+```
+
+Csak a C013.7 modellfixture:
+
+```powershell
+node .\tools\run-v003-c0137-tests.mjs
+```
+
+- Feynmaline, Titanium, Tungsten és Gold canonical picker UUID-invariancia legacy User Data batch nélkül és mellett.
+- Titanium legacy Q784 batch + új canonical Q866/Q920 batch: egy logical material, három batch, provenance/reload/backup megőrzéssel.
+- My Materials, Combined, Allocation, no-double-reserve, no-fuzzy és unresolved duplicate viselkedés; közvetlen C013.5/C013.3/C012.5A/M2/M4 regresszió.
+- A validator a C013.6 candidate változatlan SHA-ját és a stabil V001/V002 integritását ellenőrzi. Teljes release-regresszió, Chrome és új RC nem része a scope-nak.
+- Artifactok: `test-artifacts/V003-C013.7/`.

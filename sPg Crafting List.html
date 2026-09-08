@@ -9664,13 +9664,23 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             });
           }
           var primary = materialPrimaryRecord(component);
+          var refinedSourceUuids = component.map(function (record) {
+            return record.refinedVersion && record.refinedVersion.uuid || null;
+          }).filter(Boolean);
+          var exactSourceUuids = Array.from(new Set(component.map(function (record) {
+            return record.uuid;
+          }).concat(refinedSourceUuids).filter(Boolean))).sort();
+          var hasVerifiedExactRelation = component.length > 1 || refinedSourceUuids.length > 0;
           projected.push(Object.assign({}, primary, {
-            sourceUuids: component.map(function (record) { return record.uuid; }).filter(Boolean).sort(),
+            canonicalMaterialUuid: primary.uuid,
+            sourceUuids: exactSourceUuids,
             sourceRecords: component.map(function (record) {
               return { uuid: record.uuid, rawName: record.rawName, apiName: record.apiName, categories: (record.categories || []).slice(), refinedVersionUuid: record.refinedVersion && record.refinedVersion.uuid || null };
             }),
             aliases: materialUniqueNames(component.reduce(function (all, record) { return all.concat(record.aliases || []); }, [])),
-            duplicateCanonicalStatus: component.length > 1 ? "RELATED_TECHNICAL_RECORDS" : "SINGLE_RECORD"
+            duplicateCanonicalStatus: component.length > 1 ? "RELATED_TECHNICAL_RECORDS" : "SINGLE_RECORD",
+            identityStatus: hasVerifiedExactRelation ? MATERIAL_IDENTITY_STATUS.VERIFIED : (primary.identityStatus || null),
+            identityRelationOrigins: Array.from(new Set((primary.identityRelationOrigins || []).concat(refinedSourceUuids.length ? ["WIKI_COMMODITY_REFINED_VERSION"] : [])))
           }));
         }
       });
@@ -9727,11 +9737,30 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     /* C0135_CANONICAL_MATERIAL_IDENTITY_MODEL_START */
-    var MATERIAL_IDENTITY_MODEL_VERSION = "V003-C013.5-1";
+    var MATERIAL_IDENTITY_MODEL_VERSION = "V003-C013.7-1";
     var MATERIAL_IDENTITY_STATUS = Object.freeze({
       VERIFIED: "VERIFIED_EXACT_MATERIAL_IDENTITY",
       UNRESOLVED_DUPLICATE: "UNRESOLVED_DUPLICATE_MATERIAL_IDENTITY"
     });
+    var MATERIAL_CANONICAL_AUTHORITY = Object.freeze({
+      USER_DATA_PROVENANCE: 100,
+      VERIFIED_SOURCE_RELATION: 200,
+      CANONICAL_COMMODITY_RECORD: 300,
+      VERIFIED_EXACT_API_RELATION: 400
+    });
+
+    function canonicalMaterialAuthority(record, origin) {
+      if (record && record.identityStatus === MATERIAL_IDENTITY_STATUS.VERIFIED) {
+        return { rank: MATERIAL_CANONICAL_AUTHORITY.VERIFIED_EXACT_API_RELATION, source: "VERIFIED_EXACT_API_RELATION" };
+      }
+      if (origin === "ACTIVE_COMMODITY_CACHE") {
+        return { rank: MATERIAL_CANONICAL_AUTHORITY.CANONICAL_COMMODITY_RECORD, source: "CANONICAL_COMMODITY_RECORD" };
+      }
+      if (origin === "CRAFTING_CARD" || origin === "BLUEPRINT_PREVIEW") {
+        return { rank: MATERIAL_CANONICAL_AUTHORITY.VERIFIED_SOURCE_RELATION, source: "VERIFIED_SOURCE_RELATION" };
+      }
+      return { rank: MATERIAL_CANONICAL_AUTHORITY.USER_DATA_PROVENANCE, source: "USER_DATA_PROVENANCE" };
+    }
     var VERIFIED_CANONICAL_MATERIAL_IDENTITY_RELATIONS = Object.freeze([
       Object.freeze({
         recordType: "MATERIAL_IDENTITY_RELATION",
@@ -9826,6 +9855,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       materialIdentityRelationsForVersion(materialIdentityRelations, activeScVersion).forEach(function (relation) {
         var canonical = bySourceUuid.get(relation.canonicalUuid);
         if (!canonical) { return; }
+        canonical.uuid = relation.canonicalUuid;
+        canonical.canonicalMaterialUuid = relation.canonicalUuid;
         canonical.sourceUuids = Array.from(new Set((canonical.sourceUuids || [canonical.uuid]).concat(relation.sourceUuids || [])));
         canonical.identityStatus = MATERIAL_IDENTITY_STATUS.VERIFIED;
         canonical.identityRelationOrigins = Array.from(new Set((canonical.identityRelationOrigins || []).concat(relation.relationOrigin).filter(Boolean)));
@@ -14402,18 +14433,27 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var sourceUuids = Array.from(new Set([record.uuid].concat(record.sourceUuids || []).filter(Boolean)));
         var name = resolveMaterialDisplayName(record, record.materialName || record.name || "Ismeretlen material");
         var matches = Array.from(new Set(sourceUuids.map(function (uuid) { return canonicalBySourceUuid.get(uuid); }).filter(Boolean)));
+        var incomingAuthority = canonicalMaterialAuthority(record, origin);
         if (matches.length) {
-          var existing = matches[0];
-          matches.slice(1).forEach(function (duplicate) {
+          var existing = matches.slice().sort(function (a, b) {
+            return (b.canonicalAuthorityRank || 0) - (a.canonicalAuthorityRank || 0) || String(a.uuid).localeCompare(String(b.uuid));
+          })[0];
+          matches.filter(function (duplicate) { return duplicate !== existing; }).forEach(function (duplicate) {
             existing.sourceUuids = Array.from(new Set(existing.sourceUuids.concat(duplicate.sourceUuids || [])));
             existing.aliases = materialUniqueNames(existing.aliases.concat(duplicate.aliases || []));
+            existing.identityRelationOrigins = Array.from(new Set((existing.identityRelationOrigins || []).concat(duplicate.identityRelationOrigins || []).filter(Boolean)));
             var duplicateIndex = options.indexOf(duplicate);
             if (duplicateIndex !== -1) { options.splice(duplicateIndex, 1); }
           });
           existing.sourceUuids = Array.from(new Set(existing.sourceUuids.concat(sourceUuids)));
           existing.aliases = materialUniqueNames(existing.aliases.concat([name]).concat(record.aliases || []));
           existing.identityRelationOrigins = Array.from(new Set((existing.identityRelationOrigins || []).concat(record.identityRelationOrigins || []).filter(Boolean)));
-          if (record.identityStatus === MATERIAL_IDENTITY_STATUS.VERIFIED) {
+          var existingAuthorityRank = existing.canonicalAuthorityRank || 0;
+          if (incomingAuthority.rank > existingAuthorityRank) {
+            existing.canonicalAuthorityRank = incomingAuthority.rank;
+            existing.canonicalAuthoritySource = incomingAuthority.source;
+          }
+          if (record.identityStatus === MATERIAL_IDENTITY_STATUS.VERIFIED && incomingAuthority.rank >= existingAuthorityRank) {
             existing.identityStatus = MATERIAL_IDENTITY_STATUS.VERIFIED;
             existing.uuid = record.uuid;
             existing.name = name;
@@ -14428,7 +14468,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           sourceUuids: sourceUuids,
           origin: origin,
           identityStatus: record.identityStatus || null,
-          identityRelationOrigins: Array.from(new Set((record.identityRelationOrigins || []).filter(Boolean)))
+          identityRelationOrigins: Array.from(new Set((record.identityRelationOrigins || []).filter(Boolean))),
+          canonicalAuthorityRank: incomingAuthority.rank,
+          canonicalAuthoritySource: incomingAuthority.source
         };
         options.push(option);
         sourceUuids.forEach(function (uuid) { canonicalBySourceUuid.set(uuid, option); });
@@ -14565,7 +14607,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function updateKnownMaterials() {
       var datalist = document.getElementById("knownMaterials");
-      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint);
+      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint, state.materialIdentityRelations, resolveActiveScVersion(state));
       state.knownMaterialIdentityAudit = auditKnownMaterialOptions(state.knownMaterials);
       datalist.replaceChildren();
       state.knownMaterials.filter(function (record) { return record.pickerVisible !== false; }).forEach(function (record) {
@@ -15828,7 +15870,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function recalculateAllocation(logReason) {
-      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint);
+      state.knownMaterials = buildKnownMaterialOptions(state.miningCommodityIndex, state.materialBatches, state.craftingCards, state.normalizedBlueprint, state.materialIdentityRelations, resolveActiveScVersion(state));
       state.allocationResult = allocateCardsDeterministically(state.craftingCards, state.materialBatches, state.materialQualityPlans, state.knownMaterials, state.materialQualityPools);
       state.allocationResult.cards.forEach(function (cardResult) {
         cardResult.requirements.forEach(function (requirement) {

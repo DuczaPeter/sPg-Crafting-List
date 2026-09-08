@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V003-C013.7 User-Data-Independent Canonical Picker Repair
+
+- [x] C013.6 exact manual `file://` canonical identity blockere rögzítve; a candidate BLOCKED/INVALIDATED, HTML-je változatlan.
+- [x] Verified exact canonical authority független a User Data batch-ek jelenlététől és beszúrási sorrendjétől.
+- [x] A commodity `refinedVersion.uuid` exact source relationként bekerül az identity graphba akkor is, ha a source rekord nincs külön jelen.
+- [x] Feynmaline, Titanium, Tungsten és Gold legacy-batch nélküli/melletti picker invariance PASS.
+- [x] Titanium legacy batch megmarad; új canonical Q batch-ek mellett `1` logical material / `3` batch, provenance/reload/backup PASS.
+- [x] My Materials, Combined, Allocation, no-double-reserve, no-fuzzy és unresolved duplicate regresszió PASS.
+- [x] Teljes release-regresszió/Chrome/új RC scope szerint nem futott; friss RC külön következő ciklusban szükséges.
+
 ### V003-C013.6 Fresh RC after Canonical Picker Dedup Repair
 
 - [x] Exact `e4bc5167...` source HEAD-ből determinisztikus single-file candidate; application code változatlan.
@@ -9,7 +19,7 @@
 - [x] Titanium diszjunkt poolok, mixed shortage, Feynmaline/Titanium picker dedup, 24 exact identity és 2 unresolved duplicate gate PASS.
 - [x] Valódi Chrome localhost: 15/15 Technical Baseline, 8/8 modul, 1920/1366/390 overflow 0, konzol 0/0, Wiki/UEX/IndexedDB/reload PASS.
 - [x] Candidate SHA változatlan; C013.4 invalidált RC és V001/V002 változatlan.
-- [ ] Exact C013.6 candidate kézi `file://` kapu külön következő lépésben.
+- [x] Exact C013.6 candidate kézi `file://` kapu canonical identity blockert talált; candidate BLOCKED/INVALIDATED, nem releaselhető.
 
 ### V003-C013.5 Canonical Material Picker Dedup Repair
 

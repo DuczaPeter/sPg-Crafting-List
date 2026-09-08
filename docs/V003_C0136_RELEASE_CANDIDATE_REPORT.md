@@ -4,6 +4,10 @@
 
 `V003-C013.6 – FRESH RC AFTER CANONICAL PICKER DEDUP REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
 
+## Post-gate invalidation
+
+The exact manual `file://` gate later found that a legacy/noncanonical material batch could influence the canonical picker identity. The candidate is therefore **BLOCKED / INVALIDATED**, must never be released, and cannot be reused as a later candidate. Its automated and Chrome localhost results remain historical evidence only; the candidate HTML itself remains byte-for-byte unchanged.
+
 - Branch: `develop/V003`
 - Exact source HEAD: `e4bc51672c072a8c8ecb4c5cc0db8ed622cde057`
 - Candidate: `test-artifacts/V003-C013.6/fresh-release-candidate/sPg Crafting List V003 RC.html`

@@ -171,3 +171,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Kompakt numerikus mezonel az elso pointer- vagy keyboard-focus teljes ertekcseret segito kijelolest kap. Mar fokuszalt mezore kattintas a bongeszo nativ caret-viselkedeset hagyja ervenyesulni.
 - A kozos editor nem irhatja felul a meglevo mezo-specifikus uzleti szabalyokat. Quantity a regi min/clamp logikat, Target Q a 0..1000 egesz validaciot, My Materials az eredeti SCU/ITEM parser es precision szabalyokat tartja meg.
 - C013 csak uj, C012.4 utani byte-tartalombol indulhat uj felhasznaloi utasitasra. A regi candidate tovabbra is invalidalt.
+
+## 2026-09-08 - V003-C013.7 canonical material authority
+
+- A user-facing canonical material UUID nem függhet a tárolt User Data batch-ektől vagy azok beszúrási sorrendjétől.
+- Authority sorrend: verified exact API identity relation, canonical commodity record, verified source relation, végül User Data provenance. User Data bizonyított canonical UUID-t nem írhat felül.
+- A commodity `refined_version` mezője exact identity-bizonyíték akkor is, ha a hivatkozott source rekord nincs külön az aktív datasetben; a source UUID a runtime projectionben és provenance-ben megmarad.
+- Régi batch-et nem kell törölni vagy destruktívan migrálni. Új batch canonical UUID-val mentődik, miközben az eredeti UUID `sourceMaterialUuid` provenance lehet.
+- Fuzzy/name-only merge továbbra is tilos; bizonyítatlan duplicate név fail-safe módon unresolved marad.

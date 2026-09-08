@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C013.3",
+  "status": "PASS",
+  "fixtures": {
+    "DISJOINT_MINIMUM_MAX_QUALITY_POOLS": "PASS",
+    "CANONICAL_MATERIAL_MULTI_SOURCE_UUID_GROUPING": "PASS",
+    "sameCardTwoSlotPool": "PASS",
+    "twoCardPriority": "PASS",
+    "reverseRecipeRow": "PASS",
+    "combinedParity": "PASS",
+    "myMaterialsGroupingParity": "PASS",
+    "maxCraftableParity": "PASS",
+    "finalCardCraftingListParity": "PASS_SHARED_ALLOCATION_MODEL",
+    "standaloneParity": "PASS_READ_ONLY_PROJECTION",
+    "reloadPersistence": "PASS",
+    "backupRestore": "PASS_SOURCE_UUID_PRESERVED",
+    "noDoubleReserve": "PASS",
+    "canonicalExactMapping": "PASS_NO_NAME_MERGE"
+  },
+  "titanium": {
+    "canonicalMaterialUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+    "sourceMaterialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+    "logicalMaterials": 1,
+    "displayedCards": 1,
+    "batches": 2,
+    "totalInventoryUnits": 48680,
+    "minimumEligibleUnits": 17440,
+    "maximumEligibleUnits": 31240,
+    "q866OnlyMinimumEligibleUnits": 0,
+    "q866OnlyMaximumEligibleUnits": 31240,
+    "minimumOnlyUnboundedEligibleUnits": 48680,
+    "maximumOnlyEligibleUnits": 31240
+  },
+  "poolSemantics": "MINIMUM_Q_INCLUSIVE_AND_MAXIMUM_Q_EXCLUSIVE; MAXIMUM_Q_INCLUSIVE",
+  "invalidRange": "POOL_RANGE_INVALID",
+  "applicationCodeChanged": true,
+  "fullReleaseRegression": "NOT_RUN_BY_SCOPE",
+  "freshReleaseCandidateRequired": true
+}

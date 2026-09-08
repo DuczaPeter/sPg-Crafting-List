@@ -535,6 +535,9 @@
                    "canonicalPicker":  "PASS_FEYNMALINE_TITANIUM_DEDUP",
                    "evidence":  "test-artifacts/V003-C013.6/fresh-release-candidate/chrome-localhost-evidence.json"
                },
-    "exactManualCandidateFileGate":  "NOT_RUN",
+    "exactManualCandidateFileGate":  "BLOCKED_USER_DATA_DEPENDENT_CANONICAL_PICKER",
+    "candidateStatus":  "BLOCKED_INVALIDATED_BY_C0137_MANUAL_FILE_GATE",
+    "mustNeverBeReleased":  true,
+    "reusableForStableRelease":  false,
     "stableRelease":  false
 }

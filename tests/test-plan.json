@@ -355,6 +355,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0136-fresh.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v003-c0137-user-data-independent-canonical-picker",
+      "level": "targeted-regression",
+      "description": "V003-C013.7 repair gate: verified canonical UUID selection is invariant to legacy User Data batches; refined-version source relations, canonical authority, multi-batch provenance, My Materials grouping, reload/backup, Combined/Allocation/no-double-reserve/no-fuzzy and unresolved duplicate behavior; C013.6 remains blocked and no fresh RC is built.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c0137.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

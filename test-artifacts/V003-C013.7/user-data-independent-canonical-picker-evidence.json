@@ -1,0 +1,97 @@
+{
+  "cycle": "V003-C013.7",
+  "status": "PASS",
+  "rootCause": "DANGLING_REFINED_VERSION_SOURCE_UUID_WAS_NOT_PROJECTED_AND_USER_INVENTORY_COULD_CREATE_A_SECOND_PICKER_IDENTITY",
+  "modelVersion": "V003-C013.7-1",
+  "precedence": [
+    "VERIFIED_EXACT_API_RELATION",
+    "CANONICAL_COMMODITY_RECORD",
+    "VERIFIED_SOURCE_RELATION",
+    "USER_DATA_PROVENANCE"
+  ],
+  "invariance": [
+    {
+      "name": "Feynmaline",
+      "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "sourceUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "pickerCanonicalUuidNoUserData": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "pickerCanonicalUuidWithLegacyUserData": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "equal": true,
+      "authority": "VERIFIED_EXACT_API_RELATION"
+    },
+    {
+      "name": "Titanium",
+      "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "sourceUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "pickerCanonicalUuidNoUserData": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "pickerCanonicalUuidWithLegacyUserData": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "equal": true,
+      "authority": "VERIFIED_EXACT_API_RELATION"
+    },
+    {
+      "name": "Tungsten",
+      "canonicalUuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+      "sourceUuid": "60f116f4-c02a-45b2-9ded-333747795124",
+      "pickerCanonicalUuidNoUserData": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+      "pickerCanonicalUuidWithLegacyUserData": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+      "equal": true,
+      "authority": "VERIFIED_EXACT_API_RELATION"
+    },
+    {
+      "name": "Gold",
+      "canonicalUuid": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+      "sourceUuid": "21825507-7923-4683-9bf3-9cfe316940e3",
+      "pickerCanonicalUuidNoUserData": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+      "pickerCanonicalUuidWithLegacyUserData": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+      "equal": true,
+      "authority": "VERIFIED_EXACT_API_RELATION"
+    }
+  ],
+  "titanium": {
+    "oldBatchPreserved": {
+      "id": "c0137-titanium-q784-legacy",
+      "materialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "sourceMaterialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "materialName": "Titanium",
+      "quality": 784,
+      "quantityUnits": 17440,
+      "unit": "SCU",
+      "createdAt": "2026-09-08T08:00:00.000Z"
+    },
+    "newBatch": {
+      "id": "c0137-titanium-q866-new",
+      "materialUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "materialName": "Titanium",
+      "quality": 866,
+      "quantityUnits": 31240,
+      "unit": "SCU",
+      "note": "C013.7 canonical-save beside legacy batch",
+      "createdAt": "2026-09-08T08:01:00.000Z",
+      "updatedAt": "2026-09-08T08:01:00.000Z",
+      "sourceMaterialUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01"
+    },
+    "logicalMaterialCount": 1,
+    "batchCount": 3,
+    "qualities": [
+      784,
+      866,
+      920
+    ],
+    "reloadCanonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217"
+  },
+  "checks": {
+    "userDataIndependentCanonicalPicker": "PASS",
+    "newBatchBesideLegacyBatch": "PASS",
+    "multipleQualityBatches": "PASS",
+    "destructiveMigration": "NO",
+    "sourceProvenance": "PASS",
+    "reload": "PASS",
+    "backupRestore": "PASS",
+    "myMaterialsGrouping": "PASS",
+    "combinedParity": "PASS",
+    "allocationParity": "PASS",
+    "noDoubleReserve": "PASS",
+    "noFuzzyOrNameOnlyMerge": "PASS",
+    "unresolvedDuplicateFailSafe": "PASS"
+  }
+}

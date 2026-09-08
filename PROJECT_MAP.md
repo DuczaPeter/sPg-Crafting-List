@@ -185,6 +185,20 @@
 - `tools/validate-v003-c0135.ps1`: bounded célkapu, történeti artifact isolation, C013.4 immutability és stabil V001/V002 integritás.
 - `docs/V003_C0135_CANONICAL_MATERIAL_PICKER_DEDUP_REPORT.md`: gyökérok, identity szabály, exact/unresolved listák és eredmények.
 
+## V003-C013.6 friss release candidate
+
+- `tools/build-v003-c0136-fresh-candidate.mjs`: exact C013.5 source commitból byte-azonos single-file RC builder.
+- `tools/run-v003-c0136-fresh-tests.mjs`: candidate-scoped D1/C013.1/C013.3/C013.5 célkapu.
+- `tools/validate-v003-c0136-fresh.ps1`: teljes releváns release-regresszió, SHA-immutability és stabil V001/V002 integrity validator.
+- `docs/V003_C0136_RELEASE_CANDIDATE_REPORT.md`: historical automated/Chrome eredmények és a későbbi kézi blocker miatti invalidálás.
+
+## V003-C013.7 User Data-tól független canonical picker
+
+- `tests/fixtures/v003-c0137-user-data-independent-canonical-picker.json`: Feynmaline/Titanium/Tungsten/Gold exact multi-UUID, legacy-batch és unresolved fixture.
+- `tools/run-v003-c0137-tests.mjs`: picker invariance, canonical batch add, provenance, reload/backup, My Materials/Combined/Allocation/no-double-reserve/no-fuzzy célteszt.
+- `tools/validate-v003-c0137.ps1`: bounded C013.7 kapu közvetlen C013.5/C013.3/C012.5A/M2/M4 regresszióval, C013.6 immutabilityvel és stabil V001/V002 integritással.
+- `docs/V003_C0137_USER_DATA_INDEPENDENT_CANONICAL_PICKER_REPORT.md`: gyökérok, authority sorrend, fixture-ek és eredmények.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

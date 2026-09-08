@@ -1,6 +1,6 @@
 {
   "cycle": "V003-C013.6",
-  "status": "PASS_AUTOMATED_AND_CHROME_LOCALHOST_EXACT_MANUAL_FILE_GATE_NOT_RUN",
+  "status": "BLOCKED_INVALIDATED_BY_C0137_MANUAL_FILE_GATE",
   "sourceHead": "e4bc51672c072a8c8ecb4c5cc0db8ed622cde057",
   "candidatePath": "test-artifacts/V003-C013.6/fresh-release-candidate/sPg Crafting List V003 RC.html",
   "candidateBytes": 832924,
@@ -10,5 +10,7 @@
   "activeScVersion": "4.10.0-LIVE.12519617",
   "applicationCodeChanged": false,
   "stableRelease": false,
-  "exactManualCandidateFileGate": "NOT_RUN"
+  "exactManualCandidateFileGate": "BLOCKED_USER_DATA_DEPENDENT_CANONICAL_PICKER",
+  "mustNeverBeReleased": true,
+  "reusableForStableRelease": false
 }

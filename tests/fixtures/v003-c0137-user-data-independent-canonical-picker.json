@@ -1,0 +1,77 @@
+{
+  "name": "USER_DATA_INDEPENDENT_CANONICAL_PICKER",
+  "scVersion": "4.10.0-LIVE.12519617",
+  "materials": [
+    {
+      "name": "Feynmaline",
+      "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+      "sourceUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+      "commodity": {
+        "uuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        "name": "Feynmaline",
+        "display_name": "Feynmaline",
+        "kind": "harvestable",
+        "categories": ["HARVESTABLE"],
+        "refinedVersion": null,
+        "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+      },
+      "relation": {
+        "recordType": "MATERIAL_IDENTITY_RELATION",
+        "status": "VERIFIED_EXACT_MATERIAL_IDENTITY",
+        "canonicalUuid": "7310c15d-359c-42b4-b61e-7da3d0da3384",
+        "sourceUuid": "d7a21cac-3c2b-4695-95b7-2042d8f5755e",
+        "sourceUuids": ["7310c15d-359c-42b4-b61e-7da3d0da3384", "d7a21cac-3c2b-4695-95b7-2042d8f5755e"],
+        "canonicalName": "Feynmaline",
+        "sourceName": "Feynmaline",
+        "relationOrigin": "WIKI_ITEM_DEFAULT_COMPOSITION_WEIGHT_1",
+        "verifiedScVersions": ["4.10.0-LIVE.12519617"]
+      }
+    },
+    {
+      "name": "Titanium",
+      "canonicalUuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+      "sourceUuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01",
+      "commodity": {
+        "uuid": "64978449-1d87-4a16-ba55-4b5f94fee217",
+        "name": "Titanium",
+        "display_name": "Titanium",
+        "kind": "mineable",
+        "categories": ["SHIP_MINING"],
+        "refinedVersion": { "uuid": "07570c9f-fdf6-4bca-a56b-c42809ec0e01", "name": "Titanium" },
+        "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+      }
+    },
+    {
+      "name": "Tungsten",
+      "canonicalUuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+      "sourceUuid": "60f116f4-c02a-45b2-9ded-333747795124",
+      "commodity": {
+        "uuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+        "name": "Tungsten",
+        "display_name": "Tungsten",
+        "kind": "mineable",
+        "categories": ["SHIP_MINING"],
+        "refinedVersion": { "uuid": "60f116f4-c02a-45b2-9ded-333747795124", "name": "Tungsten" },
+        "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+      }
+    },
+    {
+      "name": "Gold",
+      "canonicalUuid": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+      "sourceUuid": "21825507-7923-4683-9bf3-9cfe316940e3",
+      "commodity": {
+        "uuid": "57aba429-cf97-4fdd-8042-94b1d643f5bd",
+        "name": "Gold",
+        "display_name": "Gold",
+        "kind": "mineable",
+        "categories": ["SHIP_MINING"],
+        "refinedVersion": { "uuid": "21825507-7923-4683-9bf3-9cfe316940e3", "name": "Gold" },
+        "provenance": { "gameVersion": "4.10.0-LIVE.12519617" }
+      }
+    }
+  ],
+  "unresolved": {
+    "name": "Unprovenium",
+    "uuids": ["c0137-unresolved-a", "c0137-unresolved-b"]
+  }
+}

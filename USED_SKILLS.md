@@ -508,3 +508,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a candidate byte-lock, az invalidált C013.4 artifact elkülönítése, a generált történeti artifact-zaj visszaállítása, valamint a 15/15 baseline, nyolc modul, három viewport és 0/0 konzol bizonyítására.
 - Mely fájlokat vagy döntéseket érintett: C013.6 builder/validator/target harness, candidate/evidence/report és projektállapot-dokumentáció; a fő HTML, V001 és V002 nem változott.
 - Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
+## V003-C013.7 User-Data-Independent Canonical Picker Repair
+
+- Skillek neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-08`, a C013.6 kézi kapuján talált User Data-függő canonical picker blocker minimális resume-jához és célzott application repairjéhez.
+- Mire segített: a szűk affected-path auditra, a teljes release-regresszió/Chrome/RC tudatos kihagyására, az invalidált C013.6 candidate és a stabil V001/V002 védelmére, valamint a célzott checkpoint lezárására.
+- Mely fájlokat vagy döntéseket érintett: exact refined-version identity graph, canonical authority/picker/batch projection, C013.7 fixture/teszt/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
+- Kell-e később tanulsagot visszaírni a skillbe: `nem`.

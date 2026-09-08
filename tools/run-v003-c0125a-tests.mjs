@@ -177,7 +177,7 @@ assert.equal(imported.materialBatches[0].materialUuid, fixture.materials.stilero
 const saveFunction = html.match(/async function saveMaterialBatchFromForm\(\) \{([\s\S]*?)\n    \}/);
 assert.ok(saveFunction);
 assert.doesNotMatch(saveFunction[1], /state\.(?:normalizedBlueprint|finalCardPreview)/, "A My Materials mentés még recipe/preview állapottól függ.");
-assert.match(html, /buildKnownMaterialOptions\(state\.miningCommodityIndex, state\.materialBatches, state\.craftingCards, state\.normalizedBlueprint\)/);
+assert.match(html, /buildKnownMaterialOptions\(state\.miningCommodityIndex, state\.materialBatches, state\.craftingCards, state\.normalizedBlueprint, state\.materialIdentityRelations, resolveActiveScVersion\(state\)\)/);
 assert.match(html, /createCombinedMetric\("Készlet", material\.unit, material\.totals\.availableUnits\)/);
 
 const evidence = {
