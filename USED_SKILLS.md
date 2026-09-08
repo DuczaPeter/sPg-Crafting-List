@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V003-C016 Exact manual file gate evidence closure
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-09`, a felhasználó által igazolt exact C015 `file://` kapu dokumentáció-only lezárásához.
+- Mire segített: minimális resume, exact RC-integritás és védett fájlok rövid auditja, valamint a változatlan automated/Chrome bizonyíték szükségtelen újrafuttatásának elkerülése.
+- Mely fájlokat vagy döntéseket érintett: C015/C016 riport, manual summary és kötelező ciklusmeta; application code, RC, V001/V002, régi V003 tag/release és remote Git nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C015 Fresh Release Candidate
 
 - Skillek neve: `credit-efficient-project-runner`, `computer-use:computer-use`.

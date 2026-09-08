@@ -1,0 +1,39 @@
+{
+  "cycle": "V003-C016",
+  "type": "USER_MANUAL_EXACT_FILE_GATE_EVIDENCE_CLOSURE",
+  "checkpointInput": "ea8a39ca972e53fbd778599090d69836544d2692",
+  "candidate": {
+    "path": "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
+    "bytes": 835820,
+    "sha256": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+    "changed": false
+  },
+  "manualDirectFile": {
+    "automation": false,
+    "verifiedBy": "USER",
+    "status": "PASS",
+    "checks": {
+      "M1_DIRECT_FILE_STARTUP": "PASS",
+      "M2_TECHNICAL_PROBE_15_OF_15": "PASS",
+      "M3_TITANIUM_CANONICAL_PICKER": "PASS",
+      "M4_RELOAD_PERSISTENCE": "PASS",
+      "M5_BACKUP_RUNTIME_VERSION_V003": "PASS",
+      "M6_DIAGNOSTIC_RUNTIME_VERSION_V003": "PASS",
+      "M7_STANDALONE_EXPORT": "PASS"
+    }
+  },
+  "reusedEvidence": {
+    "automatedRegression": "PASS_UNCHANGED_C015_CANDIDATE",
+    "chromeLocalhost": "PASS_UNCHANGED_C015_CANDIDATE"
+  },
+  "integrity": {
+    "applicationCodeChanged": false,
+    "mainHtmlCandidateByteIdentical": true,
+    "v001V002": "PASS_UNCHANGED",
+    "oldInvalidatedV003TagAndReleaseChanged": false,
+    "replacementStableReleaseCreated": false,
+    "push": false,
+    "mainMerge": false
+  },
+  "result": "V003-C016 – EXACT MANUAL CANDIDATE file:// GATE PASS, REPLACEMENT V003 RELEASE GATE COMPLETE"
+}

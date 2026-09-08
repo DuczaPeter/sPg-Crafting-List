@@ -858,3 +858,9 @@ node .\tools\run-v003-c015-fresh-tests.mjs
 - Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04, static/single-file, standalone, backup és V001/V002 kapu.
 - Candidate: `test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html`.
 - A valódi Chrome localhost evidence ugyanazon hash-zárolt candidate-en készült; exact manual candidate `file://` gate nincs automatizálva.
+
+V003-C016 exact manual candidate `file://` gate:
+
+- Nincs automatizált parancs: a felhasználó az exact C015 RC-t közvetlen fájlból ellenőrizte.
+- M1–M7 eredmény: PASS; evidence: `docs/V003_C016_EXACT_MANUAL_FILE_GATE_REPORT.md` és `test-artifacts/V003-C016/summary.json`.
+- A C015 automated és Chrome localhost kapu nem futott újra, mert az application HTML és az exact RC bytejai változatlanok.

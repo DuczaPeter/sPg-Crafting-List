@@ -2,7 +2,7 @@
 
 ## Eredmény
 
-`V003-C015 – FRESH RC AFTER VERSION IDENTITY REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE NOT RUN`
+`V003-C015 – FRESH RC AFTER VERSION IDENTITY REPAIR AUTOMATED + CHROME GATES PASS, EXACT MANUAL CANDIDATE file:// GATE PASS`
 
 Az exact `develop/V003 @ 37f8852b4ddfd5b628d952a445f97ee5a5179a11` C014 forrásból új, byte-azonos single-file release candidate készült. Application code ebben a ciklusban nem változott. A régi, pre-publication invalidált V003 release commit, helyi tag és `releases/V003/` evidence változatlan maradt.
 
@@ -54,9 +54,9 @@ A Chrome-ban ténylegesen létrehozott standalone fixture embedded CSS/JavaScrip
 
 ## Exact manual candidate `file://` kapu
 
-`EXACT MANUAL CANDIDATE file:// GATE: NOT RUN`
+`EXACT MANUAL CANDIDATE file:// GATE: PASS`
 
-A candidate automated és valódi Chrome localhost kapuja PASS, de az exact candidate közvetlen `file://` kézi kapuja külön felhasználói ciklus marad. Stabil V003 helyettesítő release csak annak explicit eredménye és külön engedély után készülhet.
+A felhasználó a byte-változatlan exact candidate-en közvetlen `file://` módban M1–M7 kaput futtatott, és minden pontot PASS-ként igazolt. A dokumentációs lezárás a C016 riportban található; az automated és Chrome localhost kapu eredménye a változatlan candidate-ről újrafuttatás nélkül érvényes. Stabil V003 helyettesítő release továbbra is külön engedélyezett release-cycle-ben készülhet.
 
 ## Visszaállás
 

@@ -2,6 +2,17 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260908-130300-572448-WORKLOG.md`.
 
+## 2026-09-09 — V003-C016 Exact Manual file:// Gate Evidence Closure
+
+- Baseline: `develop/V003 @ ea8a39ca972e53fbd778599090d69836544d2692`, clean.
+- Exact C015 RC változatlan: `835820` byte, SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`; a fő HTML-lel byte-azonos.
+- Felhasználói direct `file://` M1–M7: PASS; UI/footer, backup és diagnosztika identity `V003`, Technical Probe `15/15`, Titanium canonical picker/reload és standalone PASS.
+- Az automated és Chrome localhost PASS evidence a byte-változatlan C015 candidate-ről újrafuttatás nélkül érvényes.
+- Application code és RC nem változott; V001/V002, a régi invalidált V003 tag és `releases/V003/` változatlan.
+- Replacement V003 release gate complete; stable leváltás, tagmozgatás, push és main merge nem történt.
+- Következő lépés: a régi invalidált helyi V003 release külön, explicit release-cycle-ben váltható le.
+- Visszaállás: a C016 checkpoint normál revertje; application/RC/release artifact nem érintett.
+
 ## 2026-09-08 — V003-C015 Fresh Release Candidate
 
 - Baseline: `develop/V003 @ 37f8852b4ddfd5b628d952a445f97ee5a5179a11`, clean; a régi helyi `V003` tag továbbra is `045bd8c...`, push/main merge nincs.

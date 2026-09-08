@@ -93,7 +93,8 @@
 - V003-C014 riport/evidence: `docs/V003_C014_STABLE_VERSION_IDENTITY_REPAIR_REPORT.md`, `test-artifacts/V003-C014/`; a helyi `045bd8c...` release/tag pre-publication invalidált, változatlan evidence, friss RC szükséges.
 - V003-C015 friss candidate kapu: `tools/validate-v003-c015-fresh.ps1`; exact `37f8852...` source-lock, teljes releváns történeti regresszió, C014 identity, C013.1/.3/.5/.7 fixture és V001/V002 integritás.
 - V003-C015 builder/target: `tools/build-v003-c015-fresh-candidate.mjs`, `tools/run-v003-c015-fresh-tests.mjs`; artifact: `test-artifacts/V003-C015/fresh-release-candidate/`.
-- V003-C015 riport: `docs/V003_C015_FRESH_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact candidate `file://` manual gate NOT RUN.
+- V003-C015 riport: `docs/V003_C015_FRESH_RELEASE_CANDIDATE_REPORT.md`; automated + valódi Chrome localhost PASS, exact candidate `file://` manual gate a C016 user evidence alapján PASS.
+- V003-C016 manual evidence riport: `docs/V003_C016_EXACT_MANUAL_FILE_GATE_REPORT.md`; ugyanazon C015 candidate felhasználói `file://` M1–M7 PASS, application/RC változás nélkül.
 - M5 valos UEX semaproba: `tools/probe-m5-api.mjs`, auth fejlec nelkuli, csak olvaso endpoint-ellenorzes.
 - M3 API-semavizsgalat: `tools/probe-m3-api.mjs`, csak olvaso, tomor valos endpoint/facet bizonyitekkal.
 - Minimalis localhost fallback: `node tools/serve-local.mjs`, alapertelmezett cim `http://127.0.0.1:4177/`.
@@ -171,6 +172,7 @@
 - `test-artifacts/V003-C013.8/`: exact C013.7 source-ból épített fresh candidate, teljes regressziós, aktív identity-audit és valódi Chrome localhost evidence.
 - `test-artifacts/V003-C013.9/`: az exact C013.8 candidate felhasználói manuális `file://` gate-jének rövid summary evidence-e.
 - `test-artifacts/V003-C015/`: exact C014 source-ból épített V003 identity-javított fresh candidate, teljes regressziós és valódi Chrome localhost evidence.
+- `test-artifacts/V003-C016/`: az exact C015 candidate felhasználói manuális `file://` gate-jének rövid summary evidence-e.
 - `releases/V003/`: a stabil V003 egyetlen futtatható, byte-pontosan elfogadott HTML artifactja és a nem runtime jellegű release/checksum dokumentáció.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.

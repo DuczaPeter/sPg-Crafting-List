@@ -2,6 +2,14 @@
 
 ## Aktualis
 
+### V003-C016 Exact Manual file:// Gate Evidence Closure
+
+- [x] Exact C015 RC méret/SHA és a fő HTML-lel való byte-egyezés ellenőrizve.
+- [x] Felhasználói direct `file://` M1–M7 evidence PASS: V003 UI/backup/diagnosztika identity, Technical Probe, Titanium picker, reload és standalone.
+- [x] Változatlan C015 automated + Chrome localhost PASS evidence újrafelhasználva; új regression/Chrome automation nem futott.
+- [x] Application code, RC, V001/V002, a régi invalidált V003 tag és `releases/V003/` változatlan.
+- [x] Replacement V003 release gate complete; a tényleges leváltás külön, engedélyezett release-cycle feladata.
+
 ### V003-C015 Fresh RC after Version Identity Repair
 
 - [x] Exact `37f8852...` C014 source HEAD-ből determinisztikus, byte-azonos single-file candidate; application code változatlan.
@@ -9,7 +17,7 @@
 - [x] Teljes releváns C001–C012.5 + D1 + C013.1/.3/.5/.7 + C014 + M1–M6.1 + C04 release-regresszió PASS.
 - [x] Legacy Titanium canonical picker és diszjunkt Q500–Q799 / Q800+ pool Combined/Allocation/no-double-reserve fixture valódi Chrome-ban PASS.
 - [x] Chrome localhost 15/15, nyolc modul, 1920/1366/390 overflow 0, Wiki/UEX/IndexedDB/reload/backup/standalone és console 0/0 PASS.
-- [ ] Exact C015 candidate kézi `file://` gate külön következő ciklusban.
+- [x] Exact C015 candidate kézi `file://` gate C016-ban, felhasználói M1–M7 evidence alapján PASS.
 - [ ] Stabil helyettesítő V003 release/tag csak a manual gate és külön engedély után.
 
 ### V003-C014 Stable Version Identity Repair
