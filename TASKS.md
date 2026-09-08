@@ -2,6 +2,14 @@
 
 ## Aktualis
 
+### V003 Stable Release
+
+- [x] Az elfogadott C013.8 RC `835832` byte és SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469` invariánsa release előtt PASS.
+- [x] `releases/V003/sPg Crafting List.html` byte-pontos RC-másolat; embedded CSS/JS, egy runtime HTML, sidecar `0`.
+- [x] Automated, Chrome localhost és exact manual `file://` kapu PASS bizonyítéka a változatlan candidate-ről újrafelhasználva.
+- [x] Stable release report, `RELEASE.md` és `SHA256SUMS` elkészült; V001/V002 változatlan.
+- [x] Helyi `V003-STABLE-RELEASE` commit és annotált `V003` tag; push/main merge nincs.
+
 ### V003-C013.9 Exact Manual file:// Gate Evidence Closure
 
 - [x] A felhasználó az exact C013.8 candidate-et közvetlen `file://` módban ellenőrizte: M1–M12 PASS.
@@ -217,7 +225,7 @@
 - [x] `V003-C012.4`: Numeric Input Editing Lifecycle Repair; felhasznaloi kezi teszt PASS, ez lett az uj C013 baseline.
 - [x] `V003-C013` kiserlet: automated es Chrome localhost PASS bizonyitek megorizve; user manual `file://` NOT_RUN; candidate `INVALIDATED_BY_C012.5_RELEASE_BLOCKER`.
 - [ ] `V003-C012.5`: nem indult el.
-- [ ] Stabil V003 release/tag csak kulon felhasznaloi jovahagyassal.
+- [x] Stabil V003 release/tag a felhasználó külön jóváhagyásával, release-only ciklusban elkészült.
 
 ### V002 GitHub- es Discord-dokumentacio
 
@@ -314,5 +322,5 @@
 
 ## Blokkolo problema
 
-- Nincs fejlesztesi blokkolo. A stabil V003 release/tag tovabbra sincs engedelyezve; a V002 stabil single-file release lezart, valtozatlan es visszaallithato.
+- Nincs. A V003 stable release helyben lezárt; távoli push és `main` merge nem történt.
 

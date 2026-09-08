@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## V003 - 2026-09-08
+
+- Exact canonical material identity és source/legacy UUID provenance fuzzy vagy name-only merge nélkül.
+- Diszjunkt Minimum/MAX Quality pool szemantika, mixed amount/Quality shortage és cross-view allocation parity.
+- Canonical material picker dedup és User Data-tól független canonical UUID-feloldás.
+- Legacy Titanium batch megtartása mellett canonical Titanium csoportosítás és új Quality batch támogatás.
+- Single-file stable artifact az elfogadott C013.8 candidate byte-pontos másolataként.
+
+### Acceptance
+
+- Teljes releváns automated release gate: PASS az elfogadott, változatlan C013.8 candidate-en.
+- Chrome localhost: PASS; Technical Baseline 15/15, nyolc modul, három viewport, konzol 0/0.
+- Exact manual `file://` M1–M12: PASS.
+- Release HTML: 835832 byte; SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`.
+- V001 és V002: változatlan.
+
 ## V002 - 2026-08-24
 
 - A teljes alkalmazas CSS-e a `sPg Crafting List.html` fajlba kerult.

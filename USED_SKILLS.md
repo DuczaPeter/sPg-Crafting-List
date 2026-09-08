@@ -10,6 +10,14 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mely fajlokat vagy donteseket erintett:
 - Kell-e kesobb tanulsagot visszairni a skillbe: igen/nem
 
+## V003 stable release
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-08`, a változatlan, elfogadott C013.8 candidate release-only, helyi stable lezárásához.
+- Mire segített: a bounded pre-release integritásauditra, a byte-pontos artifact-promócióra és a már bizonyított automated/Chrome/manual kapuk szükségtelen újrafuttatásának elkerülésére.
+- Mely fájlokat vagy döntéseket érintett: V003 stable artifact, release/checksum riportok és kötelező projektmeta; application code, RC, V001/V002, remote és `main` nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C013.9 Exact manual file gate evidence closure
 
 - Skill neve: `credit-efficient-project-runner`.

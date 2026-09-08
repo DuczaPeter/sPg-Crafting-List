@@ -165,6 +165,7 @@
 - `test-artifacts/V003-C013.5/`: canonical picker célfixture, aktív 4.10 live identity audit és bounded validator evidence; új RC nincs.
 - `test-artifacts/V003-C013.8/`: exact C013.7 source-ból épített fresh candidate, teljes regressziós, aktív identity-audit és valódi Chrome localhost evidence.
 - `test-artifacts/V003-C013.9/`: az exact C013.8 candidate felhasználói manuális `file://` gate-jének rövid summary evidence-e.
+- `releases/V003/`: a stabil V003 egyetlen futtatható, byte-pontosan elfogadott HTML artifactja és a nem runtime jellegű release/checksum dokumentáció.
 - `test-artifacts/V002-C015/`: a ciklusszam-reset hibaja elott lefutott megorzott PASS summary; a kanonikus V002 ciklus a `V002-C001`.
 - `releases/V001/`: a fagyasztott ketfajlos V001 alkalmazas, integritasi manifest es release-leiras.
 - `releases/V002/`: a stabil V002 egyetlen futtathato HTML artifactja, plusz nem runtime jellegu release-leiras es checksum.
@@ -216,6 +217,12 @@
 
 - `docs/V003_C0139_EXACT_MANUAL_FILE_GATE_REPORT.md`: felhasználó által igazolt M1–M12 direct `file://` evidence, tesztbatch-takarítás és változatlan RC-integritás.
 - `test-artifacts/V003-C013.9/summary.json`: rövid gépi manual-gate summary; application/RC változás `NO`.
+
+## V003 stable release
+
+- `releases/V003/sPg Crafting List.html`: az elfogadott C013.8 candidate byte-pontos stabil másolata.
+- `releases/V003/RELEASE.md` és `releases/V003/SHA256SUMS`: nem runtime release-dokumentáció és integritási manifest.
+- `docs/V003_RELEASE_REPORT.md`: source/RC/manual checkpoint, acceptance, canonical identity/Quality pool összefoglaló, integritás és rollback.
 
 ## Iranyito fajlok
 
