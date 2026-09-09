@@ -48,3 +48,11 @@ Current cycle/session notes only. Previous raw log archived losslessly at `logs/
 - A régi helyi V003 release/tag státusza: `PRE-PUBLICATION INVALIDATED BY V003 VERSION IDENTITY BLOCKER`; tag nem mozdult és release artifact nem változott.
 - Következő lépés: külön fresh-RC ciklus, majd új release-döntés.
 - Visszaállás: a C014 checkpoint commit normál revertje; a régi invalidált tag/artifact evidence változatlanul megmarad.
+
+## 2026-09-09 — V003-C018 Safe Main Divergence Integration
+
+- Friss audit: `origin/main 15ec5c1...`, merge base `5cc0093...`, `12` remote-only / `44` local-only commit.
+- Read-only merge-tree: konfliktus `0`, rename/delete `0`, protected-path delta `0`; remote-only eredmény kizárólag `index.html`.
+- Normál kétparentes integration merge: `fafd669...`; mind az `origin/main`, mind a stable V003 commit őse.
+- V003 tag `ebc8328...`, stable artifact és accepted RC SHA `87382a8...`, V001/V002 változatlan.
+- Push, force, main publication, V003 tag push és GitHub Release nem történt; következő lépés külön publikációs ciklus.

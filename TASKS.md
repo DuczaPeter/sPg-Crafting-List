@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V003-C018 Safe Main Divergence Integration
+
+- [x] Friss `origin/main` audit: `15ec5c1...`; merge base `5cc0093...`; divergencia `12/44` commit.
+- [x] A remote-only végső delta kizárólag `index.html`; protected application/RC/release/V001/V002 útvonalat nem érintett.
+- [x] `git merge-tree` szimuláció konfliktus, rename/delete és protected-path változás nélkül PASS.
+- [x] Normál kétparentes merge commit: `fafd669...`; remote landing page byte-pontosan megőrzött.
+- [x] Stable V003 tag, artifact és accepted RC változatlan; mindkét parent lineage ancestry PASS.
+- [x] Push, force, main publication, V003 tag push és GitHub Release nem történt.
+- [ ] Következő külön ciklus: tényleges main + V003 tag + GitHub Release publikálás, csak explicit engedéllyel.
+
 ### V003 Replacement Stable Release
 
 - [x] Remote audit: nincs távoli/publikált `V003` tag vagy GitHub Release.

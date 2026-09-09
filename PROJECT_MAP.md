@@ -232,6 +232,10 @@
 - `releases/V003/RELEASE.md` és `releases/V003/SHA256SUMS`: nem runtime release-dokumentáció és integritási manifest.
 - `docs/V003_RELEASE_REPORT.md`: replacement source/C015/C016 checkpoint, acceptance, invalidált előzmény, canonical identity/Quality pool összefoglaló, integritás és rollback.
 
+## V003-C018 history integration
+
+- `docs/V003_C018_SAFE_MAIN_DIVERGENCE_INTEGRATION_REPORT.md`: friss remote-divergencia audit, merge-tree szimuláció, kétparentes integration merge és változatlan V003 release-integritás.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

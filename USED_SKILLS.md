@@ -572,3 +572,11 @@ Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak
 - Mire segített: a szűk affected-path auditra, a teljes release-regresszió/Chrome/RC tudatos kihagyására, az invalidált C013.6 candidate és a stabil V001/V002 védelmére, valamint a célzott checkpoint lezárására.
 - Mely fájlokat vagy döntéseket érintett: exact refined-version identity graph, canonical authority/picker/batch projection, C013.7 fixture/teszt/validator/report/evidence és projektállapot-dokumentáció; skillfájl, stabil release és remote nem változott.
 - Kell-e később tanulsagot visszaírni a skillbe: `nem`.
+
+## V003-C018 Safe Main Divergence Integration
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a minimális resume, hitelesített GitHub read-only fetch/audit, merge-tree szimuláció és biztonságos kétparentes history integration során.
+- Mire segített: a teljes regresszió és history-scan elkerülésére, a protected V003 release byte-lock megtartására, valamint az auditált remote ancestry konfliktusmentes beemelésére push nélkül.
+- Mely fájlokat vagy döntéseket érintett: a távoli `index.html` landing page integrációja, C018 riport és projektmeta; application HTML, accepted RC, stable artifact, V001/V002 és V003 tag nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.

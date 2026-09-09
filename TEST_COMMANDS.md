@@ -864,3 +864,14 @@ V003-C016 exact manual candidate `file://` gate:
 - Nincs automatizált parancs: a felhasználó az exact C015 RC-t közvetlen fájlból ellenőrizte.
 - M1–M7 eredmény: PASS; evidence: `docs/V003_C016_EXACT_MANUAL_FILE_GATE_REPORT.md` és `test-artifacts/V003-C016/summary.json`.
 - A C015 automated és Chrome localhost kapu nem futott újra, mert az application HTML és az exact RC bytejai változatlanok.
+
+V003-C018 read-only history integration gate:
+
+```powershell
+git fetch --prune --tags origin
+git merge-tree --write-tree --messages ebc83281769fd212d988ee55957b1c2754256490 origin/main
+git merge-base --is-ancestor origin/main HEAD
+git merge-base --is-ancestor ebc83281769fd212d988ee55957b1c2754256490 HEAD
+```
+
+PASS csak nulla content/rename/delete konfliktus, nulla protected-path delta, változatlan tag/RC/release SHA és mindkét ancestry-check mellett. A kapu nem futtat application regressiont vagy böngészőtesztet.
