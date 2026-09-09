@@ -189,3 +189,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Craft Complete és Undo külön-külön egyetlen atomi IndexedDB tranzakció. A History append-only; státusz `COMPLETED` vagy `UNDONE`, Redo nincs, cardonként csak a legutóbbi aktív completed event Undozható.
 - Undo exact deltát állít vissza, nem inventory snapshotot. Kompatibilis eredeti batch használható, különben új restored batch készül; inkompatibilis rekord nem írható felül.
 - A részletes, kódból igazolt beillesztési terv: `docs/V004_C001_CRAFT_COMPLETE_ARCHITECTURE_AUDIT.md`.
+
+## 2026-09-09 - V004 migration foundation conventions
+
+- A négy V004 revision rekord determinisztikus kezdőértéke `0`; timestamp revisionként nem használható. A `migration:v003` rekord csak sikeres atomi migrációkor jön létre.
+- A V003 alkalmazás/schema identity nincs bizonyíthatóan eltárolva a source adatbázisban, ezért a migration ledger e mezői `null` értékűek; a DB-név, DB-verzió, store-topology és SHA-256 payload bizonyított.
+- A kötelező migráció előtti biztonsági mentés schema 2 marad, hogy hű V003 User Data backup legyen. A normál V004 export schema 3, benne üres vagy később valós `craftHistory` és durable `userMeta`.
+- A direct migráció pristine célja csak üres User Data/History és pontosan négy 0 értékű revision meta; Game Data/cache és belső non-USER settings nem teszi dirtyvé.
+- Live `4.10.0-LIVE.12519617` blueprint auditban nincs bizonyított output-count mező: `OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES` a C004 prerequisite.

@@ -1,0 +1,27 @@
+V004-C002 targeted database/schema and safe V003 migration validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS 4ee1aed99cde954fef4507de6c0ee99c32049b44553382b7e5907ce5be9ffe5f 121370 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c002-targeted-model=PASS
+V004_C002_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C002\model-evidence.json
+c002-targeted-chrome=PASS
+V004_C002_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C002\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test-plan.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_DATABASE_SCHEMA_SAFE_V003_MIGRATION_FOUNDATION
+applicationSha256=a9d664947aa97f22c80b3706f44df5cc7346299fc06b1e57a01337923fa4b0c8
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+directFileGate=PASS_AUTOMATED
+fullRegression=NOT_RUN_BY_SCOPE

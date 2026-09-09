@@ -1,0 +1,160 @@
+{
+  "cycle": "V004-C002",
+  "sourceDatabase": {
+    "name": "spg-crafting-list",
+    "version": 4,
+    "requiredStores": [
+      "userInventory",
+      "materialBatches",
+      "userLoadouts",
+      "craftingCards",
+      "settings"
+    ]
+  },
+  "userData": {
+    "userInventory": [
+      {
+        "id": "material-alpha::SCU",
+        "materialUuid": "material-alpha",
+        "materialName": "Material Alpha",
+        "unit": "SCU",
+        "batchCount": 2,
+        "totalQuantityUnits": 201,
+        "updatedAt": "2026-09-09T06:00:00.000Z"
+      }
+    ],
+    "materialBatches": [
+      {
+        "id": "batch-one-unit",
+        "materialUuid": "material-alpha",
+        "materialName": "Material Alpha",
+        "sourceMaterialUuid": "legacy-material-alpha",
+        "quality": 500,
+        "quantityUnits": 1,
+        "unit": "SCU",
+        "note": "0.0001 SCU exact preservation",
+        "createdAt": "2026-09-09T06:00:00.000Z",
+        "updatedAt": "2026-09-09T06:00:00.000Z"
+      },
+      {
+        "id": "batch-two-hundred-units",
+        "materialUuid": "material-alpha",
+        "materialName": "Material Alpha",
+        "quality": 800,
+        "quantityUnits": 200,
+        "unit": "SCU",
+        "note": "0.0200 SCU exact preservation",
+        "createdAt": "2026-09-09T06:01:00.000Z",
+        "updatedAt": "2026-09-09T06:01:00.000Z"
+      }
+    ],
+    "craftingCards": [
+      {
+        "id": "card-alpha",
+        "order": 0,
+        "active": true,
+        "collapsed": false,
+        "quantity": 21,
+        "blueprintUuid": "blueprint-alpha",
+        "outputUuid": "output-alpha",
+        "outputName": "Output Alpha",
+        "requirements": [
+          {
+            "id": "blueprint-alpha:aspect:0",
+            "ingredientUuid": "material-alpha",
+            "materialName": "Material Alpha",
+            "requiredQuantityUnits": 1,
+            "unit": "SCU"
+          }
+        ],
+        "slotStrategies": {
+          "blueprint-alpha:aspect:0": "HP_MIN_500"
+        },
+        "recipeSlotQualityPoolAssignments": {
+          "blueprint-alpha:aspect:0": "MINIMUM"
+        },
+        "createdAt": "2026-09-09T06:02:00.000Z",
+        "updatedAt": "2026-09-09T06:02:00.000Z"
+      }
+    ],
+    "miningLoadouts": [
+      {
+        "id": "loadout-alpha",
+        "materialUuid": "material-alpha",
+        "materialName": "Material Alpha",
+        "name": "Fixture loadout",
+        "stations": [],
+        "gadgets": [],
+        "isDefault": true
+      }
+    ],
+    "userSettings": [
+      {
+        "key": "user:fixture-setting",
+        "scope": "USER",
+        "value": {
+          "enabled": true
+        },
+        "updatedAt": "2026-09-09T06:03:00.000Z"
+      }
+    ]
+  },
+  "revisionInitialization": {
+    "inventoryRevision": 0,
+    "craftListRevision": 0,
+    "allocationRevision": 0,
+    "historySequence": 0
+  },
+  "exactUnitCases": [
+    {
+      "scu": "0.0001",
+      "quantityUnits": 1
+    },
+    {
+      "scu": "0.0200",
+      "quantityUnits": 200
+    }
+  ],
+  "liveOutputCountAudit": {
+    "source": "https://api.star-citizen.wiki/api/blueprints",
+    "observedAt": "2026-09-09",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "indexRecords": 1606,
+    "indexPages": 9,
+    "outputTypesSampled": 27,
+    "detailRecordsSampled": 12,
+    "indexRootKeys": [
+      "category_uuid",
+      "craft_time_label",
+      "craft_time_seconds",
+      "dismantle_returns",
+      "game_version",
+      "ingredient_count",
+      "ingredients",
+      "is_available_by_default",
+      "key",
+      "link",
+      "output",
+      "output_class",
+      "output_item_uuid",
+      "output_item_web_url",
+      "output_name",
+      "unlocking_missions_count",
+      "uuid",
+      "web_url"
+    ],
+    "outputObjectKeys": [
+      "class",
+      "grade",
+      "item_web_url",
+      "name",
+      "sub_type",
+      "subtype",
+      "type",
+      "type_label",
+      "uuid"
+    ],
+    "outputCountCandidateFields": [],
+    "conclusion": "OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES"
+  }
+}

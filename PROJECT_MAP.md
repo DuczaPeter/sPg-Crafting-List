@@ -236,6 +236,14 @@
 
 - `docs/V003_C018_SAFE_MAIN_DIVERGENCE_INTEGRATION_REPORT.md`: friss remote-divergencia audit, merge-tree szimuláció, kétparentes integration merge és változatlan V003 release-integritás.
 
+## V004-C002 database/schema és safe V003 migration foundation
+
+- `tools/run-v004-c002-tests.mjs`: determinisztikus V004 identity/schema, exact-unit, SHA-256 fingerprint, replay/changed-source/non-pristine, backup schema-3 és single-file modellteszt.
+- `tools/run-v004-c002-browser-tests.mjs`: izolált valódi Chrome IndexedDB startup/refresh, explicit backup-confirmation migráció, source-változatlanság, atomi rollback és direct `file://` célkapu.
+- `tools/validate-v004-c002.ps1`: bounded C002 validator és V001/V002/V003 integritáskapu.
+- `tests/fixtures/v004-c002-v003-migration.json`: exact 1/200 unit V003 User Data és live output-count schema-evidence.
+- `docs/V004_C002_DATABASE_SCHEMA_MIGRATION_REPORT.md`: V004 DB/store/meta/history, read-only V003 migráció, schema-3 backup, teszt és rollback riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

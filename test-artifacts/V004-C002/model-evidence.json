@@ -1,0 +1,112 @@
+{
+  "cycle": "V004-C002",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "a9d664947aa97f22c80b3706f44df5cc7346299fc06b1e57a01337923fa4b0c8",
+  "identity": {
+    "applicationVersion": "V004-dev",
+    "applicationSchemaVersion": 7,
+    "databaseName": "spg-crafting-list-v004",
+    "databaseVersion": 1,
+    "backupSchemaVersion": 3
+  },
+  "topology": {
+    "sourceStores": [
+      "userInventory",
+      "materialBatches",
+      "userLoadouts",
+      "craftingCards",
+      "settings"
+    ],
+    "newStores": [
+      "craftHistory",
+      "userMeta"
+    ],
+    "craftHistoryIndexes": [
+      "byCraftingCardAndSequence",
+      "byHistorySequence",
+      "byCraftingCardStatusAndSequence"
+    ]
+  },
+  "migration": {
+    "fingerprint": "3bf0e70b64448b2e69b488ee57ee1f4cc95b03b8dfa3ee5cfe991e87dacf7608",
+    "changedFingerprint": "ef94d8fe49580983851daec3cac179b2b499f0947619e1a52d3382339c023e27",
+    "sourceAccessMode": "READ_ONLY",
+    "replayCode": "V003_MIGRATION_ALREADY_APPLIED",
+    "changedSourceCode": "V003_SOURCE_CHANGED_AFTER_MIGRATION",
+    "nonPristineCode": "V004_TARGET_NOT_PRISTINE",
+    "atomicFailureCode": "SIMULATED_V003_MIGRATION_ABORT",
+    "exactQuantityUnits": [
+      {
+        "id": "batch-one-unit",
+        "quantityUnits": 1
+      },
+      {
+        "id": "batch-two-hundred-units",
+        "quantityUnits": 200
+      }
+    ],
+    "historyAfterV003Migration": 0
+  },
+  "backup": {
+    "acceptedLegacySchemas": [
+      1,
+      2
+    ],
+    "targetSchema": 3,
+    "historyInitializedEmpty": true,
+    "revisionsInitializedAtZero": true
+  },
+  "outputCount": {
+    "source": "https://api.star-citizen.wiki/api/blueprints",
+    "observedAt": "2026-09-09",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "indexRecords": 1606,
+    "indexPages": 9,
+    "outputTypesSampled": 27,
+    "detailRecordsSampled": 12,
+    "indexRootKeys": [
+      "category_uuid",
+      "craft_time_label",
+      "craft_time_seconds",
+      "dismantle_returns",
+      "game_version",
+      "ingredient_count",
+      "ingredients",
+      "is_available_by_default",
+      "key",
+      "link",
+      "output",
+      "output_class",
+      "output_item_uuid",
+      "output_item_web_url",
+      "output_name",
+      "unlocking_missions_count",
+      "uuid",
+      "web_url"
+    ],
+    "outputObjectKeys": [
+      "class",
+      "grade",
+      "item_web_url",
+      "name",
+      "sub_type",
+      "subtype",
+      "type",
+      "type_label",
+      "uuid"
+    ],
+    "outputCountCandidateFields": [],
+    "conclusion": "OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES"
+  },
+  "singleFile": {
+    "applicationRuntimeFileCount": 1,
+    "localRuntimeSidecars": 0,
+    "embeddedCss": true,
+    "embeddedJavaScript": true
+  },
+  "excludedFeatures": {
+    "craftCompleteDeduction": "NOT_IMPLEMENTED",
+    "partialOrMaxExecution": "NOT_IMPLEMENTED",
+    "undo": "NOT_IMPLEMENTED"
+  }
+}

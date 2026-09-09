@@ -3968,6 +3968,7 @@ code {
 
 .spg-backup-export-card,
 .spg-backup-import-card,
+.spg-v004-migration-card,
 .spg-diagnostics-card {
   padding: 14px;
 }
@@ -3993,8 +3994,21 @@ code {
 }
 
 .spg-backup-preview-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin-top: 12px;
+}
+
+.spg-v004-migration-card {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.spg-v004-migration-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .spg-backup-preview-grid article {
@@ -5940,6 +5954,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
   .spg-combined-heading,
   .spg-backup-preview-heading,
+  .spg-v004-migration-heading,
   .spg-diagnostics-card,
   .spg-detail-toolbar,
   .spg-detail-heading,
@@ -6043,7 +6058,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       </article>
       <article class="spg-status-card">
         <span>Alkalmazás</span>
-        <strong id="applicationStatus">V003</strong>
+        <strong id="applicationStatus">V004-dev</strong>
       </article>
     </section>
 
@@ -6362,6 +6377,23 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           </div>
         </div>
 
+        <div class="spg-v004-migration-card">
+          <div class="spg-v004-migration-heading">
+            <div>
+              <h3>V003 → V004 biztonságos migráció</h3>
+              <p class="spg-muted">A V004 külön adatbázist használ. A V003 forrás kizárólag olvasható, és migráció előtt kötelező a backup letöltése.</p>
+            </div>
+            <span id="v003MigrationStatus" class="spg-badge spg-badge-neutral">Forrás ellenőrzése folyamatban</span>
+          </div>
+          <p id="v003MigrationMessage" class="spg-muted" aria-live="polite">A V003 adatforrás felismerése nem indít automatikus migrációt.</p>
+          <div class="spg-inline-actions">
+            <button id="v003MigrationInspectButton" type="button">V003 adatok ellenőrzése</button>
+            <button id="v003BackupDownloadButton" type="button" disabled>V003 backup letöltése</button>
+            <button id="v003MigrationStartButton" type="button" class="primary" disabled>Migráció indítása</button>
+          </div>
+          <p id="v003MigrationNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+        </div>
+
         <p id="backupNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
         <div id="backupPreview" class="spg-backup-preview" aria-live="polite">
           <p class="spg-muted">Az előnézet nem módosít User Data-t.</p>
@@ -6455,7 +6487,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     <footer class="spg-app-footer">
       <span>Adatforrás: Star Citizen Wiki API · UEX Corp API</span>
-      <span id="footerRuntime">V003</span>
+      <span id="footerRuntime">V004-dev</span>
     </footer>
   </div>
 
@@ -6465,11 +6497,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   (function () {
     var APP = Object.freeze({
       name: "sPg Crafting List",
-      version: "V003",
-      schemaVersion: 6,
+      version: "V004-dev",
+      schemaVersion: 7,
       cacheSchemaVersion: 4,
-      dbName: "spg-crafting-list",
-      dbVersion: 4,
+      dbName: "spg-crafting-list-v004",
+      dbVersion: 1,
       apiBase: "https://api.star-citizen.wiki/api",
       uexRefineryEndpoint: "https://api.uexcorp.uk/2.0/refineries_yields",
       uexRefineryTtlMs: 86400000,
@@ -6483,7 +6515,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       miningPageSize: 200,
       maxMiningPages: 20,
       backupFormat: "spg-crafting-list-backup",
-      backupSchemaVersion: 2
+      backupSchemaVersion: 3
     });
 
     var STORE_DEFINITIONS = Object.freeze({
@@ -6510,6 +6542,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       materialBatches: "id",
       userLoadouts: "id",
       craftingCards: "id",
+      craftHistory: "craftTransactionId",
+      userMeta: "key",
       settings: "key",
       syncStaging: "key",
       snapshots: "id"
@@ -6531,6 +6565,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       materialIdentityRelations: [],
       knownMaterialIdentityAudit: null,
       craftingCards: [],
+      craftHistory: [],
+      userMeta: [],
       allocationResult: null,
       combinedMaterials: [],
       materialQualityPools: {},
@@ -6568,6 +6604,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         lastSnapshotId: null,
         lastStatus: "IDLE",
         migrations: []
+      },
+      v003Migration: {
+        status: "CHECKING",
+        source: null,
+        fingerprint: null,
+        backupDownloadedFingerprint: null,
+        errorCode: null
       },
       userDataReady: false,
       cssText: null,
@@ -6814,8 +6857,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           request.onupgradeneeded = function () {
             var db = request.result;
             Object.keys(STORE_DEFINITIONS).forEach(function (storeName) {
+              var store;
               if (!db.objectStoreNames.contains(storeName)) {
-                db.createObjectStore(storeName, { keyPath: STORE_DEFINITIONS[storeName] });
+                store = db.createObjectStore(storeName, { keyPath: STORE_DEFINITIONS[storeName] });
+              } else {
+                store = request.transaction.objectStore(storeName);
+              }
+              if (storeName === "craftHistory") {
+                Object.keys(V004_CRAFT_HISTORY_INDEXES).forEach(function (indexName) {
+                  if (!store.indexNames.contains(indexName)) {
+                    var definition = V004_CRAFT_HISTORY_INDEXES[indexName];
+                    store.createIndex(indexName, definition.keyPath, { unique: definition.unique === true });
+                  }
+                });
               }
             });
           };
@@ -6892,6 +6946,62 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return this.request(storeName, "readonly", function (store) {
           return store.count();
         });
+      }
+
+      ensureV004UserMetaDefaults() {
+        var self = this;
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction("userMeta", "readwrite");
+          var store = transaction.objectStore("userMeta");
+          var abortReason = null;
+          v004DefaultUserMetaRecords().forEach(function (defaultRecord) {
+            var request = store.get(defaultRecord.key);
+            request.onsuccess = function () {
+              if (!request.result) {
+                store.add(defaultRecord);
+                return;
+              }
+              if (!Number.isSafeInteger(request.result.value) || request.result.value < 0) {
+                abortReason = v004MigrationError("V004_META_INVALID", "Érvénytelen V004 revision meta: " + defaultRecord.key);
+                transaction.abort();
+              }
+            };
+          });
+          transaction.oncomplete = function () {
+            resolve(v004DefaultUserMetaRecords());
+          };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A V004 meta inicializálása visszagörgetve."));
+          };
+        });
+      }
+
+      async readV004MigrationTargetData() {
+        var records = await Promise.all([
+          this.getAll("userInventory"),
+          this.getAll("materialBatches"),
+          this.getAll("craftingCards"),
+          this.getAll("userLoadouts"),
+          this.getAll("settings"),
+          this.getAll("craftHistory"),
+          this.getAll("userMeta")
+        ]);
+        return {
+          userInventory: records[0],
+          materialBatches: records[1],
+          craftingCards: records[2],
+          miningLoadouts: records[3],
+          userSettings: records[4].filter(isUserSettingRecord),
+          craftHistory: records[5],
+          userMeta: records[6]
+        };
       }
 
       commitInventorySnapshot(batches) {
@@ -7010,6 +7120,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             transaction.objectStore("materialBatches").clear();
             transaction.objectStore("craftingCards").clear();
             transaction.objectStore("userLoadouts").clear();
+            transaction.objectStore("userMeta").clear();
             (settings.currentUserSettingKeys || []).forEach(function (key) {
               transaction.objectStore("settings").delete(key);
             });
@@ -7033,6 +7144,105 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             abortReason = m4BackupError("SIMULATED_IMPORT_ABORT", "Szimulált félbeszakított import.");
             transaction.abort();
           }
+        });
+      }
+
+      commitV003Migration(sourceData, migrationFingerprint, options) {
+        var self = this;
+        var settings = options || {};
+        var normalizedSource = normalizeV003SourceUserData(sourceData);
+        var fingerprint = String(migrationFingerprint || "").toLowerCase();
+        if (!/^[0-9a-f]{64}$/.test(fingerprint)) {
+          return Promise.reject(v004MigrationError("V003_MIGRATION_FINGERPRINT_INVALID", "A V003 migráció SHA-256 fingerprintje érvénytelen."));
+        }
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var storeNames = ["userInventory", "materialBatches", "craftingCards", "userLoadouts", "settings", "craftHistory", "userMeta"];
+          var transaction = self.db.transaction(storeNames, "readwrite");
+          var targetRecords = {};
+          var remainingReads = storeNames.length;
+          var abortReason = null;
+          var committedLedger = null;
+
+          function abortWith(error) {
+            abortReason = error;
+            try {
+              transaction.abort();
+            } catch (abortError) {
+              reject(error);
+            }
+          }
+
+          function writeMigration() {
+            try {
+              var target = {
+                userInventory: targetRecords.userInventory || [],
+                materialBatches: targetRecords.materialBatches || [],
+                craftingCards: targetRecords.craftingCards || [],
+                miningLoadouts: targetRecords.userLoadouts || [],
+                userSettings: (targetRecords.settings || []).filter(isUserSettingRecord),
+                craftHistory: targetRecords.craftHistory || [],
+                userMeta: targetRecords.userMeta || []
+              };
+              v004AssertMigrationAllowed(target, fingerprint);
+
+              normalizedSource.userInventory.forEach(function (record) { transaction.objectStore("userInventory").add(m4Clone(record)); });
+              normalizedSource.materialBatches.forEach(function (record) { transaction.objectStore("materialBatches").add(m4Clone(record)); });
+              normalizedSource.craftingCards.forEach(function (record) { transaction.objectStore("craftingCards").add(m4Clone(record)); });
+              normalizedSource.miningLoadouts.forEach(function (record) { transaction.objectStore("userLoadouts").add(m4Clone(record)); });
+              normalizedSource.userSettings.forEach(function (record) { transaction.objectStore("settings").add(m4Clone(record)); });
+              v004DefaultUserMetaRecords().forEach(function (record) { transaction.objectStore("userMeta").put(record); });
+
+              var ledger = {
+                key: V004_META_KEYS.migrationV003,
+                status: "SUCCESS",
+                sourceDatabaseName: V003_SOURCE_DATABASE.name,
+                sourceDatabaseVersion: V003_SOURCE_DATABASE.version,
+                sourceApplicationVersion: null,
+                sourceSchemaVersion: null,
+                fingerprint: fingerprint,
+                migratedAt: settings.migratedAt || nowIso(),
+                targetApplicationVersion: APP.version,
+                targetSchemaVersion: APP.schemaVersion,
+                targetDatabaseName: APP.dbName,
+                targetDatabaseVersion: APP.dbVersion
+              };
+              transaction.objectStore("userMeta").add(ledger);
+              if (settings.simulateFailure) {
+                abortWith(v004MigrationError("SIMULATED_V003_MIGRATION_ABORT", "Szimulált V003 migrációs íráshiba."));
+                return;
+              }
+              committedLedger = ledger;
+            } catch (error) {
+              abortWith(error);
+            }
+          }
+
+          storeNames.forEach(function (storeName) {
+            var request = transaction.objectStore(storeName).getAll();
+            request.onsuccess = function () {
+              targetRecords[storeName] = request.result || [];
+              remainingReads -= 1;
+              if (remainingReads === 0) {
+                writeMigration();
+              }
+            };
+            request.onerror = function () {
+              abortWith(request.error || new Error("A V004 migrációs célállapot olvasása sikertelen."));
+            };
+          });
+          transaction.oncomplete = function () {
+            resolve(committedLedger);
+          };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A V003 → V004 migráció teljesen visszagörgetve."));
+          };
         });
       }
 
@@ -7828,6 +8038,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         });
       }
 
+      async loadCraftHistory() {
+        var history = await this.database.getAll("craftHistory");
+        return history.sort(function (a, b) {
+          return Number(a.historySequence || 0) - Number(b.historySequence || 0) || String(a.craftTransactionId).localeCompare(String(b.craftTransactionId));
+        });
+      }
+
+      async loadUserMeta() {
+        var meta = await this.database.getAll("userMeta");
+        return meta.sort(function (a, b) { return String(a.key).localeCompare(String(b.key)); });
+      }
+
       async loadMaterialQualityPlans() {
         return materialQualityPlansFromUserSettings(await this.loadUserSettings());
       }
@@ -7864,14 +8086,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           this.database.getAll("materialBatches"),
           this.database.getAll("craftingCards"),
           this.database.getAll("userLoadouts"),
-          this.loadUserSettings()
+          this.loadUserSettings(),
+          this.loadCraftHistory(),
+          this.loadUserMeta()
         ]);
         return normalizeM4UserData({
           userInventory: records[0],
           materialBatches: records[1],
           craftingCards: records[2],
           miningLoadouts: records[3],
-          userSettings: records[4]
+          userSettings: records[4],
+          craftHistory: records[5],
+          userMeta: records[6]
         });
       }
 
@@ -11238,15 +11464,167 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
     /* M61_UI_COMPLETENESS_MODEL_END */
 
+    /* V004_C002_MIGRATION_MODEL_START */
+    var V004_CRAFT_HISTORY_INDEXES = Object.freeze({
+      byCraftingCardAndSequence: Object.freeze({ keyPath: ["craftingCardId", "historySequence"], unique: false }),
+      byHistorySequence: Object.freeze({ keyPath: "historySequence", unique: true }),
+      byCraftingCardStatusAndSequence: Object.freeze({ keyPath: ["craftingCardId", "status", "historySequence"], unique: false })
+    });
+
+    var V004_META_KEYS = Object.freeze({
+      inventoryRevision: "inventoryRevision",
+      craftListRevision: "craftListRevision",
+      allocationRevision: "allocationRevision",
+      historySequence: "historySequence",
+      migrationV003: "migration:v003"
+    });
+
+    var V003_SOURCE_DATABASE = Object.freeze({
+      name: "spg-crafting-list",
+      version: 4,
+      applicationVersion: "V003",
+      applicationSchemaVersion: 6
+    });
+
+    var V003_SOURCE_STORE_SPECS = Object.freeze([
+      Object.freeze({ dataKey: "userInventory", storeName: "userInventory", keyField: "id" }),
+      Object.freeze({ dataKey: "materialBatches", storeName: "materialBatches", keyField: "id" }),
+      Object.freeze({ dataKey: "miningLoadouts", storeName: "userLoadouts", keyField: "id" }),
+      Object.freeze({ dataKey: "craftingCards", storeName: "craftingCards", keyField: "id" }),
+      Object.freeze({ dataKey: "userSettings", storeName: "settings", keyField: "key" })
+    ]);
+
+    function v004MigrationError(code, message) {
+      var error = new Error(message);
+      error.code = code;
+      return error;
+    }
+
+    function v004DefaultUserMetaRecords() {
+      return [
+        { key: V004_META_KEYS.inventoryRevision, value: 0 },
+        { key: V004_META_KEYS.craftListRevision, value: 0 },
+        { key: V004_META_KEYS.allocationRevision, value: 0 },
+        { key: V004_META_KEYS.historySequence, value: 0 }
+      ];
+    }
+
+    function normalizeV003SourceUserData(data) {
+      var source = data || {};
+      var normalized = {};
+      V003_SOURCE_STORE_SPECS.forEach(function (spec) {
+        if (!Array.isArray(source[spec.dataKey])) {
+          throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A V003 forrásból hiányzik a(z) " + spec.storeName + " User Data tömb.");
+        }
+        normalized[spec.dataKey] = m4SortedRecords(source[spec.dataKey], spec.keyField);
+        var seen = new Set();
+        normalized[spec.dataKey].forEach(function (record, index) {
+          if (!record || typeof record !== "object" || !record[spec.keyField]) {
+            throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", spec.storeName + " rekordkulcs hiányzik a(z) " + index + ". elemnél.");
+          }
+          var key = String(record[spec.keyField]);
+          if (seen.has(key)) {
+            throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", spec.storeName + " duplikált rekordkulcs: " + key);
+          }
+          seen.add(key);
+        });
+      });
+      normalized.materialBatches.forEach(function (batch) {
+        if (!batch.materialUuid || !batch.materialName || !Number.isSafeInteger(batch.quantityUnits) || batch.quantityUnits < 0 || !batch.unit) {
+          throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "Érvénytelen V003 material batch: " + batch.id);
+        }
+      });
+      normalized.craftingCards.forEach(function (card) {
+        if (!Number.isSafeInteger(card.order) || !Number.isSafeInteger(card.quantity) || card.quantity < 1 || !Array.isArray(card.requirements) || !card.slotStrategies || typeof card.slotStrategies !== "object") {
+          throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "Érvénytelen V003 Crafting Card: " + card.id);
+        }
+      });
+      normalized.miningLoadouts.forEach(function (loadout) {
+        if (!loadout.materialUuid || !Array.isArray(loadout.stations) || !Array.isArray(loadout.gadgets)) {
+          throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "Érvénytelen V003 mining loadout: " + loadout.id);
+        }
+      });
+      normalized.userSettings.forEach(function (setting) {
+        if (!isUserSettingRecord(setting)) {
+          throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A V003 migráció nem fogadhat belső settinget: " + setting.key);
+        }
+      });
+      return normalized;
+    }
+
+    function buildV003MigrationCanonicalPayload(source) {
+      var input = source || {};
+      var normalized = normalizeV003SourceUserData(input.userData);
+      return m4Canonicalize({
+        format: "spg-v003-to-v004-migration-source",
+        schemaVersion: 1,
+        sourceDatabase: {
+          name: input.databaseName,
+          version: input.databaseVersion,
+          requiredStores: V003_SOURCE_STORE_SPECS.map(function (spec) { return spec.storeName; }).slice().sort()
+        },
+        userData: normalized
+      });
+    }
+
+    function v004BytesToHex(bytes) {
+      return Array.from(new Uint8Array(bytes)).map(function (value) {
+        return value.toString(16).padStart(2, "0");
+      }).join("");
+    }
+
+    async function fingerprintV003MigrationSource(source) {
+      if (!globalThis.crypto || !globalThis.crypto.subtle || typeof globalThis.crypto.subtle.digest !== "function" || typeof TextEncoder !== "function") {
+        throw v004MigrationError("V003_MIGRATION_SHA256_UNAVAILABLE", "A SHA-256 Web Crypto nem érhető el; a migráció blokkolva.");
+      }
+      var canonicalJson = JSON.stringify(buildV003MigrationCanonicalPayload(source));
+      var digest = await globalThis.crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonicalJson));
+      return v004BytesToHex(digest);
+    }
+
+    function v004AssertMigrationAllowed(targetData, migrationFingerprint) {
+      var target = targetData || {};
+      var meta = Array.isArray(target.userMeta) ? target.userMeta : [];
+      var ledger = meta.find(function (record) { return record && record.key === V004_META_KEYS.migrationV003; });
+      if (ledger && ledger.status === "SUCCESS") {
+        if (String(ledger.fingerprint || "").toLowerCase() === String(migrationFingerprint || "").toLowerCase()) {
+          throw v004MigrationError("V003_MIGRATION_ALREADY_APPLIED", "Ez a V003 adatállapot már sikeresen migrálva lett.");
+        }
+        throw v004MigrationError("V003_SOURCE_CHANGED_AFTER_MIGRATION", "A V003 forrás a sikeres migráció óta megváltozott; automatikus merge nincs.");
+      }
+      var userDataKeys = ["userInventory", "materialBatches", "craftingCards", "miningLoadouts", "userSettings", "craftHistory"];
+      var hasUserData = userDataKeys.some(function (key) {
+        return Array.isArray(target[key]) && target[key].length > 0;
+      });
+      var defaults = new Map(v004DefaultUserMetaRecords().map(function (record) { return [record.key, record.value]; }));
+      var metaIsPristine = meta.every(function (record) {
+        return record && defaults.has(record.key) && record.value === defaults.get(record.key);
+      }) && defaults.size === meta.length;
+      if (hasUserData || !metaIsPristine) {
+        throw v004MigrationError("V004_TARGET_NOT_PRISTINE", "A V004 cél User Data nem üres; a V003 migráció nem írhat rá.");
+      }
+      return true;
+    }
+    /* V004_C002_MIGRATION_MODEL_END */
+
     /* M4_COMBINED_BACKUP_MODEL_START */
     var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
-    var M4_BACKUP_SCHEMA_VERSION = 2;
-    var M4_BACKUP_STORE_SPECS = Object.freeze([
+    var M4_BACKUP_SCHEMA_VERSION = 3;
+    var M4_V003_BACKUP_STORE_SPECS = Object.freeze([
       { dataKey: "userInventory", storeName: "userInventory", keyField: "id" },
       { dataKey: "materialBatches", storeName: "materialBatches", keyField: "id" },
       { dataKey: "craftingCards", storeName: "craftingCards", keyField: "id" },
       { dataKey: "miningLoadouts", storeName: "userLoadouts", keyField: "id" },
       { dataKey: "userSettings", storeName: "settings", keyField: "key" }
+    ]);
+    var M4_BACKUP_STORE_SPECS = Object.freeze([
+      { dataKey: "userInventory", storeName: "userInventory", keyField: "id" },
+      { dataKey: "materialBatches", storeName: "materialBatches", keyField: "id" },
+      { dataKey: "craftingCards", storeName: "craftingCards", keyField: "id" },
+      { dataKey: "miningLoadouts", storeName: "userLoadouts", keyField: "id" },
+      { dataKey: "userSettings", storeName: "settings", keyField: "key" },
+      { dataKey: "craftHistory", storeName: "craftHistory", keyField: "craftTransactionId" },
+      { dataKey: "userMeta", storeName: "userMeta", keyField: "key" }
     ]);
 
     function m4Canonicalize(value) {
@@ -11280,6 +11658,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return (Array.isArray(records) ? records : []).map(m4Clone).sort(function (a, b) {
         return String(a && a[keyField] || "").localeCompare(String(b && b[keyField] || ""));
       });
+    }
+
+    function normalizeM4LegacyUserData(data) {
+      var source = data || {};
+      var normalized = {};
+      M4_V003_BACKUP_STORE_SPECS.forEach(function (spec) {
+        normalized[spec.dataKey] = m4SortedRecords(source[spec.dataKey], spec.keyField);
+      });
+      return normalized;
+    }
+
+    function fingerprintM4LegacyUserDataPayload(data) {
+      return m4FingerprintText(JSON.stringify(m4Canonicalize(normalizeM4LegacyUserData(data))));
     }
 
     function normalizeM4UserData(data) {
@@ -11336,7 +11727,143 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           throw m4BackupError("INVALID_USER_SETTING", "A backup nem írhat belső alkalmazásbeállítást: " + setting.key);
         }
       });
+      normalized.craftHistory.forEach(function (event) {
+        if (!Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId || (event.status !== "COMPLETED" && event.status !== "UNDONE")) {
+          throw m4BackupError("INVALID_CRAFT_HISTORY", "Érvénytelen Craft History esemény: " + event.craftTransactionId);
+        }
+      });
+      var allowedMetaKeys = new Set(Object.keys(V004_META_KEYS).map(function (name) { return V004_META_KEYS[name]; }));
+      normalized.userMeta.forEach(function (record) {
+        if (!allowedMetaKeys.has(record.key)) {
+          throw m4BackupError("INVALID_USER_META", "Nem támogatott V004 User Meta kulcs: " + record.key);
+        }
+        if (record.key === V004_META_KEYS.migrationV003) {
+          if (record.status !== "SUCCESS" || !/^[0-9a-f]{64}$/.test(String(record.fingerprint || ""))) {
+            throw m4BackupError("INVALID_USER_META", "Érvénytelen V003 migration ledger.");
+          }
+          return;
+        }
+        if (!Number.isSafeInteger(record.value) || record.value < 0) {
+          throw m4BackupError("INVALID_USER_META", "Érvénytelen revision meta: " + record.key);
+        }
+      });
+      v004DefaultUserMetaRecords().forEach(function (required) {
+        if (!normalized.userMeta.some(function (record) { return record.key === required.key; })) {
+          throw m4BackupError("INVALID_USER_META", "Hiányzó revision meta: " + required.key);
+        }
+      });
       return normalized;
+    }
+
+    function buildV003SourceBackupEnvelope(data, metadata) {
+      var normalized = normalizeV003SourceUserData(data);
+      var meta = metadata || {};
+      return {
+        format: M4_BACKUP_FORMAT,
+        schemaVersion: 2,
+        application: APP.name,
+        applicationVersion: V003_SOURCE_DATABASE.applicationVersion,
+        exportedAt: meta.exportedAt || new Date().toISOString(),
+        scDataVersion: meta.scDataVersion || null,
+        sourceDatabase: {
+          name: V003_SOURCE_DATABASE.name,
+          version: V003_SOURCE_DATABASE.version,
+          accessMode: "READ_ONLY"
+        },
+        data: normalized,
+        fingerprint: fingerprintM4LegacyUserDataPayload(normalized)
+      };
+    }
+
+    async function discoverV003SourceDatabase() {
+      if (!window.indexedDB || typeof window.indexedDB.databases !== "function") {
+        throw v004MigrationError("SAFE_DISCOVERY_UNAVAILABLE", "A böngésző nem támogatja az IndexedDB biztonságos adatbázis-felismerését; a direct migráció blokkolva.");
+      }
+      var databases = await window.indexedDB.databases();
+      var descriptor = (databases || []).find(function (entry) {
+        return entry && entry.name === V003_SOURCE_DATABASE.name;
+      });
+      if (!descriptor) {
+        throw v004MigrationError("V003_SOURCE_NOT_FOUND", "Nem található V003 adatbázis ezen a böngésző-originon.");
+      }
+      if (Number(descriptor.version) !== V003_SOURCE_DATABASE.version) {
+        throw v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A V003 adatbázis verziója eltér a várt 4-es verziótól.");
+      }
+      return { name: descriptor.name, version: Number(descriptor.version) };
+    }
+
+    function openExistingV003SourceDatabase(descriptor) {
+      return new Promise(function (resolve, reject) {
+        var safetyError = null;
+        var request = window.indexedDB.open(descriptor.name);
+        request.onupgradeneeded = function () {
+          safetyError = v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A V003 adatbázis megnyitása upgrade-et igényelne; a művelet visszagörgetve.");
+          request.transaction.abort();
+        };
+        request.onsuccess = function () {
+          var sourceDatabase = request.result;
+          if (sourceDatabase.name !== V003_SOURCE_DATABASE.name || sourceDatabase.version !== V003_SOURCE_DATABASE.version) {
+            sourceDatabase.close();
+            reject(v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A megnyitott V003 adatbázis identityje nem egyezik."));
+            return;
+          }
+          var missingStores = V003_SOURCE_STORE_SPECS.filter(function (spec) {
+            return !sourceDatabase.objectStoreNames.contains(spec.storeName);
+          }).map(function (spec) { return spec.storeName; });
+          if (missingStores.length) {
+            sourceDatabase.close();
+            reject(v004MigrationError("V003_SOURCE_SCHEMA_MISMATCH", "A V003 User Data topology hiányos: " + missingStores.join(", ")));
+            return;
+          }
+          resolve(sourceDatabase);
+        };
+        request.onerror = function () {
+          reject(safetyError || request.error || v004MigrationError("V003_SOURCE_OPEN_FAILED", "A V003 adatbázis read-only megnyitása sikertelen."));
+        };
+        request.onblocked = function () {
+          reject(v004MigrationError("V003_SOURCE_OPEN_BLOCKED", "A V003 adatbázis megnyitását egy másik lap blokkolja."));
+        };
+      });
+    }
+
+    async function readV003SourceDatabase() {
+      var descriptor = await discoverV003SourceDatabase();
+      var sourceDatabase = await openExistingV003SourceDatabase(descriptor);
+      try {
+        var storeNames = V003_SOURCE_STORE_SPECS.map(function (spec) { return spec.storeName; });
+        var records = await new Promise(function (resolve, reject) {
+          var transaction = sourceDatabase.transaction(storeNames, "readonly");
+          var result = {};
+          var abortReason = null;
+          V003_SOURCE_STORE_SPECS.forEach(function (spec) {
+            var request = transaction.objectStore(spec.storeName).getAll();
+            request.onsuccess = function () {
+              result[spec.dataKey] = request.result || [];
+            };
+            request.onerror = function () {
+              abortReason = request.error || new Error("A V003 forrás olvasása sikertelen: " + spec.storeName);
+            };
+          });
+          transaction.oncomplete = function () { resolve(result); };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A V003 read-only tranzakció megszakadt."));
+          };
+        });
+        records.userSettings = (records.userSettings || []).filter(isUserSettingRecord);
+        var normalized = normalizeV003SourceUserData(records);
+        return {
+          databaseName: descriptor.name,
+          databaseVersion: descriptor.version,
+          storeNames: storeNames,
+          accessMode: "READ_ONLY",
+          userData: normalized
+        };
+      } finally {
+        sourceDatabase.close();
+      }
     }
 
     function buildM4BackupEnvelope(data, metadata) {
@@ -11379,20 +11906,36 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!sourceData || typeof sourceData !== "object") {
         throw m4BackupError("MISSING_USER_DATA", "A backupból hiányzik a User Data blokk.");
       }
-      if (schemaVersion === 1) {
-        sourceData = {
+      var legacyFingerprint = null;
+      if (schemaVersion <= 2) {
+        var legacySourceData = {
           userInventory: sourceData.userInventory || [],
           materialBatches: sourceData.materialBatches || [],
           craftingCards: sourceData.craftingCards || [],
           miningLoadouts: sourceData.miningLoadouts || sourceData.userLoadouts || sourceData.loadouts || [],
           userSettings: sourceData.userSettings || []
         };
-        migration = {
-          fromSchema: 1,
-          toSchema: M4_BACKUP_SCHEMA_VERSION,
-          steps: ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT"]
+        legacyFingerprint = fingerprintM4LegacyUserDataPayload(legacySourceData);
+        if (schemaVersion === 2 && parsed.fingerprint && parsed.fingerprint !== legacyFingerprint) {
+          throw m4BackupError("FINGERPRINT_MISMATCH", "A V003 backup fingerprintje nem egyezik a tartalommal.");
+        }
+        sourceData = {
+          userInventory: legacySourceData.userInventory,
+          materialBatches: legacySourceData.materialBatches,
+          craftingCards: legacySourceData.craftingCards,
+          miningLoadouts: legacySourceData.miningLoadouts,
+          userSettings: legacySourceData.userSettings,
+          craftHistory: [],
+          userMeta: v004DefaultUserMetaRecords()
         };
-        warnings.push("A schema 1 backup schema 2 formára migrálva.");
+        migration = {
+          fromSchema: schemaVersion,
+          toSchema: M4_BACKUP_SCHEMA_VERSION,
+          steps: schemaVersion === 1
+            ? ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT", "EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION"]
+            : ["EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION"]
+        };
+        warnings.push("A schema " + schemaVersion + " backup schema 3 formára migrálva; Craft History üres és a V004 revision meta 0-ról indul.");
       }
       var normalized = validateM4UserData(sourceData);
       var fingerprint = fingerprintUserDataPayload(normalized);
@@ -12240,6 +12783,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       setText("footerRuntime", APP.version + " · cache schema " + APP.cacheSchemaVersion);
       document.getElementById("offlineBanner").hidden = navigator.onLine;
       document.body.dataset.online = navigator.onLine ? "true" : "false";
+      document.body.dataset.applicationVersion = APP.version;
+      document.body.dataset.applicationSchemaVersion = String(APP.schemaVersion);
+      document.body.dataset.databaseName = APP.dbName;
+      document.body.dataset.databaseVersion = String(APP.dbVersion);
     }
 
     function foldSearchText(value) {
@@ -16194,6 +16741,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.craftingCards = await userDataRepository.loadCraftingCards();
       state.miningLoadouts = await userDataRepository.loadMiningLoadouts();
       state.userSettings = await userDataRepository.loadUserSettings();
+      state.craftHistory = await userDataRepository.loadCraftHistory();
+      state.userMeta = await userDataRepository.loadUserMeta();
       state.materialQualityPlans = materialQualityPlansFromUserSettings(state.userSettings);
       state.materialQualityPools = materialQualityPoolsFromUserSettings(state.userSettings);
       state.userDataReady = true;
@@ -16204,12 +16753,157 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       document.body.dataset.materialBatchCount = String(state.materialBatches.length);
       document.body.dataset.craftingCardCount = String(state.craftingCards.length);
       document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
+      document.body.dataset.craftHistoryCount = String(state.craftHistory.length);
     }
 
     function setBackupNotice(message, tone) {
       var element = document.getElementById("backupNotice");
       element.textContent = message || "";
       element.dataset.tone = tone || "neutral";
+    }
+
+    function setV003MigrationNotice(message, tone) {
+      var element = document.getElementById("v003MigrationNotice");
+      element.textContent = message || "";
+      element.dataset.tone = tone || "neutral";
+    }
+
+    function renderV003MigrationState() {
+      var migration = state.v003Migration;
+      var status = migration.status || "IDLE";
+      var statusMap = {
+        CHECKING: ["NEUTRAL", "V003 forrás ellenőrzése"],
+        SOURCE_VALIDATED: ["PASS", "V003 forrás validálva"],
+        BACKUP_DOWNLOADED: ["PASS", "Backup letöltve"],
+        MIGRATING: ["NEUTRAL", "Migráció folyamatban"],
+        SUCCESS: ["PASS", "Migráció kész"],
+        NOT_FOUND: ["NEUTRAL", "Nincs V003 forrás"],
+        BLOCKED: ["FAIL", migration.errorCode || "BLOCKED"]
+      };
+      var presentation = statusMap[status] || ["NEUTRAL", status];
+      setBadge(document.getElementById("v003MigrationStatus"), presentation[0], presentation[1]);
+      var message = document.getElementById("v003MigrationMessage");
+      if (status === "SOURCE_VALIDATED") {
+        message.textContent = "V003 adatok találhatók. A V004 külön adatbázist használ. Migráció előtt készíts biztonsági mentést.";
+      } else if (status === "BACKUP_DOWNLOADED") {
+        message.textContent = "A validált V003 backup letöltése megtörtént. A végleges migráció csak külön megerősítés után indulhat.";
+      } else if (status === "SUCCESS") {
+        message.textContent = "A V003 User Data atomi tranzakcióban átkerült; a V003 adatbázis változatlan maradt, a Craft History üres.";
+      } else if (status === "NOT_FOUND") {
+        message.textContent = "Ezen a böngésző-originon nincs felismerhető V003 adatbázis. Automatikus adatbázis-létrehozás nem történt.";
+      } else if (status === "BLOCKED") {
+        message.textContent = "A direct migráció blokkolva: " + (migration.errorCode || "ismeretlen biztonsági ok") + ". A V004 és a V003 User Data nem változott.";
+      } else {
+        message.textContent = "A V003 adatforrás felismerése nem indít automatikus migrációt.";
+      }
+      var busy = status === "CHECKING" || status === "MIGRATING";
+      document.getElementById("v003MigrationInspectButton").disabled = busy;
+      document.getElementById("v003BackupDownloadButton").disabled = busy || !migration.source;
+      document.getElementById("v003MigrationStartButton").disabled = busy || status !== "BACKUP_DOWNLOADED" || migration.backupDownloadedFingerprint !== migration.fingerprint;
+      document.body.dataset.v003MigrationStatus = status;
+      document.body.dataset.v003MigrationError = migration.errorCode || "";
+      document.body.dataset.v003MigrationFingerprintReady = migration.fingerprint ? "true" : "false";
+      document.body.dataset.v003MigrationBackupDownloaded = migration.backupDownloadedFingerprint === migration.fingerprint && Boolean(migration.fingerprint) ? "true" : "false";
+    }
+
+    async function inspectV003MigrationSource() {
+      state.v003Migration = {
+        status: "CHECKING",
+        source: null,
+        fingerprint: null,
+        backupDownloadedFingerprint: null,
+        errorCode: null
+      };
+      renderV003MigrationState();
+      try {
+        var source = await readV003SourceDatabase();
+        var fingerprint = await fingerprintV003MigrationSource(source);
+        state.v003Migration.source = source;
+        state.v003Migration.fingerprint = fingerprint;
+        try {
+          v004AssertMigrationAllowed(await database.readV004MigrationTargetData(), fingerprint);
+          state.v003Migration.status = "SOURCE_VALIDATED";
+          state.v003Migration.errorCode = null;
+          setV003MigrationNotice("A V003 source read-only validációja sikeres. Először töltsd le a backupot.", "success");
+        } catch (eligibilityError) {
+          state.v003Migration.status = "BLOCKED";
+          state.v003Migration.errorCode = eligibilityError.code || "V003_MIGRATION_BLOCKED";
+          setV003MigrationNotice(eligibilityError.message, "error");
+        }
+        renderV003MigrationState();
+        return state.v003Migration;
+      } catch (error) {
+        state.v003Migration.status = error.code === "V003_SOURCE_NOT_FOUND" ? "NOT_FOUND" : "BLOCKED";
+        state.v003Migration.errorCode = error.code || "V003_SOURCE_READ_FAILED";
+        setV003MigrationNotice(error.message, state.v003Migration.status === "NOT_FOUND" ? "neutral" : "error");
+        renderV003MigrationState();
+        return state.v003Migration;
+      }
+    }
+
+    function downloadV003MigrationBackup() {
+      var migration = state.v003Migration;
+      if (!migration.source || !migration.fingerprint) {
+        throw v004MigrationError("V003_SOURCE_NOT_VALIDATED", "Előbb ellenőrizd a V003 adatforrást.");
+      }
+      var exportedAt = nowIso();
+      var envelope = buildV003SourceBackupEnvelope(migration.source.userData, {
+        exportedAt: exportedAt,
+        scDataVersion: null
+      });
+      var text = JSON.stringify(envelope, null, 2);
+      var datePart = exportedAt.slice(0, 19).replace(/[:T]/g, "-");
+      downloadTextFile(text, "sPg Crafting List V003 User Data Backup " + datePart + ".json", "application/json;charset=utf-8");
+      migration.backupDownloadedFingerprint = migration.fingerprint;
+      migration.status = "BACKUP_DOWNLOADED";
+      migration.errorCode = null;
+      renderV003MigrationState();
+      setV003MigrationNotice("A V003 backup letöltése elindult. Most külön megerősítheted a migrációt.", "success");
+      return envelope;
+    }
+
+    async function startV003Migration() {
+      var migration = state.v003Migration;
+      if (!migration.source || !migration.fingerprint || migration.backupDownloadedFingerprint !== migration.fingerprint) {
+        throw v004MigrationError("V003_BACKUP_REQUIRED", "A migráció előtt a jelenlegi V003 fingerprinthez tartozó backupot le kell tölteni.");
+      }
+      var refreshedSource = await readV003SourceDatabase();
+      var refreshedFingerprint = await fingerprintV003MigrationSource(refreshedSource);
+      if (refreshedFingerprint !== migration.fingerprint) {
+        migration.source = refreshedSource;
+        migration.fingerprint = refreshedFingerprint;
+        migration.backupDownloadedFingerprint = null;
+        migration.status = "BLOCKED";
+        migration.errorCode = "V003_SOURCE_CHANGED_BEFORE_MIGRATION";
+        renderV003MigrationState();
+        throw v004MigrationError("V003_SOURCE_CHANGED_BEFORE_MIGRATION", "A V003 adat megváltozott a backup óta; új validáció és backup szükséges.");
+      }
+      if (!window.confirm("Elindítod a validált V003 User Data migrációját a külön V004 adatbázisba? A V003 adatbázis read-only marad.")) {
+        setV003MigrationNotice("A migrációt megszakítottad; egyik adatbázis sem változott.", "neutral");
+        return null;
+      }
+      migration.status = "MIGRATING";
+      migration.errorCode = null;
+      renderV003MigrationState();
+      try {
+        var ledger = await database.commitV003Migration(refreshedSource.userData, refreshedFingerprint);
+        var sourceAfter = await readV003SourceDatabase();
+        var sourceFingerprintAfter = await fingerprintV003MigrationSource(sourceAfter);
+        assert(sourceFingerprintAfter === refreshedFingerprint, "A V003 forrás fingerprintje megváltozott a migráció alatt.");
+        await restoreUserDataState();
+        migration.source = sourceAfter;
+        migration.status = "SUCCESS";
+        migration.errorCode = null;
+        renderV003MigrationState();
+        setV003MigrationNotice("Migráció sikeres. A V003 forrás változatlan; a V004 Craft History üresen indult.", "success");
+        return ledger;
+      } catch (error) {
+        migration.status = "BLOCKED";
+        migration.errorCode = error.code || "V003_MIGRATION_FAILED";
+        renderV003MigrationState();
+        setV003MigrationNotice(error.message, "error");
+        throw error;
+      }
     }
 
     function renderBackupPreview() {
@@ -19324,6 +20018,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       try {
         await database.open();
         state.dbReady = true;
+        await database.ensureV004UserMetaDefaults();
         await restoreCachedState();
         await restoreUserDataState();
         if (state.activeUexRefineryDataset) {
@@ -19395,6 +20090,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           cssReady: state.cssReady
         });
         renderBackupPreview();
+        await inspectV003MigrationSource();
         await renderDiagnosticsSummary();
       } catch (error) {
         logger.event("ERROR", "STARTUP_FAILED", "Az alkalmazás indulása sikertelen.", {
@@ -19729,6 +20425,22 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     document.getElementById("backupImportFile").addEventListener("change", invalidateBackupPreview);
     document.getElementById("backupImportMode").addEventListener("change", invalidateBackupPreview);
 
+    document.getElementById("v003MigrationInspectButton").addEventListener("click", function () {
+      inspectV003MigrationSource().catch(function () { return null; });
+    });
+
+    document.getElementById("v003BackupDownloadButton").addEventListener("click", function () {
+      try {
+        downloadV003MigrationBackup();
+      } catch (error) {
+        setV003MigrationNotice(error.message, "error");
+      }
+    });
+
+    document.getElementById("v003MigrationStartButton").addEventListener("click", function () {
+      startV003Migration().catch(function () { return null; });
+    });
+
     document.getElementById("copyLogButton").addEventListener("click", function () {
       copyLog().catch(function (error) {
         setNotice("A log másolása sikertelen: " + error.message, "error");
@@ -19831,6 +20543,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       selectDefaultMiningCommodity: selectDefaultMiningCommodity,
       buildCombinedMaterials: buildCombinedMaterials,
       buildM4BackupEnvelope: buildM4BackupEnvelope,
+      buildV003SourceBackupEnvelope: buildV003SourceBackupEnvelope,
       validateAndMigrateM4Backup: validateAndMigrateM4Backup,
       buildM4ImportPreview: buildM4ImportPreview,
       simulateM4UserDataImport: simulateM4UserDataImport,
@@ -19840,6 +20553,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       applyUserDataBackup: applyUserDataBackup,
       buildDiagnosticStateSnapshot: buildDiagnosticStateSnapshot,
       verifyM4ImportRollbackPreservesUserData: verifyM4ImportRollbackPreservesUserData,
+      v004Migration: Object.freeze({
+        sourceDatabase: V003_SOURCE_DATABASE,
+        sourceStoreSpecs: V003_SOURCE_STORE_SPECS,
+        historyIndexes: V004_CRAFT_HISTORY_INDEXES,
+        metaKeys: V004_META_KEYS,
+        defaultUserMetaRecords: v004DefaultUserMetaRecords,
+        normalizeV003SourceUserData: normalizeV003SourceUserData,
+        buildCanonicalPayload: buildV003MigrationCanonicalPayload,
+        fingerprintSource: fingerprintV003MigrationSource,
+        assertMigrationAllowed: v004AssertMigrationAllowed,
+        readSourceDatabase: readV003SourceDatabase,
+        inspectSource: inspectV003MigrationSource,
+        downloadBackup: downloadV003MigrationBackup,
+        startMigration: startV003Migration
+      }),
       normalizeCommodityMappingName: normalizeCommodityMappingName,
       normalizeUexTimestamp: normalizeUexTimestamp,
       normalizeUexRefineryYield: normalizeUexRefineryYield,

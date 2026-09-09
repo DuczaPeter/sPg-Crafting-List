@@ -875,3 +875,19 @@ git merge-base --is-ancestor ebc83281769fd212d988ee55957b1c2754256490 HEAD
 ```
 
 PASS csak nulla content/rename/delete konfliktus, nulla protected-path delta, változatlan tag/RC/release SHA és mindkét ancestry-check mellett. A kapu nem futtat application regressiont vagy böngészőtesztet.
+
+V004-C002 database/schema és safe V003 migration foundation kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c002.ps1"
+```
+
+Csak a determinisztikus modell- és static teszt:
+
+```powershell
+node .\tools\run-v004-c002-tests.mjs
+```
+
+A célzott Google Chrome-kapu a `tools/run-v004-c002-browser-tests.mjs` runnerrel és a workspace dependency loader által visszaadott Playwright `index.mjs` abszolút útvonalával futtatható. A modul nem runtime dependency és nem része a kiadási HTML-nek; gépfüggő elérési utat nem rögzítünk a projektben.
+
+A kapu ellenőrzi a V004-dev identityt, a külön IndexedDB v1 topology-t, a read-only V003 migrációt, a kötelező backup/megerősítés sorrendet, az SHA-256 replay-védelmet, az exact integer-unit másolást, az atomi rollbacket, a schema-3 backup-alapot, a célzott Chrome startup/refresh/file működést és a V001/V002/V003 integritást. Craft Complete, Undo és teljes release-regresszió nem része a C002 scope-nak.

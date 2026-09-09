@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C002 Database/Schema + Safe V003 Migration Foundation
+
+- [x] C001 checkpoint, clean branch, Git-folyamat és hitelesített remote baseline ellenőrizve; `origin/main` nem mozdult.
+- [x] Runtime `V004-dev`, schema 7, külön `spg-crafting-list-v004` version-1 database és 28-store topology elkészült.
+- [x] Üres `craftHistory`, három index, `userMeta` és determinisztikus 0 revision foundation elkészült.
+- [x] Safe V003 discovery/version/topology, kizárólag read-only source, explicit backup + confirm UI és SHA-256 fingerprint elkészült.
+- [x] Pristine-target, same-fingerprint replay, changed-source és atomi rollback védelem célzott modell- és Chrome-teszttel PASS.
+- [x] Exact 1/200 unit migráció, schema 1/2 → 3, History empty, single-file/runtime sidecar `0` PASS.
+- [x] Live Wiki blueprint output-count audit: `OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES`.
+- [x] V001/V002/V003/tag/artifact/evidence változatlan; Craft Complete és Undo nincs; full regression nem futott.
+- [ ] Következő külön ciklus: V004-C003 revision + reservation snapshot infrastructure.
+
 ### V004-C001 Craft Complete Architecture Audit
 
 - [x] Hitelesített fetch; a `1658ec1...` utáni remote `index.html` identity-only delta auditálva.
@@ -11,7 +23,7 @@
 - [x] Külön V004 DB, read-only V003 migráció, revision/snapshot/stale, atomi Complete/History/Undo terv elkészült.
 - [x] Legfeljebb 6 következő szűk cycle, rollback és célzott jövőbeli tesztlista dokumentálva.
 - [x] Application code és feature implementation: NO; full regression/Chrome/feature test: NOT RUN BY SCOPE.
-- [ ] Következő külön ciklus: V004-C002 database/schema foundation + migration shell.
+- [x] Következő külön ciklus: V004-C002 database/schema foundation + migration shell elkészült.
 
 ### V003-C018 Safe Main Divergence Integration
 

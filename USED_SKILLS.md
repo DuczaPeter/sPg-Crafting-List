@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C002 Database/Schema + Safe V003 Migration Foundation
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a bounded C001-resume, authenticated read-only remote fetch, célzott C002 implementáció és tesztkapu során.
+- Mire segített: minimális állapotbetöltés, full regression elkerülése, pontos scope, hitelesített GitHub baseline és protected release-védelem.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file runtime, migration fixture/tools/evidence/report és projektmeta; V001–V003 release/tag/remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C001 Craft Complete Architecture Audit
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

@@ -387,6 +387,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v003-c015-fresh.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v004-c002-database-schema-migration-foundation",
+      "level": "targeted-regression",
+      "description": "V004-C002 foundation gate: V004-dev single-file identity, separate IndexedDB v1 topology, empty craftHistory and deterministic userMeta, safe read-only V003 discovery, explicit backup-confirmation migration, SHA-256 replay/changed-source guards, exact integer-unit copy, schema-3 backup foundation, atomic rollback, targeted Chrome startup/refresh/file evidence, and frozen V001/V002/V003 integrity; no Craft Complete or Undo.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c002.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

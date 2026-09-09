@@ -14,3 +14,18 @@ Current cycle/session notes only. Previous raw log archived losslessly at `logs/
 - Full regression, Chrome és feature teszt scope szerint nem futott.
 - Riport: `docs/V004_C001_CRAFT_COMPLETE_ARCHITECTURE_AUDIT.md`.
 - Visszaállás: a dokumentációs checkpoint normál revertje; a lokális V004 branch elhagyható, a V003 baseline/tag/artifact érintetlen.
+
+## 2026-09-09 — V004-C002 Database/Schema + Safe V003 Migration Foundation
+
+- Baseline: clean `develop/V004 @ 0b44909...`; authenticated fetch után `origin/main 0a83e44...` változatlan; Git-folyamat nincs.
+- A kanonikus egyfájlos HTML runtime `V004-dev`, schema 7, külön `spg-crafting-list-v004` v1 adatbázisra váltott.
+- A 26 meglévő store mellett `craftHistory` három indexszel és `userMeta` négy, 0-ról induló revision rekorddal létrejött.
+- V003 safe discovery/version/topology, kizárólag readonly olvasás, kötelező schema-2 backup, explicit confirm és SHA-256 source fingerprint elkészült.
+- Same fingerprint, changed source és non-pristine target BLOCKED; a migráció hét V004 store-t lefedő atomi tranzakció, injected failure teljes rollback.
+- Schema-3 backup foundation elfogadja a V003 schema 1/2 inputot, History üres és meta determinisztikus; V004→V003 backward import nincs.
+- Exact integer-copy fixture és Chrome bizonyítja az 1 és 200 unit megőrzését, a V003 forrás változatlanságát és a duplicate/changed-source blokkokat.
+- Live Wiki audit: 1606 blueprint indexrekord/27 output type és 12 detail alapján explicit output-count mező nem bizonyított; C004 affected recipe BLOCKED prerequisite.
+- Célzott model/static + valódi Chrome localhost/refresh/direct file PASS, console/page error 0; full regression nem futott.
+- Single-file runtime sidecar 0; V001/V002/V003/tag/artifact/evidence változatlan; Craft Complete/Undo nincs; push nincs.
+- Riport: `docs/V004_C002_DATABASE_SCHEMA_MIGRATION_REPORT.md`.
+- Visszaállás: a C002 checkpoint normál revertje; V003 és a release-ek nem igényelnek rollbacket.
