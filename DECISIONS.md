@@ -222,3 +222,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Full Card removal craft list +1. Más Card `cardRevision` csak akkor nő, ha a removal miatt saját persisted order értéke ténylegesen megváltozik.
 - Partial után az inventory/allocation/history +1 és Card +1 önmagában stale-lé teszi a korábbi reservationt; a craft list mesterséges növelése nem használható invalidation-helyettesítőként.
 - A jelenlegi production Card pipeline minden valódi és hiányos/migrált Cardot `OUTPUT_COUNT_UNPROVEN` állapotban tart. Bizonyított API/model semantics nélkül nincs exact-capable promotion és nincs output-count = 1 default.
+
+## 2026-09-09 - V004-C004.2 production output proofhatár
+
+- A source requirement mennyiség exact belső unitra alakíthatósága és a „per finished item” szemantika két külön bizonyítási kötelezettség. Egyik nem következik a másikból.
+- Az OpenAPI singular „crafted item” vagy „ingredients required to craft the item” megfogalmazása nem output-count bizonyíték. Count=1 csak explicit mezőből vagy dokumentált univerzális invariánsból vezethető le.
+- Root, nested, tier és kapcsolt item blueprint reprezentáció output count/yield mező nélkül nem jogosít `PER_FINISHED_ITEM_NORMALIZED_EXACT` promotionre, még akkor sem, ha az ingredient-mennyiségek egymással konzisztensen ismétlődnek.
+- A negyedik SCU-tizedesjegy utáni nem nulla source számjegy 0-unit toleranciával nem minősíthető automatikusan lebegőpontos zajnak. Szándék bizonyítása nélkül az exact source-to-unit szemantika unproven.
+- Bizonyítatlan production, régi vagy migrált Card full és partial completionje egyaránt fail-closed; nincs outputCount=1, más batch fallback vagy completion-time reallocation.

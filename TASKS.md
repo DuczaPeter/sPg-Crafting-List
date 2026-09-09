@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C004.2 Production Output Semantics Audit
+
+- [x] C004.1 checkpoint, clean `develop/V004` és exact application SHA audit-only baselineként ellenőrizve.
+- [x] API → normalized blueprint → Card → quantity conversion → allocation multiplication → UI → completion-gate production data-flow feltérképezve.
+- [x] 1606 live blueprint 4217 ingredient quantity mezője auditálva; hat 4 tizedesnél hosszabb raw `quantity_scu` exactness blocker rögzítve.
+- [x] Cargo, PowerPlant, WeaponGun és WeaponPersonal detail/nested/tier/linked item reprezentáció auditálva.
+- [x] OpenAPI és hivatalos `StarCitizenWiki/API` source mapping ellenőrizve; output count/yield mező és dokumentált univerzális 1-output invariáns nincs.
+- [x] Production exact assignment 0; új/régi/migrált Card `OUTPUT_COUNT_UNPROVEN`; full és partial live completion fail-closed.
+- [x] Runtime HTML változatlan; single-file és V001/V002/V003/tag/artifact védelem; Chrome/full regression nincs scope szerint; push nincs.
+- [ ] C005 csak új, explicit feladatban indulhat; C004.2 checkpoint után itt megállunk.
+
 ### V004-C004.1 Revision Semantics + Output Eligibility Audit
 
 - [x] C004 checkpoint, `develop/V004`, clean resume és C004 actual code path auditálva; full regression nélkül.

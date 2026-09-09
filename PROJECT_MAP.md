@@ -270,6 +270,14 @@
 - `test-artifacts/V004-C004.1/`: live output eligibility, validation és target-summary evidence.
 - `docs/V004_C004_1_REVISION_OUTPUT_ELIGIBILITY_AUDIT.md`: actual deviation, repair, exact revisionteszt és live blocker riport.
 
+## V004-C004.2 production output semantics audit
+
+- `sPg Crafting List.html`: változatlan C004.1 runtime; API → normalized requirement → Card → allocation → UI → completion-gate source trace.
+- `tools/audit-v004-c0042-production-output-semantics.mjs`: 1606 blueprint/4217 ingredient unit audit, négy kategóriás detail/nested/linked audit, OpenAPI és hivatalos source mapping.
+- `tools/validate-v004-c0042.ps1`: audit-only current-byte, fail-closed output semantics, single-file és V001/V002/V003 integritáskapu.
+- `test-artifacts/V004-C004.2/`: production output semantics evidence, target summary és rövid validation log.
+- `docs/V004_C004_2_PRODUCTION_OUTPUT_SEMANTICS_REPORT.md`: exact quantity és per-finished-item proofhatár, hat lebegőpontos source találat és live blocker riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

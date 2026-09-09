@@ -2,19 +2,18 @@
 
 ## Jelenlegi állapot
 
-- Branch `develop/V004`; C004 input `f7125a9...`; runtime `V004-dev`; DB `spg-crafting-list-v004` v1.
-- C004.1 implementation deviation javítva: partial Card completionnél membership/order változás nélkül a `craftListRevision` nem nő.
-- Chrome partial `21 → 16`: craft list `1 → 1`, Card revision `0 → 1`, inventory `1 → 2`, allocation `2 → 3`, history `0 → 1`; reservation `STALE`, explicit Reallocate kell.
-- Full completion: Card removal és craft list `1 → 2`; későbbi Card revision csak tényleges persisted order-változáskor nő.
-- Négy injected failure minden store-t és revisiont rollbackelt. Stale, idempotencia, History, prefix és 0-unit-loss semantics változatlanul PASS.
-- Live read-only API audit: `4.10.0-LIVE.12519617`, 1606 blueprint, 27/27 output-class detail, output-count candidate field `0`.
-- Production Card builder és stored/migrated default: `OUTPUT_COUNT_UNPROVEN`; exact production assignment `0`.
-- Live eredmény: `LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN`. Output count találgatás nincs.
-- Célzott model/static + Google Chrome + direct `file://`: PASS; console/page error `0`; full regression: NOT RUN BY SCOPE.
-- Single-file sidecar `0`, runtime file `1`; SHA-256 `0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764`.
-- V001/V002/V003/tag/artifact változatlan. History UI/Undo/Redo/Broadcast/C005: NOT IMPLEMENTED. Push: NO.
-- Riport: `docs/V004_C004_1_REVISION_OUTPUT_ELIGIBILITY_AUDIT.md`.
+- Branch `develop/V004`; C004.2 input `82d4814...`; runtime `V004-dev`; alkalmazás változatlan.
+- Production adatút auditálva: API index/detail → nested aspect input → `requiredQuantityUnits` → Card → allocation szorzás → UI → completion output gate.
+- Live Wiki `4.10.0-LIVE.12519617`: 1606 blueprint, 4217 ingredient; 3919 resource és 298 item quantity.
+- Négy eltérő output kategória detail/nested/linked item reprezentációja auditálva: Cargo, PowerPlant, WeaponGun, WeaponPersonal.
+- Output count/yield/cardinality mező nincs az indexben, detailben, nested/tier/linked adatban, OpenAPI-ban vagy a hivatalos API source mappingben.
+- Hat resource quantity raw JSON értéke `0.11000000000000001` vagy `3.0999999999999996`; 0-unit toleranciával ezek exact source-to-unit szemantikája sem bizonyított.
+- Production exact assignment `0`; új/régi/migrált Card `OUTPUT_COUNT_UNPROVEN`; count=1 következtetés nincs.
+- Full és partial live Craft Complete: `LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS`.
+- Célzott read-only audit, single-file/current-byte és protected V001/V002/V003 kapu: PASS; Chrome/full regression nem futott scope szerint.
+- Application SHA-256 `0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764`; C005 NOT STARTED; push NO.
+- Riport: `docs/V004_C004_2_PRODUCTION_OUTPUT_SEMANTICS_REPORT.md`.
 
-`V004-C004.1 – REVISION SEMANTICS PASS`
+`V004-C004.2 – PRODUCTION OUTPUT SEMANTICS UNPROVEN, LIVE CRAFT COMPLETE REMAINS BLOCKED`
 
-`LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN`
+`PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN | OUTPUT_COUNT_UNPROVEN`

@@ -419,6 +419,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c0041.ps1", "-PlaywrightModulePath", "<workspace Playwright index.mjs absolute path>"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v004-c0042-production-output-semantics-audit",
+      "level": "targeted-audit",
+      "description": "V004-C004.2 audit-only gate: trace live Wiki blueprint requirement quantities through normalized requiredQuantityUnits, Card multiplication and UI labels; inspect index/detail/nested/linked representations plus official OpenAPI and source mapping; preserve OUTPUT_COUNT_UNPROVEN and block full/partial production completion unless per-finished-item output semantics are actually proven. Application bytes, single-file runtime and V001/V002/V003 remain unchanged; no Chrome or full regression because runtime code is unchanged.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c0042.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

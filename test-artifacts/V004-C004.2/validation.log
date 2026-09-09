@@ -1,0 +1,19 @@
+V004-C004.2 production output semantics bounded audit
+production-output-semantics-read-only-audit=PASS
+V004_C0042_PRODUCTION_OUTPUT_SEMANTICS_AUDIT_PASS conclusion=PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN liveGate=LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS evidence=test-artifacts\V004-C004.2\production-output-semantics.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test-plan.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_AUDIT_OUTPUT_SEMANTICS_UNPROVEN
+conclusion=PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN
+liveCraftCompleteGate=LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS
+applicationSha256=0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+fullRegression=NOT_RUN_BY_SCOPE

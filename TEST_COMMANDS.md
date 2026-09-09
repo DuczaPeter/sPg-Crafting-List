@@ -935,3 +935,17 @@ node .\tools\audit-v004-c0041-output-eligibility.mjs
 ```
 
 A kapu a javított C004 céltesztet és Chrome/direct-file harnesst futtatja. Kötelező partial craft list +0/Card +1, full removal craft list +1, négy teljes rollback, stale Reallocate, current-byte evidence, 27 output-class live detail audit, exact production assignment 0 és V001/V002/V003 integritás. A live API audit csak GET kéréseket használ. Full regression és C005 nincs a scope-ban.
+
+V004-C004.2 production output semantics audit-only kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c0042.ps1"
+```
+
+Csak a read-only API/OpenAPI/hivatalos source és application data-flow audit:
+
+```powershell
+node .\tools\audit-v004-c0042-production-output-semantics.mjs
+```
+
+A kapu a C004.1 application SHA változatlanságát, a teljes live blueprint index ingredient-unit leképezését, négy output-kategória detail/nested/linked reprezentációit, a Wiki OpenAPI-t, a hivatalos API source mappinget és a production Card fail-closed assignmentet ellenőrzi. Kötelező eredmény: `PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN`, `OUTPUT_COUNT_UNPROVEN`, `LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS`. A jelenlegi hat nem-exact JSON `quantity_scu` találat eltűnése vagy új output-cardinality mező új szemantikai auditot igényel. Chrome/full regression és C005 nincs a scope-ban.

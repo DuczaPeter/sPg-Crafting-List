@@ -1,0 +1,858 @@
+{
+  "cycle": "V004-C004.2",
+  "status": "PASS_READ_ONLY_SEMANTIC_AUDIT",
+  "conclusion": "PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN",
+  "liveCraftCompleteGate": "LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS",
+  "productionCardOutputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+  "observedAt": "2026-09-09T19:40:41.310Z",
+  "inputCheckpoint": "82d4814afa2697ebc625f118dde57caa30e372f3",
+  "application": {
+    "runtimeIdentity": "V004-dev",
+    "sha256": "0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764",
+    "changedByAudit": false,
+    "trace": {
+      "scuConversion": {
+        "line": 6860,
+        "needle": "function toScuUnits(value)"
+      },
+      "indexNormalization": {
+        "line": 8682,
+        "needle": "function normalizeBlueprintIndex(raw, gameVersion, fetchedAt)"
+      },
+      "nestedAspectSelection": {
+        "line": 8713,
+        "needle": "function blueprintAspectCandidates(raw)"
+      },
+      "blueprintNormalization": {
+        "line": 8752,
+        "needle": "function normalizeBlueprint(raw, provenance)"
+      },
+      "sourceQuantitySelection": {
+        "line": 8769,
+        "needle": "var rawQuantity = hasScu ? Number(input.quantity_scu)"
+      },
+      "normalizedRequiredUnits": {
+        "line": 8822,
+        "needle": "requiredQuantityUnits: quantityUnits"
+      },
+      "allocationMultiplication": {
+        "line": 10026,
+        "needle": "perCraftUnits * craftQuantity"
+      },
+      "blueprintQuantityDisplay": {
+        "line": 16033,
+        "needle": "function formatRequirementQuantity(requirement)"
+      },
+      "cardBuild": {
+        "line": 16127,
+        "needle": "function buildCraftingCard(blueprint)"
+      },
+      "cardOneItemLabel": {
+        "line": 17486,
+        "needle": "[\"1 db-hoz\", formatInventoryUnits"
+      },
+      "cardRequestedItemsLabel": {
+        "line": 17487,
+        "needle": "[card.quantity + \" db-hoz\""
+      },
+      "completionOutputGate": {
+        "line": 12416,
+        "needle": "payload.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM"
+      }
+    },
+    "semantics": {
+      "apiDetailToNormalizedCard": "aspects.aspects[].input.quantity_scu|quantity -> requiredQuantityUnits -> Card requirement",
+      "allocationFormula": "requiredQuantityUnits * card.quantity",
+      "uiLabels": [
+        "1 db-hoz",
+        "<card.quantity> db-hoz"
+      ],
+      "uiLabelsAreSourceProof": false,
+      "exactProductionAssignmentCount": 0,
+      "newCardDefault": "OUTPUT_COUNT_UNPROVEN",
+      "storedOrMigratedCardDefault": "OUTPUT_COUNT_UNPROVEN"
+    }
+  },
+  "liveApi": {
+    "source": "https://api.star-citizen.wiki/api/blueprints",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "defaultVersionHttpStatus": 200,
+    "indexHttpStatus": 200,
+    "indexRecords": 1606,
+    "indexPages": 9,
+    "ingredientQuantitiesAudited": 4217,
+    "resourceIngredientQuantitiesAudited": 3919,
+    "itemIngredientQuantitiesAudited": 298,
+    "maximumObservedScuDecimalPlaces": 17,
+    "nonExactQuantityConversions": [
+      {
+        "blueprintUuid": "5af6beb3-4030-4a32-bb77-2a9b729483f5",
+        "outputName": "Steadfast",
+        "ingredient": {
+          "name": "Laranite",
+          "kind": "resource",
+          "resource_type_uuid": "7f4599b0-a2b2-4178-8c7e-13292054ab20",
+          "item_uuid": null,
+          "quantity_scu": 0.11000000000000001,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/7b7178c1-b0f0-4760-89de-9a3e3851e7a8?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/7b7178c1-b0f0-4760-89de-9a3e3851e7a8?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 0.11000000000000001,
+          "literal": "0.11000000000000001",
+          "fractionalDigits": 17,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 1100,
+          "roundedAwayDecimalDigits": 1,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      },
+      {
+        "blueprintUuid": "7a18b345-06c7-40be-b0ac-b7177307ab21",
+        "outputName": "DuraJet",
+        "ingredient": {
+          "name": "Silicon",
+          "kind": "resource",
+          "resource_type_uuid": "7bbd3197-a6e1-49b3-a495-0b7ef4f8ce40",
+          "item_uuid": null,
+          "quantity_scu": 0.11000000000000001,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/d137b905-b3bc-4721-a790-830499263c0c?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/d137b905-b3bc-4721-a790-830499263c0c?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 0.11000000000000001,
+          "literal": "0.11000000000000001",
+          "fractionalDigits": 17,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 1100,
+          "roundedAwayDecimalDigits": 1,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      },
+      {
+        "blueprintUuid": "6bb290c1-49d4-418c-a97e-4f6c0d09929e",
+        "outputName": "Radix",
+        "ingredient": {
+          "name": "Silicon",
+          "kind": "resource",
+          "resource_type_uuid": "7bbd3197-a6e1-49b3-a495-0b7ef4f8ce40",
+          "item_uuid": null,
+          "quantity_scu": 0.11000000000000001,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/d137b905-b3bc-4721-a790-830499263c0c?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/d137b905-b3bc-4721-a790-830499263c0c?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 0.11000000000000001,
+          "literal": "0.11000000000000001",
+          "fractionalDigits": 17,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 1100,
+          "roundedAwayDecimalDigits": 1,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      },
+      {
+        "blueprintUuid": "feb14c78-6068-4436-8bea-0027a6b36480",
+        "outputName": "Parapet",
+        "ingredient": {
+          "name": "Riccite",
+          "kind": "resource",
+          "resource_type_uuid": "86d00bd8-08f7-4231-b375-a609803fc46d",
+          "item_uuid": null,
+          "quantity_scu": 3.0999999999999996,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/c3697191-8ad0-43a9-af7a-29c0ad58de34?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/c3697191-8ad0-43a9-af7a-29c0ad58de34?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 3.0999999999999996,
+          "literal": "3.0999999999999996",
+          "fractionalDigits": 16,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 31000,
+          "roundedAwayDecimalDigits": 12,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      },
+      {
+        "blueprintUuid": "db6460d8-273e-4fe3-bf57-a02a61e7a3e2",
+        "outputName": "FR-86",
+        "ingredient": {
+          "name": "Stileron",
+          "kind": "resource",
+          "resource_type_uuid": "8cd317a3-df9b-4315-8ac3-0f1fca42dfd4",
+          "item_uuid": null,
+          "quantity_scu": 3.0999999999999996,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/32bafbd4-c52a-476d-b31c-97c4b3102471?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 3.0999999999999996,
+          "literal": "3.0999999999999996",
+          "fractionalDigits": 16,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 31000,
+          "roundedAwayDecimalDigits": 12,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      },
+      {
+        "blueprintUuid": "dd81d455-8f3d-4552-9082-98de9333991f",
+        "outputName": "FullBlock",
+        "ingredient": {
+          "name": "Lindinium",
+          "kind": "resource",
+          "resource_type_uuid": "392b4dca-449a-4d4d-8fef-beab024d9ee7",
+          "item_uuid": null,
+          "quantity_scu": 3.0999999999999996,
+          "quantity": null,
+          "link": "https://api.star-citizen.wiki/api/commodities/87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f?version=4.10.0-LIVE.12519617",
+          "web_url": "https://api.star-citizen.wiki/commodities/87327e0c-86a7-4c6b-82c3-d0c8fe6bf15f?version=4.10.0-LIVE.12519617"
+        },
+        "conversion": {
+          "kind": "resource",
+          "unit": "SCU",
+          "rawValue": 3.0999999999999996,
+          "literal": "3.0999999999999996",
+          "fractionalDigits": 16,
+          "exact": false,
+          "exactUnits": null,
+          "runtimeMathRoundUnits": 31000,
+          "roundedAwayDecimalDigits": 12,
+          "reason": "MORE_THAN_FOUR_DECIMALS"
+        }
+      }
+    ],
+    "indexOutputCardinalityCandidates": [],
+    "sampleCategories": [
+      "Cargo",
+      "PowerPlant",
+      "WeaponGun",
+      "WeaponPersonal"
+    ],
+    "sampleDetails": [
+      {
+        "blueprintUuid": "00eabb01-d628-49f5-a1f6-7c9df4ad9259",
+        "outputUuid": "1afc0022-b8fc-4174-8687-6dfc5b744b98",
+        "outputName": "TH-01 Propulsor",
+        "outputType": "Cargo",
+        "detailHttpStatus": 200,
+        "linkedItemHttpStatus": 200,
+        "linkedItemBlueprintEmbedded": true,
+        "outputCardinalityCandidates": {
+          "blueprintDetail": [],
+          "linkedItemAndEmbeddedBlueprint": []
+        },
+        "normalizedRequirements": [
+          {
+            "aspectIndex": 0,
+            "slotKey": "FRAME",
+            "slotName": "Frame",
+            "ingredientUuid": "48c7080a-bbef-43d2-901a-698321ed4340",
+            "ingredientName": "Aluminum",
+            "unit": "SCU",
+            "rawValue": 0.05,
+            "normalizedRequiredQuantityUnits": 500,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[0]",
+                "quantityScu": 0.05,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[0]",
+                "quantityScu": 0.025,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[0].children.[0]",
+                "quantityScu": 0.05,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[0].input",
+                "quantityScu": 0.05,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[0].children.[0]",
+                "quantityScu": 0.05,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 500
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 1000
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 2500
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "blueprintUuid": "cb32c252-45b9-43d0-b1bf-f2755c2f320f",
+        "outputUuid": "c7c3faeb-1d23-410d-9f75-8b36fd0d58ba",
+        "outputName": "LumaCore",
+        "outputType": "PowerPlant",
+        "detailHttpStatus": 200,
+        "linkedItemHttpStatus": 200,
+        "linkedItemBlueprintEmbedded": true,
+        "outputCardinalityCandidates": {
+          "blueprintDetail": [],
+          "linkedItemAndEmbeddedBlueprint": []
+        },
+        "normalizedRequirements": [
+          {
+            "aspectIndex": 0,
+            "slotKey": "SHELL",
+            "slotName": "Shell",
+            "ingredientUuid": "33bff393-42f1-4f70-85a1-71e695ed2a5a",
+            "ingredientName": "Borase",
+            "unit": "SCU",
+            "rawValue": 0.35,
+            "normalizedRequiredQuantityUnits": 3500,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[0]",
+                "quantityScu": 0.35,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[1]",
+                "quantityScu": 0.175,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[0].children.[0]",
+                "quantityScu": 0.35,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[0].input",
+                "quantityScu": 0.35,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[0].children.[0]",
+                "quantityScu": 0.35,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 3500
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 7000
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 17500
+              }
+            ]
+          },
+          {
+            "aspectIndex": 1,
+            "slotKey": "VOLTAGE REGULATOR",
+            "slotName": "Voltage Regulator",
+            "ingredientUuid": "7f4599b0-a2b2-4178-8c7e-13292054ab20",
+            "ingredientName": "Laranite",
+            "unit": "SCU",
+            "rawValue": 0.14,
+            "normalizedRequiredQuantityUnits": 1400,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[1]",
+                "quantityScu": 0.14,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[2]",
+                "quantityScu": 0.07,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[1].children.[0]",
+                "quantityScu": 0.14,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[1].input",
+                "quantityScu": 0.14,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[1].children.[0]",
+                "quantityScu": 0.14,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 1400
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 2800
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 7000
+              }
+            ]
+          },
+          {
+            "aspectIndex": 2,
+            "slotKey": "STATOR CORES",
+            "slotName": "Stator Cores",
+            "ingredientUuid": "93c8b7df-d6ac-4b4f-a115-b0e3afc238b8",
+            "ingredientName": "Beryl",
+            "unit": "SCU",
+            "rawValue": 0.24,
+            "normalizedRequiredQuantityUnits": 2400,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[2]",
+                "quantityScu": 0.24,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[0]",
+                "quantityScu": 0.12,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[2].children.[0]",
+                "quantityScu": 0.24,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[2].input",
+                "quantityScu": 0.24,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[2].children.[0]",
+                "quantityScu": 0.24,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 2400
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 4800
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 12000
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "blueprintUuid": "280f47b7-8434-410c-b854-380768fdccec",
+        "outputUuid": "26838ca7-418a-47d2-8429-7339ebbb8993",
+        "outputName": "Omnisky III Cannon",
+        "outputType": "WeaponGun",
+        "detailHttpStatus": 200,
+        "linkedItemHttpStatus": 200,
+        "linkedItemBlueprintEmbedded": true,
+        "outputCardinalityCandidates": {
+          "blueprintDetail": [],
+          "linkedItemAndEmbeddedBlueprint": []
+        },
+        "normalizedRequirements": [
+          {
+            "aspectIndex": 0,
+            "slotKey": "FRAME",
+            "slotName": "Frame",
+            "ingredientUuid": "dc6fbcbb-5990-4ed5-82ee-93152dab7845",
+            "ingredientName": "Agricium",
+            "unit": "SCU",
+            "rawValue": 0.36,
+            "normalizedRequiredQuantityUnits": 3600,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[0]",
+                "quantityScu": 0.36,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[0]",
+                "quantityScu": 0.18,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[0].children.[0]",
+                "quantityScu": 0.36,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[0].input",
+                "quantityScu": 0.36,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[0].children.[0]",
+                "quantityScu": 0.36,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 3600
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 7200
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 18000
+              }
+            ]
+          },
+          {
+            "aspectIndex": 1,
+            "slotKey": "EMITTER",
+            "slotName": "Emitter",
+            "ingredientUuid": "125dd723-95ad-488d-830f-62c954445ca1",
+            "ingredientName": "Hadanite",
+            "unit": "ITEM",
+            "rawValue": 7,
+            "normalizedRequiredQuantityUnits": 7,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[1]",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "requirement_groups.[1].children.[0]",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "aspects.aspects.[1].input",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "tiers.[0].requirements.children.[1].children.[0]",
+                "quantityScu": null,
+                "quantity": 7
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 7
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 14
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 35
+              }
+            ]
+          },
+          {
+            "aspectIndex": 2,
+            "slotKey": "APERTURE IRIS",
+            "slotName": "Aperture Iris",
+            "ingredientUuid": "20094ded-ad04-46a3-b734-9e37aa3154b3",
+            "ingredientName": "Dolivine",
+            "unit": "ITEM",
+            "rawValue": 7,
+            "normalizedRequiredQuantityUnits": 7,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[2]",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "requirement_groups.[2].children.[0]",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "aspects.aspects.[2].input",
+                "quantityScu": null,
+                "quantity": 7
+              },
+              {
+                "path": "tiers.[0].requirements.children.[2].children.[0]",
+                "quantityScu": null,
+                "quantity": 7
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 7
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 14
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 35
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "blueprintUuid": "b2857c9f-e7ca-4e6f-9071-d352a58383d4",
+        "outputUuid": "e302c7ae-b850-412d-983e-36dbf04f98fe",
+        "outputName": "Vendetta HMG",
+        "outputType": "WeaponPersonal",
+        "detailHttpStatus": 200,
+        "linkedItemHttpStatus": 200,
+        "linkedItemBlueprintEmbedded": true,
+        "outputCardinalityCandidates": {
+          "blueprintDetail": [],
+          "linkedItemAndEmbeddedBlueprint": []
+        },
+        "normalizedRequirements": [
+          {
+            "aspectIndex": 0,
+            "slotKey": "FRAME",
+            "slotName": "Frame",
+            "ingredientUuid": "86d00bd8-08f7-4231-b375-a609803fc46d",
+            "ingredientName": "Riccite",
+            "unit": "SCU",
+            "rawValue": 0.15,
+            "normalizedRequiredQuantityUnits": 1500,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[0]",
+                "quantityScu": 0.15,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[0].children.[0]",
+                "quantityScu": 0.15,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[0].input",
+                "quantityScu": 0.15,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[0].children.[0]",
+                "quantityScu": 0.15,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 1500
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 3000
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 7500
+              }
+            ]
+          },
+          {
+            "aspectIndex": 1,
+            "slotKey": "BARRELS",
+            "slotName": "Barrels",
+            "ingredientUuid": "60f116f4-c02a-45b2-9ded-333747795124",
+            "ingredientName": "Tungsten",
+            "unit": "SCU",
+            "rawValue": 0.08,
+            "normalizedRequiredQuantityUnits": 800,
+            "decimalConversionExactWithZeroRoundedAwayDigits": true,
+            "representationPaths": [
+              {
+                "path": "ingredients.[1]",
+                "quantityScu": 0.08,
+                "quantity": null
+              },
+              {
+                "path": "dismantle_returns.[0]",
+                "quantityScu": 0.04,
+                "quantity": null
+              },
+              {
+                "path": "requirement_groups.[1].children.[0]",
+                "quantityScu": 0.08,
+                "quantity": null
+              },
+              {
+                "path": "aspects.aspects.[1].input",
+                "quantityScu": 0.08,
+                "quantity": null
+              },
+              {
+                "path": "tiers.[0].requirements.children.[1].children.[0]",
+                "quantityScu": 0.08,
+                "quantity": null
+              }
+            ],
+            "cardQuantityMultiplication": [
+              {
+                "cardQuantity": 1,
+                "requiredUnits": 800
+              },
+              {
+                "cardQuantity": 2,
+                "requiredUnits": 1600
+              },
+              {
+                "cardQuantity": 5,
+                "requiredUnits": 4000
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "officialOpenApi": {
+    "url": "https://api.star-citizen.wiki/api/openapi",
+    "httpStatus": 200,
+    "sha256": "8b259bb9a44c1355e87228f1708a2913ad2d80298dce7d3da2c0ee984498a589",
+    "blueprintOutputFields": [
+      "uuid",
+      "name",
+      "class",
+      "type",
+      "type_label",
+      "sub_type",
+      "subtype",
+      "grade",
+      "item_web_url"
+    ],
+    "outputCardinalityFields": [],
+    "requirementQuantityDescriptionsPresent": true,
+    "ingredientDescription": "Ingredients required to craft the item",
+    "singularWordingTreatedAsOutputCountProof": false
+  },
+  "officialSource": {
+    "repository": "https://github.com/StarCitizenWiki/API",
+    "branch": "develop",
+    "commit": "3cd0f1a0c17674d751345bb07e1f3eeabf18bc74",
+    "commitDate": "2026-09-09T13:50:19Z",
+    "commitSubject": "nit: run pint",
+    "files": [
+      {
+        "sourcePath": "app/Console/Commands/Game/ImportBlueprints.php",
+        "rawUrl": "https://raw.githubusercontent.com/StarCitizenWiki/API/3cd0f1a0c17674d751345bb07e1f3eeabf18bc74/app/Console/Commands/Game/ImportBlueprints.php",
+        "httpStatus": 200,
+        "sha256": "852fea551c1c93f439d2640ce9ffa355dfbfb41fd08b2e1f198d77cc1a6d45a7"
+      },
+      {
+        "sourcePath": "app/Http/Resources/Game/Blueprint/BlueprintResource.php",
+        "rawUrl": "https://raw.githubusercontent.com/StarCitizenWiki/API/3cd0f1a0c17674d751345bb07e1f3eeabf18bc74/app/Http/Resources/Game/Blueprint/BlueprintResource.php",
+        "httpStatus": 200,
+        "sha256": "f7356f45d0da2077e385802a1cc2cecbd559ae103a5e355ef738c27c032d878e"
+      },
+      {
+        "sourcePath": "app/Http/Resources/Game/Blueprint/BlueprintRequirementNormalizer.php",
+        "rawUrl": "https://raw.githubusercontent.com/StarCitizenWiki/API/3cd0f1a0c17674d751345bb07e1f3eeabf18bc74/app/Http/Resources/Game/Blueprint/BlueprintRequirementNormalizer.php",
+        "httpStatus": 200,
+        "sha256": "5d819d87772808b245750540503bcd7aa6a33e138c84d93e86076c84ad8b9ebc"
+      }
+    ],
+    "outputPayloadFields": [
+      "uuid",
+      "name",
+      "class",
+      "type",
+      "type_label",
+      "sub_type",
+      "subtype",
+      "grade",
+      "item_web_url"
+    ],
+    "outputCardinalityMatches": [],
+    "importerMapping": "raw Output.UUID/Name/Class plus complete raw payload; no explicit output cardinality mapping",
+    "resourceMapping": "outputPayload exposes identity/type/grade/link only; requirement normalizer exposes quantity and quantity_scu"
+  },
+  "semanticDecision": {
+    "sourceRequirementQuantityConversionExactForCurrentDataset": false,
+    "perFinishedItemNormalizationProven": false,
+    "outputCountOrYieldFieldFound": false,
+    "documentedUniversalOneOutputInvariantFound": false,
+    "outputCountDefaultedToOne": false,
+    "promotedProductionCardClasses": [],
+    "fullCompletionAllowedForProductionCards": false,
+    "partialCompletionAllowedForProductionCards": false,
+    "oldOrMigratedCardsRemainBlockedWithoutProof": true
+  },
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "localScriptSources": [],
+    "localStylesheets": [],
+    "localRuntimeSidecars": 0,
+    "applicationRuntimeFileCount": 1
+  },
+  "safety": {
+    "methods": [
+      "GET"
+    ],
+    "remoteWrites": 0,
+    "applicationWrites": 0,
+    "fullRegression": "NOT_RUN_BY_SCOPE",
+    "browserGate": "NOT_RUN_AUDIT_ONLY_APPLICATION_BYTES_UNCHANGED",
+    "c005": "NOT_STARTED"
+  }
+}

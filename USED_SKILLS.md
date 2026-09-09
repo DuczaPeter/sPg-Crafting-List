@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C004.2 Production Output Semantics Audit
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a C004.1 checkpoint bounded resume, production data-flow audit, read-only live API/OpenAPI és hivatalos GitHub source mapping, célzott validator és helyi checkpoint során.
+- Mire segített: a runtime módosítás és full regression elkerülésére, exact input SHA/protected release védelemre, minimális source-olvasásra és hitelesített hivatalos repository hozzáférésre.
+- Mely fájlokat vagy döntéseket érintett: C004.2 audit tooling/evidence/report/meta és a fail-closed production output semantics döntés; alkalmazás HTML, skillfájl, C005 és V001–V003 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C004.1 Revision Semantics + Output Eligibility Audit
 
 - Skill neve: `credit-efficient-project-runner`.
