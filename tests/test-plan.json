@@ -395,6 +395,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c002.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v004-c003-revision-reservation-snapshot-infrastructure",
+      "level": "targeted-regression",
+      "description": "V004-C003 gate: exact durable global/per-card revisions and atomic rollback, runtime-only canonical SHA-256 reservation snapshots, VALID/STALE/BLOCKED and explicit Reallocate, visible-reservation MAX/partial prefix, output/hash fail-closed blockers, Chrome startup/mutations/reload/direct-file evidence, and frozen V001/V002/V003 integrity; no Craft Complete, deduction, History event or Undo.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c003.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

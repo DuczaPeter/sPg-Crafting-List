@@ -244,6 +244,15 @@
 - `tests/fixtures/v004-c002-v003-migration.json`: exact 1/200 unit V003 User Data és live output-count schema-evidence.
 - `docs/V004_C002_DATABASE_SCHEMA_MIGRATION_REPORT.md`: V004 DB/store/meta/history, read-only V003 migráció, schema-3 backup, teszt és rollback riport.
 
+## V004-C003 revision és reservation snapshot infrastructure
+
+- `tests/fixtures/v004-c003-reservation.json`: exact integer-unit, többbatch-es, Quality- és sorrendérzékeny canonical reservation fixture.
+- `tools/run-v004-c003-tests.mjs`: revision/import/overflow, canonical payload/hash, visible-reservation MAX/prefix és fail-closed célteszt.
+- `tools/run-v004-c003-browser-tests.mjs`: valódi Chrome startup, mutation increment, stale/Reallocate, output blocker, rollback, reload és direct `file://` célkapu.
+- `tools/validate-v004-c003.ps1`: bounded C003 validator, single-file és V001/V002/V003 integritáskapu.
+- `test-artifacts/V004-C003/`: model-, Chrome-, validation- és target-summary evidence.
+- `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`: C003 kontraktus, scope, tesztek és rollback riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

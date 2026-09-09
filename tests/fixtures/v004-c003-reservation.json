@@ -1,0 +1,142 @@
+{
+  "revisions": {
+    "inventoryRevision": 4,
+    "craftListRevision": 2,
+    "allocationRevision": 7
+  },
+  "card": {
+    "id": "card-c003-alpha",
+    "order": 0,
+    "cardRevision": 3,
+    "active": true,
+    "collapsed": false,
+    "quantity": 5,
+    "blueprintUuid": "blueprint-c003-alpha",
+    "blueprintCacheKey": "4.10.0-LIVE.TEST::blueprint-c003-alpha",
+    "gameVersion": "4.10.0-LIVE.TEST",
+    "outputUuid": "output-c003-alpha",
+    "outputName": "Display label is not identity",
+    "outputCountEvidence": "PER_FINISHED_ITEM_NORMALIZED_EXACT",
+    "requirements": [
+      {
+        "id": "slot-alpha",
+        "aspectIndex": 0,
+        "ingredientUuid": "ingredient-alpha",
+        "commodityUuid": "material-alpha",
+        "materialName": "Material Alpha display",
+        "requiredQuantityUnits": 10,
+        "unit": "SCU",
+        "qualityCapability": "DYNAMIC"
+      },
+      {
+        "id": "slot-beta",
+        "aspectIndex": 1,
+        "ingredientUuid": "ingredient-beta",
+        "commodityUuid": "material-beta",
+        "materialName": "Material Beta display",
+        "requiredQuantityUnits": 15,
+        "unit": "SCU",
+        "qualityCapability": "FIXED"
+      }
+    ],
+    "slotStrategies": {
+      "slot-alpha": {
+        "mode": "HIGHEST_Q",
+        "targetQuality": 850
+      }
+    },
+    "recipeSlotQualityPoolAssignments": {
+      "slot-alpha": "MINIMUM_Q_POOL"
+    }
+  },
+  "batches": [
+    {
+      "id": "batch-alpha-first",
+      "materialUuid": "material-alpha",
+      "sourceMaterialUuid": "ingredient-alpha",
+      "materialName": "Material Alpha display",
+      "quality": 700,
+      "quantityUnits": 30,
+      "unit": "SCU",
+      "createdAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "batch-alpha-second",
+      "materialUuid": "material-alpha",
+      "sourceMaterialUuid": "ingredient-alpha",
+      "materialName": "Material Alpha display",
+      "quality": 800,
+      "quantityUnits": 40,
+      "unit": "SCU",
+      "createdAt": "2026-09-09T00:00:01.000Z"
+    },
+    {
+      "id": "batch-beta",
+      "materialUuid": "material-beta",
+      "sourceMaterialUuid": "ingredient-beta",
+      "materialName": "Material Beta display",
+      "quality": null,
+      "quantityUnits": 75,
+      "unit": "SCU",
+      "createdAt": "2026-09-09T00:00:02.000Z"
+    }
+  ],
+  "cardResult": {
+    "cardId": "card-c003-alpha",
+    "order": 0,
+    "requestedQuantity": 5,
+    "satisfied": true,
+    "requirements": [
+      {
+        "recipeSlotId": "slot-alpha",
+        "ingredientUuid": "ingredient-alpha",
+        "canonicalMaterialUuid": "material-alpha",
+        "unit": "SCU",
+        "effectiveRule": "TARGET_Q",
+        "allocationStrategy": "LOWEST_QUALITY_AT_OR_ABOVE_MINIMUM",
+        "recipePoolAssignmentMode": "MINIMUM_Q_POOL",
+        "recipePoolAssignmentOrigin": "EXPLICIT_CARD_ASSIGNMENT",
+        "recipePoolThreshold": 500,
+        "recipePoolResolutionStatus": "RESOLVED",
+        "requiredUnits": 50,
+        "allocatedUnits": 50,
+        "status": "SATISFIED",
+        "satisfied": true,
+        "allocatedBatches": [
+          {
+            "batchId": "batch-alpha-first",
+            "quality": 700,
+            "allocatedUnits": 30,
+            "reason": "LOWEST_QUALITY_AT_OR_ABOVE_TARGET"
+          },
+          {
+            "batchId": "batch-alpha-second",
+            "quality": 800,
+            "allocatedUnits": 20,
+            "reason": "LOWEST_QUALITY_AT_OR_ABOVE_TARGET"
+          }
+        ]
+      },
+      {
+        "recipeSlotId": "slot-beta",
+        "ingredientUuid": "ingredient-beta",
+        "canonicalMaterialUuid": "material-beta",
+        "unit": "SCU",
+        "effectiveRule": "FIXED",
+        "allocationStrategy": "ANY_QUALITY",
+        "requiredUnits": 75,
+        "allocatedUnits": 75,
+        "status": "SATISFIED",
+        "satisfied": true,
+        "allocatedBatches": [
+          {
+            "batchId": "batch-beta",
+            "quality": null,
+            "allocatedUnits": 75,
+            "reason": "ANY_QUALITY"
+          }
+        ]
+      }
+    ]
+  }
+}

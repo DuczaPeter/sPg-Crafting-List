@@ -891,3 +891,19 @@ node .\tools\run-v004-c002-tests.mjs
 A célzott Google Chrome-kapu a `tools/run-v004-c002-browser-tests.mjs` runnerrel és a workspace dependency loader által visszaadott Playwright `index.mjs` abszolút útvonalával futtatható. A modul nem runtime dependency és nem része a kiadási HTML-nek; gépfüggő elérési utat nem rögzítünk a projektben.
 
 A kapu ellenőrzi a V004-dev identityt, a külön IndexedDB v1 topology-t, a read-only V003 migrációt, a kötelező backup/megerősítés sorrendet, az SHA-256 replay-védelmet, az exact integer-unit másolást, az atomi rollbacket, a schema-3 backup-alapot, a célzott Chrome startup/refresh/file működést és a V001/V002/V003 integritást. Craft Complete, Undo és teljes release-regresszió nem része a C002 scope-nak.
+
+V004-C003 revision és reservation snapshot infrastructure kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c003.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Csak a determinisztikus modell- és static teszt:
+
+```powershell
+node .\tools\run-v004-c003-tests.mjs
+```
+
+A célzott Google Chrome-runner: `tools/run-v004-c003-browser-tests.mjs`. A Playwright útvonalát a Codex workspace dependency loader adja; gépfüggő abszolút útvonal nem kerül Gitbe.
+
+A kapu bizonyítja a 0-ról induló és szemantikai mutationönként pontosan eggyel növekvő revisionöket, a presentation-only collapse +0 szabályát, az atomi rollbacket, a canonical Web Crypto SHA-256 reservationt, a batch/Quality/sorrend/mennyiség/revision hash-érzékenységet, a `VALID`/`STALE`/`BLOCKED` állapotot, az explicit Reallocate utat, a visible-reservation MAX/prefix modellt, az output/hash blocker viselkedést, a reload stale állapotot és a direct `file://` futást. Craft Complete, inventory deduction, partial completion execution, History event, Undo, BroadcastChannel és teljes release-regresszió nem része a C003 scope-nak.

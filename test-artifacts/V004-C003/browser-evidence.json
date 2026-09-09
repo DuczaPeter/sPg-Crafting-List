@@ -1,0 +1,175 @@
+{
+  "cycle": "V004-C003",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "30cc7b37246005c916a87f1c75f0f619579287fdd702bc87f948f8e6ecc027ee",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:62714",
+  "startup": {
+    "status": "PASS",
+    "app": {
+      "name": "sPg Crafting List",
+      "version": "V004-dev",
+      "schemaVersion": 7,
+      "cacheSchemaVersion": 4,
+      "dbName": "spg-crafting-list-v004",
+      "dbVersion": 1,
+      "apiBase": "https://api.star-citizen.wiki/api",
+      "uexRefineryEndpoint": "https://api.uexcorp.uk/2.0/refineries_yields",
+      "uexRefineryTtlMs": 86400000,
+      "uexRefineryDocumentedLimit": 500,
+      "sessionLogKey": "spgCraftingList.sessionLog.v1",
+      "maxLogProcesses": 30,
+      "maxLogBytes": 240000,
+      "requestTimeoutMs": 20000,
+      "blueprintPageSize": 200,
+      "maxBlueprintPages": 100,
+      "miningPageSize": 200,
+      "maxMiningPages": 20,
+      "backupFormat": "spg-crafting-list-backup",
+      "backupSchemaVersion": 3
+    },
+    "revisions": {
+      "inventoryRevision": 0,
+      "craftListRevision": 0,
+      "allocationRevision": 0
+    },
+    "cards": 0,
+    "batches": 0,
+    "reservationRunStatus": "ABSENT",
+    "baseUi": {
+      "moduleNavButtons": 8,
+      "applicationStatus": "V004-dev · schema 7",
+      "blueprintBrowserVisible": true
+    }
+  },
+  "revisionMutations": [
+    {
+      "action": "seed cards then inventory",
+      "revisions": {
+        "inventoryRevision": 1,
+        "craftListRevision": 1,
+        "allocationRevision": 2
+      }
+    },
+    {
+      "action": "output evidence invalidated",
+      "revisions": {
+        "inventoryRevision": 1,
+        "craftListRevision": 1,
+        "allocationRevision": 3
+      },
+      "cardRevision": 1
+    },
+    {
+      "action": "output evidence restored",
+      "revisions": {
+        "inventoryRevision": 1,
+        "craftListRevision": 1,
+        "allocationRevision": 4
+      },
+      "cardRevision": 2
+    },
+    {
+      "action": "inventory edit",
+      "revisions": {
+        "inventoryRevision": 2,
+        "craftListRevision": 1,
+        "allocationRevision": 5
+      }
+    },
+    {
+      "action": "card quantity edit",
+      "revisions": {
+        "inventoryRevision": 2,
+        "craftListRevision": 1,
+        "allocationRevision": 6
+      },
+      "cardRevision": 1
+    },
+    {
+      "action": "presentation-only collapse",
+      "revisions": {
+        "inventoryRevision": 2,
+        "craftListRevision": 1,
+        "allocationRevision": 6
+      },
+      "increment": 0,
+      "snapshotsRemainValid": true
+    },
+    {
+      "action": "card reorder",
+      "revisions": {
+        "inventoryRevision": 2,
+        "craftListRevision": 2,
+        "allocationRevision": 7
+      },
+      "cardRevisions": [
+        {
+          "id": "card-browser-b",
+          "cardRevision": 3
+        },
+        {
+          "id": "card-browser-a",
+          "cardRevision": 2
+        }
+      ]
+    }
+  ],
+  "reservation": {
+    "initialValid": {
+      "status": "PASS",
+      "hashes": {
+        "card-browser-a": "c1a1ba1879b45f0ff89fe44e13234cd919506328b046af2f6c391268c9570b90",
+        "card-browser-b": "be90fb0e48fe91efe75fe83a0bb51941d1b21a56045e013b73e21dbedc680136"
+      },
+      "maxCompletableQuantities": [
+        5,
+        2
+      ]
+    },
+    "outputCountBlocker": {
+      "status": "PASS",
+      "capability": {
+        "status": "BLOCKED",
+        "maxCompletableQuantity": 0,
+        "remainingQuantity": 2,
+        "blockerReason": "OUTPUT_COUNT_UNPROVEN"
+      }
+    },
+    "afterReorder": {
+      "status": "PASS",
+      "order": [
+        "card-browser-b",
+        "card-browser-a"
+      ],
+      "hashes": [
+        "b84eaab9ac0ab482ecdab554364ccaf5ca7067ca312f1d7c4fd7ea42192f59c3",
+        "a07004f678e933399eb5ae2bca461da249ce17b6c030ed2e36011dc6db665e6a"
+      ]
+    }
+  },
+  "atomicRollback": {
+    "status": "PASS",
+    "failureCode": "SIMULATED_REVISION_MUTATION_ABORT",
+    "batchAndInventoryRecordsUnchanged": true,
+    "recordsUnchanged": true,
+    "revisionsUnchanged": true
+  },
+  "reloadGate": {
+    "status": "PASS",
+    "cardsRendered": 2,
+    "reservationStatus": "STALE",
+    "explicitReallocateRequired": true,
+    "reallocateAfterReload": "PASS"
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "dbName": "spg-crafting-list-v004",
+    "dbVersion": 1,
+    "reservationRunStatus": "ABSENT",
+    "sourceDbExists": false,
+    "consoleErrors": []
+  },
+  "applicationOriginConsoleErrors": []
+}

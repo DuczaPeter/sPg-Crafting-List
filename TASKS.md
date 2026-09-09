@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C003 Revision + Reservation Snapshot Infrastructure
+
+- [x] C002 checkpoint, clean `develop/V004`, Git-folyamat és hitelesített remote baseline ellenőrizve; `origin/main` nem mozdult.
+- [x] Három durable globális revision és per-card `cardRevision`; szemantikai mutation pontosan +1, collapse +0, overflow fail-closed.
+- [x] Inventory/Card/quality/import/migration rekord- és revision-írás közös IndexedDB tranzakcióban; injected failure teljes rollback.
+- [x] Canonical runtime reservation payload és Web Crypto SHA-256 hash; szemantikai sorrend megmarad, display label nem identity.
+- [x] `VALID` / `STALE` / `BLOCKED`, startup/reload/import/migration stale és explicit `Újraszámítás / Reallocate` elkészült.
+- [x] MAX és partial prefix csak a látható reservation alapján; `OUTPUT_COUNT_UNPROVEN` és `HASH_UNAVAILABLE` blokkol.
+- [x] Célzott model/static + valódi Chrome mutation/Reallocate/reload/rollback/direct `file://` PASS, console/page error 0.
+- [x] V001/V002/V003/tag/artifact változatlan; Complete/deduction/partial execution/History/Undo/Broadcast nincs; full regression nem futott; push nincs.
+- [ ] V004-C004 csak új, explicit feladatban indulhat; C003 checkpoint után itt megállunk.
+
 ### V004-C002 Database/Schema + Safe V003 Migration Foundation
 
 - [x] C001 checkpoint, clean branch, Git-folyamat és hitelesített remote baseline ellenőrizve; `origin/main` nem mozdult.
@@ -12,7 +24,7 @@
 - [x] Exact 1/200 unit migráció, schema 1/2 → 3, History empty, single-file/runtime sidecar `0` PASS.
 - [x] Live Wiki blueprint output-count audit: `OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES`.
 - [x] V001/V002/V003/tag/artifact/evidence változatlan; Craft Complete és Undo nincs; full regression nem futott.
-- [ ] Következő külön ciklus: V004-C003 revision + reservation snapshot infrastructure.
+- [x] Következő külön ciklus: V004-C003 revision + reservation snapshot infrastructure elkészült.
 
 ### V004-C001 Craft Complete Architecture Audit
 

@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C003 Revision + Reservation Snapshot Infrastructure
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a megszakadt C003 dirty worktree biztonságos folytatása, authenticated remote fetch, célzott implementáció és checkpoint lezárása során.
+- Mire segített: a már elkészült munka megőrzése, bounded állapotbetöltés, full regression elkerülése, exact scope és protected release-védelem.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file revision/reservation runtime, C003 fixture/tools/evidence/report és projektmeta; skillfájl, V001–V003 release/tag/remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C002 Database/Schema + Safe V003 Migration Foundation
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

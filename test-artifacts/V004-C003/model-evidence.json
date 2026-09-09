@@ -1,0 +1,64 @@
+{
+  "cycle": "V004-C003",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "30cc7b37246005c916a87f1c75f0f619579287fdd702bc87f948f8e6ecc027ee",
+  "revision": {
+    "initial": {
+      "inventoryRevision": 0,
+      "craftListRevision": 0,
+      "allocationRevision": 0
+    },
+    "overflow": "V004_REVISION_OVERFLOW",
+    "importInventoryRevision": 1,
+    "importCraftListRevision": 1,
+    "importAllocationRevision": 1,
+    "importedCardRevision": 0
+  },
+  "reservation": {
+    "marker": "V004_RESERVATION_SNAPSHOT_1",
+    "sha256": "1ccc95762f4b9d8c9daa30d02a64c4116884a8f515b28257a4ad9b6251daa07b",
+    "deterministic": true,
+    "semanticArrayOrderPreserved": true,
+    "changeSensitivity": [
+      "batchQuantity",
+      "quality",
+      "batchOrder",
+      "allocatedUnits",
+      "cardQuantity",
+      "cardRevision",
+      "allocationRevision"
+    ],
+    "displayLabelsExcludedFromIdentity": true,
+    "cryptoUnavailable": "HASH_UNAVAILABLE"
+  },
+  "capability": {
+    "fullMax": 5,
+    "limitedVisibleReservationMax": 3,
+    "prefixBatchOrder": [
+      "batch-alpha-first",
+      "batch-alpha-second"
+    ],
+    "outputCountUnproven": "OUTPUT_COUNT_UNPROVEN",
+    "rounding": "FORBIDDEN"
+  },
+  "backup": {
+    "schemaVersion": 3,
+    "earlySchema3CardRevisionInitialization": 0
+  },
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJs": true,
+    "localScriptSrc": 0,
+    "localStylesheetDependency": 0,
+    "localRuntimeJsonDependency": 0,
+    "fixtureRuntimeImport": 0,
+    "localRuntimeSidecars": 0,
+    "applicationRuntimeFileCount": 1
+  },
+  "exclusions": {
+    "inventoryDeduction": "NOT_IMPLEMENTED",
+    "craftHistoryEvent": "NOT_IMPLEMENTED",
+    "undo": "NOT_IMPLEMENTED",
+    "broadcastChannel": "NOT_IMPLEMENTED"
+  }
+}

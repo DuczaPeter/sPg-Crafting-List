@@ -197,3 +197,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A kötelező migráció előtti biztonsági mentés schema 2 marad, hogy hű V003 User Data backup legyen. A normál V004 export schema 3, benne üres vagy később valós `craftHistory` és durable `userMeta`.
 - A direct migráció pristine célja csak üres User Data/History és pontosan négy 0 értékű revision meta; Game Data/cache és belső non-USER settings nem teszi dirtyvé.
 - Live `4.10.0-LIVE.12519617` blueprint auditban nincs bizonyított output-count mező: `OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES` a C004 prerequisite.
+
+## 2026-09-09 - V004 revision és reservation snapshot contract
+
+- `inventoryRevision`, `craftListRevision`, `allocationRevision` és `cardRevision` nemnegatív safe integer. Szemantikai mutation tranzakciónként pontosan egyet növel; overflow fail-closed blocker, timestamp nem revision.
+- Az érintett rekordok és revisionjeik ugyanabban az IndexedDB readwrite tranzakcióban íródnak. Részleges rekord- vagy revision-commit nem megengedett.
+- A reservation snapshot kizárólag runtime állapot: IndexedDB-be és backupba nem kerül. Startup, reload, import és migráció után a Card stale, explicit Reallocate szükséges.
+- A canonical payload szemantikai tömbsorrendet megőriz, objektumkulcsokat stabilan rendez, és a Card/revision/item/version/recipe slot/reserved batch exact evidence-et tartalmazza. Display label és collapse nem identity.
+- Hash kizárólag Web Crypto SHA-256, lowercase hex. Crypto hiányakor nincs gyengébb fallback: `HASH_UNAVAILABLE` és BLOCKED.
+- MAX és partial prefix csak a Cardon látható reservationből vezethető le; completion-time reallocation vagy más eligible batch fallback később sem engedélyezhető.

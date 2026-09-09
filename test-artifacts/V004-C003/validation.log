@@ -1,0 +1,26 @@
+V004-C003 targeted revision and reservation snapshot infrastructure validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS a2034a9d601676ca5b4eb7e433c7011939fd8aea0acc98b0e799fe9a017cb134 122474 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c003-targeted-model=PASS
+V004_C003_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C003\model-evidence.json
+c003-targeted-chrome=PASS
+V004_C003_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C003\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test-plan.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_REVISION_RESERVATION_SNAPSHOT_INFRASTRUCTURE
+applicationSha256=30cc7b37246005c916a87f1c75f0f619579287fdd702bc87f948f8e6ecc027ee
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+directFileGate=PASS_AUTOMATED
+fullRegression=NOT_RUN_BY_SCOPE

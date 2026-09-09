@@ -29,3 +29,16 @@ Current cycle/session notes only. Previous raw log archived losslessly at `logs/
 - Single-file runtime sidecar 0; V001/V002/V003/tag/artifact/evidence változatlan; Craft Complete/Undo nincs; push nincs.
 - Riport: `docs/V004_C002_DATABASE_SCHEMA_MIGRATION_REPORT.md`.
 - Visszaállás: a C002 checkpoint normál revertje; V003 és a release-ek nem igényelnek rollbacket.
+
+## 2026-09-09 — V004-C003 Revision + Reservation Snapshot Infrastructure
+
+- Baseline: clean `develop/V004 @ d773dc2...`; authenticated fetch után `origin/main 0a83e44...` változatlan; Git-folyamat nincs.
+- Durable globális és per-card revision készült, pontos szemantikai +1, presentation-only collapse +0, safe-integer overflow blockkal.
+- Inventory/Card/quality/import/migration revision és rekordírás közös tranzakcióban; injected failure rekordot és revisiont is teljesen rollbackel.
+- Runtime-only canonical reservation payload és Web Crypto SHA-256 hash készült; display label nem identity, szemantikai tömbsorrend megmarad.
+- `VALID`/`STALE`/`BLOCKED`, reload/import/migration stale és explicit `Újraszámítás / Reallocate` UI elkészült; snapshot nem perzisztálódik.
+- MAX és partial prefix kizárólag a látható reserved allocationt használja; output-count és crypto hiány fail-closed blocker.
+- Célzott model/static + valódi Chrome mutation/Reallocate/output blocker/rollback/reload/direct file PASS; console/page error 0; full regression nem futott.
+- Single-file runtime sidecar 0; V001/V002/V003/tag/artifact változatlan; Complete/deduction/History/Undo/Broadcast nincs; push nincs.
+- Riport: `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`.
+- Visszaállás: a C003 checkpoint normál revertje; V003 és a release-ek nem igényelnek rollbacket.

@@ -5485,6 +5485,56 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   font-weight: 800;
 }
 
+.spg-v004-reservation-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.spg-v004-reallocate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.spg-v004-reservation-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid rgba(156, 236, 255, 0.28);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(3, 12, 20, 0.72);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.spg-v004-reservation-status[data-status="VALID"] {
+  border-color: rgba(77, 218, 154, 0.55);
+  color: #9ff5c8;
+}
+
+.spg-v004-reservation-status[data-status="STALE"],
+.spg-v004-reservation-status[data-status="BLOCKED"] {
+  border-color: rgba(255, 166, 82, 0.55);
+  color: #ffd09c;
+}
+
+.spg-v004-reservation-reason {
+  overflow: hidden;
+  max-width: 270px;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .spg-crafting-card-list {
   width: 100%;
   max-width: 1040px;
@@ -6127,7 +6177,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         </div>
         <div class="spg-m2-heading-actions">
           <p class="spg-muted">A legfelső kártya foglal először. Az allocation csak terv, a készletet nem csökkenti véglegesen.</p>
-          <button id="addCurrentBlueprintButton" type="button" disabled>Aktuális blueprint hozzáadása (fallback)</button>
+          <div class="spg-v004-reallocate-actions">
+            <button id="reallocateCraftingListButton" type="button" disabled>Újraszámítás / Reallocate</button>
+            <button id="addCurrentBlueprintButton" type="button" disabled>Aktuális blueprint hozzáadása (fallback)</button>
+          </div>
         </div>
         <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
         <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
@@ -6567,6 +6620,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       craftingCards: [],
       craftHistory: [],
       userMeta: [],
+      revisions: {
+        inventoryRevision: 0,
+        craftListRevision: 0,
+        allocationRevision: 0
+      },
+      reservationSnapshots: new Map(),
+      reservationRunStatus: "ABSENT",
       allocationResult: null,
       combinedMaterials: [],
       materialQualityPools: {},
@@ -6955,8 +7015,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             reject(new Error("Az adatbázis nincs megnyitva."));
             return;
           }
-          var transaction = self.db.transaction("userMeta", "readwrite");
+          var transaction = self.db.transaction(["userMeta", "craftingCards"], "readwrite");
           var store = transaction.objectStore("userMeta");
+          var cardStore = transaction.objectStore("craftingCards");
           var abortReason = null;
           v004DefaultUserMetaRecords().forEach(function (defaultRecord) {
             var request = store.get(defaultRecord.key);
@@ -6971,6 +7032,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
               }
             };
           });
+          var cardsRequest = cardStore.getAll();
+          cardsRequest.onsuccess = function () {
+            (cardsRequest.result || []).forEach(function (card) {
+              if (!Number.isSafeInteger(card.cardRevision) || card.cardRevision < 0) {
+                var normalized = Object.assign({}, card, { cardRevision: 0 });
+                cardStore.put(normalized);
+              }
+            });
+          };
+          cardsRequest.onerror = function () {
+            abortReason = cardsRequest.error || new Error("A Crafting Card revision inicializálása sikertelen.");
+            transaction.abort();
+          };
           transaction.oncomplete = function () {
             resolve(v004DefaultUserMetaRecords());
           };
@@ -7004,74 +7078,231 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         };
       }
 
-      commitInventorySnapshot(batches) {
+      commitInventorySnapshot(batches, options) {
         var self = this;
+        var settings = options || {};
+        var normalizedBatches = batches.slice().sort(compareStableIdentity);
         return new Promise(function (resolve, reject) {
           if (!self.db) {
             reject(new Error("Az adatbázis nincs megnyitva."));
             return;
           }
-          var transaction = self.db.transaction(["materialBatches", "userInventory"], "readwrite");
+          var transaction = self.db.transaction(["materialBatches", "userInventory", "userMeta"], "readwrite");
           var batchStore = transaction.objectStore("materialBatches");
           var inventoryStore = transaction.objectStore("userInventory");
-          batchStore.clear();
-          inventoryStore.clear();
-          var aggregates = new Map();
-          batches.forEach(function (batch) {
-            batchStore.put(batch);
-            var aggregateId = batch.materialUuid + "::" + batch.unit;
-            if (!aggregates.has(aggregateId)) {
-              aggregates.set(aggregateId, {
-                id: aggregateId,
-                materialUuid: batch.materialUuid,
-                materialName: batch.materialName,
-                unit: batch.unit,
-                batchCount: 0,
-                totalQuantityUnits: 0,
-                updatedAt: nowIso()
+          var metaStore = transaction.objectStore("userMeta");
+          var abortReason = null;
+          var result = null;
+          var reads = {};
+          var remainingReads = 2;
+
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
+          }
+
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              var currentBatches = (reads.batches || []).slice().sort(compareStableIdentity);
+              var changed = !v004SemanticEqual(currentBatches, normalizedBatches);
+              var revisions = v004RevisionSnapshot(reads.meta || []);
+              if (!changed) {
+                result = { batches: normalizedBatches, revisions: revisions, changed: false };
+                return;
+              }
+              revisions.inventoryRevision = v004NextRevision(revisions.inventoryRevision, V004_META_KEYS.inventoryRevision);
+              revisions.allocationRevision = v004NextRevision(revisions.allocationRevision, V004_META_KEYS.allocationRevision);
+              batchStore.clear();
+              inventoryStore.clear();
+              var aggregates = new Map();
+              normalizedBatches.forEach(function (batch) {
+                batchStore.put(batch);
+                var aggregateId = batch.materialUuid + "::" + batch.unit;
+                if (!aggregates.has(aggregateId)) {
+                  aggregates.set(aggregateId, {
+                    id: aggregateId,
+                    materialUuid: batch.materialUuid,
+                    materialName: batch.materialName,
+                    unit: batch.unit,
+                    batchCount: 0,
+                    totalQuantityUnits: 0,
+                    updatedAt: nowIso()
+                  });
+                }
+                var aggregate = aggregates.get(aggregateId);
+                aggregate.batchCount += 1;
+                aggregate.totalQuantityUnits += batch.quantityUnits;
               });
+              aggregates.forEach(function (aggregate) { inventoryStore.put(aggregate); });
+              metaStore.put({ key: V004_META_KEYS.inventoryRevision, value: revisions.inventoryRevision });
+              metaStore.put({ key: V004_META_KEYS.allocationRevision, value: revisions.allocationRevision });
+              if (settings.simulateFailure) {
+                abortWith(v004RevisionError("SIMULATED_REVISION_MUTATION_ABORT", "Szimulált inventory + revision tranzakcióhiba."));
+                return;
+              }
+              result = { batches: normalizedBatches, revisions: revisions, changed: true };
+            } catch (error) {
+              abortWith(error);
             }
-            var aggregate = aggregates.get(aggregateId);
-            aggregate.batchCount += 1;
-            aggregate.totalQuantityUnits += batch.quantityUnits;
-          });
-          aggregates.forEach(function (aggregate) {
-            inventoryStore.put(aggregate);
-          });
+          }
+
+          var batchesRequest = batchStore.getAll();
+          batchesRequest.onsuccess = function () { reads.batches = batchesRequest.result || []; remainingReads -= 1; writeWhenReady(); };
+          batchesRequest.onerror = function () { abortWith(batchesRequest.error || new Error("Az inventory előállapot olvasása sikertelen.")); };
+          var metaRequest = metaStore.getAll();
+          metaRequest.onsuccess = function () { reads.meta = metaRequest.result || []; remainingReads -= 1; writeWhenReady(); };
+          metaRequest.onerror = function () { abortWith(metaRequest.error || new Error("A revision előállapot olvasása sikertelen.")); };
           transaction.oncomplete = function () {
-            resolve(batches);
+            resolve(result);
           };
-          transaction.onerror = function () {
-            reject(transaction.error || new Error("Az inventory snapshot mentése sikertelen."));
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
           };
           transaction.onabort = function () {
-            reject(transaction.error || new Error("Az inventory snapshot mentése megszakadt."));
+            reject(abortReason || transaction.error || new Error("Az inventory + revision snapshot mentése megszakadt."));
           };
         });
       }
 
-      commitCraftingCardsSnapshot(cards) {
+      commitCraftingCardsSnapshot(cards, options) {
         var self = this;
+        var settings = options || {};
         return new Promise(function (resolve, reject) {
           if (!self.db) {
             reject(new Error("Az adatbázis nincs megnyitva."));
             return;
           }
-          var transaction = self.db.transaction("craftingCards", "readwrite");
+          var transaction = self.db.transaction(["craftingCards", "userMeta"], "readwrite");
           var store = transaction.objectStore("craftingCards");
-          store.clear();
-          cards.forEach(function (card) {
-            store.put(card);
-          });
+          var metaStore = transaction.objectStore("userMeta");
+          var abortReason = null;
+          var result = null;
+          var reads = {};
+          var remainingReads = 2;
+
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
+          }
+
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              var currentCards = (reads.cards || []).map(function (card, index) {
+                return Object.assign({}, card, { order: Number.isSafeInteger(card.order) ? card.order : index, cardRevision: v004NormalizeCardRevision(card) });
+              }).sort(function (a, b) { return a.order - b.order || String(a.id).localeCompare(String(b.id)); });
+              var currentById = new Map(currentCards.map(function (card) { return [card.id, card]; }));
+              var changedCardIds = [];
+              var normalizedCards = cards.map(function (card, index) {
+                var normalized = Object.assign({}, card, { order: index, cardRevision: v004NormalizeCardRevision(card) });
+                var current = currentById.get(normalized.id);
+                if (!current) {
+                  normalized.cardRevision = 0;
+                } else if (!v004SemanticEqual(v004CardAllocationSemantic(current, current.order), v004CardAllocationSemantic(normalized, index))) {
+                  normalized.cardRevision = v004NextRevision(Math.max(v004NormalizeCardRevision(current), v004NormalizeCardRevision(normalized)), "cardRevision:" + normalized.id);
+                  changedCardIds.push(normalized.id);
+                } else {
+                  normalized.cardRevision = Math.max(v004NormalizeCardRevision(current), v004NormalizeCardRevision(normalized));
+                }
+                return normalized;
+              });
+              var craftListChanged = !v004SemanticEqual(v004CardListSequence(currentCards), v004CardListSequence(normalizedCards));
+              var allocationChanged = craftListChanged || changedCardIds.length > 0;
+              var durableChanged = !v004SemanticEqual(currentCards, normalizedCards);
+              var revisions = v004RevisionSnapshot(reads.meta || []);
+              if (craftListChanged) {
+                revisions.craftListRevision = v004NextRevision(revisions.craftListRevision, V004_META_KEYS.craftListRevision);
+              }
+              if (allocationChanged) {
+                revisions.allocationRevision = v004NextRevision(revisions.allocationRevision, V004_META_KEYS.allocationRevision);
+              }
+              if (durableChanged) {
+                store.clear();
+                normalizedCards.forEach(function (card) { store.put(card); });
+              }
+              if (craftListChanged) { metaStore.put({ key: V004_META_KEYS.craftListRevision, value: revisions.craftListRevision }); }
+              if (allocationChanged) { metaStore.put({ key: V004_META_KEYS.allocationRevision, value: revisions.allocationRevision }); }
+              if (settings.simulateFailure && (durableChanged || craftListChanged || allocationChanged)) {
+                abortWith(v004RevisionError("SIMULATED_REVISION_MUTATION_ABORT", "Szimulált Card + revision tranzakcióhiba."));
+                return;
+              }
+              result = {
+                cards: normalizedCards,
+                revisions: revisions,
+                changed: durableChanged,
+                allocationChanged: allocationChanged,
+                craftListChanged: craftListChanged,
+                changedCardIds: changedCardIds
+              };
+            } catch (error) {
+              abortWith(error);
+            }
+          }
+
+          var cardsRequest = store.getAll();
+          cardsRequest.onsuccess = function () { reads.cards = cardsRequest.result || []; remainingReads -= 1; writeWhenReady(); };
+          cardsRequest.onerror = function () { abortWith(cardsRequest.error || new Error("A Crafting Card előállapot olvasása sikertelen.")); };
+          var metaRequest = metaStore.getAll();
+          metaRequest.onsuccess = function () { reads.meta = metaRequest.result || []; remainingReads -= 1; writeWhenReady(); };
+          metaRequest.onerror = function () { abortWith(metaRequest.error || new Error("A revision előállapot olvasása sikertelen.")); };
           transaction.oncomplete = function () {
-            resolve(cards);
+            resolve(result);
           };
-          transaction.onerror = function () {
-            reject(transaction.error || new Error("A Crafting Card snapshot mentése sikertelen."));
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
           };
           transaction.onabort = function () {
-            reject(transaction.error || new Error("A Crafting Card snapshot mentése megszakadt."));
+            reject(abortReason || transaction.error || new Error("A Crafting Card + revision snapshot mentése megszakadt."));
           };
+        });
+      }
+
+      commitAllocationSetting(settingRecord, options) {
+        var self = this;
+        var settings = options || {};
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["settings", "userMeta"], "readwrite");
+          var settingStore = transaction.objectStore("settings");
+          var metaStore = transaction.objectStore("userMeta");
+          var abortReason = null;
+          var result = null;
+          var reads = {};
+          var remainingReads = 2;
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
+          }
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              var changed = !v004SemanticEqual(reads.setting ? reads.setting.value : null, settingRecord.value);
+              var revisions = v004RevisionSnapshot(reads.meta || []);
+              if (changed) {
+                revisions.allocationRevision = v004NextRevision(revisions.allocationRevision, V004_META_KEYS.allocationRevision);
+                settingStore.put(settingRecord);
+                metaStore.put({ key: V004_META_KEYS.allocationRevision, value: revisions.allocationRevision });
+                if (settings.simulateFailure) {
+                  abortWith(v004RevisionError("SIMULATED_REVISION_MUTATION_ABORT", "Szimulált allocation setting + revision tranzakcióhiba."));
+                  return;
+                }
+              }
+              result = { value: settingRecord.value, revisions: revisions, changed: changed };
+            } catch (error) { abortWith(error); }
+          }
+          var settingRequest = settingStore.get(settingRecord.key);
+          settingRequest.onsuccess = function () { reads.setting = settingRequest.result || null; remainingReads -= 1; writeWhenReady(); };
+          settingRequest.onerror = function () { abortWith(settingRequest.error || new Error("Az allocation setting előállapot olvasása sikertelen.")); };
+          var metaRequest = metaStore.getAll();
+          metaRequest.onsuccess = function () { reads.meta = metaRequest.result || []; remainingReads -= 1; writeWhenReady(); };
+          metaRequest.onerror = function () { abortWith(metaRequest.error || new Error("A revision előállapot olvasása sikertelen.")); };
+          transaction.oncomplete = function () { resolve(result); };
+          transaction.onerror = function (event) { abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null); };
+          transaction.onabort = function () { reject(abortReason || transaction.error || new Error("Az allocation setting + revision tranzakció megszakadt.")); };
         });
       }
 
@@ -7115,24 +7346,51 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           var storeNames = M4_BACKUP_STORE_SPECS.map(function (spec) { return spec.storeName; });
           var transaction = self.db.transaction(storeNames, "readwrite");
           var abortReason = null;
-          if (importMode === "REPLACE") {
-            transaction.objectStore("userInventory").clear();
-            transaction.objectStore("materialBatches").clear();
-            transaction.objectStore("craftingCards").clear();
-            transaction.objectStore("userLoadouts").clear();
-            transaction.objectStore("userMeta").clear();
-            (settings.currentUserSettingKeys || []).forEach(function (key) {
-              transaction.objectStore("settings").delete(key);
-            });
+          var currentByDataKey = {};
+          var remainingReads = M4_BACKUP_STORE_SPECS.length;
+          var prepared = null;
+
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
           }
+
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              currentByDataKey.userSettings = (currentByDataKey.userSettings || []).filter(isUserSettingRecord);
+              prepared = prepareV004RevisionAwareImport(currentByDataKey, normalized, importMode);
+              ["userInventory", "materialBatches", "craftingCards", "userLoadouts", "craftHistory", "userMeta"].forEach(function (storeName) {
+                transaction.objectStore(storeName).clear();
+              });
+              (settings.currentUserSettingKeys || currentByDataKey.userSettings.map(function (record) { return record.key; })).forEach(function (key) {
+                transaction.objectStore("settings").delete(key);
+              });
+              M4_BACKUP_STORE_SPECS.forEach(function (spec) {
+                var store = transaction.objectStore(spec.storeName);
+                prepared.data[spec.dataKey].forEach(function (record) { store.put(record); });
+              });
+              if (settings.simulateFailure) {
+                abortWith(m4BackupError("SIMULATED_IMPORT_ABORT", "Szimulált félbeszakított import."));
+              }
+            } catch (error) {
+              abortWith(error);
+            }
+          }
+
           M4_BACKUP_STORE_SPECS.forEach(function (spec) {
-            var store = transaction.objectStore(spec.storeName);
-            normalized[spec.dataKey].forEach(function (record) {
-              store.put(record);
-            });
+            var request = transaction.objectStore(spec.storeName).getAll();
+            request.onsuccess = function () {
+              currentByDataKey[spec.dataKey] = request.result || [];
+              remainingReads -= 1;
+              writeWhenReady();
+            };
+            request.onerror = function () {
+              abortWith(request.error || new Error("A User Data import előállapot olvasása sikertelen: " + spec.storeName));
+            };
           });
           transaction.oncomplete = function () {
-            resolve(normalized);
+            resolve(prepared);
           };
           transaction.onerror = function (event) {
             abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
@@ -7140,10 +7398,6 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           transaction.onabort = function () {
             reject(abortReason || transaction.error || new Error("A User Data import tranzakció visszagörgetve."));
           };
-          if (settings.simulateFailure) {
-            abortReason = m4BackupError("SIMULATED_IMPORT_ABORT", "Szimulált félbeszakított import.");
-            transaction.abort();
-          }
         });
       }
 
@@ -7191,10 +7445,27 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
               normalizedSource.userInventory.forEach(function (record) { transaction.objectStore("userInventory").add(m4Clone(record)); });
               normalizedSource.materialBatches.forEach(function (record) { transaction.objectStore("materialBatches").add(m4Clone(record)); });
-              normalizedSource.craftingCards.forEach(function (record) { transaction.objectStore("craftingCards").add(m4Clone(record)); });
+              normalizedSource.craftingCards.forEach(function (record, index) {
+                transaction.objectStore("craftingCards").add(Object.assign(m4Clone(record), {
+                  order: index,
+                  cardRevision: 0
+                }));
+              });
               normalizedSource.miningLoadouts.forEach(function (record) { transaction.objectStore("userLoadouts").add(m4Clone(record)); });
               normalizedSource.userSettings.forEach(function (record) { transaction.objectStore("settings").add(m4Clone(record)); });
               v004DefaultUserMetaRecords().forEach(function (record) { transaction.objectStore("userMeta").put(record); });
+              var inventoryChanged = normalizedSource.userInventory.length > 0 || normalizedSource.materialBatches.length > 0;
+              var craftListChanged = normalizedSource.craftingCards.length > 0;
+              var allocationSettingsChanged = v004AllocationSettingsSemantic(normalizedSource.userSettings).length > 0;
+              var allocationChanged = inventoryChanged || craftListChanged || allocationSettingsChanged;
+              var migrationRevisions = {
+                inventoryRevision: inventoryChanged ? 1 : 0,
+                craftListRevision: craftListChanged ? 1 : 0,
+                allocationRevision: allocationChanged ? 1 : 0
+              };
+              transaction.objectStore("userMeta").put({ key: V004_META_KEYS.inventoryRevision, value: migrationRevisions.inventoryRevision });
+              transaction.objectStore("userMeta").put({ key: V004_META_KEYS.craftListRevision, value: migrationRevisions.craftListRevision });
+              transaction.objectStore("userMeta").put({ key: V004_META_KEYS.allocationRevision, value: migrationRevisions.allocationRevision });
 
               var ledger = {
                 key: V004_META_KEYS.migrationV003,
@@ -7208,7 +7479,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
                 targetApplicationVersion: APP.version,
                 targetSchemaVersion: APP.schemaVersion,
                 targetDatabaseName: APP.dbName,
-                targetDatabaseVersion: APP.dbVersion
+                targetDatabaseVersion: APP.dbVersion,
+                revisionsAfterMigration: migrationRevisions
               };
               transaction.objectStore("userMeta").add(ledger);
               if (settings.simulateFailure) {
@@ -7999,8 +8271,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var normalized = cards.map(function (card, index) {
           return Object.assign({}, card, { order: index, updatedAt: nowIso() });
         });
-        await this.database.commitCraftingCardsSnapshot(normalized);
-        return normalized;
+        return this.database.commitCraftingCardsSnapshot(normalized);
       }
 
       async loadMiningLoadouts() {
@@ -8056,13 +8327,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       async saveMaterialQualityPlans(plans) {
         var normalized = normalizeMaterialQualityPlans(plans);
-        await this.database.put("settings", {
+        var result = await this.database.commitAllocationSetting({
           key: MATERIAL_QUALITY_PLAN_SETTING_KEY,
           scope: "USER",
           value: normalized,
           updatedAt: nowIso()
         });
-        return normalized;
+        return result;
       }
 
       async loadMaterialQualityPools() {
@@ -8071,13 +8342,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       async saveMaterialQualityPools(pools) {
         var normalized = normalizeMaterialQualityPools(pools);
-        await this.database.put("settings", {
+        var result = await this.database.commitAllocationSetting({
           key: MATERIAL_QUALITY_POOL_SETTING_KEY,
           scope: "USER",
           value: normalized,
           updatedAt: nowIso()
         });
-        return normalized;
+        return result;
       }
 
       async readAllUserData() {
@@ -11607,6 +11878,429 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
     /* V004_C002_MIGRATION_MODEL_END */
 
+    /* V004_C003_REVISION_RESERVATION_MODEL_START */
+    var V004_RESERVATION_SNAPSHOT_MARKER = "V004_RESERVATION_SNAPSHOT_1";
+    var V004_RESERVATION_STATUS = Object.freeze({
+      VALID: "VALID",
+      STALE: "STALE",
+      BLOCKED: "BLOCKED"
+    });
+    var V004_OUTPUT_COUNT_EVIDENCE = Object.freeze({
+      EXACT_PER_FINISHED_ITEM: "PER_FINISHED_ITEM_NORMALIZED_EXACT",
+      UNPROVEN: "OUTPUT_COUNT_UNPROVEN"
+    });
+
+    function v004RevisionError(code, message) {
+      var error = new Error(message);
+      error.code = code;
+      return error;
+    }
+
+    function v004AssertRevisionValue(value, key) {
+      if (!Number.isSafeInteger(value) || value < 0) {
+        throw v004RevisionError("V004_REVISION_INVALID", "Érvénytelen V004 revision: " + key);
+      }
+      return value;
+    }
+
+    function v004NextRevision(value, key) {
+      var current = v004AssertRevisionValue(value, key);
+      if (current >= Number.MAX_SAFE_INTEGER) {
+        throw v004RevisionError("V004_REVISION_OVERFLOW", "A V004 revision elérte a safe-integer határt: " + key);
+      }
+      return current + 1;
+    }
+
+    function v004RevisionMap(records) {
+      var result = new Map();
+      (Array.isArray(records) ? records : []).forEach(function (record) {
+        if (record && record.key) { result.set(record.key, record); }
+      });
+      return result;
+    }
+
+    function v004RevisionValue(records, key) {
+      var record = v004RevisionMap(records).get(key);
+      if (!record) {
+        throw v004RevisionError("V004_REVISION_MISSING", "Hiányzó V004 revision: " + key);
+      }
+      return v004AssertRevisionValue(record.value, key);
+    }
+
+    function v004RevisionSnapshot(records) {
+      return {
+        inventoryRevision: v004RevisionValue(records, V004_META_KEYS.inventoryRevision),
+        craftListRevision: v004RevisionValue(records, V004_META_KEYS.craftListRevision),
+        allocationRevision: v004RevisionValue(records, V004_META_KEYS.allocationRevision)
+      };
+    }
+
+    function v004MergeRevisionRecords(records, values) {
+      var source = Array.isArray(records) ? records.map(m4Clone) : [];
+      var byKey = new Map(source.map(function (record) { return [record.key, record]; }));
+      Object.keys(values || {}).forEach(function (key) {
+        if (!byKey.has(key)) {
+          var created = { key: key, value: values[key] };
+          source.push(created);
+          byKey.set(key, created);
+        } else {
+          byKey.get(key).value = values[key];
+        }
+      });
+      return source.sort(function (a, b) { return String(a.key).localeCompare(String(b.key)); });
+    }
+
+    function v004CanonicalText(value) {
+      return JSON.stringify(m4Canonicalize(value));
+    }
+
+    function v004SemanticEqual(left, right) {
+      return v004CanonicalText(left) === v004CanonicalText(right);
+    }
+
+    function v004NormalizeCardRevision(card) {
+      var value = card && card.cardRevision;
+      return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    }
+
+    function v004RequirementAllocationSemantic(requirement) {
+      var source = requirement || {};
+      return {
+        id: source.id || null,
+        aspectIndex: Number.isSafeInteger(Number(source.aspectIndex)) ? Number(source.aspectIndex) : null,
+        blueprintUuid: source.blueprintUuid || null,
+        outputUuid: source.outputUuid || null,
+        ingredientUuid: source.ingredientUuid || null,
+        commodityUuid: source.commodityUuid || null,
+        resourceTypeUuid: source.resourceTypeUuid || null,
+        itemUuid: source.itemUuid || null,
+        requiredQuantityUnits: source.requiredQuantityUnits,
+        unit: source.unit || null,
+        qualityCapability: source.qualityCapability || null
+      };
+    }
+
+    function v004CardAllocationSemantic(card, order) {
+      var source = card || {};
+      return {
+        id: source.id || null,
+        order: Number.isSafeInteger(order) ? order : Number(source.order || 0),
+        active: source.active !== false,
+        quantity: source.quantity,
+        blueprintUuid: source.blueprintUuid || null,
+        blueprintCacheKey: source.blueprintCacheKey || null,
+        gameVersion: source.gameVersion || null,
+        outputUuid: source.outputUuid || null,
+        outputCountEvidence: source.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
+        requirements: (Array.isArray(source.requirements) ? source.requirements : []).map(v004RequirementAllocationSemantic),
+        slotStrategies: source.slotStrategies && typeof source.slotStrategies === "object" ? source.slotStrategies : {},
+        recipeSlotQualityPoolAssignments: source.recipeSlotQualityPoolAssignments && typeof source.recipeSlotQualityPoolAssignments === "object"
+          ? source.recipeSlotQualityPoolAssignments
+          : {}
+      };
+    }
+
+    function v004CardListSequence(cards) {
+      return (Array.isArray(cards) ? cards : []).map(function (card, index) {
+        return { id: card && card.id || null, order: index };
+      });
+    }
+
+    function v004AllocationSettingsSemantic(settings) {
+      var relevantKeys = new Set([MATERIAL_QUALITY_PLAN_SETTING_KEY, MATERIAL_QUALITY_POOL_SETTING_KEY]);
+      return (Array.isArray(settings) ? settings : []).filter(function (record) {
+        return record && relevantKeys.has(record.key);
+      }).map(function (record) {
+        return { key: record.key, value: record.value };
+      }).sort(function (a, b) { return String(a.key).localeCompare(String(b.key)); });
+    }
+
+    function v004NormalizeImportedCards(cards) {
+      return (Array.isArray(cards) ? cards : []).map(function (card, index) {
+        var normalized = Object.assign({}, card);
+        normalized.order = Number.isSafeInteger(card && card.order) ? card.order : index;
+        normalized.cardRevision = v004NormalizeCardRevision(card);
+        return normalized;
+      });
+    }
+
+    function v004ReservationError(code, message) {
+      var error = new Error(message);
+      error.code = code;
+      return error;
+    }
+
+    function buildV004ReservationCanonicalPayload(input) {
+      var source = input || {};
+      var card = source.card || {};
+      var cardResult = source.cardResult || {};
+      var revisions = source.revisions || {};
+      var batchById = new Map((Array.isArray(source.batches) ? source.batches : []).map(function (batch) {
+        return [batch.id, batch];
+      }));
+      ["inventoryRevision", "craftListRevision", "allocationRevision"].forEach(function (key) {
+        v004AssertRevisionValue(revisions[key], key);
+      });
+      var cardRevision = v004NormalizeCardRevision(card);
+      var remainingQuantity = Number(card.quantity);
+      if (!card.id || !Number.isSafeInteger(remainingQuantity) || remainingQuantity < 1) {
+        throw v004ReservationError("RESERVATION_CARD_INVALID", "A reservation Card identityje vagy mennyisége érvénytelen.");
+      }
+      if (!card.blueprintUuid || !card.outputUuid) {
+        throw v004ReservationError("RESERVATION_ITEM_IDENTITY_UNRESOLVED", "A blueprint vagy output UUID hiányzik.");
+      }
+      if (!Array.isArray(cardResult.requirements) || !cardResult.requirements.length) {
+        throw v004ReservationError("RESERVATION_ALLOCATION_INCOMPLETE", "A Card allocation eredménye hiányzik.");
+      }
+      var activeScDataVersion = source.activeScDataVersion || card.gameVersion || null;
+      if (!activeScDataVersion) {
+        throw v004ReservationError("ACTIVE_SC_DATA_VERSION_UNAVAILABLE", "Az aktív Star Citizen adatverzió nem bizonyított.");
+      }
+      var sourceRequirementById = new Map((Array.isArray(card.requirements) ? card.requirements : []).map(function (requirement) {
+        return [requirement.id, requirement];
+      }));
+      var recipeSlots = cardResult.requirements.map(function (requirement, slotSequence) {
+        var sourceRequirement = sourceRequirementById.get(requirement.recipeSlotId) || {};
+        if (!requirement.recipeSlotId || !requirement.ingredientUuid || !requirement.canonicalMaterialUuid || !requirement.unit) {
+          throw v004ReservationError("RESERVATION_SLOT_IDENTITY_UNRESOLVED", "A Recipe Slot canonical identityje hiányos.");
+        }
+        var perItemRequiredUnits = sourceRequirement.requiredQuantityUnits;
+        if (!Number.isSafeInteger(perItemRequiredUnits) || perItemRequiredUnits <= 0 || !Number.isSafeInteger(requirement.requiredUnits) || requirement.requiredUnits <= 0 || !Number.isSafeInteger(requirement.allocatedUnits) || requirement.allocatedUnits < 0) {
+          throw v004ReservationError("RESERVATION_REQUIREMENT_NOT_EXACT", "A Recipe Slot total mennyisége nem exact safe integer: " + requirement.recipeSlotId);
+        }
+        if (!Number.isSafeInteger(perItemRequiredUnits * remainingQuantity) || perItemRequiredUnits * remainingQuantity !== requirement.requiredUnits) {
+          throw v004ReservationError("RESERVATION_REQUIREMENT_NOT_EXACT", "A Recipe Slot per-item mennyisége nem bizonyított exact safe integer: " + requirement.recipeSlotId);
+        }
+        if (requirement.status === "POOL_THRESHOLD_UNRESOLVED" || requirement.status === "POOL_RANGE_INVALID" || requirement.status === "QUALITY_UNKNOWN" || requirement.allocationBlockReason) {
+          throw v004ReservationError(requirement.allocationBlockReason || requirement.status, "Érvénytelen Quality Pool a Recipe Slotnál: " + requirement.recipeSlotId);
+        }
+        var reservedBatches = (Array.isArray(requirement.allocatedBatches) ? requirement.allocatedBatches : []).map(function (allocation, batchSequence) {
+          var batch = batchById.get(allocation.batchId);
+          if (!batch || !Number.isSafeInteger(batch.quantityUnits) || batch.quantityUnits < allocation.allocatedUnits) {
+            throw v004ReservationError("RESERVED_BATCH_EVIDENCE_INVALID", "Hiányzó vagy elégtelen reserved batch evidence: " + allocation.batchId);
+          }
+          if (!Number.isSafeInteger(allocation.allocatedUnits) || allocation.allocatedUnits <= 0) {
+            throw v004ReservationError("RESERVED_ALLOCATION_INVALID", "A reserved allocatedUnits nem exact pozitív egész: " + allocation.batchId);
+          }
+          return {
+            sequence: batchSequence,
+            batchId: allocation.batchId,
+            canonicalMaterialUuid: requirement.canonicalMaterialUuid,
+            sourceMaterialUuid: batch.sourceMaterialUuid || batch.ingredientUuid || batch.materialUuid || null,
+            unit: batch.unit,
+            quality: hasValidQuality(batch.quality) ? Number(batch.quality) : null,
+            batchQuantityUnits: batch.quantityUnits,
+            allocatedUnits: allocation.allocatedUnits,
+            allocationReason: allocation.reason || null
+          };
+        });
+        var reservedTotalUnits = reservedBatches.reduce(function (sum, line) { return sum + line.allocatedUnits; }, 0);
+        if (!Number.isSafeInteger(reservedTotalUnits) || reservedTotalUnits !== requirement.allocatedUnits || reservedTotalUnits > requirement.requiredUnits) {
+          throw v004ReservationError("RESERVATION_SLOT_TOTAL_MISMATCH", "A Recipe Slot reserved total nem egyezik az exact igénnyel: " + requirement.recipeSlotId);
+        }
+        return {
+          sequence: slotSequence,
+          stableSlotId: requirement.recipeSlotId,
+          ingredientUuid: requirement.ingredientUuid,
+          canonicalMaterialUuid: requirement.canonicalMaterialUuid,
+          unit: requirement.unit,
+          perItemRequiredUnits: perItemRequiredUnits,
+          qualityCapability: sourceRequirement.qualityCapability || null,
+          effectiveQualityStrategy: requirement.allocationStrategy || requirement.effectiveRule || requirement.rule || null,
+          qualityPoolAssignment: requirement.recipePoolAssignmentMode || null,
+          qualityPoolAssignmentOrigin: requirement.recipePoolAssignmentOrigin || "LEGACY_FALLBACK",
+          poolThreshold: requirement.recipePoolThreshold === undefined ? null : requirement.recipePoolThreshold,
+          poolRangeStatus: requirement.recipePoolResolutionStatus || "NOT_ASSIGNED",
+          reservedTotalUnits: reservedTotalUnits,
+          reservedBatches: reservedBatches
+        };
+      });
+      return m4Canonicalize({
+        marker: V004_RESERVATION_SNAPSHOT_MARKER,
+        craftingCardId: card.id,
+        cardRevision: cardRevision,
+        craftListRevision: revisions.craftListRevision,
+        inventoryRevision: revisions.inventoryRevision,
+        allocationRevision: revisions.allocationRevision,
+        cardPriorityOrder: Number(card.order || 0),
+        remainingQuantity: remainingQuantity,
+        blueprintIdentity: {
+          uuid: card.blueprintUuid,
+          cacheKey: card.blueprintCacheKey || null
+        },
+        outputIdentity: {
+          uuid: card.outputUuid,
+          itemIdentity: card.outputItemUuid || card.outputUuid
+        },
+        activeStarCitizenDataVersion: activeScDataVersion,
+        outputCountEvidence: card.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
+        recipeSlots: recipeSlots
+      });
+    }
+
+    async function hashV004ReservationPayload(payload, cryptoProvider, textEncoderConstructor) {
+      var provider = cryptoProvider === undefined ? globalThis.crypto : cryptoProvider;
+      var Encoder = textEncoderConstructor === undefined ? globalThis.TextEncoder : textEncoderConstructor;
+      if (!provider || !provider.subtle || typeof provider.subtle.digest !== "function" || typeof Encoder !== "function") {
+        throw v004ReservationError("HASH_UNAVAILABLE", "A SHA-256 Web Crypto nem érhető el; a reservation blokkolva.");
+      }
+      var canonicalBytes = new Encoder().encode(v004CanonicalText(payload));
+      var digest = await provider.subtle.digest("SHA-256", canonicalBytes);
+      return v004BytesToHex(digest);
+    }
+
+    function buildV004ReservationCapability(payload) {
+      if (!payload || payload.marker !== V004_RESERVATION_SNAPSHOT_MARKER) {
+        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: 0, blockerReason: "RESERVATION_ABSENT" };
+      }
+      var remainingQuantity = payload.remainingQuantity;
+      if (!Number.isSafeInteger(remainingQuantity) || remainingQuantity < 1 || !Array.isArray(payload.recipeSlots) || !payload.recipeSlots.length) {
+        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: Number.isSafeInteger(remainingQuantity) ? remainingQuantity : 0, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
+      }
+      if (payload.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM) {
+        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN };
+      }
+      var maximum = remainingQuantity;
+      for (var index = 0; index < payload.recipeSlots.length; index += 1) {
+        var slot = payload.recipeSlots[index];
+        if (!Number.isSafeInteger(slot.perItemRequiredUnits) || slot.perItemRequiredUnits <= 0 || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
+          return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
+        }
+        maximum = Math.min(maximum, Math.floor(slot.reservedTotalUnits / slot.perItemRequiredUnits));
+      }
+      return {
+        status: maximum > 0 ? "READY" : "BLOCKED",
+        maxCompletableQuantity: maximum,
+        remainingQuantity: remainingQuantity,
+        blockerReason: maximum > 0 ? null : "VISIBLE_RESERVATION_INSUFFICIENT"
+      };
+    }
+
+    function buildV004ReservedPrefixPlan(payload, requestedQuantity) {
+      var capability = buildV004ReservationCapability(payload);
+      if (capability.status !== "READY") {
+        throw v004ReservationError(capability.blockerReason || "RESERVATION_NOT_COMPLETION_CAPABLE", "A reservation nem completion-capable.");
+      }
+      if (!Number.isSafeInteger(requestedQuantity) || requestedQuantity < 1 || requestedQuantity > capability.maxCompletableQuantity) {
+        throw v004ReservationError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A partial quantity kívül esik a reservation által támogatott egész tartományon.");
+      }
+      return payload.recipeSlots.map(function (slot) {
+        var requiredUnits = slot.perItemRequiredUnits * requestedQuantity;
+        if (!Number.isSafeInteger(requiredUnits)) {
+          throw v004ReservationError("PARTIAL_REQUIRED_UNITS_UNSAFE", "A partial craft belső unit igénye nem safe integer.");
+        }
+        var remaining = requiredUnits;
+        var lines = [];
+        slot.reservedBatches.forEach(function (line) {
+          if (remaining <= 0) { return; }
+          var consumedUnits = Math.min(remaining, line.allocatedUnits);
+          if (consumedUnits > 0) {
+            lines.push({
+              sequence: line.sequence,
+              batchId: line.batchId,
+              consumedUnits: consumedUnits
+            });
+            remaining -= consumedUnits;
+          }
+        });
+        if (remaining !== 0) {
+          throw v004ReservationError("VISIBLE_RESERVATION_INSUFFICIENT", "A visible reservation prefix nem fedezi a partial mennyiséget.");
+        }
+        return {
+          sequence: slot.sequence,
+          stableSlotId: slot.stableSlotId,
+          requiredUnits: requiredUnits,
+          lines: lines
+        };
+      });
+    }
+
+    function v004ReservationMatchesCurrentState(entry, card, revisions, batches, activeScDataVersion) {
+      if (!entry || entry.status !== V004_RESERVATION_STATUS.VALID || !entry.payload || !entry.hash) { return false; }
+      var payload = entry.payload;
+      if (payload.cardRevision !== v004NormalizeCardRevision(card) ||
+          payload.inventoryRevision !== revisions.inventoryRevision ||
+          payload.craftListRevision !== revisions.craftListRevision ||
+          payload.allocationRevision !== revisions.allocationRevision ||
+          payload.remainingQuantity !== card.quantity ||
+          payload.cardPriorityOrder !== card.order ||
+          payload.blueprintIdentity.uuid !== card.blueprintUuid ||
+          payload.outputIdentity.uuid !== card.outputUuid ||
+          payload.activeStarCitizenDataVersion !== (activeScDataVersion || card.gameVersion || null)) {
+        return false;
+      }
+      var batchById = new Map((batches || []).map(function (batch) { return [batch.id, batch]; }));
+      return payload.recipeSlots.every(function (slot) {
+        return slot.reservedBatches.every(function (line) {
+          var batch = batchById.get(line.batchId);
+          return Boolean(batch) && batch.quantityUnits === line.batchQuantityUnits &&
+            (hasValidQuality(batch.quality) ? Number(batch.quality) : null) === line.quality &&
+            batch.unit === line.unit && batch.quantityUnits >= line.allocatedUnits;
+        });
+      });
+    }
+
+    function v004CardsInPriorityOrder(cards) {
+      return (Array.isArray(cards) ? cards : []).slice().sort(function (a, b) {
+        return Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id));
+      });
+    }
+
+    function prepareV004RevisionAwareImport(currentData, incomingData, mode) {
+      var current = validateM4UserData(currentData);
+      var resultData = validateM4UserData(simulateM4UserDataImport(current, incomingData, mode, false));
+      var currentCards = v004CardsInPriorityOrder(current.craftingCards);
+      var resultCards = v004CardsInPriorityOrder(resultData.craftingCards);
+      var currentById = new Map(currentCards.map(function (card) { return [card.id, card]; }));
+      var changedCardIds = [];
+      resultCards = resultCards.map(function (card) {
+        var currentCard = currentById.get(card.id);
+        var normalized = Object.assign({}, card, { cardRevision: v004NormalizeCardRevision(card) });
+        if (!currentCard) { return normalized; }
+        var baseRevision = Math.max(v004NormalizeCardRevision(currentCard), normalized.cardRevision);
+        if (!v004SemanticEqual(v004CardAllocationSemantic(currentCard, currentCard.order), v004CardAllocationSemantic(normalized, normalized.order))) {
+          normalized.cardRevision = v004NextRevision(baseRevision, "cardRevision:" + normalized.id);
+          changedCardIds.push(normalized.id);
+        } else {
+          normalized.cardRevision = baseRevision;
+        }
+        return normalized;
+      });
+      resultData.craftingCards = resultCards;
+      var inventoryChanged = !v004SemanticEqual(current.materialBatches, resultData.materialBatches) || !v004SemanticEqual(current.userInventory, resultData.userInventory);
+      var craftListChanged = !v004SemanticEqual(v004CardListSequence(currentCards), v004CardListSequence(resultCards));
+      var allocationSettingsChanged = !v004SemanticEqual(v004AllocationSettingsSemantic(current.userSettings), v004AllocationSettingsSemantic(resultData.userSettings));
+      var allocationChanged = inventoryChanged || craftListChanged || changedCardIds.length > 0 || allocationSettingsChanged;
+      var currentRevisions = v004RevisionSnapshot(current.userMeta);
+      var importedRevisions = v004RevisionSnapshot(resultData.userMeta);
+      var revisions = {
+        inventoryRevision: Math.max(currentRevisions.inventoryRevision, importedRevisions.inventoryRevision),
+        craftListRevision: Math.max(currentRevisions.craftListRevision, importedRevisions.craftListRevision),
+        allocationRevision: Math.max(currentRevisions.allocationRevision, importedRevisions.allocationRevision)
+      };
+      if (inventoryChanged) { revisions.inventoryRevision = v004NextRevision(revisions.inventoryRevision, V004_META_KEYS.inventoryRevision); }
+      if (craftListChanged) { revisions.craftListRevision = v004NextRevision(revisions.craftListRevision, V004_META_KEYS.craftListRevision); }
+      if (allocationChanged) { revisions.allocationRevision = v004NextRevision(revisions.allocationRevision, V004_META_KEYS.allocationRevision); }
+      var currentHistorySequence = v004RevisionValue(current.userMeta, V004_META_KEYS.historySequence);
+      var importedHistorySequence = v004RevisionValue(resultData.userMeta, V004_META_KEYS.historySequence);
+      resultData.userMeta = v004MergeRevisionRecords(resultData.userMeta, {
+        inventoryRevision: revisions.inventoryRevision,
+        craftListRevision: revisions.craftListRevision,
+        allocationRevision: revisions.allocationRevision,
+        historySequence: Math.max(currentHistorySequence, importedHistorySequence)
+      });
+      return {
+        data: resultData,
+        revisions: revisions,
+        inventoryChanged: inventoryChanged,
+        craftListChanged: craftListChanged,
+        allocationChanged: allocationChanged,
+        allocationSettingsChanged: allocationSettingsChanged,
+        changedCardIds: changedCardIds
+      };
+    }
+    /* V004_C003_REVISION_RESERVATION_MODEL_END */
+
     /* M4_COMBINED_BACKUP_MODEL_START */
     var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
     var M4_BACKUP_SCHEMA_VERSION = 3;
@@ -11694,6 +12388,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function validateM4UserData(data) {
       var normalized = normalizeM4UserData(data);
+      normalized.craftingCards = v004NormalizeImportedCards(normalized.craftingCards);
       M4_BACKUP_STORE_SPECS.forEach(function (spec) {
         var seen = new Set();
         normalized[spec.dataKey].forEach(function (record, index) {
@@ -11713,7 +12408,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         }
       });
       normalized.craftingCards.forEach(function (card) {
-        if (!Array.isArray(card.requirements) || !card.slotStrategies || typeof card.slotStrategies !== "object") {
+        if (!Array.isArray(card.requirements) || !card.slotStrategies || typeof card.slotStrategies !== "object" || !Number.isSafeInteger(card.cardRevision) || card.cardRevision < 0) {
           throw m4BackupError("INVALID_CRAFTING_CARD", "A Crafting Card receptje vagy Quality stratégiája hiányzik: " + card.id);
         }
       });
@@ -11907,6 +12602,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         throw m4BackupError("MISSING_USER_DATA", "A backupból hiányzik a User Data blokk.");
       }
       var legacyFingerprint = null;
+      var preCardRevisionFingerprint = schemaVersion === M4_BACKUP_SCHEMA_VERSION ? fingerprintUserDataPayload(sourceData) : null;
+      var needsCardRevisionInitialization = schemaVersion === M4_BACKUP_SCHEMA_VERSION && (sourceData.craftingCards || []).some(function (card) {
+        return !Number.isSafeInteger(card && card.cardRevision) || card.cardRevision < 0;
+      });
       if (schemaVersion <= 2) {
         var legacySourceData = {
           userInventory: sourceData.userInventory || [],
@@ -11932,15 +12631,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           fromSchema: schemaVersion,
           toSchema: M4_BACKUP_SCHEMA_VERSION,
           steps: schemaVersion === 1
-            ? ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT", "EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION"]
-            : ["EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION"]
+            ? ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT", "EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION"]
+            : ["EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION"]
         };
         warnings.push("A schema " + schemaVersion + " backup schema 3 formára migrálva; Craft History üres és a V004 revision meta 0-ról indul.");
       }
       var normalized = validateM4UserData(sourceData);
       var fingerprint = fingerprintUserDataPayload(normalized);
       if (schemaVersion === M4_BACKUP_SCHEMA_VERSION && parsed.fingerprint && parsed.fingerprint !== fingerprint) {
-        throw m4BackupError("FINGERPRINT_MISMATCH", "A backup fingerprintje nem egyezik a tartalommal.");
+        if (!(needsCardRevisionInitialization && parsed.fingerprint === preCardRevisionFingerprint)) {
+          throw m4BackupError("FINGERPRINT_MISMATCH", "A backup fingerprintje nem egyezik a tartalommal.");
+        }
+        migration = { fromSchema: M4_BACKUP_SCHEMA_VERSION, toSchema: M4_BACKUP_SCHEMA_VERSION, steps: ["CARD_REVISION_INITIALIZATION"] };
+        warnings.push("A korai schema 3 backup hiányzó cardRevision mezői determinisztikusan 0 értéket kaptak.");
       }
       return {
         backup: {
@@ -14838,6 +15541,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return {
         id: makeId("card"),
         order: state.craftingCards.length,
+        cardRevision: 0,
         active: true,
         collapsed: false,
         quantity: 1,
@@ -14845,6 +15549,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         blueprintCacheKey: blueprint.cacheKey,
         gameVersion: blueprint.gameVersion,
         outputUuid: blueprint.outputUuid,
+        outputCountEvidence: V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
         outputName: blueprint.outputName,
         outputType: blueprint.outputType,
         outputTypeLabel: blueprint.outputTypeLabel || blueprint.outputType || null,
@@ -14951,6 +15656,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     function normalizeStoredCraftingCard(card, fallbackOrder) {
       var normalized = Object.assign({}, card);
       normalized.order = Number.isInteger(Number(card.order)) ? Number(card.order) : fallbackOrder;
+      normalized.cardRevision = v004NormalizeCardRevision(card);
       normalized.active = card.active !== false;
       normalized.collapsed = card.collapsed === true;
       normalized.quantity = Number.isInteger(Number(card.quantity)) && Number(card.quantity) > 0 ? Number(card.quantity) : 1;
@@ -14958,6 +15664,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.slotStrategies = card.slotStrategies && typeof card.slotStrategies === "object" ? card.slotStrategies : {};
       normalized.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(card.recipeSlotQualityPoolAssignments, normalized.requirements);
       normalized.outputTypeLabel = card.outputTypeLabel || card.outputType || null;
+      normalized.outputCountEvidence = card.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN;
       normalized.blueprintWebUrl = card.blueprintWebUrl || null;
       normalized.outputWebUrl = card.outputWebUrl || null;
       normalized.craftTimeSeconds = Number.isFinite(Number(card.craftTimeSeconds)) ? Number(card.craftTimeSeconds) : null;
@@ -16300,6 +17007,160 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return button;
     }
 
+    function syncV004RevisionState(metaRecords) {
+      state.userMeta = Array.isArray(metaRecords) ? metaRecords : [];
+      state.revisions = v004RevisionSnapshot(state.userMeta);
+      document.body.dataset.inventoryRevision = String(state.revisions.inventoryRevision);
+      document.body.dataset.craftListRevision = String(state.revisions.craftListRevision);
+      document.body.dataset.allocationRevision = String(state.revisions.allocationRevision);
+      return state.revisions;
+    }
+
+    function staleReservationEntry(previous, reason) {
+      return {
+        status: V004_RESERVATION_STATUS.STALE,
+        reason: reason || "ALLOCATION_INPUT_CHANGED",
+        payload: previous && previous.payload || null,
+        canonicalPayload: previous && previous.canonicalPayload || null,
+        hash: previous && previous.hash || null,
+        capability: {
+          status: "BLOCKED",
+          maxCompletableQuantity: 0,
+          remainingQuantity: previous && previous.payload && Number.isSafeInteger(previous.payload.remainingQuantity) ? previous.payload.remainingQuantity : 0,
+          blockerReason: "RESERVATION_STALE"
+        }
+      };
+    }
+
+    function resetRuntimeReservationSnapshots(reason) {
+      var previous = state.reservationSnapshots instanceof Map ? state.reservationSnapshots : new Map();
+      var next = new Map();
+      state.craftingCards.forEach(function (card) {
+        next.set(card.id, staleReservationEntry(previous.get(card.id), reason || "RELOAD_REQUIRES_REALLOCATION"));
+      });
+      state.reservationSnapshots = next;
+      state.reservationRunStatus = state.craftingCards.length ? V004_RESERVATION_STATUS.STALE : "ABSENT";
+      document.body.dataset.reservationRunStatus = state.reservationRunStatus;
+      return next;
+    }
+
+    function markReservationSnapshotsStale(reason) {
+      return resetRuntimeReservationSnapshots(reason || "ALLOCATION_INPUT_CHANGED");
+    }
+
+    function currentReservationEntry(card) {
+      var entry = state.reservationSnapshots.get(card.id);
+      if (!entry) {
+        entry = staleReservationEntry(null, "EXPLICIT_REALLOCATION_REQUIRED");
+        state.reservationSnapshots.set(card.id, entry);
+      }
+      if (entry.status === V004_RESERVATION_STATUS.VALID && !v004ReservationMatchesCurrentState(entry, card, state.revisions, state.materialBatches, resolveActiveScVersion(state))) {
+        entry = staleReservationEntry(entry, "RESERVATION_EVIDENCE_CHANGED");
+        state.reservationSnapshots.set(card.id, entry);
+      }
+      return entry;
+    }
+
+    function reservationReasonText(entry) {
+      var reason = entry && (entry.reason || entry.capability && entry.capability.blockerReason);
+      var labels = {
+        RELOAD_REQUIRES_REALLOCATION: "Betöltés után explicit Reallocate szükséges",
+        EXPLICIT_REALLOCATION_REQUIRED: "Elavult – új allocation szükséges",
+        ALLOCATION_INPUT_CHANGED: "Elavult – új allocation szükséges",
+        INVENTORY_MUTATION: "Készlet változott – Reallocate szükséges",
+        CARD_MUTATION: "Kártya allocation-bemenet változott",
+        CRAFT_LIST_MUTATION: "Prioritás vagy kártyalista változott",
+        QUALITY_POLICY_MUTATION: "Quality beállítás változott",
+        USER_DATA_IMPORT: "Import után explicit Reallocate szükséges",
+        V003_MIGRATION: "Migráció után explicit Reallocate szükséges",
+        RESERVATION_EVIDENCE_CHANGED: "Reserved batch vagy revision megváltozott",
+        HASH_UNAVAILABLE: "SHA-256 nem érhető el",
+        RESERVATION_ALLOCATION_INCOMPLETE: "Az allocation nem teljes",
+        OUTPUT_COUNT_UNPROVEN: "MAX blokkolva: OUTPUT_COUNT_UNPROVEN"
+      };
+      return labels[reason] || reason || "";
+    }
+
+    async function reallocateCraftingList() {
+      logger.start("Explicit Crafting List Reallocate", { cardCount: state.craftingCards.length });
+      try {
+        var restored = await Promise.all([
+          userDataRepository.loadMaterialBatches(),
+          userDataRepository.loadCraftingCards(),
+          userDataRepository.loadUserSettings(),
+          userDataRepository.loadUserMeta()
+        ]);
+        state.materialBatches = restored[0];
+        state.craftingCards = restored[1];
+        state.userSettings = restored[2];
+        state.materialQualityPlans = materialQualityPlansFromUserSettings(state.userSettings);
+        state.materialQualityPools = materialQualityPoolsFromUserSettings(state.userSettings);
+        syncV004RevisionState(restored[3]);
+        recalculateAllocation("EXPLICIT_REALLOCATE");
+        var resultByCard = new Map(state.allocationResult.cards.map(function (cardResult) { return [cardResult.cardId, cardResult]; }));
+        var entries = await Promise.all(state.craftingCards.map(async function (card) {
+          try {
+            var payload = buildV004ReservationCanonicalPayload({
+              card: card,
+              cardResult: resultByCard.get(card.id),
+              revisions: state.revisions,
+              batches: state.materialBatches,
+              activeScDataVersion: resolveActiveScVersion(state)
+            });
+            var hash = await hashV004ReservationPayload(payload);
+            return [card.id, {
+              status: V004_RESERVATION_STATUS.VALID,
+              reason: null,
+              payload: payload,
+              canonicalPayload: v004CanonicalText(payload),
+              hash: hash,
+              capability: buildV004ReservationCapability(payload)
+            }];
+          } catch (error) {
+            return [card.id, {
+              status: V004_RESERVATION_STATUS.BLOCKED,
+              reason: error.code || "RESERVATION_BUILD_FAILED",
+              payload: null,
+              canonicalPayload: null,
+              hash: null,
+              capability: {
+                status: "BLOCKED",
+                maxCompletableQuantity: 0,
+                remainingQuantity: Number.isSafeInteger(card.quantity) ? card.quantity : 0,
+                blockerReason: error.code || "RESERVATION_BUILD_FAILED"
+              }
+            }];
+          }
+        }));
+        state.reservationSnapshots = new Map(entries);
+        var postMeta = await userDataRepository.loadUserMeta();
+        var postRevisions = v004RevisionSnapshot(postMeta);
+        if (!v004SemanticEqual(postRevisions, state.revisions)) {
+          syncV004RevisionState(postMeta);
+          markReservationSnapshotsStale("REVISION_CHANGED_DURING_REALLOCATION");
+        } else {
+          var statuses = entries.map(function (entry) { return entry[1].status; });
+          state.reservationRunStatus = statuses.length && statuses.every(function (status) { return status === V004_RESERVATION_STATUS.VALID; })
+            ? V004_RESERVATION_STATUS.VALID
+            : (statuses.some(function (status) { return status === V004_RESERVATION_STATUS.BLOCKED; }) ? V004_RESERVATION_STATUS.BLOCKED : "ABSENT");
+          document.body.dataset.reservationRunStatus = state.reservationRunStatus;
+        }
+        renderCraftingCards();
+        logger.finish("PASS", {
+          status: state.reservationRunStatus,
+          valid: Array.from(state.reservationSnapshots.values()).filter(function (entry) { return entry.status === V004_RESERVATION_STATUS.VALID; }).length,
+          blocked: Array.from(state.reservationSnapshots.values()).filter(function (entry) { return entry.status === V004_RESERVATION_STATUS.BLOCKED; }).length
+        });
+        return state.reservationSnapshots;
+      } catch (error) {
+        markReservationSnapshotsStale(error.code || "REALLOCATION_FAILED");
+        renderCraftingCards();
+        logger.event("ERROR", "REALLOCATION_FAILED", "Az explicit Reallocate sikertelen.", { error: serializeError(error) });
+        logger.finish("FAIL", { error: serializeError(error) });
+        throw error;
+      }
+    }
+
     function renderCraftingCards() {
       setBadge(
         document.getElementById("craftingCardCount"),
@@ -16313,6 +17174,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         });
       }
       var container = document.getElementById("craftingCardList");
+      var reallocateButton = document.getElementById("reallocateCraftingListButton");
+      reallocateButton.disabled = state.craftingCards.length === 0;
       container.replaceChildren();
       if (!state.craftingCards.length) {
         var empty = document.createElement("p");
@@ -16323,6 +17186,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return;
       }
       state.craftingCards.forEach(function (card, index) {
+        var reservation = currentReservationEntry(card);
         var cardResult = resultByCard.get(card.id) || { requirements: [], bottleneckSlotIds: [], maxCraftable: 0, satisfied: false };
         var cardTrace = state.allocationResult ? state.allocationResult.trace.filter(function (trace) { return trace.cardId === card.id; }) : [];
         var cardViewModel = buildFinalCraftingCardViewModel({
@@ -16344,6 +17208,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         wrapper.dataset.priority = String(index + 1);
         wrapper.dataset.satisfied = cardResult.satisfied ? "true" : "false";
         wrapper.dataset.collapsed = card.collapsed ? "true" : "false";
+        wrapper.dataset.cardRevision = String(v004NormalizeCardRevision(card));
+        wrapper.dataset.reservationStatus = reservation.status;
+        wrapper.dataset.reservationSnapshotHash = reservation.hash || "";
+        wrapper.dataset.maxCompletableQuantity = String(reservation.capability && reservation.capability.maxCompletableQuantity || 0);
         wrapper.tabIndex = -1;
 
         var management = document.createElement("header");
@@ -16354,6 +17222,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         priority.textContent = "PRIORITÁS " + (index + 1);
         var managementActions = document.createElement("div");
         managementActions.className = "spg-c012-actions";
+        var reservationSummary = document.createElement("div");
+        reservationSummary.className = "spg-v004-reservation-summary";
+        var reservationStatus = document.createElement("span");
+        reservationStatus.className = "spg-v004-reservation-status";
+        reservationStatus.dataset.status = reservation.status;
+        reservationStatus.textContent = reservation.status === V004_RESERVATION_STATUS.STALE
+          ? "Elavult – új allocation szükséges"
+          : "Foglalás: " + reservation.status;
+        var reservationReason = document.createElement("small");
+        reservationReason.className = "spg-v004-reservation-reason";
+        reservationReason.textContent = reservation.status === V004_RESERVATION_STATUS.VALID && reservation.capability && reservation.capability.status === "READY"
+          ? "MAX: " + reservation.capability.maxCompletableQuantity + " DB"
+          : reservationReasonText(reservation);
+        reservationReason.title = reservationReason.textContent;
+        reservationSummary.append(reservationStatus, reservationReason);
         managementActions.append(
           createC012CardAction("↑", card.outputName + " feljebb", function () {
             moveCraftingCard(card.id, -1).catch(function (error) { setNotice("Kártyasorrend mentési hiba: " + error.message, "error"); });
@@ -16382,7 +17265,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           }, false, "danger")
         );
         managementActions.querySelector(".spg-c012-export-action").dataset.exportCardId = card.id;
-        management.append(priority, managementActions);
+        management.append(priority, reservationSummary, managementActions);
 
         var finalCard = renderFinalCraftingCardContent(cardViewModel, {
           context: "crafting-list",
@@ -16474,8 +17357,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       logger.start("Material Quality Plan Update", { materialUuid: materialUuid, plan: normalized });
       try {
-        state.materialQualityPlans = await userDataRepository.saveMaterialQualityPlans(next);
+        var saveResult = await userDataRepository.saveMaterialQualityPlans(next);
+        state.materialQualityPlans = saveResult.value;
         state.userSettings = await userDataRepository.loadUserSettings();
+        syncV004RevisionState(await userDataRepository.loadUserMeta());
+        if (saveResult.changed) { markReservationSnapshotsStale("QUALITY_POLICY_MUTATION"); }
         recalculateAllocation("MATERIAL_QUALITY_PLAN_UPDATE");
         logger.finish("PASS", {
           materialUuid: materialUuid,
@@ -16503,8 +17389,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var next = canonicalizeMaterialQualityPoolUpdate(materialUuid, updated, state.materialQualityPools, state.knownMaterials);
       logger.start("Material Quality Pool Update", { materialUuid: materialUuid, field: field, value: Number(value) });
       try {
-        state.materialQualityPools = await userDataRepository.saveMaterialQualityPools(next);
+        var saveResult = await userDataRepository.saveMaterialQualityPools(next);
+        state.materialQualityPools = saveResult.value;
         state.userSettings = await userDataRepository.loadUserSettings();
+        syncV004RevisionState(await userDataRepository.loadUserMeta());
+        if (saveResult.changed) { markReservationSnapshotsStale("QUALITY_POLICY_MUTATION"); }
         recalculateAllocation("MATERIAL_QUALITY_POOL_UPDATE");
         logger.finish("PASS", {
           materialUuid: resolveMaterialQualityPoolKey(materialUuid, state.knownMaterials),
@@ -16522,8 +17411,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function persistMaterialBatches(nextBatches, processType) {
       logger.start(processType || "Inventory Update", { batchCount: nextBatches.length });
       try {
-        await userDataRepository.saveMaterialBatches(nextBatches);
-        state.materialBatches = await userDataRepository.loadMaterialBatches();
+        var saveResult = await userDataRepository.saveMaterialBatches(nextBatches);
+        state.materialBatches = saveResult.batches;
+        syncV004RevisionState(await userDataRepository.loadUserMeta());
+        if (saveResult.changed) { markReservationSnapshotsStale("INVENTORY_MUTATION"); }
         recalculateAllocation(processType);
         updateKnownMaterials();
         logger.finish("PASS", {
@@ -16540,7 +17431,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function persistCraftingCards(nextCards, processType) {
       logger.start(processType || "Crafting Card Update", { cardCount: nextCards.length });
       try {
-        state.craftingCards = await userDataRepository.saveCraftingCards(nextCards);
+        var saveResult = await userDataRepository.saveCraftingCards(nextCards);
+        state.craftingCards = saveResult.cards;
+        syncV004RevisionState(await userDataRepository.loadUserMeta());
+        if (saveResult.allocationChanged) {
+          markReservationSnapshotsStale(saveResult.craftListChanged ? "CRAFT_LIST_MUTATION" : "CARD_MUTATION");
+        }
         recalculateAllocation(processType);
         await Promise.all([
           ensureMaterialIntelligenceHydrated(state.craftingCards),
@@ -16642,6 +17538,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var source = state.craftingCards[index];
       var copy = JSON.parse(JSON.stringify(source));
       copy.id = makeId("card");
+      copy.cardRevision = 0;
       copy.createdAt = nowIso();
       copy.updatedAt = copy.createdAt;
       var next = state.craftingCards.slice();
@@ -16742,9 +17639,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.miningLoadouts = await userDataRepository.loadMiningLoadouts();
       state.userSettings = await userDataRepository.loadUserSettings();
       state.craftHistory = await userDataRepository.loadCraftHistory();
-      state.userMeta = await userDataRepository.loadUserMeta();
+      syncV004RevisionState(await userDataRepository.loadUserMeta());
       state.materialQualityPlans = materialQualityPlansFromUserSettings(state.userSettings);
       state.materialQualityPools = materialQualityPoolsFromUserSettings(state.userSettings);
+      resetRuntimeReservationSnapshots("RELOAD_REQUIRES_REALLOCATION");
       state.userDataReady = true;
       recalculateAllocation("STARTUP_RESTORE");
       updateKnownMaterials();
@@ -16891,6 +17789,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var sourceFingerprintAfter = await fingerprintV003MigrationSource(sourceAfter);
         assert(sourceFingerprintAfter === refreshedFingerprint, "A V003 forrás fingerprintje megváltozott a migráció alatt.");
         await restoreUserDataState();
+        markReservationSnapshotsStale("V003_MIGRATION");
+        renderCraftingCards();
         migration.source = sourceAfter;
         migration.status = "SUCCESS";
         migration.errorCode = null;
@@ -17081,7 +17981,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           snapshotId: snapshotId,
           fingerprint: beforeFingerprint
         });
-        var expected = simulateM4UserDataImport(beforeData, previewState.validated.backup.data, previewState.mode, false);
+        var expected = prepareV004RevisionAwareImport(beforeData, previewState.validated.backup.data, previewState.mode).data;
         await database.commitUserDataImport(previewState.validated.backup.data, previewState.mode, {
           currentUserSettingKeys: beforeData.userSettings.map(function (record) { return record.key; })
         });
@@ -20021,6 +20921,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         await database.ensureV004UserMetaDefaults();
         await restoreCachedState();
         await restoreUserDataState();
+        markReservationSnapshotsStale("USER_DATA_IMPORT");
+        renderCraftingCards();
         if (state.activeUexRefineryDataset) {
           await rebuildUexRefineryProjection("STARTUP_CACHE_RESTORE");
         } else {
@@ -20361,6 +21263,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     });
 
+    document.getElementById("reallocateCraftingListButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      reallocateCraftingList().catch(function (error) {
+        setNotice("Reallocate hiba: " + error.message, "error");
+      }).finally(function () {
+        button.disabled = state.craftingCards.length === 0;
+      });
+    });
+
     document.getElementById("materialBatchForm").addEventListener("submit", function (event) {
       event.preventDefault();
       var button = document.getElementById("saveMaterialBatchButton");
@@ -20513,6 +21425,27 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       visibleBlueprintIndex: visibleBlueprintIndex,
       recalculateAllocation: recalculateAllocation,
       addCurrentBlueprintCard: addCurrentBlueprintCard,
+      updateCraftingCard: updateCraftingCard,
+      moveCraftingCard: moveCraftingCard,
+      duplicateCraftingCard: duplicateCraftingCard,
+      deleteCraftingCard: deleteCraftingCard,
+      persistMaterialBatches: persistMaterialBatches,
+      reallocateCraftingList: reallocateCraftingList,
+      v004RevisionReservation: Object.freeze({
+        snapshotMarker: V004_RESERVATION_SNAPSHOT_MARKER,
+        reservationStatus: V004_RESERVATION_STATUS,
+        outputCountEvidence: V004_OUTPUT_COUNT_EVIDENCE,
+        assertRevisionValue: v004AssertRevisionValue,
+        nextRevision: v004NextRevision,
+        revisionSnapshot: v004RevisionSnapshot,
+        cardAllocationSemantic: v004CardAllocationSemantic,
+        buildCanonicalPayload: buildV004ReservationCanonicalPayload,
+        hashPayload: hashV004ReservationPayload,
+        buildCapability: buildV004ReservationCapability,
+        buildReservedPrefixPlan: buildV004ReservedPrefixPlan,
+        matchesCurrentState: v004ReservationMatchesCurrentState,
+        prepareImport: prepareV004RevisionAwareImport
+      }),
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,
       resolveMaterialName: resolveMaterialName,

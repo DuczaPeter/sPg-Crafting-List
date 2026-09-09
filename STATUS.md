@@ -2,16 +2,16 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V004`; C001 input: `0b44909256bb776d91717d6578a1088399cfb149`; `origin/main` változatlan: `0a83e4409e2c38442ca8f908dcf101d013061955`.
-- Runtime: `V004-dev`; application schema `7`; külön IndexedDB: `spg-crafting-list-v004` version `1`.
-- Új foundation store-ok: `craftHistory` és `userMeta`; revision kezdőértékek determinisztikusan `0`.
-- V003 direct source: safe discovery után version-4/topology validáció és kizárólag `readonly`; automatikus startup migráció nincs.
-- Migráció: kötelező V003 schema-2 backup + explicit confirm, SHA-256 fingerprint, pristine-target és durable replay/changed-source védelem, egyetlen atomi V004 tranzakció.
-- Backup schema `3`; V003 schema 1/2 → üres History + V004 meta; exact integer `quantityUnits` copy, veszteség `0 unit`.
-- Output-count: `OUTPUT_COUNT_UNPROVEN – COMPLETION MUST BLOCK AFFECTED RECIPES`.
-- Célzott model/static és valódi Chrome startup/refresh/migration/rollback/direct `file://`: PASS; application-origin error `0`.
-- `LOCAL_RUNTIME_SIDECARS = 0`; `APPLICATION_RUNTIME_FILE_COUNT = 1`.
-- V001/V002/V003/tag/artifact/evidence változatlan; Craft Complete/partial/MAX/History UI/Undo/BroadcastChannel: NOT IMPLEMENTED; full regression: NOT RUN BY SCOPE; push: NO.
-- Riport: `docs/V004_C002_DATABASE_SCHEMA_MIGRATION_REPORT.md`.
+- Branch: `develop/V004`; C002 checkpoint: `d773dc2...`; `origin/main`: `0a83e4409e2c38442ca8f908dcf101d013061955`.
+- Runtime: `V004-dev`; application schema `7`; IndexedDB: `spg-crafting-list-v004` version `1`; backup schema `3`.
+- Durable, 0-ról induló `inventoryRevision`, `craftListRevision`, `allocationRevision` és per-card `cardRevision`; szemantikai mutationönként pontosan egy increment, presentation-only collapse increment `0`.
+- Inventory/Card/quality setting/import/V003 migration revision-írás az érintett rekordokkal közös tranzakcióban; overflow és injected failure fail-closed, teljes rollback.
+- Runtime-only reservation snapshot: canonical payload + Web Crypto SHA-256 lowercase hex; batch/Quality/sorrend/mennyiség/revision változás hash-érzékeny, display label nem identity.
+- Állapotok: `VALID`, `STALE`, `BLOCKED`; startup/reload/import/migration után `STALE`, explicit `Újraszámítás / Reallocate` szükséges. Snapshot nincs IndexedDB-ben vagy backupban.
+- MAX és partial prefix kizárólag a látható reservationből számolható; `OUTPUT_COUNT_UNPROVEN` és `HASH_UNAVAILABLE` blokkol.
+- Célzott model/static + valódi Chrome startup/mutation/Reallocate/rollback/reload/direct `file://`: PASS; console/page error `0`.
+- `LOCAL_RUNTIME_SIDECARS = 0`; `APPLICATION_RUNTIME_FILE_COUNT = 1`; application SHA-256: `30cc7b37246005c916a87f1c75f0f619579287fdd702bc87f948f8e6ecc027ee`.
+- V001/V002/V003/tag/artifact változatlan. Craft Complete/deduction/partial execution/History event/Undo/BroadcastChannel: NOT IMPLEMENTED. Full regression: NOT RUN BY SCOPE. Push: NO.
+- Riport: `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`.
 
-`V004-C002 – DATABASE/SCHEMA + SAFE V003 MIGRATION FOUNDATION PASS, C003 READY`
+`V004-C003 – REVISION + RESERVATION SNAPSHOT INFRASTRUCTURE PASS, C004 READY`
