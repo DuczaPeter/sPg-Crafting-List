@@ -403,6 +403,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c003.ps1"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v004-c004-atomic-craft-complete-core",
+      "level": "targeted-regression",
+      "description": "V004-C004 gate: whole-output partial/full completion from the exact current visible reservation, five-store atomic transaction, exact integer-unit conservation, stale fail-closed behavior without fallback, durable idempotent History event, revision updates, injected rollback, reload/direct-file Chrome evidence, and frozen V001/V002/V003 integrity; no History UI, Undo/Redo or BroadcastChannel.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c004.ps1", "-PlaywrightModulePath", "<workspace Playwright index.mjs absolute path>"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

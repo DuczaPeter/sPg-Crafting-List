@@ -907,3 +907,17 @@ node .\tools\run-v004-c003-tests.mjs
 A célzott Google Chrome-runner: `tools/run-v004-c003-browser-tests.mjs`. A Playwright útvonalát a Codex workspace dependency loader adja; gépfüggő abszolút útvonal nem kerül Gitbe.
 
 A kapu bizonyítja a 0-ról induló és szemantikai mutationönként pontosan eggyel növekvő revisionöket, a presentation-only collapse +0 szabályát, az atomi rollbacket, a canonical Web Crypto SHA-256 reservationt, a batch/Quality/sorrend/mennyiség/revision hash-érzékenységet, a `VALID`/`STALE`/`BLOCKED` állapotot, az explicit Reallocate utat, a visible-reservation MAX/prefix modellt, az output/hash blocker viselkedést, a reload stale állapotot és a direct `file://` futást. Craft Complete, inventory deduction, partial completion execution, History event, Undo, BroadcastChannel és teljes release-regresszió nem része a C003 scope-nak.
+
+V004-C004 atomic Craft Complete core kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c004.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Csak a determinisztikus modell- és static teszt:
+
+```powershell
+node .\tools\run-v004-c004-tests.mjs
+```
+
+A célzott Google Chrome-runner: `tools/run-v004-c004-browser-tests.mjs`. A validator kötelezően friss model- és Chrome-evidence-et készít az aktuális HTML-bájtokról, ellenőrzi az exact reservation validációt, a partial/full prefix levonást, a confirmation cancel/MAX nulla írását, a stale/fallback tiltást, az idempotens replayt, a History eventet, a négy injected rollbacket, az 1-unit conservation maradékot, a reloadot, az output-count blockert, a single-file/direct `file://` működést és a V001/V002/V003 integritást. History UI, Undo/Redo, BroadcastChannel és teljes release-regresszió nem része a C004 scope-nak.

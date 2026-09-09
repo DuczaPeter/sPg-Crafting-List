@@ -2,16 +2,17 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V004`; C002 checkpoint: `d773dc2...`; `origin/main`: `0a83e4409e2c38442ca8f908dcf101d013061955`.
-- Runtime: `V004-dev`; application schema `7`; IndexedDB: `spg-crafting-list-v004` version `1`; backup schema `3`.
-- Durable, 0-ról induló `inventoryRevision`, `craftListRevision`, `allocationRevision` és per-card `cardRevision`; szemantikai mutationönként pontosan egy increment, presentation-only collapse increment `0`.
-- Inventory/Card/quality setting/import/V003 migration revision-írás az érintett rekordokkal közös tranzakcióban; overflow és injected failure fail-closed, teljes rollback.
-- Runtime-only reservation snapshot: canonical payload + Web Crypto SHA-256 lowercase hex; batch/Quality/sorrend/mennyiség/revision változás hash-érzékeny, display label nem identity.
-- Állapotok: `VALID`, `STALE`, `BLOCKED`; startup/reload/import/migration után `STALE`, explicit `Újraszámítás / Reallocate` szükséges. Snapshot nincs IndexedDB-ben vagy backupban.
-- MAX és partial prefix kizárólag a látható reservationből számolható; `OUTPUT_COUNT_UNPROVEN` és `HASH_UNAVAILABLE` blokkol.
-- Célzott model/static + valódi Chrome startup/mutation/Reallocate/rollback/reload/direct `file://`: PASS; console/page error `0`.
-- `LOCAL_RUNTIME_SIDECARS = 0`; `APPLICATION_RUNTIME_FILE_COUNT = 1`; application SHA-256: `30cc7b37246005c916a87f1c75f0f619579287fdd702bc87f948f8e6ecc027ee`.
-- V001/V002/V003/tag/artifact változatlan. Craft Complete/deduction/partial execution/History event/Undo/BroadcastChannel: NOT IMPLEMENTED. Full regression: NOT RUN BY SCOPE. Push: NO.
-- Riport: `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`.
+- Branch: `develop/V004`; C003 baseline `4a65c6a...`; `origin/main 0a83e44...` változatlan.
+- Runtime `V004-dev`; schema `7`; IndexedDB `spg-crafting-list-v004` v1; backup schema `3`.
+- Crafting Card: egész output-darabszám, default `1`, fill-only `MAX`, explicit confirmation; cancel `0` write.
+- Complete csak a látható `VALID` C003 reservation exact batch-prefixét fogyasztja. Snapshot/revision/Card/slot/batch/canonical/source/Q/unit eltérés: `STALE_RESERVATION`, explicit Reallocate. Fallback és completion-time reallocation nincs.
+- Egy readwrite tranzakció: `materialBatches`, `userInventory`, `craftingCards`, `craftHistory`, `userMeta`; siker csak `transaction.oncomplete`. Négy injected failure teljes rollback.
+- `craftTransactionId` + History `add()` idempotencia; replay `ALREADY_COMPLETED`, második levonás nincs. `V004_CRAFT_HISTORY_EVENT_1` exact delta/pre-card/revision evidence-szel.
+- Partial csökkenti, full eltávolítja a Cardot. Inventory/allocation/craftList/history revision completionönként +1; auto-Reallocate nincs.
+- Exact conservation: `before = consumed + after`, tolerancia 0; `160001 - 160000 = 1` reload után is PASS; rounding call `0`.
+- `OUTPUT_COUNT_UNPROVEN` blokkol. Célzott model/static + Google Chrome partial/full/stale/replay/rollback/reload/direct `file://`: PASS; console/page error `0`.
+- Single-file: sidecar `0`, runtime file `1`; SHA-256 `33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99`.
+- V001/V002/V003/tag/artifact változatlan. History UI/Undo/Redo/Broadcast: NOT IMPLEMENTED. Full regression: NOT RUN BY SCOPE. Push: NO.
+- Riport: `docs/V004_C004_ATOMIC_CRAFT_COMPLETE_REPORT.md`.
 
-`V004-C003 – REVISION + RESERVATION SNAPSHOT INFRASTRUCTURE PASS, C004 READY`
+`V004-C004 – ATOMIC CRAFT COMPLETE CORE PASS, C005 NOT STARTED`

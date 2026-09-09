@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C004 Atomic Craft Complete Core
+
+- [x] C003 checkpoint, clean `develop/V004`, authenticated fetch és változatlan `origin/main`/V003 baseline ellenőrizve.
+- [x] Cardon egész output-darabszám, default 1, fill-only MAX, exact batch/SCU/unit confirmation és cancel 0 write.
+- [x] Exact current reservation/revision/Card/slot/batch/canonical/source/Q/unit validáció; stale fail-closed és explicit Reallocate, fallback nélkül.
+- [x] Egyetlen öt-store readwrite tranzakció, exact integer batch-deduction, partial decrement/full removal és siker csak `transaction.oncomplete` után.
+- [x] `craftTransactionId` idempotencia, History `add()` és gazdag append-only completed event; replay második levonás nélkül.
+- [x] Inventory conservation 0-unit toleranciával; 1-unit maradék, négy injected rollback és reload persistence PASS.
+- [x] Célzott model/static + valódi Chrome partial/full/stale/replay/rollback/output-block/direct `file://` PASS; console/page error 0.
+- [x] V001/V002/V003/tag/artifact változatlan; History UI/Undo/Redo/Broadcast nincs; full regression nem futott; push nincs.
+- [ ] V004-C005 csak új, explicit feladatban indulhat; C004 checkpoint után itt megállunk.
+
 ### V004-C003 Revision + Reservation Snapshot Infrastructure
 
 - [x] C002 checkpoint, clean `develop/V004`, Git-folyamat és hitelesített remote baseline ellenőrizve; `origin/main` nem mozdult.

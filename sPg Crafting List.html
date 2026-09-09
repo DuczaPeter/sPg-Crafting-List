@@ -5535,6 +5535,107 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   white-space: nowrap;
 }
 
+.spg-v004-completion-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(24, 218, 255, 0.16);
+  border-bottom: 1px solid rgba(24, 218, 255, 0.16);
+  background: rgba(2, 18, 29, 0.72);
+}
+
+.spg-v004-completion-controls label {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.spg-v004-completion-controls input {
+  width: 92px;
+  min-height: 36px;
+}
+
+.spg-v004-completion-controls .spg-v004-completion-blocker {
+  flex: 1 1 260px;
+  align-self: center;
+  margin: 0;
+  color: #ffd09c;
+  font-size: 11px;
+}
+
+.spg-v004-craft-dialog {
+  width: min(720px, calc(100vw - 28px));
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid rgba(24, 218, 255, 0.48);
+  border-radius: 16px;
+  color: var(--text);
+  background: #071522;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.72);
+}
+
+.spg-v004-craft-dialog::backdrop {
+  background: rgba(0, 5, 10, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.spg-v004-craft-dialog-content {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.spg-v004-craft-dialog h2,
+.spg-v004-craft-dialog p {
+  margin: 0;
+}
+
+.spg-v004-craft-dialog-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.spg-v004-craft-dialog-summary span,
+.spg-v004-craft-dialog-lines li {
+  padding: 8px 10px;
+  border: 1px solid rgba(156, 236, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(3, 12, 20, 0.72);
+}
+
+.spg-v004-craft-dialog-lines {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spg-v004-craft-warning {
+  padding: 10px;
+  border-left: 3px solid #ffa652;
+  color: #ffd09c;
+  background: rgba(255, 166, 82, 0.08);
+}
+
+.spg-v004-craft-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 620px) {
+  .spg-v004-craft-dialog-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
 .spg-crafting-card-list {
   width: 100%;
   max-width: 1040px;
@@ -6538,6 +6639,28 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       <div id="spgDetailContent" class="spg-detail-content" aria-live="polite"></div>
     </section>
 
+    <dialog id="craftCompletionDialog" class="spg-v004-craft-dialog" aria-labelledby="craftCompletionDialogTitle">
+      <div class="spg-v004-craft-dialog-content">
+        <header>
+          <p class="eyebrow">V004 · exact reservation consumption</p>
+          <h2 id="craftCompletionDialogTitle">Craft Complete megerősítése</h2>
+        </header>
+        <p id="craftCompletionItemName"></p>
+        <div class="spg-v004-craft-dialog-summary">
+          <span>Kész mennyiség: <strong id="craftCompletionRequestedQuantity">0</strong> DB</span>
+          <span>Előtte: <strong id="craftCompletionRemainingBefore">0</strong> DB</span>
+          <span>Utána: <strong id="craftCompletionRemainingAfter">0</strong> DB</span>
+        </div>
+        <ul id="craftCompletionMaterialLines" class="spg-v004-craft-dialog-lines"></ul>
+        <p class="spg-v004-craft-warning">A művelet módosítja a készletet. A Craft Historyból később egyszer visszavonható.</p>
+        <p id="craftCompletionDialogNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+        <div class="spg-v004-craft-dialog-actions">
+          <button id="cancelCraftCompletionButton" type="button">Mégse</button>
+          <button id="confirmCraftCompletionButton" type="button">Legyártás rögzítése</button>
+        </div>
+      </div>
+    </dialog>
+
     <footer class="spg-app-footer">
       <span>Adatforrás: Star Citizen Wiki API · UEX Corp API</span>
       <span id="footerRuntime">V004-dev</span>
@@ -6627,6 +6750,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       },
       reservationSnapshots: new Map(),
       reservationRunStatus: "ABSENT",
+      pendingCraftCompletion: null,
       allocationResult: null,
       combinedMaterials: [],
       materialQualityPools: {},
@@ -7303,6 +7427,122 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           transaction.oncomplete = function () { resolve(result); };
           transaction.onerror = function (event) { abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null); };
           transaction.onabort = function () { reject(abortReason || transaction.error || new Error("Az allocation setting + revision tranzakció megszakadt.")); };
+        });
+      }
+
+      commitCraftCompletion(request, options) {
+        var self = this;
+        var settings = options || {};
+        try {
+          v004ValidatePreparedCompletionRequest(request);
+        } catch (error) {
+          return Promise.reject(error);
+        }
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["materialBatches", "userInventory", "craftingCards", "craftHistory", "userMeta"], "readwrite");
+          var batchStore = transaction.objectStore("materialBatches");
+          var inventoryStore = transaction.objectStore("userInventory");
+          var cardStore = transaction.objectStore("craftingCards");
+          var historyStore = transaction.objectStore("craftHistory");
+          var metaStore = transaction.objectStore("userMeta");
+          var abortReason = null;
+          var result = null;
+          var reads = {};
+          var remainingReads = 5;
+
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
+          }
+
+          function injectedFailure(stage) {
+            if (settings.simulateFailureAt !== stage) { return false; }
+            abortWith(v004CraftCompleteError("SIMULATED_CRAFT_COMPLETE_ABORT", "Szimulált Craft Complete tranzakcióhiba: " + stage, stage));
+            return true;
+          }
+
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              if (reads.existingHistory) {
+                abortWith(v004CraftCompleteError("ALREADY_COMPLETED", "Ez a craftTransactionId már committed History eventhez tartozik."));
+                return;
+              }
+              var currentCard = reads.card;
+              var currentCards = (reads.cards || []).slice().sort(function (a, b) {
+                return Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id));
+              });
+              var mutation = v004BuildCraftCompletionMutation(
+                request,
+                currentCard,
+                currentCards,
+                reads.meta || [],
+                reads.batches || [],
+                settings.timestamp || nowIso()
+              );
+
+              batchStore.clear();
+              mutation.materialBatches.forEach(function (batch) { batchStore.put(batch); });
+              inventoryStore.clear();
+              mutation.userInventory.forEach(function (aggregate) { inventoryStore.put(aggregate); });
+              if (injectedFailure("AFTER_BATCH_DEDUCTION")) { return; }
+              if (injectedFailure("BEFORE_HISTORY_ADD")) { return; }
+
+              historyStore.add(mutation.historyEvent);
+              if (injectedFailure("AFTER_HISTORY_ADD")) { return; }
+
+              cardStore.clear();
+              mutation.craftingCards.forEach(function (card) { cardStore.put(card); });
+              if (injectedFailure("AFTER_CARD_UPDATE")) { return; }
+              if (injectedFailure("BEFORE_META_UPDATE")) { return; }
+
+              metaStore.put({ key: V004_META_KEYS.inventoryRevision, value: mutation.revisions.inventoryRevision });
+              metaStore.put({ key: V004_META_KEYS.allocationRevision, value: mutation.revisions.allocationRevision });
+              metaStore.put({ key: V004_META_KEYS.craftListRevision, value: mutation.revisions.craftListRevision });
+              metaStore.put({ key: V004_META_KEYS.historySequence, value: mutation.revisions.historySequence });
+
+              result = Object.assign({}, mutation, {
+                userMeta: v004MergeRevisionRecords(reads.meta || [], {
+                  inventoryRevision: mutation.revisions.inventoryRevision,
+                  allocationRevision: mutation.revisions.allocationRevision,
+                  craftListRevision: mutation.revisions.craftListRevision,
+                  historySequence: mutation.revisions.historySequence
+                })
+              });
+            } catch (error) {
+              abortWith(error);
+            }
+          }
+
+          function read(store, key, target) {
+            var operation = key === undefined ? store.getAll() : store.get(key);
+            operation.onsuccess = function () {
+              reads[target] = operation.result || (key === undefined ? [] : null);
+              remainingReads -= 1;
+              writeWhenReady();
+            };
+            operation.onerror = function () {
+              abortWith(operation.error || new Error("A Craft Complete előállapot olvasása sikertelen: " + target));
+            };
+          }
+
+          read(historyStore, request.craftTransactionId, "existingHistory");
+          read(metaStore, undefined, "meta");
+          read(cardStore, request.reservationPayload.craftingCardId, "card");
+          read(cardStore, undefined, "cards");
+          read(batchStore, undefined, "batches");
+
+          transaction.oncomplete = function () { resolve(result); };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A Craft Complete tranzakció visszagörgetve."));
+          };
         });
       }
 
@@ -8314,6 +8554,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return history.sort(function (a, b) {
           return Number(a.historySequence || 0) - Number(b.historySequence || 0) || String(a.craftTransactionId).localeCompare(String(b.craftTransactionId));
         });
+      }
+
+      async completeCraft(request, options) {
+        return this.database.commitCraftCompletion(request, options);
       }
 
       async loadUserMeta() {
@@ -11911,6 +12155,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return current + 1;
     }
 
+    function v004ExactWholeQuotient(dividend, divisor) {
+      if (!Number.isSafeInteger(dividend) || dividend < 0 || !Number.isSafeInteger(divisor) || divisor <= 0) {
+        throw v004RevisionError("V004_EXACT_INTEGER_DIVISION_INVALID", "Az egész mennyiségi osztás bemenete érvénytelen.");
+      }
+      var remainder = dividend % divisor;
+      var quotient = (dividend - remainder) / divisor;
+      if (!Number.isSafeInteger(quotient) || quotient < 0) {
+        throw v004RevisionError("V004_EXACT_INTEGER_DIVISION_INVALID", "Az egész mennyiségi osztás eredménye nem exact safe integer.");
+      }
+      return quotient;
+    }
+
     function v004RevisionMap(records) {
       var result = new Map();
       (Array.isArray(records) ? records : []).forEach(function (record) {
@@ -12166,7 +12422,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (!Number.isSafeInteger(slot.perItemRequiredUnits) || slot.perItemRequiredUnits <= 0 || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
           return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
         }
-        maximum = Math.min(maximum, Math.floor(slot.reservedTotalUnits / slot.perItemRequiredUnits));
+        maximum = Math.min(maximum, v004ExactWholeQuotient(slot.reservedTotalUnits, slot.perItemRequiredUnits));
       }
       return {
         status: maximum > 0 ? "READY" : "BLOCKED",
@@ -12233,7 +12489,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return payload.recipeSlots.every(function (slot) {
         return slot.reservedBatches.every(function (line) {
           var batch = batchById.get(line.batchId);
-          return Boolean(batch) && batch.quantityUnits === line.batchQuantityUnits &&
+          return Boolean(batch) && batch.materialUuid === line.canonicalMaterialUuid &&
+            (batch.sourceMaterialUuid || batch.ingredientUuid || batch.materialUuid || null) === line.sourceMaterialUuid &&
+            batch.quantityUnits === line.batchQuantityUnits &&
             (hasValidQuality(batch.quality) ? Number(batch.quality) : null) === line.quality &&
             batch.unit === line.unit && batch.quantityUnits >= line.allocatedUnits;
         });
@@ -12300,6 +12558,338 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       };
     }
     /* V004_C003_REVISION_RESERVATION_MODEL_END */
+
+    /* V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL_START */
+    var V004_CRAFT_COMPLETE_REQUEST_MARKER = "V004_CRAFT_COMPLETE_REQUEST_1";
+    var V004_CRAFT_HISTORY_EVENT_SCHEMA = "V004_CRAFT_HISTORY_EVENT_1";
+
+    function v004CraftCompleteError(code, message, detail) {
+      var error = new Error(message);
+      error.code = code;
+      if (detail) { error.detail = detail; }
+      return error;
+    }
+
+    function v004StaleReservationError(reason) {
+      return v004CraftCompleteError("STALE_RESERVATION", "A reservation megváltozott; explicit Reallocate szükséges.", reason || "RESERVATION_EVIDENCE_CHANGED");
+    }
+
+    function v004AssertCraftTransactionId(value) {
+      if (typeof value !== "string" || !/^craft-[A-Za-z0-9._:-]{8,}$/.test(value)) {
+        throw v004CraftCompleteError("CRAFT_TRANSACTION_ID_INVALID", "A craftTransactionId hiányzik vagy érvénytelen.");
+      }
+      return value;
+    }
+
+    function v004AssertCompletionQuantity(value, maximum) {
+      if (!Number.isSafeInteger(value) || value < 1 || !Number.isSafeInteger(maximum) || maximum < 1 || value > maximum) {
+        throw v004CraftCompleteError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A legyártott darabszám csak 1 és a jelenlegi reservation MAX értéke közötti egész lehet.");
+      }
+      return value;
+    }
+
+    function v004ExactUnitAdd(left, right, code) {
+      if (!Number.isSafeInteger(left) || left < 0 || !Number.isSafeInteger(right) || right < 0 || !Number.isSafeInteger(left + right)) {
+        throw v004CraftCompleteError(code || "EXACT_UNIT_ARITHMETIC_INVALID", "Az exact unit összeadás nem safe integer.");
+      }
+      return left + right;
+    }
+
+    function v004BatchQuality(batch) {
+      return hasValidQuality(batch && batch.quality) ? Number(batch.quality) : null;
+    }
+
+    function v004BatchSourceUuid(batch) {
+      return batch && (batch.sourceMaterialUuid || batch.ingredientUuid || batch.materialUuid) || null;
+    }
+
+    function v004BuildUserInventoryAggregates(batches, timestamp) {
+      var aggregates = new Map();
+      (Array.isArray(batches) ? batches : []).slice().sort(compareStableIdentity).forEach(function (batch) {
+        if (!batch || !batch.id || !batch.materialUuid || !batch.unit || !Number.isSafeInteger(batch.quantityUnits) || batch.quantityUnits <= 0) {
+          throw v004CraftCompleteError("INVENTORY_BATCH_INVALID", "Érvénytelen material batch a derived inventory számításban.");
+        }
+        var aggregateId = batch.materialUuid + "::" + batch.unit;
+        if (!aggregates.has(aggregateId)) {
+          aggregates.set(aggregateId, {
+            id: aggregateId,
+            materialUuid: batch.materialUuid,
+            materialName: batch.materialName,
+            unit: batch.unit,
+            batchCount: 0,
+            totalQuantityUnits: 0,
+            updatedAt: timestamp
+          });
+        }
+        var aggregate = aggregates.get(aggregateId);
+        aggregate.batchCount += 1;
+        aggregate.totalQuantityUnits = v004ExactUnitAdd(aggregate.totalQuantityUnits, batch.quantityUnits, "INVENTORY_AGGREGATE_OVERFLOW");
+      });
+      return Array.from(aggregates.values()).sort(compareStableIdentity);
+    }
+
+    function v004ValidatePreparedCompletionRequest(request) {
+      var source = request || {};
+      v004AssertCraftTransactionId(source.craftTransactionId);
+      if (source.marker !== V004_CRAFT_COMPLETE_REQUEST_MARKER || !source.reservationPayload) {
+        throw v004CraftCompleteError("CRAFT_COMPLETE_REQUEST_INVALID", "A Craft Complete request marker vagy reservation payload hiányzik.");
+      }
+      if (!/^[0-9a-f]{64}$/.test(source.reservationSnapshotHash || "") ||
+          source.reservationSnapshotHash !== source.verifiedReservationSnapshotHash ||
+          source.reservationCanonicalPayload !== v004CanonicalText(source.reservationPayload)) {
+        throw v004StaleReservationError("SNAPSHOT_HASH_MISMATCH");
+      }
+      var capability = buildV004ReservationCapability(source.reservationPayload);
+      if (capability.status !== "READY") {
+        throw v004CraftCompleteError(capability.blockerReason || "RESERVATION_NOT_COMPLETION_CAPABLE", "A reservation nem completion-capable.");
+      }
+      v004AssertCompletionQuantity(source.requestedQuantity, capability.maxCompletableQuantity);
+      return {
+        payload: source.reservationPayload,
+        capability: capability,
+        prefixPlan: buildV004ReservedPrefixPlan(source.reservationPayload, source.requestedQuantity)
+      };
+    }
+
+    function v004ValidateCurrentCraftCompletionState(request, currentCard, metaRecords, batches) {
+      var prepared = v004ValidatePreparedCompletionRequest(request);
+      var payload = prepared.payload;
+      if (!currentCard || currentCard.id !== payload.craftingCardId) {
+        throw v004StaleReservationError("CARD_IDENTITY_CHANGED");
+      }
+      var revisions = v004RevisionSnapshot(metaRecords);
+      if (revisions.inventoryRevision !== payload.inventoryRevision) { throw v004StaleReservationError("INVENTORY_REVISION_MISMATCH"); }
+      if (revisions.allocationRevision !== payload.allocationRevision) { throw v004StaleReservationError("ALLOCATION_REVISION_MISMATCH"); }
+      if (revisions.craftListRevision !== payload.craftListRevision) { throw v004StaleReservationError("CRAFT_LIST_REVISION_MISMATCH"); }
+      if (v004NormalizeCardRevision(currentCard) !== payload.cardRevision) { throw v004StaleReservationError("CARD_REVISION_MISMATCH"); }
+      if (currentCard.quantity !== payload.remainingQuantity || currentCard.order !== payload.cardPriorityOrder || currentCard.active === false) {
+        throw v004StaleReservationError("CARD_STATE_CHANGED");
+      }
+      if (currentCard.blueprintUuid !== payload.blueprintIdentity.uuid ||
+          (currentCard.blueprintCacheKey || null) !== (payload.blueprintIdentity.cacheKey || null) ||
+          currentCard.outputUuid !== payload.outputIdentity.uuid ||
+          (currentCard.outputItemUuid || currentCard.outputUuid) !== payload.outputIdentity.itemIdentity) {
+        throw v004StaleReservationError("CARD_ITEM_IDENTITY_CHANGED");
+      }
+      if ((currentCard.gameVersion || null) !== payload.activeStarCitizenDataVersion) {
+        throw v004StaleReservationError("ACTIVE_SC_DATA_VERSION_CHANGED");
+      }
+      if (currentCard.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM ||
+          payload.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM) {
+        throw v004CraftCompleteError(V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN, "A finished-item output semantics nem bizonyított.");
+      }
+
+      var currentRequirementById = new Map((currentCard.requirements || []).map(function (requirement) { return [requirement.id, requirement]; }));
+      var batchById = new Map((Array.isArray(batches) ? batches : []).map(function (batch) { return [batch.id, batch]; }));
+      var reservedByBatch = new Map();
+      payload.recipeSlots.forEach(function (slot, slotIndex) {
+        if (slot.sequence !== slotIndex || !Number.isSafeInteger(slot.perItemRequiredUnits) || slot.perItemRequiredUnits <= 0) {
+          throw v004StaleReservationError("RECIPE_SLOT_SEQUENCE_OR_UNITS_CHANGED");
+        }
+        var requirement = currentRequirementById.get(slot.stableSlotId);
+        if (!requirement || requirement.ingredientUuid !== slot.ingredientUuid || requirement.unit !== slot.unit ||
+            requirement.requiredQuantityUnits !== slot.perItemRequiredUnits || (requirement.qualityCapability || null) !== slot.qualityCapability) {
+          throw v004StaleReservationError("RECIPE_SLOT_EVIDENCE_CHANGED");
+        }
+        var slotReservedTotal = 0;
+        slot.reservedBatches.forEach(function (line, lineIndex) {
+          if (line.sequence !== lineIndex || line.canonicalMaterialUuid !== slot.canonicalMaterialUuid || !Number.isSafeInteger(line.allocatedUnits) || line.allocatedUnits <= 0) {
+            throw v004StaleReservationError("RESERVED_LINE_EVIDENCE_CHANGED");
+          }
+          var batch = batchById.get(line.batchId);
+          if (!batch) { throw v004StaleReservationError("RESERVED_BATCH_MISSING"); }
+          if (batch.materialUuid !== line.canonicalMaterialUuid) { throw v004StaleReservationError("RESERVED_BATCH_IDENTITY_CHANGED"); }
+          if (v004BatchSourceUuid(batch) !== line.sourceMaterialUuid) { throw v004StaleReservationError("RESERVED_BATCH_SOURCE_CHANGED"); }
+          if (batch.unit !== line.unit) { throw v004StaleReservationError("RESERVED_BATCH_UNIT_CHANGED"); }
+          if (v004BatchQuality(batch) !== line.quality) { throw v004StaleReservationError("RESERVED_BATCH_QUALITY_CHANGED"); }
+          if (!Number.isSafeInteger(batch.quantityUnits) || batch.quantityUnits !== line.batchQuantityUnits) {
+            throw v004StaleReservationError("RESERVED_BATCH_QUANTITY_CHANGED");
+          }
+          slotReservedTotal = v004ExactUnitAdd(slotReservedTotal, line.allocatedUnits, "RESERVATION_SLOT_TOTAL_OVERFLOW");
+          reservedByBatch.set(line.batchId, v004ExactUnitAdd(reservedByBatch.get(line.batchId) || 0, line.allocatedUnits, "RESERVATION_BATCH_TOTAL_OVERFLOW"));
+        });
+        if (slotReservedTotal !== slot.reservedTotalUnits) { throw v004StaleReservationError("RESERVATION_SLOT_TOTAL_CHANGED"); }
+      });
+      reservedByBatch.forEach(function (reservedUnits, batchId) {
+        if (reservedUnits > batchById.get(batchId).quantityUnits) { throw v004StaleReservationError("RESERVED_BATCH_INSUFFICIENT"); }
+      });
+      return {
+        payload: payload,
+        capability: prepared.capability,
+        prefixPlan: prepared.prefixPlan,
+        revisions: revisions,
+        historySequence: v004RevisionValue(metaRecords, V004_META_KEYS.historySequence),
+        batchById: batchById
+      };
+    }
+
+    function v004BuildConsumptionResult(validation, batches) {
+      var mutableById = new Map((Array.isArray(batches) ? batches : []).map(function (batch) { return [batch.id, m4Clone(batch)]; }));
+      var consumedDeltas = [];
+      var globalSequence = 0;
+      validation.prefixPlan.forEach(function (slotPlan) {
+        var snapshotSlot = validation.payload.recipeSlots[slotPlan.sequence];
+        slotPlan.lines.forEach(function (plannedLine) {
+          var snapshotLine = snapshotSlot.reservedBatches.find(function (line) {
+            return line.sequence === plannedLine.sequence && line.batchId === plannedLine.batchId;
+          });
+          var batch = mutableById.get(plannedLine.batchId);
+          if (!snapshotLine || !batch || !Number.isSafeInteger(plannedLine.consumedUnits) || plannedLine.consumedUnits <= 0 || plannedLine.consumedUnits > snapshotLine.allocatedUnits) {
+            throw v004StaleReservationError("CONSUMPTION_PREFIX_INVALID");
+          }
+          var beforeUnits = batch.quantityUnits;
+          var afterUnits = beforeUnits - plannedLine.consumedUnits;
+          if (!Number.isSafeInteger(afterUnits) || afterUnits < 0 || beforeUnits !== plannedLine.consumedUnits + afterUnits) {
+            throw v004CraftCompleteError("INVENTORY_CONSERVATION_FAILED", "A before = consumed + after invariáns sérült.");
+          }
+          consumedDeltas.push({
+            sequence: globalSequence,
+            recipeSlotSequence: snapshotSlot.sequence,
+            batchSequence: snapshotLine.sequence,
+            recipeSlotId: snapshotSlot.stableSlotId,
+            ingredientUuid: snapshotSlot.ingredientUuid,
+            canonicalMaterialUuid: snapshotSlot.canonicalMaterialUuid,
+            sourceMaterialUuid: snapshotLine.sourceMaterialUuid,
+            batchId: snapshotLine.batchId,
+            quality: snapshotLine.quality,
+            unit: snapshotLine.unit,
+            consumedUnits: plannedLine.consumedUnits,
+            beforeUnits: beforeUnits,
+            afterUnits: afterUnits,
+            reservedAllocatedUnits: snapshotLine.allocatedUnits,
+            allocationReason: snapshotLine.allocationReason,
+            preCraftBatchSnapshot: m4Clone(batch)
+          });
+          globalSequence += 1;
+          if (afterUnits === 0) {
+            mutableById.delete(batch.id);
+          } else {
+            batch.quantityUnits = afterUnits;
+            mutableById.set(batch.id, batch);
+          }
+        });
+      });
+      if (!consumedDeltas.length) {
+        throw v004CraftCompleteError("CONSUMPTION_EMPTY", "A Craft Complete nem tartalmaz exact consumed delta sort.");
+      }
+      return {
+        consumedDeltas: consumedDeltas,
+        materialBatches: Array.from(mutableById.values()).sort(compareStableIdentity)
+      };
+    }
+
+    function v004ValidateCraftHistoryEvent(event) {
+      if (!event || event.eventSchema !== V004_CRAFT_HISTORY_EVENT_SCHEMA || event.status !== "COMPLETED" || event.undoTimestamp !== null ||
+          !event.craftTransactionId || !Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId ||
+          !Number.isSafeInteger(event.completedQuantity) || event.completedQuantity < 1 ||
+          !Number.isSafeInteger(event.remainingBefore) || !Number.isSafeInteger(event.remainingAfter) ||
+          event.remainingBefore !== event.completedQuantity + event.remainingAfter ||
+          !/^[0-9a-f]{64}$/.test(event.reservationSnapshotHash || "") || event.reservationSnapshotSchema !== V004_RESERVATION_SNAPSHOT_MARKER ||
+          !event.preCraftCardSnapshot || !Array.isArray(event.consumedDeltas) || !event.consumedDeltas.length) {
+        throw v004CraftCompleteError("CRAFT_HISTORY_EVENT_INVALID", "A Craft History event kötelező mezői érvénytelenek.");
+      }
+      event.consumedDeltas.forEach(function (line, index) {
+        if (line.sequence !== index || !line.recipeSlotId || !line.canonicalMaterialUuid || !line.batchId || !line.unit ||
+            !Number.isSafeInteger(line.consumedUnits) || line.consumedUnits <= 0 ||
+            !Number.isSafeInteger(line.beforeUnits) || !Number.isSafeInteger(line.afterUnits) ||
+            line.beforeUnits !== line.consumedUnits + line.afterUnits) {
+          throw v004CraftCompleteError("CRAFT_HISTORY_DELTA_INVALID", "A Craft History exact delta sora érvénytelen.");
+        }
+      });
+      return event;
+    }
+
+    function v004BuildCraftCompletionMutation(request, currentCard, currentCards, metaRecords, batches, timestamp) {
+      var validation = v004ValidateCurrentCraftCompletionState(request, currentCard, metaRecords, batches);
+      var remainingAfter = currentCard.quantity - request.requestedQuantity;
+      if (!Number.isSafeInteger(remainingAfter) || remainingAfter < 0) {
+        throw v004CraftCompleteError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A Card remaining quantity nem maradhat negatív vagy tört.");
+      }
+      var inventoryRevisionAfter = v004NextRevision(validation.revisions.inventoryRevision, V004_META_KEYS.inventoryRevision);
+      var allocationRevisionAfter = v004NextRevision(validation.revisions.allocationRevision, V004_META_KEYS.allocationRevision);
+      var craftListRevisionAfter = v004NextRevision(validation.revisions.craftListRevision, V004_META_KEYS.craftListRevision);
+      var historySequenceAfter = v004NextRevision(validation.historySequence, V004_META_KEYS.historySequence);
+      var cardRevisionBefore = v004NormalizeCardRevision(currentCard);
+      var cardRevisionAfter = v004NextRevision(cardRevisionBefore, "cardRevision:" + currentCard.id);
+      var consumption = v004BuildConsumptionResult(validation, batches);
+      var touchedBatchIds = new Set(consumption.consumedDeltas.map(function (line) { return line.batchId; }));
+      consumption.materialBatches = consumption.materialBatches.map(function (batch) {
+        return touchedBatchIds.has(batch.id) ? Object.assign({}, batch, { updatedAt: timestamp }) : batch;
+      });
+      var shiftedCardRevisions = [];
+      var nextCards;
+      if (remainingAfter > 0) {
+        nextCards = currentCards.map(function (card) {
+          return card.id === currentCard.id
+            ? Object.assign({}, card, { quantity: remainingAfter, cardRevision: cardRevisionAfter, updatedAt: timestamp })
+            : m4Clone(card);
+        });
+      } else {
+        nextCards = currentCards.filter(function (card) { return card.id !== currentCard.id; }).sort(function (a, b) {
+          return Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id));
+        }).map(function (card, index) {
+          var normalized = m4Clone(card);
+          if (normalized.order !== index) {
+            var beforeRevision = v004NormalizeCardRevision(normalized);
+            normalized.order = index;
+            normalized.cardRevision = v004NextRevision(beforeRevision, "cardRevision:" + normalized.id);
+            normalized.updatedAt = timestamp;
+            shiftedCardRevisions.push({ id: normalized.id, before: beforeRevision, after: normalized.cardRevision });
+          }
+          return normalized;
+        });
+      }
+      nextCards.sort(function (a, b) { return Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id)); });
+      var historyEvent = v004ValidateCraftHistoryEvent({
+        eventSchema: V004_CRAFT_HISTORY_EVENT_SCHEMA,
+        craftTransactionId: request.craftTransactionId,
+        historySequence: historySequenceAfter,
+        craftingCardId: currentCard.id,
+        blueprintIdentity: m4Clone(validation.payload.blueprintIdentity),
+        outputIdentity: m4Clone(validation.payload.outputIdentity),
+        itemName: currentCard.outputName || currentCard.outputLabel || currentCard.outputUuid,
+        completedQuantity: request.requestedQuantity,
+        remainingBefore: currentCard.quantity,
+        remainingAfter: remainingAfter,
+        originalOrder: currentCard.order,
+        originalPriority: currentCard.order + 1,
+        inventoryRevisionBefore: validation.revisions.inventoryRevision,
+        inventoryRevisionAfter: inventoryRevisionAfter,
+        allocationRevisionBefore: validation.revisions.allocationRevision,
+        allocationRevisionUsed: validation.payload.allocationRevision,
+        allocationRevisionAfter: allocationRevisionAfter,
+        cardRevisionBefore: cardRevisionBefore,
+        cardRevisionAfter: cardRevisionAfter,
+        craftListRevisionBefore: validation.revisions.craftListRevision,
+        craftListRevisionAfter: craftListRevisionAfter,
+        reservationSnapshotHash: request.reservationSnapshotHash,
+        reservationSnapshotSchema: V004_RESERVATION_SNAPSHOT_MARKER,
+        reservationSnapshot: m4Clone(validation.payload),
+        consumedDeltas: consumption.consumedDeltas,
+        timestamp: timestamp,
+        status: "COMPLETED",
+        undoTimestamp: null,
+        preCraftCardSnapshot: m4Clone(currentCard),
+        cardRemoved: remainingAfter === 0,
+        shiftedCardRevisions: shiftedCardRevisions,
+        inventoryConservation: "BEFORE_EQUALS_CONSUMED_PLUS_AFTER_ZERO_UNIT_LOSS",
+        restoredBatches: []
+      });
+      return {
+        materialBatches: consumption.materialBatches,
+        userInventory: v004BuildUserInventoryAggregates(consumption.materialBatches, timestamp),
+        craftingCards: nextCards,
+        historyEvent: historyEvent,
+        revisions: {
+          inventoryRevision: inventoryRevisionAfter,
+          allocationRevision: allocationRevisionAfter,
+          craftListRevision: craftListRevisionAfter,
+          historySequence: historySequenceAfter
+        },
+        cardRemoved: remainingAfter === 0
+      };
+    }
+    /* V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL_END */
 
     /* M4_COMBINED_BACKUP_MODEL_START */
     var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
@@ -12425,6 +13015,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.craftHistory.forEach(function (event) {
         if (!Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId || (event.status !== "COMPLETED" && event.status !== "UNDONE")) {
           throw m4BackupError("INVALID_CRAFT_HISTORY", "Érvénytelen Craft History esemény: " + event.craftTransactionId);
+        }
+        if (event.status === "COMPLETED" && event.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA) {
+          try {
+            v004ValidateCraftHistoryEvent(event);
+          } catch (error) {
+            throw m4BackupError("INVALID_CRAFT_HISTORY", "A Craft History exact completion event sérült: " + event.craftTransactionId);
+          }
         }
       });
       var allowedMetaKeys = new Set(Object.keys(V004_META_KEYS).map(function (name) { return V004_META_KEYS[name]; }));
@@ -17073,12 +17670,201 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         QUALITY_POLICY_MUTATION: "Quality beállítás változott",
         USER_DATA_IMPORT: "Import után explicit Reallocate szükséges",
         V003_MIGRATION: "Migráció után explicit Reallocate szükséges",
+        CRAFT_COMPLETE_REQUIRES_REALLOCATION: "Craft Complete után explicit Reallocate szükséges",
+        STALE_RESERVATION: "A reservation megváltozott – Reallocate szükséges",
         RESERVATION_EVIDENCE_CHANGED: "Reserved batch vagy revision megváltozott",
         HASH_UNAVAILABLE: "SHA-256 nem érhető el",
         RESERVATION_ALLOCATION_INCOMPLETE: "Az allocation nem teljes",
         OUTPUT_COUNT_UNPROVEN: "MAX blokkolva: OUTPUT_COUNT_UNPROVEN"
       };
       return labels[reason] || reason || "";
+    }
+
+    function createV004CraftTransactionId() {
+      return makeId("craft");
+    }
+
+    async function prepareV004CraftCompletionRequest(cardId, requestedQuantity, craftTransactionId) {
+      var card = state.craftingCards.find(function (item) { return item.id === cardId; });
+      if (!card) { throw v004StaleReservationError("CARD_IDENTITY_CHANGED"); }
+      var reservation = currentReservationEntry(card);
+      if (reservation.status !== V004_RESERVATION_STATUS.VALID || !reservation.payload || !reservation.hash) {
+        throw v004StaleReservationError(reservation.reason || "EXPLICIT_REALLOCATION_REQUIRED");
+      }
+      if (!v004ReservationMatchesCurrentState(reservation, card, state.revisions, state.materialBatches, resolveActiveScVersion(state))) {
+        throw v004StaleReservationError("RESERVATION_EVIDENCE_CHANGED");
+      }
+      var capability = reservation.capability || buildV004ReservationCapability(reservation.payload);
+      if (capability.status !== "READY") {
+        throw v004CraftCompleteError(capability.blockerReason || "RESERVATION_NOT_COMPLETION_CAPABLE", "A Card nem completion-capable.");
+      }
+      var quantity = typeof requestedQuantity === "number" ? requestedQuantity : Number(requestedQuantity);
+      v004AssertCompletionQuantity(quantity, capability.maxCompletableQuantity);
+      var verifiedHash = await hashV004ReservationPayload(reservation.payload);
+      if (verifiedHash !== reservation.hash) {
+        throw v004StaleReservationError("SNAPSHOT_HASH_MISMATCH");
+      }
+      var request = {
+        marker: V004_CRAFT_COMPLETE_REQUEST_MARKER,
+        craftTransactionId: craftTransactionId || createV004CraftTransactionId(),
+        requestedQuantity: quantity,
+        reservationPayload: m4Clone(reservation.payload),
+        reservationCanonicalPayload: v004CanonicalText(reservation.payload),
+        reservationSnapshotHash: reservation.hash,
+        verifiedReservationSnapshotHash: verifiedHash,
+        preparedAt: nowIso()
+      };
+      v004ValidatePreparedCompletionRequest(request);
+      return request;
+    }
+
+    function v004CompletionConfirmationLines(request) {
+      var prepared = v004ValidatePreparedCompletionRequest(request);
+      var result = [];
+      prepared.prefixPlan.forEach(function (slotPlan) {
+        var slot = prepared.payload.recipeSlots[slotPlan.sequence];
+        slotPlan.lines.forEach(function (plannedLine) {
+          var snapshotLine = slot.reservedBatches.find(function (line) {
+            return line.sequence === plannedLine.sequence && line.batchId === plannedLine.batchId;
+          });
+          result.push({
+            recipeSlotId: slot.stableSlotId,
+            canonicalMaterialUuid: slot.canonicalMaterialUuid,
+            sourceMaterialUuid: snapshotLine.sourceMaterialUuid,
+            batchId: snapshotLine.batchId,
+            quality: snapshotLine.quality,
+            unit: snapshotLine.unit,
+            consumedUnits: plannedLine.consumedUnits,
+            allocationReason: snapshotLine.allocationReason
+          });
+        });
+      });
+      return result;
+    }
+
+    function renderV004CraftCompletionConfirmation(card, request) {
+      var payload = request.reservationPayload;
+      setText("craftCompletionItemName", card.outputName || card.outputLabel || card.outputUuid);
+      setText("craftCompletionRequestedQuantity", request.requestedQuantity);
+      setText("craftCompletionRemainingBefore", payload.remainingQuantity);
+      setText("craftCompletionRemainingAfter", payload.remainingQuantity - request.requestedQuantity);
+      var list = document.getElementById("craftCompletionMaterialLines");
+      list.replaceChildren();
+      v004CompletionConfirmationLines(request).forEach(function (line) {
+        var item = document.createElement("li");
+        var quality = line.quality === null ? "Quality nélkül" : "Q" + line.quality;
+        var requirement = (card.requirements || []).find(function (entry) { return entry.id === line.recipeSlotId; });
+        var materialName = requirement && requirement.materialName || line.canonicalMaterialUuid;
+        item.textContent = materialName + " · " + quality + " · batch " + line.batchId + " · " +
+          formatInventoryUnits(line.unit, line.consumedUnits) + " · " + line.consumedUnits + " unit";
+        item.dataset.recipeSlotId = line.recipeSlotId;
+        item.dataset.batchId = line.batchId;
+        item.dataset.consumedUnits = String(line.consumedUnits);
+        list.append(item);
+      });
+      var notice = document.getElementById("craftCompletionDialogNotice");
+      notice.textContent = "";
+      notice.dataset.tone = "neutral";
+    }
+
+    async function openV004CraftCompletionConfirmation(cardId, requestedQuantity) {
+      var card = state.craftingCards.find(function (item) { return item.id === cardId; });
+      var request = await prepareV004CraftCompletionRequest(cardId, requestedQuantity);
+      state.pendingCraftCompletion = { cardId: cardId, request: request };
+      renderV004CraftCompletionConfirmation(card, request);
+      var dialog = document.getElementById("craftCompletionDialog");
+      if (!dialog.open) { dialog.showModal(); }
+      document.body.dataset.craftCompletionState = "CONFIRMING";
+      return request;
+    }
+
+    function cancelV004CraftCompletionConfirmation() {
+      state.pendingCraftCompletion = null;
+      var dialog = document.getElementById("craftCompletionDialog");
+      if (dialog.open) { dialog.close(); }
+      document.body.dataset.craftCompletionState = "CANCELLED";
+    }
+
+    function applyV004CraftCompletionResult(result) {
+      state.materialBatches = result.materialBatches;
+      state.craftingCards = result.craftingCards.map(function (card, index) { return normalizeStoredCraftingCard(card, index); });
+      state.craftHistory = state.craftHistory.filter(function (event) {
+        return event.craftTransactionId !== result.historyEvent.craftTransactionId;
+      }).concat(m4Clone(result.historyEvent)).sort(function (a, b) {
+        return Number(a.historySequence || 0) - Number(b.historySequence || 0) || String(a.craftTransactionId).localeCompare(String(b.craftTransactionId));
+      });
+      syncV004RevisionState(result.userMeta);
+      resetRuntimeReservationSnapshots("CRAFT_COMPLETE_REQUIRES_REALLOCATION");
+      state.allocationResult = null;
+      state.combinedMaterials = [];
+      updateKnownMaterials();
+      renderCraftingCards();
+      renderMaterialInventory();
+      renderCombinedMaterials();
+      document.body.dataset.materialBatchCount = String(state.materialBatches.length);
+      document.body.dataset.craftingCardCount = String(state.craftingCards.length);
+      document.body.dataset.craftHistoryCount = String(state.craftHistory.length);
+      document.body.dataset.craftCompletionState = "COMPLETED";
+    }
+
+    async function commitPreparedV004CraftCompletion(request, options) {
+      var result = await userDataRepository.completeCraft(request, options);
+      applyV004CraftCompletionResult(result);
+      return result;
+    }
+
+    async function confirmV004CraftCompletion() {
+      if (!state.pendingCraftCompletion) {
+        throw v004CraftCompleteError("CRAFT_COMPLETE_CONFIRMATION_MISSING", "Nincs megerősítésre váró Craft Complete művelet.");
+      }
+      var pending = state.pendingCraftCompletion;
+      var result = await commitPreparedV004CraftCompletion(pending.request);
+      state.pendingCraftCompletion = null;
+      var dialog = document.getElementById("craftCompletionDialog");
+      if (dialog.open) { dialog.close(); }
+      setNotice(result.historyEvent.itemName + " · " + result.historyEvent.completedQuantity + " DB legyártása rögzítve. Új Reallocate szükséges.", "success");
+      return result;
+    }
+
+    function renderV004CraftCompletionControls(card, reservation) {
+      var capability = reservation && reservation.capability || { status: "BLOCKED", maxCompletableQuantity: 0, blockerReason: "EXPLICIT_REALLOCATION_REQUIRED" };
+      var ready = reservation && reservation.status === V004_RESERVATION_STATUS.VALID && capability.status === "READY";
+      var wrapper = document.createElement("div");
+      wrapper.className = "spg-v004-completion-controls";
+      wrapper.dataset.cardId = card.id;
+      wrapper.dataset.completionReady = ready ? "true" : "false";
+      var label = document.createElement("label");
+      label.textContent = "Kész darabszám";
+      var input = document.createElement("input");
+      input.type = "number";
+      input.min = "1";
+      input.step = "1";
+      input.inputMode = "numeric";
+      input.value = "1";
+      input.disabled = !ready;
+      input.className = "spg-v004-completion-quantity";
+      input.setAttribute("aria-label", card.outputName + " legyártott darabszám");
+      label.append(input);
+      var maxButton = createC012CardAction("MAX", card.outputName + " jelenlegi reservation MAX kitöltése", function () {
+        input.value = String(capability.maxCompletableQuantity);
+        wrapper.dataset.maxApplied = "true";
+      }, !ready, "spg-v004-completion-max");
+      var completeButton = createC012CardAction("Legyártva", card.outputName + " Craft Complete megerősítése", function () {
+        completeButton.disabled = true;
+        openV004CraftCompletionConfirmation(card.id, input.value).catch(function (error) {
+          if (error.code === "STALE_RESERVATION") { markReservationSnapshotsStale(error.detail || error.code); renderCraftingCards(); }
+          setNotice("Craft Complete blokkolva: " + (error.code || error.message), "error");
+          document.body.dataset.craftCompletionState = error.code || "BLOCKED";
+        }).finally(function () {
+          completeButton.disabled = !ready;
+        });
+      }, !ready, "spg-v004-completion-open");
+      var blocker = document.createElement("p");
+      blocker.className = "spg-v004-completion-blocker";
+      blocker.textContent = ready ? "A végrehajtás csak megerősítés után, az exact látható reservationből történik." :
+        (capability.blockerReason || reservationReasonText(reservation) || "Explicit Reallocate szükséges.");
+      wrapper.append(label, maxButton, completeButton, blocker);
+      return wrapper;
     }
 
     async function reallocateCraftingList() {
@@ -17286,7 +18072,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             return updateRecipeSlotQualityPoolAssignment(card.id, requirement.recipeSlotId, mode);
           }
         });
-        wrapper.append(management, finalCard);
+        wrapper.append(management, renderV004CraftCompletionControls(card, reservation), finalCard);
         if (!card.collapsed) {
           wrapper.append(renderCraftingCardQualityControls(card, cardResult, cardViewModel));
         }
@@ -21273,6 +22059,36 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     });
 
+    document.getElementById("cancelCraftCompletionButton").addEventListener("click", function () {
+      cancelV004CraftCompletionConfirmation();
+      setNotice("A Craft Complete megerősítése megszakítva; adat nem változott.", "neutral");
+    });
+
+    document.getElementById("craftCompletionDialog").addEventListener("cancel", function (event) {
+      event.preventDefault();
+      cancelV004CraftCompletionConfirmation();
+      setNotice("A Craft Complete megerősítése megszakítva; adat nem változott.", "neutral");
+    });
+
+    document.getElementById("confirmCraftCompletionButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      var notice = document.getElementById("craftCompletionDialogNotice");
+      notice.textContent = "Exact reservation és durable állapot ellenőrzése…";
+      notice.dataset.tone = "neutral";
+      confirmV004CraftCompletion().catch(function (error) {
+        if (error.code === "STALE_RESERVATION") {
+          markReservationSnapshotsStale(error.detail || error.code);
+          renderCraftingCards();
+        }
+        notice.textContent = "Blokkolva: " + (error.code || error.message) + ". Adat nem változott.";
+        notice.dataset.tone = "error";
+        document.body.dataset.craftCompletionState = error.code || "BLOCKED";
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
     document.getElementById("materialBatchForm").addEventListener("submit", function (event) {
       event.preventDefault();
       var button = document.getElementById("saveMaterialBatchButton");
@@ -21431,6 +22247,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       deleteCraftingCard: deleteCraftingCard,
       persistMaterialBatches: persistMaterialBatches,
       reallocateCraftingList: reallocateCraftingList,
+      prepareCraftCompletion: prepareV004CraftCompletionRequest,
+      openCraftCompletionConfirmation: openV004CraftCompletionConfirmation,
+      cancelCraftCompletionConfirmation: cancelV004CraftCompletionConfirmation,
+      commitPreparedCraftCompletion: commitPreparedV004CraftCompletion,
+      confirmCraftCompletion: confirmV004CraftCompletion,
       v004RevisionReservation: Object.freeze({
         snapshotMarker: V004_RESERVATION_SNAPSHOT_MARKER,
         reservationStatus: V004_RESERVATION_STATUS,
@@ -21445,6 +22266,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         buildReservedPrefixPlan: buildV004ReservedPrefixPlan,
         matchesCurrentState: v004ReservationMatchesCurrentState,
         prepareImport: prepareV004RevisionAwareImport
+      }),
+      v004CraftComplete: Object.freeze({
+        requestMarker: V004_CRAFT_COMPLETE_REQUEST_MARKER,
+        historyEventSchema: V004_CRAFT_HISTORY_EVENT_SCHEMA,
+        assertTransactionId: v004AssertCraftTransactionId,
+        assertQuantity: v004AssertCompletionQuantity,
+        buildInventoryAggregates: v004BuildUserInventoryAggregates,
+        validatePreparedRequest: v004ValidatePreparedCompletionRequest,
+        validateCurrentState: v004ValidateCurrentCraftCompletionState,
+        buildConsumptionResult: v004BuildConsumptionResult,
+        validateHistoryEvent: v004ValidateCraftHistoryEvent,
+        buildMutation: v004BuildCraftCompletionMutation,
+        confirmationLines: v004CompletionConfirmationLines
       }),
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,

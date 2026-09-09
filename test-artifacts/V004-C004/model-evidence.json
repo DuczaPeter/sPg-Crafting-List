@@ -1,0 +1,96 @@
+{
+  "cycle": "V004-C004",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99",
+  "sourceFixture": "tests/fixtures/v004-c003-reservation.json",
+  "sourceFixtureEvidence": "PER_FINISHED_ITEM_NORMALIZED_EXACT",
+  "transaction": {
+    "stores": [
+      "materialBatches",
+      "userInventory",
+      "craftingCards",
+      "craftHistory",
+      "userMeta"
+    ],
+    "resolvesOn": "transaction.oncomplete",
+    "historyWrite": "add",
+    "duplicateStatus": "ALREADY_COMPLETED",
+    "injectedFailureStatus": "SIMULATED_CRAFT_COMPLETE_ABORT"
+  },
+  "partial": {
+    "requestedQuantity": 4,
+    "remainingBefore": 5,
+    "remainingAfter": 1,
+    "prefixDeltas": [
+      {
+        "batchId": "batch-alpha-first",
+        "consumedUnits": 30
+      },
+      {
+        "batchId": "batch-alpha-second",
+        "consumedUnits": 10
+      },
+      {
+        "batchId": "batch-beta",
+        "consumedUnits": 60
+      }
+    ],
+    "proportionalRedistribution": false
+  },
+  "full": {
+    "cardRemoved": true,
+    "preCraftCardStored": true,
+    "originalOrder": 0,
+    "shiftedCardRevision": {
+      "id": "card-c003-second",
+      "before": 6,
+      "after": 7
+    }
+  },
+  "conservation": {
+    "invariant": "beforeUnits = consumedUnits + afterUnits",
+    "toleranceUnits": 0,
+    "oneUnitRemainder": 1,
+    "roundingCallsInC004Model": 0
+  },
+  "revisions": {
+    "inventoryRevision": 5,
+    "allocationRevision": 8,
+    "craftListRevision": 3,
+    "historySequence": 1
+  },
+  "staleReasons": [
+    "INVENTORY_REVISION_MISMATCH",
+    "ALLOCATION_REVISION_MISMATCH",
+    "CRAFT_LIST_REVISION_MISMATCH",
+    "CARD_REVISION_MISMATCH",
+    "RESERVED_BATCH_QUALITY_CHANGED",
+    "RESERVED_BATCH_QUANTITY_CHANGED",
+    "RESERVED_BATCH_IDENTITY_CHANGED",
+    "RESERVED_BATCH_SOURCE_CHANGED",
+    "SNAPSHOT_HASH_MISMATCH"
+  ],
+  "outputCountBlocker": "OUTPUT_COUNT_UNPROVEN",
+  "history": {
+    "eventSchema": "V004_CRAFT_HISTORY_EVENT_1",
+    "status": "COMPLETED",
+    "deltaCount": 3,
+    "undoTimestamp": null
+  },
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJs": true,
+    "localScriptSrc": 0,
+    "localStylesheetDependency": 0,
+    "localRuntimeJsonDependency": 0,
+    "fixtureRuntimeImport": 0,
+    "localRuntimeSidecars": 0,
+    "applicationRuntimeFileCount": 1
+  },
+  "exclusions": {
+    "historyUi": "NOT_IMPLEMENTED",
+    "undo": "NOT_IMPLEMENTED",
+    "redo": "NOT_IMPLEMENTED",
+    "broadcastChannel": "NOT_IMPLEMENTED"
+  }
+}

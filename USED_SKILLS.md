@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C004 Atomic Craft Complete Core
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a bounded C003-resume, authenticated remote fetch, célzott C004 implementáció, Chrome-kapu és helyi checkpoint során.
+- Mire segített: minimális állapotbetöltés, teljes regresszió elkerülése, exact scope, protected release-védelem és hitelesített GitHub baseline.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file Craft Complete runtime, C004 tools/evidence/report és projektmeta; skillfájl, V001–V003 release/tag/remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C003 Revision + Reservation Snapshot Infrastructure
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

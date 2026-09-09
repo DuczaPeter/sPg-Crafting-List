@@ -1,0 +1,182 @@
+{
+  "cycle": "V004-C004",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99",
+  "browser": "Google Chrome",
+  "origin": "http://127.0.0.1:64228",
+  "sourceFixture": "tests/fixtures/v004-c003-reservation.json",
+  "startup": {
+    "status": "PASS",
+    "app": {
+      "name": "sPg Crafting List",
+      "version": "V004-dev",
+      "schemaVersion": 7,
+      "cacheSchemaVersion": 4,
+      "dbName": "spg-crafting-list-v004",
+      "dbVersion": 1,
+      "apiBase": "https://api.star-citizen.wiki/api",
+      "uexRefineryEndpoint": "https://api.uexcorp.uk/2.0/refineries_yields",
+      "uexRefineryTtlMs": 86400000,
+      "uexRefineryDocumentedLimit": 500,
+      "sessionLogKey": "spgCraftingList.sessionLog.v1",
+      "maxLogProcesses": 30,
+      "maxLogBytes": 240000,
+      "requestTimeoutMs": 20000,
+      "blueprintPageSize": 200,
+      "maxBlueprintPages": 100,
+      "miningPageSize": 200,
+      "maxMiningPages": 20,
+      "backupFormat": "spg-crafting-list-backup",
+      "backupSchemaVersion": 3
+    },
+    "revisions": {
+      "allocationRevision": 0,
+      "craftListRevision": 0,
+      "historySequence": 0,
+      "inventoryRevision": 0
+    },
+    "baseUi": "PASS"
+  },
+  "confirmation": {
+    "status": "PASS",
+    "defaultQuantity": 1,
+    "maxFilled": 21,
+    "maxWrites": 0,
+    "cancelWrites": 0,
+    "lines": [
+      {
+        "text": "C004 Exact Material · Q620 · batch batch-c004-01-q620 · 2 SCU · 20000 unit",
+        "batchId": "batch-c004-01-q620",
+        "consumedUnits": 20000
+      },
+      {
+        "text": "C004 Exact Material · Q745 · batch batch-c004-02-q745 · 3 SCU · 30000 unit",
+        "batchId": "batch-c004-02-q745",
+        "consumedUnits": 30000
+      }
+    ]
+  },
+  "partialCompletion": {
+    "status": "PASS",
+    "completedQuantity": 5,
+    "remainingBefore": 21,
+    "remainingAfter": 16,
+    "batchesAfter": [
+      {
+        "id": "batch-c004-03-q910",
+        "quantityUnits": 160001,
+        "quality": 910
+      }
+    ],
+    "historyDeltas": [
+      {
+        "batchId": "batch-c004-01-q620",
+        "consumedUnits": 20000,
+        "beforeUnits": 20000,
+        "afterUnits": 0
+      },
+      {
+        "batchId": "batch-c004-02-q745",
+        "consumedUnits": 30000,
+        "beforeUnits": 30000,
+        "afterUnits": 0
+      }
+    ],
+    "revisions": {
+      "inventoryRevision": 2,
+      "craftListRevision": 2,
+      "allocationRevision": 3,
+      "historySequence": 1
+    },
+    "reservationAfter": "STALE",
+    "automaticReallocate": false
+  },
+  "staleReservation": {
+    "status": "PASS",
+    "code": "STALE_RESERVATION",
+    "firstReservedBatchChanged": true,
+    "fallbackBatchPresent": true,
+    "fallbackConsumed": false,
+    "writesByAttempt": 0
+  },
+  "idempotency": {
+    "status": "PASS",
+    "replayCode": "ALREADY_COMPLETED",
+    "historyEvents": 1,
+    "secondDeduction": false,
+    "secondCardChange": false
+  },
+  "atomicRollback": {
+    "status": "PASS",
+    "failures": [
+      {
+        "stage": "AFTER_BATCH_DEDUCTION",
+        "code": "SIMULATED_CRAFT_COMPLETE_ABORT",
+        "allStoresUnchanged": true
+      },
+      {
+        "stage": "BEFORE_HISTORY_ADD",
+        "code": "SIMULATED_CRAFT_COMPLETE_ABORT",
+        "allStoresUnchanged": true
+      },
+      {
+        "stage": "AFTER_CARD_UPDATE",
+        "code": "SIMULATED_CRAFT_COMPLETE_ABORT",
+        "allStoresUnchanged": true
+      },
+      {
+        "stage": "BEFORE_META_UPDATE",
+        "code": "SIMULATED_CRAFT_COMPLETE_ABORT",
+        "allStoresUnchanged": true
+      }
+    ]
+  },
+  "fullCompletion": {
+    "status": "PASS",
+    "completedQuantity": 16,
+    "cardRemoved": true,
+    "oneUnitRemainder": 1,
+    "historyEvents": 2,
+    "finalDelta": {
+      "batchId": "batch-c004-03-q910",
+      "consumedUnits": 160000,
+      "beforeUnits": 160001,
+      "afterUnits": 1
+    },
+    "revisions": {
+      "inventoryRevision": 3,
+      "craftListRevision": 3,
+      "allocationRevision": 4,
+      "historySequence": 2
+    },
+    "reservationAfter": "ABSENT"
+  },
+  "reloadGate": {
+    "status": "PASS",
+    "inventoryUnits": 1,
+    "activeCards": 0,
+    "historyEvents": 2,
+    "revisions": {
+      "inventoryRevision": 3,
+      "craftListRevision": 3,
+      "allocationRevision": 4,
+      "historySequence": 2
+    },
+    "reservationAutomaticallyValid": false
+  },
+  "outputCountBlocker": {
+    "status": "PASS",
+    "code": "OUTPUT_COUNT_UNPROVEN",
+    "confirmationReachable": false
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "dbName": "spg-crafting-list-v004",
+    "dbVersion": 1,
+    "historyCount": 0,
+    "sourceDbExists": false,
+    "consoleErrors": []
+  },
+  "applicationOriginConsoleErrors": []
+}

@@ -206,3 +206,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A canonical payload szemantikai tömbsorrendet megőriz, objektumkulcsokat stabilan rendez, és a Card/revision/item/version/recipe slot/reserved batch exact evidence-et tartalmazza. Display label és collapse nem identity.
 - Hash kizárólag Web Crypto SHA-256, lowercase hex. Crypto hiányakor nincs gyengébb fallback: `HASH_UNAVAILABLE` és BLOCKED.
 - MAX és partial prefix csak a Cardon látható reservationből vezethető le; completion-time reallocation vagy más eligible batch fallback később sem engedélyezhető.
+
+## 2026-09-09 - V004-C004 atomic completion commit contract
+
+- A completion confirmation önmagában nem módosít durable állapotot. A `MAX` csak inputkitöltés; a `Mégse` nulla írás.
+- A commit az összes snapshotban reserved entryt újraellenőrzi akkor is, ha a partial kérés csak prefixet fogyasztana. Bármely eltérés `STALE_RESERVATION`, nulla írás és explicit Reallocate.
+- A batch deduction, derived inventory aggregate, Card update/removal, append-only History `add()` és revision/meta update ugyanazon öt-store readwrite tranzakció része; siker csak `transaction.oncomplete` után.
+- A `craftTransactionId` a durable idempotenciakulcs. Replay `ALREADY_COMPLETED`, második levonás és második event nélkül.
+- A completed History event megőrzi a full reservation snapshotot/hashét, exact batch-deltákat, pre-craft Cardot és before/after revisionöket. Ez a későbbi Undo alapja, de Undo és History UI nem C004 scope.
+- Sikeres completion után nincs automatikus allocation. Partial Card reservationje stale, full eltávolítás után absent; további craft előtt explicit Reallocate kell.

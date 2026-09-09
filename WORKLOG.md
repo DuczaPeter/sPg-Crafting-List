@@ -42,3 +42,15 @@ Current cycle/session notes only. Previous raw log archived losslessly at `logs/
 - Single-file runtime sidecar 0; V001/V002/V003/tag/artifact változatlan; Complete/deduction/History/Undo/Broadcast nincs; push nincs.
 - Riport: `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`.
 - Visszaállás: a C003 checkpoint normál revertje; V003 és a release-ek nem igényelnek rollbacket.
+
+## 2026-09-09 — V004-C004 Atomic Craft Complete Core
+
+- Baseline: clean `develop/V004 @ 4a65c6a...`; authenticated fetch után `origin/main 0a83e44...` változatlan; Git-folyamat nincs.
+- Card completion egész output-darabszám/default 1/fill-only MAX, exact confirmation és cancel 0 write UI-val elkészült.
+- Completion az összes current reserved entryt, revisiont, Card/slot/identity/source/Q/unit adatot fail-closed módon ellenőrzi; stale esetben fallback nélkül blokkol.
+- Öt-store atomi IndexedDB commit készült exact prefix-deductionnel, derived inventoryval, partial/full Card update-tel, History `add()` eventtel és revisionökkel.
+- `craftTransactionId` replay `ALREADY_COMPLETED`; négy injected failure minden store-t teljesen rollbackelt.
+- Exact conservation és 1-unit maradék reload után PASS; output-count-unproven confirmation előtt blokkol.
+- Célzott baseline/model + valódi Chrome partial/full/stale/replay/rollback/reload/direct file PASS; console/page error 0; full regression nem futott.
+- Single-file sidecar 0; V001/V002/V003/tag/artifact változatlan; History UI/Undo/Redo/Broadcast nincs; push nincs.
+- Riport: `docs/V004_C004_ATOMIC_CRAFT_COMPLETE_REPORT.md`; visszaállás normál C004 commit-reverttel.

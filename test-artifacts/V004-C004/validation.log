@@ -1,0 +1,26 @@
+V004-C004 targeted atomic Craft Complete core validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS 68feca9c0c30feef51c4d38814b0c94e07176f9cec2137d44874124b533ca049 124518 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c004-targeted-model=PASS
+V004_C004_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004\model-evidence.json
+c004-targeted-chrome=PASS
+V004_C004_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C004\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/test-plan.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_ATOMIC_CRAFT_COMPLETE_CORE
+applicationSha256=33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+directFileGate=PASS_AUTOMATED
+fullRegression=NOT_RUN_BY_SCOPE

@@ -253,6 +253,15 @@
 - `test-artifacts/V004-C003/`: model-, Chrome-, validation- és target-summary evidence.
 - `docs/V004_C003_REVISION_RESERVATION_SNAPSHOT_REPORT.md`: C003 kontraktus, scope, tesztek és rollback riport.
 
+## V004-C004 atomic Craft Complete core
+
+- `sPg Crafting List.html`: Card completion input/MAX/confirmation UI, exact reservation validation és öt-store atomi IndexedDB commit.
+- `tools/run-v004-c004-tests.mjs`: partial/full prefix, exact conservation, stale/idempotencia/History/revision és single-file modellkapu.
+- `tools/run-v004-c004-browser-tests.mjs`: valódi Chrome cancel/MAX, partial/full, replay, stale/fallback-tiltás, rollback, reload, output blocker és direct `file://` kapu.
+- `tools/validate-v004-c004.ps1`: bounded C004 validator, Chrome-kötelezettség, current-byte evidence és V001/V002/V003 integritáskapu.
+- `test-artifacts/V004-C004/`: model-, Chrome-, validation- és target-summary evidence.
+- `docs/V004_C004_ATOMIC_CRAFT_COMPLETE_REPORT.md`: tranzakció, idempotencia, conservation, History schema, teszt és rollback riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.
