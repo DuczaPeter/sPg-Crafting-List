@@ -1,22 +1,26 @@
 # CHANGELOG
 
-## V003 - PRE-PUBLICATION INVALIDATED (2026-09-08)
+## V003 - 2026-09-09
 
-The local `V003` release commit/tag is retained as evidence but must not be published: its embedded runtime identity still reports `V003-dev`. C014 repairs the development application identity to `V003`; a fresh RC and a new stable-release decision are required.
+Replacement stable single-file release from the accepted C015 candidate. Runtime, backup and diagnostic identity consistently report `V003`; the release passed the reused C015 automated/Chrome gates and the C016 user-verified exact manual `file://` M1–M7 gate.
 
 - Exact canonical material identity és source/legacy UUID provenance fuzzy vagy name-only merge nélkül.
 - Diszjunkt Minimum/MAX Quality pool szemantika, mixed amount/Quality shortage és cross-view allocation parity.
 - Canonical material picker dedup és User Data-tól független canonical UUID-feloldás.
 - Legacy Titanium batch megtartása mellett canonical Titanium csoportosítás és új Quality batch támogatás.
-- Single-file stable artifact az elfogadott C013.8 candidate byte-pontos másolataként.
+- Single-file stable artifact az elfogadott C015 candidate byte-pontos másolataként.
 
 ### Acceptance
 
-- Teljes releváns automated release gate: PASS az elfogadott, változatlan C013.8 candidate-en.
+- Teljes releváns automated release gate: PASS az elfogadott, változatlan C015 candidate-en.
 - Chrome localhost: PASS; Technical Baseline 15/15, nyolc modul, három viewport, konzol 0/0.
-- Exact manual `file://` M1–M12: PASS.
-- Release HTML: 835832 byte; SHA-256 `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469`.
+- Exact manual `file://` M1–M7: PASS.
+- Release HTML: 835820 byte; SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`.
 - V001 és V002: változatlan.
+
+### Replaced pre-publication attempt
+
+The previous local V003 release commit `045bd8ce38dde5e2ef43999a038c4d835d644b9a` and artifact SHA `bb35a1a820385880c927f0a35b6dbb586a88c05ecbb3f9126cfc949517956469` were `PRE-PUBLICATION INVALIDATED BY V003 VERSION IDENTITY BLOCKER`. They were never pushed or published; the commit remains in Git history.
 
 ## V002 - 2026-08-24
 

@@ -2,6 +2,17 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260908-130300-572448-WORKLOG.md`.
 
+## 2026-09-09 — V003 Replacement Stable Release
+
+- Baseline: `develop/V003 @ 8194b7f2472bddd26c11e7fa3791cc2555244d14`, clean; remote/published V003 tag és release nem létezett.
+- Az accepted C015 RC raw-byte másolata lett a stable artifact: `835820` byte, SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`.
+- Runtime identity `V003`, `V003-dev` occurrence `0`; single-file, embedded CSS/JS, local runtime sidecar `0`.
+- C015 automated + Chrome localhost és C016 user manual direct `file://` PASS evidence a változatlan byteokra újrafelhasználva; kapu nem futott újra.
+- Application code nem változott; V001/V002 változatlan.
+- A pre-publication invalidált `045bd8c...` commit és `bb35a1a...` artifact evidence Git historyban megőrzött; final release directory az accepted replacement artifactot tartalmazza.
+- Remote push és main merge nincs; a local V003 tag csak a tiszta release commit utáni végső auditban cserélhető.
+- Visszaállás: a replacement release commit normál revertje; a történeti invalidált commit külön megmarad.
+
 ## 2026-09-09 — V003-C016 Exact Manual file:// Gate Evidence Closure
 
 - Baseline: `develop/V003 @ ea8a39ca972e53fbd778599090d69836544d2692`, clean.

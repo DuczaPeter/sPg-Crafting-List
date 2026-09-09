@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V003 Replacement Stable Release
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, az accepted C015 candidate helyi, replacement stable release-csomagolásához és a távoli V003 tag/release hiányának ellenőrzéséhez.
+- Mire segített: bounded resume és integritásaudit, megismételt kapuk elkerülése, hitelesített read-only GitHub remote audit és egyszeri helyi tagcsere előkészítése.
+- Mely fájlokat vagy döntéseket érintett: V003 release artifact/checksum/report és kötelező release-meta; application source, accepted RC, V001/V002, remote és `main` nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003-C016 Exact manual file gate evidence closure
 
 - Skill neve: `credit-efficient-project-runner`.

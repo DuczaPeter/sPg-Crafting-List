@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V003 Replacement Stable Release
+
+- [x] Remote audit: nincs távoli/publikált `V003` tag vagy GitHub Release.
+- [x] Az accepted C015 RC raw-byte módon a stable artifact helyére került; `835820` byte és SHA `87382a8f...` byte-azonos.
+- [x] Runtime identity `V003`, `V003-dev` occurrence `0`; egy runtime HTML, embedded CSS/JS és sidecar `0`.
+- [x] C015 automated/Chrome és C016 manual `file://` PASS evidence a változatlan candidate-ről újrafelhasználva.
+- [x] V001/V002 változatlan; application code nem módosult; a régi invalidált commit/history megmarad.
+- [x] Replacement stable commit után a régi local `V003` tag egyszeri cseréje az új commitra.
+- [x] Push és main merge nem történt ebben a ciklusban.
+
 ### V003-C016 Exact Manual file:// Gate Evidence Closure
 
 - [x] Exact C015 RC méret/SHA és a fő HTML-lel való byte-egyezés ellenőrizve.
@@ -18,7 +28,7 @@
 - [x] Legacy Titanium canonical picker és diszjunkt Q500–Q799 / Q800+ pool Combined/Allocation/no-double-reserve fixture valódi Chrome-ban PASS.
 - [x] Chrome localhost 15/15, nyolc modul, 1920/1366/390 overflow 0, Wiki/UEX/IndexedDB/reload/backup/standalone és console 0/0 PASS.
 - [x] Exact C015 candidate kézi `file://` gate C016-ban, felhasználói M1–M7 evidence alapján PASS.
-- [ ] Stabil helyettesítő V003 release/tag csak a manual gate és külön engedély után.
+- [x] Stabil helyettesítő V003 release/tag a külön, engedélyezett replacement release-cycle-ben elkészült.
 
 ### V003-C014 Stable Version Identity Repair
 
