@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C001 Craft Complete Architecture Audit
+
+- [x] Hitelesített fetch; a `1658ec1...` utáni remote `index.html` identity-only delta auditálva.
+- [x] `main` fast-forward `0a83e44...` értékre; clean `develop/V004` branch létrehozva, push nélkül.
+- [x] Annotált V003 tag target és exact stable artifact méret/SHA PASS; V001/V002/protected release path változatlan.
+- [x] V003 IndexedDB/store/transaction, material batch, allocation, Card, backup/import és multi-window architektúra célzottan feltérképezve.
+- [x] Külön V004 DB, read-only V003 migráció, revision/snapshot/stale, atomi Complete/History/Undo terv elkészült.
+- [x] Legfeljebb 6 következő szűk cycle, rollback és célzott jövőbeli tesztlista dokumentálva.
+- [x] Application code és feature implementation: NO; full regression/Chrome/feature test: NOT RUN BY SCOPE.
+- [ ] Következő külön ciklus: V004-C002 database/schema foundation + migration shell.
+
 ### V003-C018 Safe Main Divergence Integration
 
 - [x] Friss `origin/main` audit: `15ec5c1...`; merge base `5cc0093...`; divergencia `12/44` commit.

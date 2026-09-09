@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C001 Craft Complete Architecture Audit
+
+- Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.
+- Mikor használtuk: `2026-09-09`, a V004 első audit- és tervezési ciklusának bounded resume, remote baseline és célzott architektúra-vizsgálata során.
+- Mire segített: minimális állapotbetöltés, full regression elkerülése, veszteségmentes WORKLOG-rotáció, hitelesített GitHub fetch és exact V003 baseline-védelem.
+- Mely fájlokat vagy döntéseket érintett: V004 C001 auditriport, branch és kötelező projektmeta; alkalmazáskód, V001–V003 release/RC, tag és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V003 Replacement Stable Release
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

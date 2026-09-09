@@ -2,13 +2,15 @@
 
 ## Jelenlegi állapot
 
-- Branch: `develop/V003`; C018 integration merge: `fafd669075287bf0eea59f6560ad2277d02f92be`.
-- Beemelt `origin/main`: `15ec5c149d1848c27a142e93932ef3dd238fc58b`; merge base: `5cc00939eba4dba8b5cc49ef5bf299eee7d1f3f9`.
-- A merge két parentje a stable V003 lineage és az auditált `origin/main`; konfliktus `0`, eredménydelta csak `index.html`.
-- Stable V003 tag target változatlan: `ebc83281769fd212d988ee55957b1c2754256490`.
-- Stable artifact és accepted C015 RC változatlan: `835820` byte; SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`.
-- Application/release logic change: **NO**; V001/V002 integritás: **PASS**.
-- Push, force push, main publication, V003 tag push és GitHub Release: **NO**.
-- Riport: `docs/V003_C018_SAFE_MAIN_DIVERGENCE_INTEGRATION_REPORT.md`.
+- Branch: `develop/V004`; baseline: `main` = `origin/main` = `0a83e4409e2c38442ca8f908dcf101d013061955`.
+- A publikált `1658ec1...` óta érkezett két remote commit nettó deltája csak az `index.html` három ismert `V003-dev` → `V003` identity sora; fast-forward auditált.
+- Stable V003 tag target: `ebc83281769fd212d988ee55957b1c2754256490`.
+- Stable artifact: `835820` byte; SHA-256 `87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8`.
+- V001/V002 és minden protected release path változatlan.
+- C001: célzott IndexedDB/inventory/allocation/Card/backup/multi-window audit és legfeljebb 6 ciklusos implementációs terv kész.
+- Application code changed: **NO**; feature implementation: **NO**.
+- Full regression, Chrome és feature teszt: **NOT RUN BY SCOPE**.
+- Push, force push, rebase, tag/Release módosítás: **NO**.
+- Riport: `docs/V004_C001_CRAFT_COMPLETE_ARCHITECTURE_AUDIT.md`.
 
-`V003-C018 – SAFE MAIN DIVERGENCE INTEGRATION PASS, PUBLICATION GATE READY`
+`V004-C001 – CRAFT COMPLETE ARCHITECTURE AUDIT PASS, IMPLEMENTATION PLAN READY`

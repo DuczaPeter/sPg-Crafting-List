@@ -179,3 +179,13 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A commodity `refined_version` mezője exact identity-bizonyíték akkor is, ha a hivatkozott source rekord nincs külön az aktív datasetben; a source UUID a runtime projectionben és provenance-ben megmarad.
 - Régi batch-et nem kell törölni vagy destruktívan migrálni. Új batch canonical UUID-val mentődik, miközben az eredeti UUID `sourceMaterialUuid` provenance lehet.
 - Fuzzy/name-only merge továbbra is tilos; bizonyítatlan duplicate név fail-safe módon unresolved marad.
+
+## 2026-09-09 - V004 Craft Complete safety contract
+
+- V004 külön IndexedDB adatbázist használ; a V003 adatbázis csak explicit user backup/migration confirmation után, read-only forrásként olvasható.
+- Craft Complete kizárólag a Crafting Cardon látható, revision- és SHA-256 snapshot-hash által kötött reservationből fogyaszt; completion-time reallocation, fallback batch, Quality-csere és arányos multi-batch keverés tilos.
+- Partial completion egész késztermék-darabszám, alapértéke 1; a fogyasztás recipe slotonként az Allocation Engine reservation-sorrendjének prefixe. Minden belső mennyiség egész unit, kerekítés és anyagvesztés nélkül.
+- Locked invariáns minden érintett batchre: `before = consumed + after`, eltérés 0 unit. Nem egész vagy nem biztonságos eredmény, stale snapshot vagy megváltozott reserved entry teljes tranzakciós `BLOCKED` állapot.
+- Craft Complete és Undo külön-külön egyetlen atomi IndexedDB tranzakció. A History append-only; státusz `COMPLETED` vagy `UNDONE`, Redo nincs, cardonként csak a legutóbbi aktív completed event Undozható.
+- Undo exact deltát állít vissza, nem inventory snapshotot. Kompatibilis eredeti batch használható, különben új restored batch készül; inkompatibilis rekord nem írható felül.
+- A részletes, kódból igazolt beillesztési terv: `docs/V004_C001_CRAFT_COMPLETE_ARCHITECTURE_AUDIT.md`.
