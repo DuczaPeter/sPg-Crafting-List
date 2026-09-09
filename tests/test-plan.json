@@ -411,6 +411,14 @@
       "executable": "powershell.exe",
       "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c004.ps1", "-PlaywrightModulePath", "<workspace Playwright index.mjs absolute path>"],
       "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
+      "id": "v004-c0041-revision-semantics-output-eligibility",
+      "level": "targeted-regression",
+      "description": "V004-C004.1 gate: partial completion preserves craftListRevision while incrementing the current Card revision; full removal increments craftListRevision; injected failures preserve every revision; current Wiki blueprint/output-class schema and production Card assignments are audited read-only for live output-count eligibility; frozen V001/V002/V003 integrity and single-file runtime remain required.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c0041.ps1", "-PlaywrightModulePath", "<workspace Playwright index.mjs absolute path>"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
     }
   ],
   "diagnosticsSchema": {

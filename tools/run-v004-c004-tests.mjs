@@ -125,9 +125,13 @@ assert.equal(partialMutation.craftingCards[0].cardRevision, 4);
 assert.deepEqual(partialMutation.revisions, {
   inventoryRevision: 5,
   allocationRevision: 8,
-  craftListRevision: 3,
+  craftListRevision: 2,
   historySequence: 1
 });
+assert.equal(partialMutation.historyEvent.craftListRevisionBefore, 2);
+assert.equal(partialMutation.historyEvent.craftListRevisionAfter, 2);
+assert.equal(partialMutation.historyEvent.cardRevisionBefore, 3);
+assert.equal(partialMutation.historyEvent.cardRevisionAfter, 4);
 assert.deepEqual(partialMutation.historyEvent.consumedDeltas.map(line => [line.batchId, line.consumedUnits]), [
   ["batch-alpha-first", 30],
   ["batch-alpha-second", 10],
@@ -158,6 +162,8 @@ assert.equal(fullMutation.craftingCards[0].order, 0);
 assert.equal(fullMutation.craftingCards[0].cardRevision, 7);
 assert.equal(fullMutation.historyEvent.cardRevisionAfter, 4);
 assert.equal(fullMutation.historyEvent.cardRemoved, true);
+assert.equal(fullMutation.historyEvent.craftListRevisionBefore, 2);
+assert.equal(fullMutation.historyEvent.craftListRevisionAfter, 3);
 assert.deepEqual(fullMutation.historyEvent.shiftedCardRevisions, [{ id: "card-c003-second", before: 6, after: 7 }]);
 
 const oneUnitSource = clone(fixture);
@@ -258,11 +264,17 @@ const evidence = {
     requestedQuantity: 4,
     remainingBefore: 5,
     remainingAfter: 1,
+    craftListRevisionBefore: partialMutation.historyEvent.craftListRevisionBefore,
+    craftListRevisionAfter: partialMutation.historyEvent.craftListRevisionAfter,
+    cardRevisionBefore: partialMutation.historyEvent.cardRevisionBefore,
+    cardRevisionAfter: partialMutation.historyEvent.cardRevisionAfter,
     prefixDeltas: partialMutation.historyEvent.consumedDeltas.map(line => ({ batchId: line.batchId, consumedUnits: line.consumedUnits })),
     proportionalRedistribution: false
   },
   full: {
     cardRemoved: fullMutation.cardRemoved,
+    craftListRevisionBefore: fullMutation.historyEvent.craftListRevisionBefore,
+    craftListRevisionAfter: fullMutation.historyEvent.craftListRevisionAfter,
     preCraftCardStored: Boolean(fullMutation.historyEvent.preCraftCardSnapshot),
     originalOrder: fullMutation.historyEvent.originalOrder,
     shiftedCardRevision: fullMutation.historyEvent.shiftedCardRevisions[0]

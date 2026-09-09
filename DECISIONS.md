@@ -215,3 +215,10 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A `craftTransactionId` a durable idempotenciakulcs. Replay `ALREADY_COMPLETED`, második levonás és második event nélkül.
 - A completed History event megőrzi a full reservation snapshotot/hashét, exact batch-deltákat, pre-craft Cardot és before/after revisionöket. Ez a későbbi Undo alapja, de Undo és History UI nem C004 scope.
 - Sikeres completion után nincs automatikus allocation. Partial Card reservationje stale, full eltávolítás után absent; további craft előtt explicit Reallocate kell.
+
+## 2026-09-09 - V004-C004.1 craft list revision határ
+
+- A `craftListRevision` kizárólag aktív Card membership vagy persisted order/priority változásakor nő. Egy partial quantity update önmagában craft list +0, miközben a módosított Card `cardRevision +1`.
+- Full Card removal craft list +1. Más Card `cardRevision` csak akkor nő, ha a removal miatt saját persisted order értéke ténylegesen megváltozik.
+- Partial után az inventory/allocation/history +1 és Card +1 önmagában stale-lé teszi a korábbi reservationt; a craft list mesterséges növelése nem használható invalidation-helyettesítőként.
+- A jelenlegi production Card pipeline minden valódi és hiányos/migrált Cardot `OUTPUT_COUNT_UNPROVEN` állapotban tart. Bizonyított API/model semantics nélkül nincs exact-capable promotion és nincs output-count = 1 default.

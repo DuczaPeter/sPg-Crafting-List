@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C004.1 Revision Semantics + Output Eligibility Audit
+
+- [x] C004 checkpoint, `develop/V004`, clean resume és C004 actual code path auditálva; full regression nélkül.
+- [x] Implementation deviation igazolva és minimálisan javítva: partial completion craft list revision +0, current Card revision +1.
+- [x] Full Card removal craft list revision +1; más Card revision csak tényleges persisted order-változáskor nő.
+- [x] Partial 21 → 16 és remaining full completion exact model + Chrome teszt PASS; négy injected rollback minden revisiont megőriz.
+- [x] Read-only live API audit: 1606 blueprint, 27/27 output class detail, output-count candidate field 0.
+- [x] Production Card exact assignment 0; live állapot `LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN`, találgatott count nélkül.
+- [x] Single-file/direct `file://` és V001/V002/V003/tag/artifact integritás PASS; push nincs.
+- [ ] C005 csak új, explicit feladatban indulhat; C004.1 checkpoint után itt megállunk.
+
 ### V004-C004 Atomic Craft Complete Core
 
 - [x] C003 checkpoint, clean `develop/V004`, authenticated fetch és változatlan `origin/main`/V003 baseline ellenőrizve.

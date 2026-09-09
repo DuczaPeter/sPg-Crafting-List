@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C004",
   "status": "PASS_TARGETED_MODEL",
-  "applicationSha256": "33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99",
+  "applicationSha256": "0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764",
   "sourceFixture": "tests/fixtures/v004-c003-reservation.json",
   "sourceFixtureEvidence": "PER_FINISHED_ITEM_NORMALIZED_EXACT",
   "transaction": {
@@ -21,6 +21,10 @@
     "requestedQuantity": 4,
     "remainingBefore": 5,
     "remainingAfter": 1,
+    "craftListRevisionBefore": 2,
+    "craftListRevisionAfter": 2,
+    "cardRevisionBefore": 3,
+    "cardRevisionAfter": 4,
     "prefixDeltas": [
       {
         "batchId": "batch-alpha-first",
@@ -39,6 +43,8 @@
   },
   "full": {
     "cardRemoved": true,
+    "craftListRevisionBefore": 2,
+    "craftListRevisionAfter": 3,
     "preCraftCardStored": true,
     "originalOrder": 0,
     "shiftedCardRevision": {
@@ -56,7 +62,7 @@
   "revisions": {
     "inventoryRevision": 5,
     "allocationRevision": 8,
-    "craftListRevision": 3,
+    "craftListRevision": 2,
     "historySequence": 1
   },
   "staleReasons": [

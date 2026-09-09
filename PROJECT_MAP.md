@@ -262,6 +262,14 @@
 - `test-artifacts/V004-C004/`: model-, Chrome-, validation- és target-summary evidence.
 - `docs/V004_C004_ATOMIC_CRAFT_COMPLETE_REPORT.md`: tranzakció, idempotencia, conservation, History schema, teszt és rollback riport.
 
+## V004-C004.1 revision semantics és output eligibility audit
+
+- `sPg Crafting List.html`: partial/full membership-alapú `craftListRevision` döntés.
+- `tools/audit-v004-c0041-output-eligibility.mjs`: aktuális Wiki blueprint index + output-class detail read-only audit és production Card assignment scan.
+- `tools/validate-v004-c0041.ps1`: repaired C004 model/Chrome/file gate, live eligibility és protected release bounded validator.
+- `test-artifacts/V004-C004.1/`: live output eligibility, validation és target-summary evidence.
+- `docs/V004_C004_1_REVISION_OUTPUT_ELIGIBILITY_AUDIT.md`: actual deviation, repair, exact revisionteszt és live blocker riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

@@ -88,6 +88,9 @@ try {
     if ($modelEvidence.transaction.resolvesOn -ne 'transaction.oncomplete' -or $modelEvidence.transaction.historyWrite -ne 'add') { throw 'Transaction completion or History add contract mismatch.' }
     if ($modelEvidence.transaction.duplicateStatus -ne 'ALREADY_COMPLETED') { throw 'Idempotency status mismatch.' }
     if ($modelEvidence.partial.proportionalRedistribution -ne $false) { throw 'Partial completion used proportional redistribution.' }
+    if ($modelEvidence.partial.craftListRevisionBefore -ne $modelEvidence.partial.craftListRevisionAfter) { throw 'Partial completion changed craftListRevision.' }
+    if ($modelEvidence.partial.cardRevisionAfter -ne ($modelEvidence.partial.cardRevisionBefore + 1)) { throw 'Partial completion cardRevision mismatch.' }
+    if ($modelEvidence.full.craftListRevisionAfter -ne ($modelEvidence.full.craftListRevisionBefore + 1)) { throw 'Full completion craftListRevision mismatch.' }
     if ($modelEvidence.conservation.toleranceUnits -ne 0 -or $modelEvidence.conservation.oneUnitRemainder -ne 1 -or $modelEvidence.conservation.roundingCallsInC004Model -ne 0) { throw 'Exact-unit conservation proof mismatch.' }
     if ($modelEvidence.outputCountBlocker -ne 'OUTPUT_COUNT_UNPROVEN') { throw 'Output-count blocker mismatch.' }
     if ($modelEvidence.history.eventSchema -ne 'V004_CRAFT_HISTORY_EVENT_1' -or $modelEvidence.history.status -ne 'COMPLETED') { throw 'Craft History event contract mismatch.' }
@@ -96,10 +99,13 @@ try {
 
     if ($browserEvidence.confirmation.cancelWrites -ne 0 -or $browserEvidence.confirmation.maxWrites -ne 0) { throw 'Cancel or MAX caused a durable write.' }
     if ($browserEvidence.partialCompletion.status -ne 'PASS' -or $browserEvidence.partialCompletion.automaticReallocate -ne $false) { throw 'Partial completion behavior mismatch.' }
+    if ($browserEvidence.partialCompletion.craftListRevisionBefore -ne $browserEvidence.partialCompletion.craftListRevisionAfter) { throw 'Chrome partial completion changed craftListRevision.' }
+    if ($browserEvidence.partialCompletion.cardRevisionAfter -ne ($browserEvidence.partialCompletion.cardRevisionBefore + 1)) { throw 'Chrome partial cardRevision mismatch.' }
     if ($browserEvidence.staleReservation.code -ne 'STALE_RESERVATION' -or $browserEvidence.staleReservation.writesByAttempt -ne 0 -or $browserEvidence.staleReservation.fallbackConsumed -ne $false) { throw 'Stale-reservation fail-closed proof mismatch.' }
     if ($browserEvidence.idempotency.replayCode -ne 'ALREADY_COMPLETED' -or $browserEvidence.idempotency.secondDeduction -ne $false) { throw 'Replay idempotency proof mismatch.' }
     if (@($browserEvidence.atomicRollback.failures).Count -lt 4 -or @($browserEvidence.atomicRollback.failures | Where-Object { -not $_.allStoresUnchanged }).Count -ne 0) { throw 'Atomic rollback proof mismatch.' }
     if ($browserEvidence.fullCompletion.cardRemoved -ne $true -or $browserEvidence.fullCompletion.oneUnitRemainder -ne 1) { throw 'Full completion or exact one-unit remainder mismatch.' }
+    if ($browserEvidence.fullCompletion.craftListRevisionAfter -ne ($browserEvidence.fullCompletion.craftListRevisionBefore + 1)) { throw 'Chrome full completion craftListRevision mismatch.' }
     if ($browserEvidence.reloadGate.inventoryUnits -ne 1 -or $browserEvidence.reloadGate.historyEvents -ne 2 -or $browserEvidence.reloadGate.reservationAutomaticallyValid -ne $false) { throw 'Reload persistence proof mismatch.' }
     if ($browserEvidence.outputCountBlocker.code -ne 'OUTPUT_COUNT_UNPROVEN' -or $browserEvidence.outputCountBlocker.confirmationReachable -ne $false) { throw 'Chrome output-count blocker mismatch.' }
     if ($browserEvidence.fileGate.status -ne 'PASS_AUTOMATED') { throw 'Direct file gate is not PASS.' }

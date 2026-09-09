@@ -96,6 +96,10 @@ async function runtimeSnapshot(page) {
         completedQuantity: event.completedQuantity,
         remainingBefore: event.remainingBefore,
         remainingAfter: event.remainingAfter,
+        craftListRevisionBefore: event.craftListRevisionBefore,
+        craftListRevisionAfter: event.craftListRevisionAfter,
+        cardRevisionBefore: event.cardRevisionBefore,
+        cardRevisionAfter: event.cardRevisionAfter,
         deltas: event.consumedDeltas.map(line => ({ batchId: line.batchId, consumedUnits: line.consumedUnits, beforeUnits: line.beforeUnits, afterUnits: line.afterUnits }))
       })),
       reservationRunStatus: test.state.reservationRunStatus,
@@ -276,7 +280,7 @@ try {
   await page.click("#confirmCraftCompletionButton");
   await page.waitForFunction(() => document.body.dataset.craftCompletionState === "COMPLETED");
   let runtime = await runtimeSnapshot(page);
-  assert.deepEqual(runtime.revisions, { inventoryRevision: 2, craftListRevision: 2, allocationRevision: 3, historySequence: 1 });
+  assert.deepEqual(runtime.revisions, { inventoryRevision: 2, craftListRevision: 1, allocationRevision: 3, historySequence: 1 });
   assert.deepEqual(runtime.cards, [{ id: "card-c004-browser", order: 0, quantity: 16, cardRevision: 1 }]);
   assert.deepEqual(runtime.batches, [{ id: "batch-c004-03-q910", quantityUnits: 160001, quality: 910 }]);
   assert.equal(runtime.history.length, 1);
@@ -285,6 +289,10 @@ try {
     ["batch-c004-02-q745", 30000]
   ]);
   assert.ok(runtime.history[0].deltas.every(line => line.beforeUnits === line.consumedUnits + line.afterUnits));
+  assert.equal(runtime.history[0].craftListRevisionBefore, 1);
+  assert.equal(runtime.history[0].craftListRevisionAfter, 1);
+  assert.equal(runtime.history[0].cardRevisionBefore, 0);
+  assert.equal(runtime.history[0].cardRevisionAfter, 1);
   assert.equal(runtime.reservationRunStatus, "STALE");
   assert.equal(runtime.allocationCleared, true);
   const partialDurable = await durableSnapshot(page);
@@ -296,6 +304,10 @@ try {
     remainingAfter: 16,
     batchesAfter: runtime.batches,
     historyDeltas: runtime.history[0].deltas,
+    craftListRevisionBefore: runtime.history[0].craftListRevisionBefore,
+    craftListRevisionAfter: runtime.history[0].craftListRevisionAfter,
+    cardRevisionBefore: runtime.history[0].cardRevisionBefore,
+    cardRevisionAfter: runtime.history[0].cardRevisionAfter,
     revisions: runtime.revisions,
     reservationAfter: runtime.reservationRunStatus,
     automaticReallocate: false
@@ -407,7 +419,7 @@ try {
   await page.click("#confirmCraftCompletionButton");
   await page.waitForFunction(() => document.body.dataset.craftCompletionState === "COMPLETED");
   runtime = await runtimeSnapshot(page);
-  assert.deepEqual(runtime.revisions, { inventoryRevision: 3, craftListRevision: 3, allocationRevision: 4, historySequence: 2 });
+  assert.deepEqual(runtime.revisions, { inventoryRevision: 3, craftListRevision: 2, allocationRevision: 4, historySequence: 2 });
   assert.equal(runtime.cards.length, 0);
   assert.deepEqual(runtime.batches, [{ id: "batch-c004-03-q910", quantityUnits: 1, quality: 910 }]);
   assert.equal(runtime.history.length, 2);
@@ -416,6 +428,8 @@ try {
   ]);
   assert.equal(runtime.history[1].remainingBefore, 16);
   assert.equal(runtime.history[1].remainingAfter, 0);
+  assert.equal(runtime.history[1].craftListRevisionBefore, 1);
+  assert.equal(runtime.history[1].craftListRevisionAfter, 2);
   assert.equal(runtime.reservationRunStatus, "ABSENT");
   assert.equal(runtime.allocationCleared, true);
   const fullDurable = await durableSnapshot(page);
@@ -427,6 +441,8 @@ try {
     cardRemoved: true,
     oneUnitRemainder: 1,
     historyEvents: 2,
+    craftListRevisionBefore: runtime.history[1].craftListRevisionBefore,
+    craftListRevisionAfter: runtime.history[1].craftListRevisionAfter,
     finalDelta: runtime.history[1].deltas[0],
     revisions: runtime.revisions,
     reservationAfter: runtime.reservationRunStatus
@@ -438,7 +454,7 @@ try {
   assert.equal(runtime.cards.length, 0);
   assert.deepEqual(runtime.batches, [{ id: "batch-c004-03-q910", quantityUnits: 1, quality: 910 }]);
   assert.equal(runtime.history.length, 2);
-  assert.deepEqual(runtime.revisions, { inventoryRevision: 3, craftListRevision: 3, allocationRevision: 4, historySequence: 2 });
+  assert.deepEqual(runtime.revisions, { inventoryRevision: 3, craftListRevision: 2, allocationRevision: 4, historySequence: 2 });
   assert.notEqual(runtime.reservationRunStatus, "VALID");
   results.reloadGate = { status: "PASS", inventoryUnits: 1, activeCards: 0, historyEvents: 2, revisions: runtime.revisions, reservationAutomaticallyValid: false };
   await context.close();

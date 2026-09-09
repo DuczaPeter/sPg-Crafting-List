@@ -1,14 +1,12 @@
-V004-C004 targeted atomic Craft Complete core validation
-baseline-static=PASS
-EMBEDDED_APPLICATION_CSS_PASS 68feca9c0c30feef51c4d38814b0c94e07176f9cec2137d44874124b533ca049 124518 bytes
-Single-file baseline structure OK
-JavaScript syntax OK
-Embedded CSS markers OK
-BASELINE_STATIC_PASS
-c004-targeted-model=PASS
-V004_C004_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004\model-evidence.json
-c004-targeted-chrome=PASS
-V004_C004_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C004\browser-evidence.json
+V004-C004.1 targeted revision semantics and live output eligibility audit
+c004-repaired-target-gate=PASS
+PASS baseline-static
+PASS c004-targeted-model
+PASS c004-targeted-chrome
+PASS git-diff-check
+V004_C004_VALIDATION_PASS summary=C:\Users\ganos\OneDrive\Munka\Codex\sPg Crafring List\test-artifacts\V004-C004\target-summary.json
+live-output-eligibility-read-only-audit=PASS
+V004_C0041_LIVE_OUTPUT_ELIGIBILITY_AUDIT_PASS result=LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN evidence=test-artifacts\V004-C004.1\live-output-eligibility.json
 git-diff-check=PASS
 warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
@@ -26,8 +24,8 @@ warning: in the working copy of 'tests/test-plan.json', LF will be replaced by C
 warning: in the working copy of 'tools/run-v004-c004-browser-tests.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tools/run-v004-c004-tests.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tools/validate-v004-c004.ps1', LF will be replaced by CRLF the next time Git touches it
-result=PASS_ATOMIC_CRAFT_COMPLETE_CORE
+result=PASS_REVISION_SEMANTICS
+liveCompletionEligibility=LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN
 applicationSha256=0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764
 v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
-directFileGate=PASS_AUTOMATED
 fullRegression=NOT_RUN_BY_SCOPE

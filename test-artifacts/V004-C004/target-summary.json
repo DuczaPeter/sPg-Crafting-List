@@ -1,10 +1,10 @@
 {
     "cycle":  "V004-C004",
     "status":  "PASS_ATOMIC_CRAFT_COMPLETE_CORE",
-    "validationHead":  "4a65c6ad02f052198cef4ef69d66f2046be47030",
+    "validationHead":  "f7125a96d092ba2765ad48b09145d40d501f9edd",
     "c003Checkpoint":  "4a65c6ad02f052198cef4ef69d66f2046be47030",
     "applicationRuntimeIdentity":  "V004-dev",
-    "applicationSha256":  "33f6d4264543184e92782af34dbc8454e02ce56f196cad5f29abb29863c5da99",
+    "applicationSha256":  "0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764",
     "transactionStores":  [
                               "materialBatches",
                               "userInventory",

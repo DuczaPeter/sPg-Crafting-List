@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C004.1 Revision Semantics + Output Eligibility Audit
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-09`, a C004 checkpoint bounded resume, exact implementation audit, minimális repair, célzott Chrome/live API kapu és lossless WORKLOG-rotáció során.
+- Mire segített: a nagy repository újraolvasásának és full regressionnek az elkerülésére, exact code-range vizsgálatra, 50 soros naplókorlátra és szűk restore pointra.
+- Mely fájlokat vagy döntéseket érintett: C004 revision repair, C004.1 audit tooling/evidence/report/meta és WORKLOG archive; skillfájl, C005 és V001–V003 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C004 Atomic Craft Complete Core
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

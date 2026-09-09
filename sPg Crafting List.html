@@ -12807,7 +12807,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       var inventoryRevisionAfter = v004NextRevision(validation.revisions.inventoryRevision, V004_META_KEYS.inventoryRevision);
       var allocationRevisionAfter = v004NextRevision(validation.revisions.allocationRevision, V004_META_KEYS.allocationRevision);
-      var craftListRevisionAfter = v004NextRevision(validation.revisions.craftListRevision, V004_META_KEYS.craftListRevision);
+      var craftListRevisionAfter = remainingAfter > 0
+        ? validation.revisions.craftListRevision
+        : v004NextRevision(validation.revisions.craftListRevision, V004_META_KEYS.craftListRevision);
       var historySequenceAfter = v004NextRevision(validation.historySequence, V004_META_KEYS.historySequence);
       var cardRevisionBefore = v004NormalizeCardRevision(currentCard);
       var cardRevisionAfter = v004NextRevision(cardRevisionBefore, "cardRevision:" + currentCard.id);

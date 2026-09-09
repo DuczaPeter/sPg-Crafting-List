@@ -1,0 +1,324 @@
+{
+  "cycle": "V004-C004.1",
+  "status": "PASS_READ_ONLY_LIVE_OUTPUT_ELIGIBILITY_AUDIT",
+  "conclusion": "LIVE_COMPLETION_CURRENTLY_BLOCKED_BY_OUTPUT_COUNT_UNPROVEN",
+  "observedAt": "2026-09-09T19:08:06.957Z",
+  "source": "https://api.star-citizen.wiki/api/blueprints",
+  "gameVersion": "4.10.0-LIVE.12519617",
+  "liveApi": {
+    "defaultVersionHttpStatus": 200,
+    "blueprintHttpStatus": 200,
+    "indexRecords": 1606,
+    "indexPages": 9,
+    "outputTypes": 27,
+    "detailRecordsSampled": 27,
+    "indexRootKeys": [
+      "category_uuid",
+      "craft_time_label",
+      "craft_time_seconds",
+      "dismantle_returns",
+      "game_version",
+      "ingredient_count",
+      "ingredients",
+      "is_available_by_default",
+      "key",
+      "link",
+      "output",
+      "output_class",
+      "output_item_uuid",
+      "output_item_web_url",
+      "output_name",
+      "unlocking_missions_count",
+      "uuid",
+      "web_url"
+    ],
+    "indexOutputKeys": [
+      "class",
+      "grade",
+      "item_web_url",
+      "name",
+      "sub_type",
+      "subtype",
+      "type",
+      "type_label",
+      "uuid"
+    ],
+    "detailRootKeys": [
+      "aspects",
+      "category_uuid",
+      "craft_time_label",
+      "craft_time_seconds",
+      "dismantle",
+      "dismantle_returns",
+      "game_version",
+      "ingredient_count",
+      "ingredients",
+      "is_available_by_default",
+      "key",
+      "link",
+      "output",
+      "output_class",
+      "output_item_uuid",
+      "output_item_web_url",
+      "output_name",
+      "requirement_groups",
+      "summary_properties",
+      "tiers",
+      "unlocking_missions",
+      "unlocking_missions_count",
+      "unlocking_missions_grouped",
+      "uuid",
+      "web_url"
+    ],
+    "detailOutputKeys": [
+      "class",
+      "grade",
+      "item_web_url",
+      "name",
+      "sub_type",
+      "subtype",
+      "type",
+      "type_label",
+      "uuid"
+    ],
+    "outputCountCandidateFields": [],
+    "representativeCardEvidence": {
+      "uuid": "00eabb01-d628-49f5-a1f6-7c9df4ad9259",
+      "outputName": "TH-01 Propulsor",
+      "outputType": "Cargo",
+      "httpStatus": 200,
+      "rootOutputQuantityCandidateFields": [],
+      "nestedOutputQuantityCandidateFields": []
+    },
+    "representativeDetails": [
+      {
+        "uuid": "00eabb01-d628-49f5-a1f6-7c9df4ad9259",
+        "outputName": "TH-01 Propulsor",
+        "outputType": "Cargo",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "87e05846-69fd-4328-a809-5fd78c31c86c",
+        "outputName": "Aves Arms",
+        "outputType": "Char_Armor_Arms",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "292f90d9-dbbd-4c9d-bd81-b474bc48e2ed",
+        "outputName": "CSP-68H Backpack",
+        "outputType": "Char_Armor_Backpack",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "449cdf79-e7af-4ca3-b30e-db136056a079",
+        "outputName": "Aves Helmet",
+        "outputType": "Char_Armor_Helmet",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "ead349bb-2dfb-47b9-b10c-f7dbff6fbb52",
+        "outputName": "Aves Legs",
+        "outputType": "Char_Armor_Legs",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "410c4762-383c-4d52-a8ee-89c38c13219f",
+        "outputName": "Aves Core",
+        "outputType": "Char_Armor_Torso",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "305aeac5-543f-463e-b2ae-f04a9cdbef8c",
+        "outputName": "BUL-H4 Armor",
+        "outputType": "Char_Armor_Undersuit",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "38dcf3fc-7141-4133-bae9-4dc6b02ed2df",
+        "outputName": "Spettro Shoes",
+        "outputType": "Char_Clothing_Feet",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "0646d386-d907-482f-b1a6-1e832952297a",
+        "outputName": "Bellator Trousers",
+        "outputType": "Char_Clothing_Legs",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "8913923b-e0db-4338-8bf6-b284a567db08",
+        "outputName": "Bellator Shirt and Waistcoat",
+        "outputType": "Char_Clothing_Torso_0",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "df70f106-b946-4f99-bc5d-811d0b964d5a",
+        "outputName": "Bellator Jacket",
+        "outputType": "Char_Clothing_Torso_1",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "19b32f89-8ea6-4338-8410-fd219fc0a8b8",
+        "outputName": "Drake Ore Pod",
+        "outputType": "Container",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "604a5d56-7fc1-4770-969f-5b35a459c32e",
+        "outputName": "IcePlunge",
+        "outputType": "Cooler",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "6f0487ce-1696-4b62-abb4-587d30d0e6da",
+        "outputName": "Norfield",
+        "outputType": "DockingCollar",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "ef5d60fc-37a2-47c2-a958-d788d6cb7fcb",
+        "outputName": "Clearcut Module",
+        "outputType": "MiningModifier",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "c9c67e69-063a-4d28-a156-d5809776ee22",
+        "outputName": "Metamaterial Test #146",
+        "outputType": "Misc",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "cb32c252-45b9-43d0-b1bf-f2755c2f320f",
+        "outputName": "LumaCore",
+        "outputType": "PowerPlant",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "31f17a5a-9d7b-4d42-a3b0-a0865f0160c4",
+        "outputName": "FoxFire",
+        "outputType": "QuantumDrive",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "6f3b7438-f919-416b-8415-bebeb64ae83a",
+        "outputName": "Hunter",
+        "outputType": "Radar",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "e102bf88-6b8e-44b9-a7b6-2f350880b926",
+        "outputName": "SureGrip S3 Tractor Beam",
+        "outputType": "SalvageHead",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "4e834db6-9b0e-461a-8465-ec90847bd7e5",
+        "outputName": "Trawler Scraper Module",
+        "outputType": "SalvageModifier",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "a8d56e5d-c811-4441-b939-fee90c2e56dc",
+        "outputName": "RS-Barrier",
+        "outputType": "Shield",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "a97e0f32-9098-4b83-a54a-ddccc4820fd6",
+        "outputName": "SureGrip S1 Tractor Beam",
+        "outputType": "TractorBeam",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "017bb372-2fe2-4615-8bcb-e18020baaa4f",
+        "outputName": "FS-9 Magazine (75 cap)",
+        "outputType": "WeaponAttachment",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "280f47b7-8434-410c-b854-380768fdccec",
+        "outputName": "Omnisky III Cannon",
+        "outputType": "WeaponGun",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "bfb86b0e-d262-450f-a6ad-396ead48c40a",
+        "outputName": "Pitman Mining Laser",
+        "outputType": "WeaponMining",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      },
+      {
+        "uuid": "b2857c9f-e7ca-4e6f-9071-d352a58383d4",
+        "outputName": "Vendetta HMG",
+        "outputType": "WeaponPersonal",
+        "httpStatus": 200,
+        "rootOutputQuantityCandidateFields": [],
+        "nestedOutputQuantityCandidateFields": []
+      }
+    ]
+  },
+  "productionCardModel": {
+    "newCardAssignment": "OUTPUT_COUNT_UNPROVEN",
+    "storedOrMigratedCardDefault": "OUTPUT_COUNT_UNPROVEN",
+    "exactProductionAssignmentCount": 0,
+    "completionCapableProductionCardClasses": [],
+    "supportedFixtureOnly": "tests/fixtures/v004-c003-reservation.json"
+  },
+  "safety": {
+    "outputCountDefaultedToOne": false,
+    "applicationCodeChangedByAudit": false,
+    "remoteWrites": 0
+  }
+}
