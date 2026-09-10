@@ -259,3 +259,14 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Az exact truth a stored integer `consumedUnits`; minden batch Qualityje, ID-ja, canonical/source UUID-ja és provenance-e külön auditálható sor marad.
 - Aktív lezárt craft-run total csak bizonyított `COMPLETED + CRAFT_RUN_COUNT` eventből számolható; `UNDONE` kizárt, unknown/legacy bizonytalanság fail-closed. C005 csak olvas/megjelenít, History statust nem módosít.
 - History tab és group/event expand presentation-only: durable User Data write, revision, allocation és reservation mutation tilos. History delete/archive/retention és Undo/Redo C005-ben nincs.
+
+## 2026-09-10 - V004-C006 Craft History Undo authority és LIFO
+
+- Undo kizárólag az eredeti completion event stored `consumedDeltas` exact safe-integer soraiból állíthat vissza. Live recipe/API, quantity-normalization és teljes inventory snapshot rollback tilos.
+- Egy `craftingCardId` groupon belül csak a legutóbbi még aktív `COMPLETED` event jogosult. Visszavonása után a következő korábbi aktív event válhat jogosulttá; második Undo fail-closed, Redo nincs.
+- Partial Undo authority az exact post-craft Card semantic state és Card revision. Full Undo authority a post-completion `craftListRevision`; a Card kizárólag a stored pre-craft snapshotból, eredeti ID/order/settings/provenance adatokkal állhat vissza.
+- Kompatibilis eredeti batch exact merge cél. Hiányzó batch exact lineage/Q/material/unit/provenance alapján recreate; azonos ID-jú inkompatibilis rekord blokkoló, nem írható felül.
+- Független inventory-módosítás megmarad: a friss durable batch-state az authority, a global inventory revision eltérése önmagában nem blocker. Minden restore exact targeted delta; loss tolerance 0 unit.
+- Inventory, derived aggregate, Card/list, History status és revision meta egyetlen `materialBatches/userInventory/craftingCards/craftHistory/userMeta` readwrite tranzakció. Bármely hiba teljes rollback.
+- Sikeres Undo után minden reservation stale és explicit Reallocate szükséges; completion-time vagy Undo-time automatikus reallocation/fallback továbbra is tilos.
+- Az event megmarad `UNDONE`, `undoneAt`, egyedi Undo transaction ID és revision/restore evidence adatokkal. Az eredeti completion evidence és `historySequence` immutable.

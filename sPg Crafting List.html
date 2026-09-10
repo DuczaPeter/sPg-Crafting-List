@@ -5694,6 +5694,39 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   color: var(--muted);
 }
 
+.spg-c006-history-undo {
+  display: grid;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(156, 236, 255, 0.12);
+}
+
+.spg-c006-history-undo button {
+  justify-self: start;
+}
+
+.spg-c006-history-undo p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.spg-c006-history-undo[data-eligible="true"] p {
+  color: #9ff5c8;
+}
+
+.spg-c006-history-undo[data-eligible="false"] p {
+  color: #ffd09c;
+}
+
+.spg-v004-craft-dialog-lines li,
+.spg-c006-undo-card-result {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .spg-c012-list-summary {
   margin: 0;
   color: #9cecff;
@@ -6935,6 +6968,28 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       </div>
     </dialog>
 
+    <dialog id="craftUndoDialog" class="spg-v004-craft-dialog" aria-labelledby="craftUndoDialogTitle">
+      <div class="spg-v004-craft-dialog-content">
+        <header>
+          <p class="eyebrow">V004 · exact History delta restore</p>
+          <h2 id="craftUndoDialogTitle">Craft visszavonásának megerősítése</h2>
+        </header>
+        <p id="craftUndoItemName"></p>
+        <div class="spg-v004-craft-dialog-summary">
+          <span>Visszavont craftok: <strong id="craftUndoQuantity">0</strong></span>
+          <span>Craft időpontja: <strong id="craftUndoEventTime">Nincs tárolva</strong></span>
+          <span class="spg-c006-undo-card-result">Card eredmény: <strong id="craftUndoCardResult">Nincs tárolva</strong></span>
+        </div>
+        <ul id="craftUndoMaterialLines" class="spg-v004-craft-dialog-lines"></ul>
+        <p class="spg-v004-craft-warning">A művelet visszaállítja a Craft során levont készletet. Ez az esemény csak egyszer vonható vissza.</p>
+        <p id="craftUndoDialogNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
+        <div class="spg-v004-craft-dialog-actions">
+          <button id="cancelCraftUndoButton" type="button">Mégse</button>
+          <button id="confirmCraftUndoButton" type="button">Craft visszavonása</button>
+        </div>
+      </div>
+    </dialog>
+
     <footer class="spg-app-footer">
       <span>Adatforrás: Star Citizen Wiki API · UEX Corp API</span>
       <span id="footerRuntime">V004-dev</span>
@@ -7025,6 +7080,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       reservationSnapshots: new Map(),
       reservationRunStatus: "ABSENT",
       pendingCraftCompletion: null,
+      pendingCraftUndo: null,
       craftingListView: "ACTIVE",
       allocationResult: null,
       combinedMaterials: [],
@@ -7817,6 +7873,129 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           };
           transaction.onabort = function () {
             reject(abortReason || transaction.error || new Error("A Craft Complete tranzakció visszagörgetve."));
+          };
+        });
+      }
+
+      commitCraftUndo(request, options) {
+        var self = this;
+        var settings = options || {};
+        try {
+          v004ValidatePreparedUndoRequest(request);
+        } catch (error) {
+          return Promise.reject(error);
+        }
+        return new Promise(function (resolve, reject) {
+          if (!self.db) {
+            reject(new Error("Az adatbázis nincs megnyitva."));
+            return;
+          }
+          var transaction = self.db.transaction(["materialBatches", "userInventory", "craftingCards", "craftHistory", "userMeta"], "readwrite");
+          var batchStore = transaction.objectStore("materialBatches");
+          var inventoryStore = transaction.objectStore("userInventory");
+          var cardStore = transaction.objectStore("craftingCards");
+          var historyStore = transaction.objectStore("craftHistory");
+          var metaStore = transaction.objectStore("userMeta");
+          var abortReason = null;
+          var result = null;
+          var reads = {};
+          var remainingReads = 5;
+
+          function abortWith(error) {
+            abortReason = error;
+            try { transaction.abort(); } catch (abortError) { reject(error); }
+          }
+
+          function injectedFailure(stage) {
+            if (settings.simulateFailureAt !== stage) { return false; }
+            abortWith(v004CraftUndoError("SIMULATED_CRAFT_UNDO_ABORT", "Szimulált Craft Undo tranzakcióhiba: " + stage, stage));
+            return true;
+          }
+
+          function writeWhenReady() {
+            if (remainingReads !== 0) { return; }
+            try {
+              var duplicateUndo = (reads.history || []).find(function (event) {
+                return event && event.undoTransactionId === request.undoTransactionId;
+              });
+              if (duplicateUndo) {
+                abortWith(v004CraftUndoError(
+                  duplicateUndo.craftTransactionId === request.craftTransactionId ? "ALREADY_UNDONE" : "UNDO_TRANSACTION_ID_ALREADY_USED",
+                  "Az Undo tranzakció már felhasználásra került."
+                ));
+                return;
+              }
+              if (reads.event && reads.event.status === "UNDONE") {
+                abortWith(v004CraftUndoError("ALREADY_UNDONE", "Ez a Craft History esemény már vissza lett vonva."));
+                return;
+              }
+              var mutation = v004BuildCraftUndoMutation(
+                request,
+                reads.event,
+                reads.history || [],
+                reads.cards || [],
+                reads.meta || [],
+                reads.batches || [],
+                settings.timestamp || nowIso()
+              );
+
+              batchStore.clear();
+              mutation.materialBatches.forEach(function (batch) { batchStore.put(batch); });
+              inventoryStore.clear();
+              mutation.userInventory.forEach(function (aggregate) { inventoryStore.put(aggregate); });
+              if (injectedFailure("AFTER_BATCH_RESTORE")) { return; }
+              if (injectedFailure("BEFORE_CARD_RESTORE")) { return; }
+
+              cardStore.clear();
+              mutation.craftingCards.forEach(function (card) { cardStore.put(card); });
+
+              historyStore.put(mutation.historyEvent);
+              if (injectedFailure("AFTER_HISTORY_UPDATE")) { return; }
+              if (injectedFailure("BEFORE_META_UPDATE")) { return; }
+
+              metaStore.put({ key: V004_META_KEYS.inventoryRevision, value: mutation.revisions.inventoryRevision });
+              metaStore.put({ key: V004_META_KEYS.allocationRevision, value: mutation.revisions.allocationRevision });
+              if (mutation.undoMode === "FULL") {
+                metaStore.put({ key: V004_META_KEYS.craftListRevision, value: mutation.revisions.craftListRevision });
+              }
+
+              result = Object.assign({}, mutation, {
+                userMeta: v004MergeRevisionRecords(reads.meta || [], {
+                  inventoryRevision: mutation.revisions.inventoryRevision,
+                  allocationRevision: mutation.revisions.allocationRevision,
+                  craftListRevision: mutation.revisions.craftListRevision,
+                  historySequence: mutation.revisions.historySequence
+                })
+              });
+            } catch (error) {
+              abortWith(error);
+            }
+          }
+
+          function read(store, key, target) {
+            var operation = key === undefined ? store.getAll() : store.get(key);
+            operation.onsuccess = function () {
+              reads[target] = operation.result || (key === undefined ? [] : null);
+              remainingReads -= 1;
+              writeWhenReady();
+            };
+            operation.onerror = function () {
+              abortWith(operation.error || new Error("A Craft Undo előállapot olvasása sikertelen: " + target));
+            };
+          }
+
+          read(historyStore, request.craftTransactionId, "event");
+          read(historyStore, undefined, "history");
+          read(metaStore, undefined, "meta");
+          read(cardStore, undefined, "cards");
+          read(batchStore, undefined, "batches");
+
+          transaction.oncomplete = function () { resolve(result); };
+          transaction.onerror = function (event) {
+            abortReason = abortReason || transaction.error || (event && event.target ? event.target.error : null);
+          };
+          transaction.onabort = function () {
+            reject(abortReason || transaction.error || new Error("A Craft Undo tranzakció visszagörgetve."));
           };
         });
       }
@@ -8833,6 +9012,27 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       async completeCraft(request, options) {
         return this.database.commitCraftCompletion(request, options);
+      }
+
+      async readCraftUndoState(craftTransactionId) {
+        var records = await Promise.all([
+          this.database.get("craftHistory", craftTransactionId),
+          this.loadCraftHistory(),
+          this.loadCraftingCards(),
+          this.loadUserMeta(),
+          this.loadMaterialBatches()
+        ]);
+        return {
+          event: records[0] ? normalizeStoredCraftHistoryEvent(records[0]) : null,
+          craftHistory: records[1],
+          craftingCards: records[2],
+          userMeta: records[3],
+          materialBatches: records[4]
+        };
+      }
+
+      async undoCraft(request, options) {
+        return this.database.commitCraftUndo(request, options);
       }
 
       async loadUserMeta() {
@@ -13282,7 +13482,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function v004ValidateCraftHistoryEvent(event) {
-      if (!event || event.eventSchema !== V004_CRAFT_HISTORY_EVENT_SCHEMA || event.status !== "COMPLETED" || event.undoTimestamp !== null ||
+      if (!event || event.eventSchema !== V004_CRAFT_HISTORY_EVENT_SCHEMA || (event.status !== "COMPLETED" && event.status !== "UNDONE") ||
           event.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT || event.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
           !event.craftTransactionId || !Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId ||
           !Number.isSafeInteger(event.completedQuantity) || event.completedQuantity < 1 ||
@@ -13300,6 +13500,38 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           throw v004CraftCompleteError("CRAFT_HISTORY_DELTA_INVALID", "A Craft History exact delta sora érvénytelen.");
         }
       });
+      if (event.status === "COMPLETED") {
+        if (event.undoTimestamp !== null || event.undoneAt || event.undoTransactionId || event.undoRevisionEvidence) {
+          throw v004CraftCompleteError("CRAFT_HISTORY_UNDO_STATE_INVALID", "A COMPLETED History event nem tartalmazhat committed Undo state-et.");
+        }
+      } else {
+        var undoEvidence = event.undoRevisionEvidence;
+        if (!event.undoneAt || event.undoTimestamp !== event.undoneAt || event.lastActivityAt !== event.undoneAt ||
+            !event.undoTransactionId || !/^undo-[A-Za-z0-9._:-]{8,}$/.test(event.undoTransactionId) ||
+            !undoEvidence || (undoEvidence.mode !== "PARTIAL" && undoEvidence.mode !== "FULL") ||
+            !Number.isSafeInteger(undoEvidence.inventoryRevisionBefore) || !Number.isSafeInteger(undoEvidence.inventoryRevisionAfter) ||
+            undoEvidence.inventoryRevisionAfter !== undoEvidence.inventoryRevisionBefore + 1 ||
+            !Number.isSafeInteger(undoEvidence.allocationRevisionBefore) || !Number.isSafeInteger(undoEvidence.allocationRevisionAfter) ||
+            undoEvidence.allocationRevisionAfter !== undoEvidence.allocationRevisionBefore + 1 ||
+            !Number.isSafeInteger(undoEvidence.craftListRevisionBefore) || !Number.isSafeInteger(undoEvidence.craftListRevisionAfter) ||
+            !Number.isSafeInteger(undoEvidence.historySequence) || undoEvidence.historySequence < event.historySequence ||
+            !Array.isArray(event.restoredBatches) || event.restoredBatches.length !== event.consumedDeltas.length) {
+          throw v004CraftCompleteError("CRAFT_HISTORY_UNDO_STATE_INVALID", "Az UNDONE History event Undo evidence-e hiányos vagy érvénytelen.");
+        }
+        if ((undoEvidence.mode === "PARTIAL" && undoEvidence.craftListRevisionAfter !== undoEvidence.craftListRevisionBefore) ||
+            (undoEvidence.mode === "FULL" && undoEvidence.craftListRevisionAfter !== undoEvidence.craftListRevisionBefore + 1)) {
+          throw v004CraftCompleteError("CRAFT_HISTORY_UNDO_REVISION_INVALID", "Az Undo craft list revision szabálya sérült.");
+        }
+        event.restoredBatches.forEach(function (restore, index) {
+          if (!restore || restore.sequence !== index || (restore.mode !== "MERGED" && restore.mode !== "RECREATED") ||
+              restore.originalBatchId !== event.consumedDeltas[index].batchId || !restore.targetBatchId ||
+              restore.restoredUnits !== event.consumedDeltas[index].consumedUnits ||
+              !Number.isSafeInteger(restore.beforeUnits) || !Number.isSafeInteger(restore.afterUnits) ||
+              restore.afterUnits !== restore.beforeUnits + restore.restoredUnits) {
+            throw v004CraftCompleteError("CRAFT_HISTORY_RESTORE_EVIDENCE_INVALID", "Az Undo restored batch evidence sérült.");
+          }
+        });
+      }
       return event;
     }
 
@@ -13399,6 +13631,314 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       };
     }
     /* V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL_END */
+
+    /* V004_C006_CRAFT_HISTORY_UNDO_MODEL_START */
+    var V004_CRAFT_UNDO_REQUEST_MARKER = "V004_CRAFT_UNDO_REQUEST_1";
+    var V004_CRAFT_UNDO_MODE = Object.freeze({ PARTIAL: "PARTIAL", FULL: "FULL" });
+
+    function v004CraftUndoError(code, message, detail) {
+      var error = new Error(message);
+      error.code = code;
+      if (detail) { error.detail = detail; }
+      return error;
+    }
+
+    function v004AssertUndoTransactionId(value) {
+      if (typeof value !== "string" || !/^undo-[A-Za-z0-9._:-]{8,}$/.test(value)) {
+        throw v004CraftUndoError("UNDO_TRANSACTION_ID_INVALID", "Az undoTransactionId hiányzik vagy érvénytelen.");
+      }
+      return value;
+    }
+
+    function v004ValidatePreparedUndoRequest(request) {
+      var source = request || {};
+      v004AssertUndoTransactionId(source.undoTransactionId);
+      if (source.marker !== V004_CRAFT_UNDO_REQUEST_MARKER || !source.craftTransactionId || !source.craftingCardId ||
+          !Number.isSafeInteger(source.expectedHistorySequence) || source.expectedHistorySequence < 1) {
+        throw v004CraftUndoError("CRAFT_UNDO_REQUEST_INVALID", "A Craft Undo request identityje vagy History sequence-e hiányzik.");
+      }
+      return source;
+    }
+
+    function v004AssertUndoableCompletionEvent(event) {
+      if (!event) { throw v004CraftUndoError("HISTORY_EVENT_MISSING", "A Craft History esemény nem található."); }
+      if (event.status === "UNDONE") { throw v004CraftUndoError("ALREADY_UNDONE", "Ez a Craft History esemény már vissza lett vonva."); }
+      try {
+        v004ValidateCraftHistoryEvent(event);
+      } catch (error) {
+        throw v004CraftUndoError("UNDO_EVIDENCE_INCOMPLETE", "A History event nem tartalmaz biztonságos Undo evidence-et.", error.code || error.message);
+      }
+      if (event.status !== "COMPLETED" || event.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT ||
+          event.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
+          typeof event.cardRemoved !== "boolean" || event.cardRemoved !== (event.remainingAfter === 0) ||
+          !Number.isSafeInteger(event.originalOrder) || event.originalOrder < 0 ||
+          !Number.isSafeInteger(event.cardRevisionAfter) || event.cardRevisionAfter < 1 ||
+          !Number.isSafeInteger(event.craftListRevisionAfter) || event.craftListRevisionAfter < 0 ||
+          !event.preCraftCardSnapshot || event.preCraftCardSnapshot.id !== event.craftingCardId ||
+          event.preCraftCardSnapshot.quantity !== event.remainingBefore) {
+        throw v004CraftUndoError("UNDO_EVIDENCE_INCOMPLETE", "A History event Card/revision Undo evidence-e hiányos.");
+      }
+      event.consumedDeltas.forEach(function (line) {
+        var snapshot = line.preCraftBatchSnapshot;
+        if (!snapshot || snapshot.id !== line.batchId || snapshot.materialUuid !== line.canonicalMaterialUuid ||
+            v004BatchSourceUuid(snapshot) !== line.sourceMaterialUuid || snapshot.unit !== line.unit ||
+            v004BatchQuality(snapshot) !== line.quality || snapshot.quantityUnits !== line.beforeUnits) {
+          throw v004CraftUndoError("UNDO_BATCH_EVIDENCE_INCOMPLETE", "A History delta batch lineage evidence-e hiányos: " + line.batchId);
+        }
+      });
+      return event;
+    }
+
+    function v004UndoBatchCompatible(batch, line) {
+      return Boolean(batch && batch.id === line.batchId && batch.materialUuid === line.canonicalMaterialUuid &&
+        v004BatchSourceUuid(batch) === line.sourceMaterialUuid && batch.unit === line.unit &&
+        v004BatchQuality(batch) === line.quality && Number.isSafeInteger(batch.quantityUnits) && batch.quantityUnits > 0);
+    }
+
+    function v004BuildUndoBatchRestore(event, batches, timestamp) {
+      var mutableById = new Map((Array.isArray(batches) ? batches : []).map(function (batch) { return [batch.id, m4Clone(batch)]; }));
+      var restoredBatches = [];
+      event.consumedDeltas.slice().sort(function (left, right) { return left.sequence - right.sequence; }).forEach(function (line, index) {
+        var current = mutableById.get(line.batchId);
+        var mode;
+        var beforeUnits;
+        if (current) {
+          if (!v004UndoBatchCompatible(current, line)) {
+            throw v004CraftUndoError("UNDO_BATCH_ID_COLLISION", "Az eredeti batch ID alatt inkompatibilis material/Q/unit rekord található.", line.batchId);
+          }
+          mode = "MERGED";
+          beforeUnits = current.quantityUnits;
+        } else {
+          mode = "RECREATED";
+          beforeUnits = 0;
+          current = m4Clone(line.preCraftBatchSnapshot);
+          current.quantityUnits = 0;
+        }
+        var afterUnits = v004ExactUnitAdd(beforeUnits, line.consumedUnits, "UNDO_EXACT_UNIT_OVERFLOW");
+        current.quantityUnits = afterUnits;
+        if (timestamp) { current.updatedAt = timestamp; }
+        mutableById.set(current.id, current);
+        restoredBatches.push({
+          sequence: index,
+          mode: mode,
+          originalBatchId: line.batchId,
+          targetBatchId: current.id,
+          canonicalMaterialUuid: line.canonicalMaterialUuid,
+          sourceMaterialUuid: line.sourceMaterialUuid,
+          quality: line.quality,
+          unit: line.unit,
+          restoredUnits: line.consumedUnits,
+          beforeUnits: beforeUnits,
+          afterUnits: afterUnits
+        });
+      });
+      return {
+        materialBatches: Array.from(mutableById.values()).sort(compareStableIdentity),
+        restoredBatches: restoredBatches
+      };
+    }
+
+    function v004ExpectedPostCraftCard(event) {
+      var expected = m4Clone(event.preCraftCardSnapshot);
+      expected.quantity = event.remainingAfter;
+      expected.order = event.originalOrder;
+      expected.cardRevision = event.cardRevisionAfter;
+      return expected;
+    }
+
+    function v004AssertCraftUndoEligibility(event, events, cards, metaRecords, batches) {
+      v004AssertUndoableCompletionEvent(event);
+      var groupEvents = (Array.isArray(events) ? events : []).filter(function (candidate) {
+        return candidate && candidate.craftingCardId === event.craftingCardId;
+      });
+      if (!groupEvents.length || groupEvents.some(function (candidate) {
+        return !Number.isSafeInteger(candidate.historySequence) || candidate.historySequence < 1;
+      })) {
+        throw v004CraftUndoError("UNDO_HISTORY_CHAIN_UNPROVEN", "A History group sequence-e nem bizonyított.");
+      }
+      groupEvents.sort(function (left, right) {
+        return right.historySequence - left.historySequence || c005StableTextCompare(left.craftTransactionId, right.craftTransactionId);
+      });
+      var latestActive = groupEvents.find(function (candidate) { return candidate.status !== "UNDONE"; });
+      if (!latestActive) { throw v004CraftUndoError("NO_ACTIVE_COMPLETED_EVENT", "A groupban nincs aktív Craft Complete esemény."); }
+      if (latestActive.status !== "COMPLETED") {
+        throw v004CraftUndoError("UNDO_HISTORY_CHAIN_UNPROVEN", "A History group legutóbbi aktív státusza nem bizonyított.");
+      }
+      if (latestActive.craftTransactionId !== event.craftTransactionId) {
+        throw v004CraftUndoError("NOT_LATEST_ACTIVE_EVENT", "Előbb a group legutóbbi aktív Craft Complete eseményét kell visszavonni.");
+      }
+
+      var currentCards = (Array.isArray(cards) ? cards : []).slice().sort(function (left, right) {
+        return Number(left.order || 0) - Number(right.order || 0) || c005StableTextCompare(left.id, right.id);
+      });
+      var currentCard = currentCards.find(function (card) { return card.id === event.craftingCardId; }) || null;
+      var revisions = v004RevisionSnapshot(metaRecords || []);
+      var currentHistorySequence = v004RevisionValue(metaRecords || [], V004_META_KEYS.historySequence);
+      if (currentHistorySequence < event.historySequence) {
+        throw v004CraftUndoError("UNDO_HISTORY_SEQUENCE_MISMATCH", "A durable historySequence kisebb az event sequence értékénél.");
+      }
+      var expectedCardRevision = event.cardRevisionAfter;
+      groupEvents.filter(function (candidate) {
+        return candidate.historySequence > event.historySequence;
+      }).forEach(function (candidate) {
+        try { v004ValidateCraftHistoryEvent(candidate); } catch (error) {
+          throw v004CraftUndoError("UNDO_HISTORY_CHAIN_UNPROVEN", "Egy későbbi History event Undo evidence-e sérült.");
+        }
+        if (candidate.status !== "UNDONE" || !candidate.undoRevisionEvidence ||
+            !Number.isSafeInteger(candidate.undoRevisionEvidence.cardRevisionAfter)) {
+          throw v004CraftUndoError("UNDO_HISTORY_CHAIN_UNPROVEN", "A későbbi event nincs bizonyítottan visszavonva.");
+        }
+        expectedCardRevision = Math.max(expectedCardRevision, candidate.undoRevisionEvidence.cardRevisionAfter);
+      });
+
+      var mode = event.cardRemoved ? V004_CRAFT_UNDO_MODE.FULL : V004_CRAFT_UNDO_MODE.PARTIAL;
+      if (mode === V004_CRAFT_UNDO_MODE.PARTIAL) {
+        if (!currentCard) { throw v004CraftUndoError("UNDO_CARD_MISSING", "A partial Undo cél Cardja hiányzik."); }
+        if (v004NormalizeCardRevision(currentCard) !== expectedCardRevision) {
+          throw v004CraftUndoError("UNDO_CARD_REVISION_MISMATCH", "A Card revisionje megváltozott a Craft után.");
+        }
+        if (!v004SemanticEqual(
+          v004CardAllocationSemantic(currentCard, currentCard.order),
+          v004CardAllocationSemantic(v004ExpectedPostCraftCard(event), event.originalOrder)
+        )) {
+          throw v004CraftUndoError("UNDO_CARD_STATE_CHANGED", "A Card semantic state-je megváltozott a Craft után.");
+        }
+      } else {
+        if (currentCard) { throw v004CraftUndoError("UNDO_FULL_CARD_ID_COLLISION", "A full Undo Card identityje már jelen van az aktív listában."); }
+        if (revisions.craftListRevision !== event.craftListRevisionAfter) {
+          throw v004CraftUndoError("UNDO_CRAFT_LIST_REVISION_MISMATCH", "A Crafting List megváltozott a full Craft után.");
+        }
+        if (event.originalOrder > currentCards.length || currentCards.some(function (card, index) { return card.order !== index; })) {
+          throw v004CraftUndoError("UNDO_CRAFT_LIST_STATE_INCOMPATIBLE", "A Card eredeti pozíciója nem állítható vissza biztonságosan.");
+        }
+      }
+
+      var restorePlan = v004BuildUndoBatchRestore(event, batches, null);
+      return {
+        eligible: true,
+        code: "UNDO_READY",
+        mode: mode,
+        currentCard: currentCard,
+        currentCards: currentCards,
+        revisions: revisions,
+        historySequence: currentHistorySequence,
+        expectedCardRevision: expectedCardRevision,
+        restorePlan: restorePlan
+      };
+    }
+
+    function v004EvaluateCraftUndoEligibility(event, events, cards, metaRecords, batches) {
+      try {
+        return v004AssertCraftUndoEligibility(event, events, cards, metaRecords, batches);
+      } catch (error) {
+        return { eligible: false, code: error.code || "UNDO_BLOCKED", detail: error.detail || null, message: error.message };
+      }
+    }
+
+    function v004BuildCraftUndoMutation(request, event, events, cards, metaRecords, batches, timestamp) {
+      v004ValidatePreparedUndoRequest(request);
+      if (!event || request.craftTransactionId !== event.craftTransactionId || request.craftingCardId !== event.craftingCardId ||
+          request.expectedHistorySequence !== event.historySequence) {
+        throw v004CraftUndoError("CRAFT_UNDO_REQUEST_STALE", "A megerősített Undo request már nem az aktuális History eventre mutat.");
+      }
+      var duplicateUndo = (Array.isArray(events) ? events : []).find(function (candidate) {
+        return candidate && candidate.undoTransactionId === request.undoTransactionId;
+      });
+      if (duplicateUndo) {
+        throw v004CraftUndoError(
+          duplicateUndo.craftTransactionId === request.craftTransactionId ? "ALREADY_UNDONE" : "UNDO_TRANSACTION_ID_ALREADY_USED",
+          "Az Undo tranzakció identity már committed."
+        );
+      }
+      var eligibility = v004AssertCraftUndoEligibility(event, events, cards, metaRecords, batches);
+      var undoMode = eligibility.mode;
+      var inventoryRevisionAfter = v004NextRevision(eligibility.revisions.inventoryRevision, V004_META_KEYS.inventoryRevision);
+      var allocationRevisionAfter = v004NextRevision(eligibility.revisions.allocationRevision, V004_META_KEYS.allocationRevision);
+      var craftListRevisionAfter = undoMode === V004_CRAFT_UNDO_MODE.FULL
+        ? v004NextRevision(eligibility.revisions.craftListRevision, V004_META_KEYS.craftListRevision)
+        : eligibility.revisions.craftListRevision;
+      var restore = v004BuildUndoBatchRestore(event, batches, timestamp);
+      var nextCards;
+      var restoredCard;
+      var cardRevisionBefore = null;
+      var cardRevisionAfter;
+
+      if (undoMode === V004_CRAFT_UNDO_MODE.PARTIAL) {
+        cardRevisionBefore = v004NormalizeCardRevision(eligibility.currentCard);
+        cardRevisionAfter = v004NextRevision(cardRevisionBefore, "cardRevision:" + event.craftingCardId);
+        restoredCard = Object.assign({}, m4Clone(eligibility.currentCard), {
+          quantity: v004ExactUnitAdd(eligibility.currentCard.quantity, event.completedQuantity, "UNDO_CARD_QUANTITY_OVERFLOW"),
+          cardRevision: cardRevisionAfter,
+          updatedAt: timestamp
+        });
+        if (restoredCard.quantity !== event.remainingBefore) {
+          throw v004CraftUndoError("UNDO_CARD_QUANTITY_MISMATCH", "A partial Undo nem az eredeti Card quantityt állítaná vissza.");
+        }
+        nextCards = eligibility.currentCards.map(function (card) {
+          return card.id === restoredCard.id ? restoredCard : m4Clone(card);
+        });
+      } else {
+        cardRevisionAfter = v004NextRevision(event.cardRevisionAfter, "cardRevision:" + event.craftingCardId);
+        restoredCard = Object.assign({}, m4Clone(event.preCraftCardSnapshot), {
+          order: event.originalOrder,
+          cardRevision: cardRevisionAfter,
+          updatedAt: timestamp
+        });
+        var inserted = eligibility.currentCards.map(m4Clone);
+        inserted.splice(event.originalOrder, 0, restoredCard);
+        nextCards = inserted.map(function (card, index) {
+          if (card.id === restoredCard.id) { return Object.assign({}, card, { order: index }); }
+          if (card.order === index) { return card; }
+          return Object.assign({}, card, {
+            order: index,
+            cardRevision: v004NextRevision(v004NormalizeCardRevision(card), "cardRevision:" + card.id),
+            updatedAt: timestamp
+          });
+        });
+      }
+      nextCards.sort(function (left, right) { return left.order - right.order || c005StableTextCompare(left.id, right.id); });
+
+      var undoRevisionEvidence = {
+        mode: undoMode,
+        inventoryRevisionBefore: eligibility.revisions.inventoryRevision,
+        inventoryRevisionAfter: inventoryRevisionAfter,
+        allocationRevisionBefore: eligibility.revisions.allocationRevision,
+        allocationRevisionAfter: allocationRevisionAfter,
+        craftListRevisionBefore: eligibility.revisions.craftListRevision,
+        craftListRevisionAfter: craftListRevisionAfter,
+        cardRevisionBefore: cardRevisionBefore,
+        cardRevisionAfter: cardRevisionAfter,
+        historySequence: eligibility.historySequence,
+        historySequenceChanged: false,
+        targetedDeltaRestore: true,
+        globalInventoryRevisionMismatchAllowed: true
+      };
+      var historyEvent = Object.assign({}, m4Clone(event), {
+        status: "UNDONE",
+        undoneAt: timestamp,
+        undoTimestamp: timestamp,
+        lastActivityAt: timestamp,
+        undoTransactionId: request.undoTransactionId,
+        undoRevisionEvidence: undoRevisionEvidence,
+        restoredBatches: restore.restoredBatches
+      });
+      v004ValidateCraftHistoryEvent(historyEvent);
+      return {
+        undoMode: undoMode,
+        materialBatches: restore.materialBatches,
+        userInventory: v004BuildUserInventoryAggregates(restore.materialBatches, timestamp),
+        craftingCards: nextCards,
+        historyEvent: historyEvent,
+        restoredCard: restoredCard,
+        revisions: {
+          inventoryRevision: inventoryRevisionAfter,
+          allocationRevision: allocationRevisionAfter,
+          craftListRevision: craftListRevisionAfter,
+          historySequence: eligibility.historySequence
+        }
+      };
+    }
+    /* V004_C006_CRAFT_HISTORY_UNDO_MODEL_END */
 
     /* M4_COMBINED_BACKUP_MODEL_START */
     var M4_BACKUP_FORMAT = "spg-crafting-list-backup";
@@ -13526,11 +14066,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (!Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId || (event.status !== "COMPLETED" && event.status !== "UNDONE")) {
           throw m4BackupError("INVALID_CRAFT_HISTORY", "Érvénytelen Craft History esemény: " + event.craftTransactionId);
         }
-        if (event.status === "COMPLETED" && event.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA) {
+        if (event.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA) {
           try {
             v004ValidateCraftHistoryEvent(event);
           } catch (error) {
-            throw m4BackupError("INVALID_CRAFT_HISTORY", "A Craft History exact completion event sérült: " + event.craftTransactionId);
+            throw m4BackupError("INVALID_CRAFT_HISTORY", "A Craft History exact completion/Undo event sérült: " + event.craftTransactionId);
           }
         }
       });
@@ -18606,6 +19146,119 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return result;
     }
 
+    async function prepareV004CraftUndoRequest(craftTransactionId, undoTransactionId) {
+      var durable = await userDataRepository.readCraftUndoState(craftTransactionId);
+      if (!durable.event) {
+        throw v004CraftUndoError("HISTORY_EVENT_MISSING", "A Craft History esemény nem található.");
+      }
+      var request = {
+        marker: V004_CRAFT_UNDO_REQUEST_MARKER,
+        undoTransactionId: undoTransactionId || makeId("undo"),
+        craftTransactionId: durable.event.craftTransactionId,
+        craftingCardId: durable.event.craftingCardId,
+        expectedHistorySequence: durable.event.historySequence,
+        preparedAt: nowIso()
+      };
+      v004ValidatePreparedUndoRequest(request);
+      var eligibility = v004EvaluateCraftUndoEligibility(
+        durable.event,
+        durable.craftHistory,
+        durable.craftingCards,
+        durable.userMeta,
+        durable.materialBatches
+      );
+      if (!eligibility.eligible) {
+        throw v004CraftUndoError(eligibility.code, eligibility.message || c006UndoEligibilityText(eligibility.code), eligibility.detail);
+      }
+      return { request: request, event: durable.event, eligibility: eligibility };
+    }
+
+    function renderV004CraftUndoConfirmation(prepared) {
+      var event = prepared.event;
+      setText("craftUndoItemName", c005HistoryItemName(event));
+      setText("craftUndoQuantity", event.completedQuantity + " craft");
+      setText("craftUndoEventTime", formatTimestamp(c005HistoryTimestampRaw(event)));
+      setText("craftUndoCardResult", prepared.eligibility.mode === V004_CRAFT_UNDO_MODE.FULL
+        ? "Card visszaáll: " + event.remainingBefore + " craft · prioritás " + event.originalPriority
+        : event.remainingAfter + " → " + event.remainingBefore + " craft");
+      var list = document.getElementById("craftUndoMaterialLines");
+      list.replaceChildren();
+      event.consumedDeltas.slice().sort(function (left, right) { return left.sequence - right.sequence; }).forEach(function (line) {
+        var item = document.createElement("li");
+        item.textContent = c005HistoryDeltaMaterialName(event, line) + " · " +
+          (hasValidQuality(line.quality) ? "Q" + Number(line.quality) : "Q?") + " · batch " + line.batchId + " · " +
+          c005FormatStoredConsumedUnits(line.unit, line.consumedUnits);
+        item.dataset.batchId = line.batchId;
+        item.dataset.quality = hasValidQuality(line.quality) ? String(Number(line.quality)) : "unknown";
+        item.dataset.unit = line.unit;
+        item.dataset.restoredUnits = String(line.consumedUnits);
+        list.append(item);
+      });
+      var notice = document.getElementById("craftUndoDialogNotice");
+      notice.textContent = "";
+      notice.dataset.tone = "neutral";
+    }
+
+    async function openV004CraftUndoConfirmation(craftTransactionId) {
+      var prepared = await prepareV004CraftUndoRequest(craftTransactionId);
+      state.pendingCraftUndo = prepared;
+      renderV004CraftUndoConfirmation(prepared);
+      var dialog = document.getElementById("craftUndoDialog");
+      if (!dialog.open) { dialog.showModal(); }
+      document.body.dataset.craftUndoState = "CONFIRMING";
+      return prepared;
+    }
+
+    function cancelV004CraftUndoConfirmation() {
+      state.pendingCraftUndo = null;
+      var dialog = document.getElementById("craftUndoDialog");
+      if (dialog.open) { dialog.close(); }
+      document.body.dataset.craftUndoState = "CANCELLED";
+      renderCraftHistory();
+    }
+
+    function applyV004CraftUndoResult(result) {
+      state.materialBatches = result.materialBatches;
+      state.craftingCards = result.craftingCards.map(function (card, index) { return normalizeStoredCraftingCard(card, index); });
+      state.craftHistory = state.craftHistory.filter(function (event) {
+        return event.craftTransactionId !== result.historyEvent.craftTransactionId;
+      }).concat(m4Clone(result.historyEvent)).sort(function (left, right) {
+        return Number(left.historySequence || 0) - Number(right.historySequence || 0) || c005StableTextCompare(left.craftTransactionId, right.craftTransactionId);
+      });
+      syncV004RevisionState(result.userMeta);
+      resetRuntimeReservationSnapshots("CRAFT_UNDO_REQUIRES_REALLOCATION");
+      state.allocationResult = null;
+      state.combinedMaterials = [];
+      updateKnownMaterials();
+      renderCraftingCards();
+      renderCraftHistory();
+      renderMaterialInventory();
+      renderCombinedMaterials();
+      document.body.dataset.materialBatchCount = String(state.materialBatches.length);
+      document.body.dataset.craftingCardCount = String(state.craftingCards.length);
+      document.body.dataset.craftHistoryCount = String(state.craftHistory.length);
+      document.body.dataset.craftUndoState = "UNDONE";
+    }
+
+    async function commitPreparedV004CraftUndo(request, options) {
+      var result = await userDataRepository.undoCraft(request, options);
+      applyV004CraftUndoResult(result);
+      return result;
+    }
+
+    async function confirmV004CraftUndo() {
+      if (!state.pendingCraftUndo) {
+        throw v004CraftUndoError("CRAFT_UNDO_CONFIRMATION_MISSING", "Nincs megerősítésre váró Craft Undo művelet.");
+      }
+      var pending = state.pendingCraftUndo;
+      var result = await commitPreparedV004CraftUndo(pending.request);
+      state.pendingCraftUndo = null;
+      var dialog = document.getElementById("craftUndoDialog");
+      if (dialog.open) { dialog.close(); }
+      setNotice("A Craft visszavonva. Az allocation megváltozott; futtasd az Újraszámítás / Reallocate műveletet.", "success");
+      return result;
+    }
+
     function renderV004CraftCompletionControls(card, reservation) {
       var capability = reservation && reservation.capability || { status: "BLOCKED", maxCompletableQuantity: 0, blockerReason: "EXPLICIT_REALLOCATION_REQUIRED" };
       var ready = reservation && reservation.status === V004_RESERVATION_STATUS.VALID && capability.status === "READY";
@@ -18734,6 +19387,23 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return value === null || value === undefined || value === "" ? "Nincs tárolva" : String(value);
     }
 
+    function c006UndoEligibilityText(code) {
+      var messages = {
+        UNDO_READY: "Ez a group legutóbbi aktív Craft Complete eseménye, biztonságosan visszavonható.",
+        NOT_LATEST_ACTIVE_EVENT: "Előbb a group újabb aktív Craft Complete eseményét kell visszavonni.",
+        UNDO_CARD_REVISION_MISMATCH: "A Card revisionje megváltozott a Craft után; Undo blokkolva.",
+        UNDO_CARD_STATE_CHANGED: "A Card semantic state-je megváltozott a Craft után; Undo blokkolva.",
+        UNDO_CARD_MISSING: "A partial Craft Cardja hiányzik; Undo blokkolva.",
+        UNDO_CRAFT_LIST_REVISION_MISMATCH: "A Crafting List megváltozott a full Craft után; Undo blokkolva.",
+        UNDO_BATCH_ID_COLLISION: "Az eredeti batch ID alatt inkompatibilis material vagy Quality található; Undo blokkolva.",
+        ALREADY_UNDONE: "Ez a Craft már vissza lett vonva.",
+        UNDO_EVIDENCE_INCOMPLETE: "Legacy esemény – nem vonható vissza biztonságosan.",
+        UNDO_BATCH_EVIDENCE_INCOMPLETE: "Legacy esemény – az exact batch lineage evidence hiányos.",
+        UNDO_HISTORY_CHAIN_UNPROVEN: "A History sorrend vagy státusz nem bizonyított; Undo blokkolva."
+      };
+      return messages[code] || "A Craft jelenleg nem vonható vissza biztonságosan: " + c005StoredValue(code);
+    }
+
     function c005AppendHistoryField(container, label, value) {
       var wrapper = document.createElement("div");
       wrapper.className = "spg-c005-history-field";
@@ -18809,6 +19479,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       c005AppendHistoryField(fields, "Allocation revision", c005StoredValue(event.allocationRevisionBefore) + " / used " + c005StoredValue(event.allocationRevisionUsed) + " → " + c005StoredValue(event.allocationRevisionAfter));
       c005AppendHistoryField(fields, "Card revision", c005StoredValue(event.cardRevisionBefore) + " → " + c005StoredValue(event.cardRevisionAfter));
       c005AppendHistoryField(fields, "Craft List revision", c005StoredValue(event.craftListRevisionBefore) + " → " + c005StoredValue(event.craftListRevisionAfter));
+      if (event.status === "UNDONE") {
+        c005AppendHistoryField(fields, "Undo időpont", event.undoneAt || event.undoTimestamp);
+        c005AppendHistoryField(fields, "Undo transaction", event.undoTransactionId);
+        c005AppendHistoryField(fields, "Undo mód", event.undoRevisionEvidence && event.undoRevisionEvidence.mode);
+        c005AppendHistoryField(fields, "Undo inventory revision", event.undoRevisionEvidence && (event.undoRevisionEvidence.inventoryRevisionBefore + " → " + event.undoRevisionEvidence.inventoryRevisionAfter));
+        c005AppendHistoryField(fields, "Undo allocation revision", event.undoRevisionEvidence && (event.undoRevisionEvidence.allocationRevisionBefore + " → " + event.undoRevisionEvidence.allocationRevisionAfter));
+        c005AppendHistoryField(fields, "Undo Craft List revision", event.undoRevisionEvidence && (event.undoRevisionEvidence.craftListRevisionBefore + " → " + event.undoRevisionEvidence.craftListRevisionAfter));
+        c005AppendHistoryField(fields, "Undo Card revision", event.undoRevisionEvidence && (c005StoredValue(event.undoRevisionEvidence.cardRevisionBefore) + " → " + c005StoredValue(event.undoRevisionEvidence.cardRevisionAfter)));
+      }
       body.append(fields);
 
       var deltaHeading = document.createElement("h4");
@@ -18847,6 +19526,40 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         deltaList.append(row);
       });
       body.append(deltaList);
+
+      var undoAction = document.createElement("div");
+      undoAction.className = "spg-c006-history-undo";
+      if (event.status === "COMPLETED" && event.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA &&
+          event.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
+        var eligibility = v004EvaluateCraftUndoEligibility(event, state.craftHistory, state.craftingCards, state.userMeta, state.materialBatches);
+        undoAction.dataset.eligible = eligibility.eligible ? "true" : "false";
+        undoAction.dataset.eligibilityCode = eligibility.code;
+        var undoButton = document.createElement("button");
+        undoButton.type = "button";
+        undoButton.className = "spg-c006-undo-open";
+        undoButton.textContent = "Craft visszavonása";
+        undoButton.disabled = !eligibility.eligible;
+        undoButton.addEventListener("click", function () {
+          undoButton.disabled = true;
+          openV004CraftUndoConfirmation(event.craftTransactionId).catch(function (error) {
+            setNotice("Craft Undo blokkolva: " + (error.code || error.message), "error");
+            document.body.dataset.craftUndoState = error.code || "BLOCKED";
+            renderCraftHistory();
+          });
+        });
+        var undoHelp = document.createElement("p");
+        undoHelp.textContent = c006UndoEligibilityText(eligibility.code);
+        undoAction.append(undoButton, undoHelp);
+      } else {
+        undoAction.dataset.eligible = "false";
+        undoAction.dataset.eligibilityCode = event.status === "UNDONE" ? "ALREADY_UNDONE" : "UNDO_EVIDENCE_INCOMPLETE";
+        var unavailable = document.createElement("p");
+        unavailable.textContent = event.status === "UNDONE"
+          ? "Visszavonva. Ehhez az eseményhez nincs Redo művelet."
+          : "Legacy esemény – nem vonható vissza biztonságosan.";
+        undoAction.append(unavailable);
+      }
+      body.append(undoAction);
       details.append(summary, body);
       return details;
     }
@@ -23094,6 +23807,33 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     });
 
+    document.getElementById("cancelCraftUndoButton").addEventListener("click", function () {
+      cancelV004CraftUndoConfirmation();
+      setNotice("A Craft visszavonása megszakítva; adat nem változott.", "neutral");
+    });
+
+    document.getElementById("craftUndoDialog").addEventListener("cancel", function (event) {
+      event.preventDefault();
+      cancelV004CraftUndoConfirmation();
+      setNotice("A Craft visszavonása megszakítva; adat nem változott.", "neutral");
+    });
+
+    document.getElementById("confirmCraftUndoButton").addEventListener("click", function () {
+      var button = this;
+      button.disabled = true;
+      var notice = document.getElementById("craftUndoDialogNotice");
+      notice.textContent = "Durable History, batch lineage és Card/list revision ellenőrzése…";
+      notice.dataset.tone = "neutral";
+      confirmV004CraftUndo().catch(function (error) {
+        notice.textContent = "Blokkolva: " + (error.code || error.message) + ". Adat nem változott.";
+        notice.dataset.tone = "error";
+        document.body.dataset.craftUndoState = error.code || "BLOCKED";
+        renderCraftHistory();
+      }).finally(function () {
+        button.disabled = false;
+      });
+    });
+
     document.getElementById("materialBatchForm").addEventListener("submit", function (event) {
       event.preventDefault();
       var button = document.getElementById("saveMaterialBatchButton");
@@ -23270,6 +24010,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       cancelCraftCompletionConfirmation: cancelV004CraftCompletionConfirmation,
       commitPreparedCraftCompletion: commitPreparedV004CraftCompletion,
       confirmCraftCompletion: confirmV004CraftCompletion,
+      prepareCraftUndo: prepareV004CraftUndoRequest,
+      openCraftUndoConfirmation: openV004CraftUndoConfirmation,
+      cancelCraftUndoConfirmation: cancelV004CraftUndoConfirmation,
+      commitPreparedCraftUndo: commitPreparedV004CraftUndo,
+      confirmCraftUndo: confirmV004CraftUndo,
       v004RevisionReservation: Object.freeze({
         snapshotMarker: V004_RESERVATION_SNAPSHOT_MARKER,
         reservationStatus: V004_RESERVATION_STATUS,
@@ -23303,6 +24048,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         validateHistoryEvent: v004ValidateCraftHistoryEvent,
         buildMutation: v004BuildCraftCompletionMutation,
         confirmationLines: v004CompletionConfirmationLines
+      }),
+      v004CraftUndo: Object.freeze({
+        requestMarker: V004_CRAFT_UNDO_REQUEST_MARKER,
+        mode: V004_CRAFT_UNDO_MODE,
+        assertTransactionId: v004AssertUndoTransactionId,
+        validatePreparedRequest: v004ValidatePreparedUndoRequest,
+        assertUndoableEvent: v004AssertUndoableCompletionEvent,
+        batchCompatible: v004UndoBatchCompatible,
+        buildBatchRestore: v004BuildUndoBatchRestore,
+        expectedPostCraftCard: v004ExpectedPostCraftCard,
+        assertEligibility: v004AssertCraftUndoEligibility,
+        evaluateEligibility: v004EvaluateCraftUndoEligibility,
+        buildMutation: v004BuildCraftUndoMutation
       }),
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,

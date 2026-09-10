@@ -1,0 +1,188 @@
+{
+  "cycle": "V004-C006",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "ad0457cdf9655bfb03dfb4b6e9f924d5db71c2e8c55d1d8be215c0beea3b6ce5",
+  "browser": "Google Chrome",
+  "productionBlueprint": {
+    "uuid": "280f47b7-8434-410c-b854-380768fdccec",
+    "outputName": "Omnisky III Cannon",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "requiredUnitsPerCraft": [
+      3600,
+      7,
+      7
+    ]
+  },
+  "partialUndo": {
+    "status": "PASS",
+    "quantity": "21 -> 16 -> 21",
+    "consumedAndRestoredUnits": [
+      18000,
+      35,
+      35
+    ],
+    "restoreModes": [
+      "MERGED",
+      "MERGED",
+      "MERGED"
+    ],
+    "revisionsBefore": {
+      "allocationRevision": 4,
+      "craftListRevision": 1,
+      "historySequence": 1,
+      "inventoryRevision": 3
+    },
+    "revisionsAfter": {
+      "allocationRevision": 5,
+      "craftListRevision": 1,
+      "historySequence": 1,
+      "inventoryRevision": 4
+    },
+    "cancelDurableWrites": 0,
+    "doubleUndo": {
+      "code": "ALREADY_UNDONE",
+      "durableWrites": 0
+    },
+    "reservationAfter": "STALE",
+    "automaticReallocate": false,
+    "unrelatedBatchUnits": 5000,
+    "reload": "PASS",
+    "materialRoundTripLossUnits": 0
+  },
+  "lifo": {
+    "status": "PASS",
+    "order": "SECOND_THEN_FIRST",
+    "quantities": [
+      21,
+      16,
+      13,
+      16,
+      21
+    ],
+    "finalInventoryEqualsInitial": true,
+    "materialRoundTripLossUnits": 0
+  },
+  "fullUndo": {
+    "status": "PASS",
+    "cardRemovedThenRestored": true,
+    "exactOriginalIdentityAndSettings": true,
+    "restoredOrder": 0,
+    "restoreModes": [
+      "RECREATED",
+      "RECREATED",
+      "RECREATED"
+    ],
+    "revisionsBeforeComplete": {
+      "allocationRevision": 2,
+      "craftListRevision": 1,
+      "historySequence": 0,
+      "inventoryRevision": 1
+    },
+    "revisionsBeforeUndo": {
+      "allocationRevision": 3,
+      "craftListRevision": 2,
+      "historySequence": 1,
+      "inventoryRevision": 2
+    },
+    "revisionsAfterUndo": {
+      "allocationRevision": 4,
+      "craftListRevision": 3,
+      "historySequence": 1,
+      "inventoryRevision": 3
+    },
+    "reload": "PASS",
+    "materialRoundTripLossUnits": 0
+  },
+  "blockers": {
+    "cardSemanticEdit": {
+      "code": "UNDO_CARD_REVISION_MISMATCH",
+      "durableWrites": 0
+    },
+    "fullListMutation": {
+      "code": "UNDO_CRAFT_LIST_REVISION_MISMATCH",
+      "durableWrites": 0
+    },
+    "incompatibleBatchId": {
+      "code": "UNDO_BATCH_ID_COLLISION",
+      "durableWrites": 0
+    }
+  },
+  "rollback": {
+    "status": "PASS_ATOMIC",
+    "stores": [
+      "materialBatches",
+      "userInventory",
+      "craftingCards",
+      "craftHistory",
+      "userMeta"
+    ],
+    "stages": [
+      {
+        "stage": "AFTER_BATCH_RESTORE",
+        "code": "SIMULATED_CRAFT_UNDO_ABORT",
+        "durableWrites": 0,
+        "status": "ROLLED_BACK"
+      },
+      {
+        "stage": "BEFORE_CARD_RESTORE",
+        "code": "SIMULATED_CRAFT_UNDO_ABORT",
+        "durableWrites": 0,
+        "status": "ROLLED_BACK"
+      },
+      {
+        "stage": "AFTER_HISTORY_UPDATE",
+        "code": "SIMULATED_CRAFT_UNDO_ABORT",
+        "durableWrites": 0,
+        "status": "ROLLED_BACK"
+      },
+      {
+        "stage": "BEFORE_META_UPDATE",
+        "code": "SIMULATED_CRAFT_UNDO_ABORT",
+        "durableWrites": 0,
+        "status": "ROLLED_BACK"
+      }
+    ]
+  },
+  "legacy": {
+    "status": "BLOCKED",
+    "undoButton": false,
+    "message": "Legacy esemény – nem vonható vissza biztonságosan.",
+    "fabricatedEvidence": false
+  },
+  "layout": {
+    "desktop": {
+      "documentOverflow": 0,
+      "dialogOverflow": 0,
+      "lineOverflow": false
+    },
+    "mobile": {
+      "documentOverflow": 0,
+      "dialogOverflow": 0,
+      "lineOverflow": false
+    },
+    "status": "PASS_NO_HORIZONTAL_OVERFLOW"
+  },
+  "reload": {
+    "partial": {
+      "status": "PASS",
+      "cardQuantity": 21,
+      "eventStatus": "UNDONE",
+      "unrelatedBatchUnits": 5000
+    },
+    "full": {
+      "status": "PASS",
+      "cardId": "card-301f9d9d-b97f-4d5b-9a48-dd93ac2a5bf4",
+      "quantity": 1
+    }
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED_DIRECT_FILE",
+    "version": "V004-dev",
+    "undoDialogPresent": true,
+    "runtimeFileCount": 1,
+    "localRuntimeSidecars": 0,
+    "documentOverflow": 0,
+    "consoleErrors": []
+  },
+  "consoleErrors": []
+}

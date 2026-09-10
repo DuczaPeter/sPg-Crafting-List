@@ -23,6 +23,8 @@
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
 - Baseline validalas: `tools/validate-baseline.ps1`.
+- V004-C006 Craft History Undo kapu: `tools/validate-v004-c006.ps1`; current-byte C004.4/C005 regresszióval, C006 model/Chrome partial/full/LIFO/blocker/rollback/reload/responsive/direct-file és protected V003 ellenőrzéssel.
+- V004-C006 céltesztek: `tools/run-v004-c006-tests.mjs` és `tools/run-v004-c006-browser-tests.mjs`; evidence: `test-artifacts/V004-C006/`; riport: `docs/V004_C006_CRAFT_UNDO_REPORT.md`.
 - M1 modell- es cache-regresszio: `tools/validate-m1.ps1`, amely a `tools/run-m1-tests.mjs` fixture-tesztet is futtatja.
 - M2 inventory- es allocation-regresszio: `tools/validate-m2.ps1`, amely az M1 kaput es a `tools/run-m2-tests.mjs` fixture/performance tesztet is futtatja.
 - M3 mining-regresszio: `tools/validate-m3.ps1`, amely az M1/M2 kapukat es a `tools/run-m3-tests.mjs` 24 V003 primary/secondary/ranking/loadout fixture/performance esetet is futtatja.

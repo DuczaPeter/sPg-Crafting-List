@@ -134,7 +134,7 @@ const historyRendererEnd = appHtml.indexOf("function renderCraftingCards", histo
 assert.ok(historyRendererStart >= 0 && historyRendererEnd > historyRendererStart);
 const rendererSource = appHtml.slice(historyRendererStart, historyRendererEnd);
 const historyTruthRendererStart = appHtml.indexOf("function c005HistoryDeltaMaterialName", historyRendererStart);
-const historyTruthRendererEnd = appHtml.indexOf("function setCraftingListView", historyTruthRendererStart);
+const historyTruthRendererEnd = appHtml.indexOf("var undoAction = document.createElement", historyTruthRendererStart);
 assert.ok(historyTruthRendererStart >= 0 && historyTruthRendererEnd > historyTruthRendererStart);
 const historyTruthRendererSource = appHtml.slice(historyTruthRendererStart, historyTruthRendererEnd);
 assert.match(rendererSource, /event\.consumedDeltas/);
@@ -145,7 +145,7 @@ assert.match(rendererSource, /tárolt exact batch\/unit delták|nincs tárolt ex
 assert.doesNotMatch(historyTruthRendererSource, /loadBlueprintDetail|syncBlueprint|fetch\s*\(|state\.materialBatches|state\.craftingCards/);
 assert.doesNotMatch(historyTruthRendererSource, /v004BuildExactRequirementQuantityEvidence|normalizeScuQuantityToUnits|toScuUnits\s*\(/);
 assert.doesNotMatch(rendererSource, /userDataRepository\.(?:save|complete)|database\.(?:put|delete)|objectStore\s*\(/);
-assert.doesNotMatch(rendererSource, /undoCraft|redoCraft|deleteHistory|clearHistory|createC012CardAction\(\s*"Undo"|textContent\s*=\s*"Undo"/i);
+assert.doesNotMatch(rendererSource, /redoCraft|deleteHistory|clearHistory|archiveCraftHistory/i);
 
 assert.match(appHtml, /id="activeCraftsTab"[^>]*role="tab"[^>]*aria-selected="true"/);
 assert.match(appHtml, /id="craftHistoryTab"[^>]*role="tab"[^>]*aria-selected="false"/);
@@ -204,7 +204,7 @@ const evidence = {
   presentation: {
     defaultView: "ACTIVE",
     deleteImplemented: false,
-    undoImplemented: false,
+    undoImplemented: true,
     redoImplemented: false,
     databaseSchemaChanged: false,
     backupSchemaChanged: false

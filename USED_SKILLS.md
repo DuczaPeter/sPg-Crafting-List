@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C006 Craft History Undo
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-10`, a credit-limit miatt megszakadt dirty C006 biztonságos resume-a, célzott Undo implementáció, bounded regresszió és helyi checkpoint során.
+- Mire segített: a félkész diff megőrzésére, szűk source-auditra, current-byte evidence-re, a teljes regresszió tudatos kihagyására és a protected V003 baseline megőrzésére.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file Undo runtime, C006 tools/evidence/report és projektmeta; skillfájl, V003 release/tag és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C005 Craft History UI
 
 - Skill neve: `credit-efficient-project-runner`.

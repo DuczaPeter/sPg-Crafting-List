@@ -1,0 +1,108 @@
+{
+  "cycle": "V004-C006",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "ad0457cdf9655bfb03dfb4b6e9f924d5db71c2e8c55d1d8be215c0beea3b6ce5",
+  "eligibility": {
+    "latestActiveOnly": true,
+    "lifo": true,
+    "legacy": "BLOCKED",
+    "cardEdit": "BLOCKED",
+    "fullListChange": "BLOCKED"
+  },
+  "partialUndo": {
+    "quantity": "1 -> 5",
+    "cardRevision": "4 -> 5",
+    "revisions": {
+      "inventoryRevision": 6,
+      "allocationRevision": 9,
+      "craftListRevision": 2,
+      "historySequence": 1
+    },
+    "restoreModes": [
+      "RECREATED",
+      "MERGED",
+      "MERGED"
+    ]
+  },
+  "fullUndo": {
+    "restoredCardId": "card-c003-alpha",
+    "restoredQuantity": 5,
+    "restoredOrder": 0,
+    "shiftedCardRevisionAfter": 8,
+    "revisions": {
+      "inventoryRevision": 6,
+      "allocationRevision": 9,
+      "craftListRevision": 4,
+      "historySequence": 1
+    }
+  },
+  "targetedDeltaRestore": {
+    "unrelatedBatchUnitsBefore": 5000,
+    "unrelatedBatchUnitsAfter": 5000,
+    "globalInventoryRevisionMismatchAllowed": true
+  },
+  "exactBatchRestore": {
+    "recreated": true,
+    "merged": true,
+    "incompatibleCollision": "UNDO_BATCH_ID_COLLISION",
+    "restoredUnits": [
+      30,
+      10,
+      60
+    ]
+  },
+  "lifo": {
+    "beforeUndoB": "NOT_LATEST_ACTIVE_EVENT",
+    "afterUndoBEventAEligible": true,
+    "finalCardQuantity": 5
+  },
+  "idempotency": {
+    "secondUndo": "ALREADY_UNDONE",
+    "writes": 0
+  },
+  "history": {
+    "status": "UNDONE",
+    "historySequenceChanged": false,
+    "immutableCompletionEvidence": true,
+    "groupSortAfterUndo": [
+      "card-b",
+      "card-a"
+    ]
+  },
+  "transaction": {
+    "stores": [
+      "materialBatches",
+      "userInventory",
+      "craftingCards",
+      "craftHistory",
+      "userMeta"
+    ],
+    "failureStages": [
+      "AFTER_BATCH_RESTORE",
+      "BEFORE_CARD_RESTORE",
+      "AFTER_HISTORY_UPDATE",
+      "BEFORE_META_UPDATE"
+    ]
+  },
+  "exclusions": {
+    "redo": "NOT_IMPLEMENTED",
+    "historyDelete": "NOT_IMPLEMENTED",
+    "archive": "NOT_IMPLEMENTED",
+    "fullInventorySnapshotRollback": false
+  },
+  "backup": {
+    "schema": 3,
+    "undoneEventValidated": true
+  },
+  "conservation": {
+    "materialRoundTripLossUnits": 0,
+    "normalizationRerun": false
+  },
+  "singleFile": {
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "localScriptSrc": 0,
+    "localStylesheet": 0,
+    "localRuntimeJson": 0
+  }
+}

@@ -58,6 +58,21 @@ Technikai baseline statikus ellenorzese:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-baseline.ps1"
 ```
 
+V004-C006 Craft History Undo bounded kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c006.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Külön céltesztek:
+
+```powershell
+node .\tools\run-v004-c006-tests.mjs
+node .\tools\run-v004-c006-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A validator baseline static, C004.4 Craft Complete/4DP és C005 History regressziót, majd C006 exact delta restore, LIFO, partial/full, blocker, merge/recreate/collision, unrelated inventory, cancel/double Undo, négy atomi rollback, reload, responsive Chrome, automated direct `file://`, single-file, diff-check és protected V003 kaput futtat. A teljes 1606-blueprint audit és release-regresszió nincs a scope-ban.
+
 M1 normalizalt modell- es regresszios teszt:
 
 ```powershell

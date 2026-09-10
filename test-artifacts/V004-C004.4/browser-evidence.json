@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C004.4",
   "status": "PASS_TARGETED_CHROME",
-  "applicationSha256": "fd37d3a951e95266a15e8807fd09d4dc477351897a60060b59375062f65b3569",
+  "applicationSha256": "ad0457cdf9655bfb03dfb4b6e9f924d5db71c2e8c55d1d8be215c0beea3b6ce5",
   "browser": "Google Chrome",
   "productionExact": {
     "status": "PASS",

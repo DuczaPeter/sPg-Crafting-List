@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C006 Craft History Undo
+
+- [x] Megszakadt dirty C006 állapot célzottan auditálva és megőrizve; branch/input HEAD/staged state/application SHA ellenőrizve.
+- [x] Stored `craftHistory.consumedDeltas` truth, Cardonként latest-active LIFO eligibility, legacy/double Undo fail-closed elkészült.
+- [x] Partial exact Card quantity/revision restore és full pre-craft Card snapshot restore az eredeti ID/order/settings/provenance adatokkal elkészült.
+- [x] Exact batch merge/recreate, same-ID collision blocker és független inventory-delta megőrzése elkészült.
+- [x] Öt-store atomi IndexedDB Undo tranzakció, friss commit előtti durable read, négy injected rollback pont és idempotencia PASS.
+- [x] History Undo gomb, exact confirmation, Cancel 0 write, UNDONE/Redo nélküli állapot, stale reservation és explicit Reallocate flow elkészült.
+- [x] Omnisky partial/full/LIFO, blockers, reload, 1920×1080/390×844 overflow 0 és automated direct `file://` Chrome-kapu PASS; material loss 0.
+- [x] C004.4/C005 targeted regresszió, single-file, `git diff --check` és protected V003 bounded validator PASS; full regression/push nincs.
+- [ ] C007 csak új, explicit feladatban indulhat; C006 checkpoint után itt megállunk.
+
 ### V004-C005 Craft History UI
 
 - [x] C004.4 checkpoint, clean `develop/V004`, input application SHA és meglévő History schema/indexek ellenőrizve.
