@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C006",
   "status": "PASS_TARGETED_CHROME",
-  "applicationSha256": "ad0457cdf9655bfb03dfb4b6e9f924d5db71c2e8c55d1d8be215c0beea3b6ce5",
+  "applicationSha256": "ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5",
   "browser": "Google Chrome",
   "productionBlueprint": {
     "uuid": "280f47b7-8434-410c-b854-380768fdccec",
@@ -171,7 +171,7 @@
     },
     "full": {
       "status": "PASS",
-      "cardId": "card-301f9d9d-b97f-4d5b-9a48-dd93ac2a5bf4",
+      "cardId": "card-74edf0de-e7db-4dfa-a9c1-e507601b93f6",
       "quantity": 1
     }
   },

@@ -270,3 +270,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Inventory, derived aggregate, Card/list, History status és revision meta egyetlen `materialBatches/userInventory/craftingCards/craftHistory/userMeta` readwrite tranzakció. Bármely hiba teljes rollback.
 - Sikeres Undo után minden reservation stale és explicit Reallocate szükséges; completion-time vagy Undo-time automatikus reallocation/fallback továbbra is tilos.
 - Az event megmarad `UNDONE`, `undoneAt`, egyedi Undo transaction ID és revision/restore evidence adatokkal. Az eredeti completion evidence és `historySequence` immutable.
+
+## 2026-09-10 - V004-C006.1 exact pristine backup restore
+
+- Schema-3 `REPLACE` import bizonyítottan pristine V004 céladatbázisba exact restore művelet: az incoming Card, inventory, History, `userMeta` és revision értékeket változtatás nélkül kell tartósítani. Az importhatár önmagában nem szemantikai mutation.
+- Pristine csak üres User Data/History és pontosan a V004 kezdeti négy 0 revision meta mellett áll fenn. Nem üres cél vagy `MERGE` továbbra is import-boundary revision-invalidálást alkalmaz, ezért a meglévő safety contract nem gyengül.
+- A backup schema verzió 3 marad. Current-schema History ismeretlen extra mezőit forward-compatible módon meg kell őrizni; legacy schema-3 eventhez Undo evidence nem fabrikálható, ezért fail-closed marad.
+- Import és reload után a stored `UNDONE` state, exact consumed/restored unit deltas, Card/inventory/revision evidence, `historySequence` grouping/order és cardonkénti LIFO az authority. Második Undo továbbra is `ALREADY_UNDONE`, nulla tartós írással.
+- A V003 migrációs út változatlan és read-only; V003 source adatbázisba import vagy round-trip közben nem írható.

@@ -1,0 +1,86 @@
+{
+  "cycle": "V004-C006.1",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5",
+  "browser": "Google Chrome",
+  "backupSchemaVersion": 3,
+  "partialLifoRoundTrip": {
+    "status": "PASS",
+    "schemaVersion": 3,
+    "recordCounts": {
+      "userInventory": 3,
+      "materialBatches": 3,
+      "craftingCards": 1,
+      "miningLoadouts": 0,
+      "userSettings": 0,
+      "craftHistory": 2,
+      "userMeta": 4
+    },
+    "structuralJsonEqual": true,
+    "historyFieldsExact": true,
+    "consumedDeltasExact": true,
+    "restoredBatchEvidenceExact": true,
+    "inventoryExact": true,
+    "cardExact": true,
+    "userMetaExact": true,
+    "unknownHistoryFieldPreserved": true,
+    "historyDom": {
+      "groupCount": 1,
+      "cardId": "card-a3c1812a-fbdd-4baa-8b47-2dfe43a80b98",
+      "sequences": [
+        2,
+        1
+      ],
+      "statuses": [
+        "UNDONE",
+        "COMPLETED"
+      ],
+      "activeTotal": 5
+    },
+    "eligibilityAfterImport": {
+      "completed": "UNDO_READY",
+      "undone": "ALREADY_UNDONE",
+      "durableWrites": 0
+    },
+    "backupDataLoss": 0
+  },
+  "fullRoundTrip": {
+    "status": "PASS",
+    "schemaVersion": 3,
+    "recordCounts": {
+      "userInventory": 3,
+      "materialBatches": 3,
+      "craftingCards": 1,
+      "miningLoadouts": 0,
+      "userSettings": 0,
+      "craftHistory": 1,
+      "userMeta": 4
+    },
+    "structuralJsonEqual": true,
+    "historyFieldsExact": true,
+    "inventoryExact": true,
+    "cardIdentityQuantityOrderBlueprintSlotsPoolsRevisionExact": true,
+    "userMetaExact": true,
+    "backupDataLoss": 0
+  },
+  "legacySchema3": {
+    "status": "FAIL_CLOSED_COMPATIBLE",
+    "schemaVersion": 3,
+    "undoFieldsFabricated": false,
+    "unknownFieldPreserved": true,
+    "undoButtons": 0
+  },
+  "directFile": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "protocol": "file:",
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "overflow": 0,
+    "historyStatus": "UNDONE",
+    "cardQuantity": 3,
+    "structuralJsonEqual": true,
+    "backupDataLoss": 0
+  },
+  "consoleErrors": []
+}

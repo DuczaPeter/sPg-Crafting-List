@@ -1,9 +1,9 @@
 {
   "cycle": "V004-C002",
   "status": "PASS_TARGETED_CHROME",
-  "applicationSha256": "a9d664947aa97f22c80b3706f44df5cc7346299fc06b1e57a01337923fa4b0c8",
+  "applicationSha256": "ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5",
   "browser": "Google Chrome",
-  "origin": "http://127.0.0.1:52849",
+  "origin": "http://127.0.0.1:60375",
   "startup": {
     "status": "PASS",
     "applicationVersion": "V004-dev",

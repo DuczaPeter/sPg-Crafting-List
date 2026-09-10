@@ -1,0 +1,37 @@
+V004-C006.1 Undo backup round-trip validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS 74787ec68a750e18bafbe7b8a593759f6fe701084ad1868143f4241753c78d1c 130064 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c0061-node-syntax-model=PASS
+c0061-node-syntax-browser=PASS
+c002-v003-migration-chrome-regression=PASS
+V004_C002_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C002\browser-evidence.json
+c006-undo-model-regression=PASS
+V004_C006_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C006\model-evidence.json
+c006-undo-chrome-regression=PASS
+V004_C006_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C006\browser-evidence.json
+c0061-roundtrip-model=PASS
+V004_C0061_UNDO_BACKUP_MODEL_PASS evidence=test-artifacts\V004-C006.1\model-evidence.json
+c0061-roundtrip-chrome=PASS
+V004_C0061_UNDO_BACKUP_CHROME_PASS evidence=test-artifacts\V004-C006.1\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C002/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_UNDO_BACKUP_ROUNDTRIP
+applicationSha256=ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5
+backupDataLoss=0
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+fullRegression=NOT_RUN_BY_SCOPE

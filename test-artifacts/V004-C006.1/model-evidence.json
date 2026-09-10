@@ -1,0 +1,61 @@
+{
+  "cycle": "V004-C006.1",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5",
+  "backupSchemaVersion": 3,
+  "pristineReplace": {
+    "exactRestore": true,
+    "revisionIncrementAtSerializationBoundary": 0,
+    "nonPristineRevisionInvalidationUnchanged": true
+  },
+  "partialUndo": {
+    "structuralRoundTrip": true,
+    "historyStatus": "UNDONE",
+    "consumedDeltasPreserved": true,
+    "restoredBatchEvidencePreserved": true,
+    "undoRevisionEvidencePreserved": true,
+    "restoredInventoryPreserved": true,
+    "restoredCardPreserved": true,
+    "unknownHistoryFieldPreserved": true
+  },
+  "fullUndo": {
+    "structuralRoundTrip": true,
+    "restoredInventoryPreserved": true,
+    "restoredCardPreserved": true,
+    "userMetaPreserved": true
+  },
+  "lifoAfterImport": {
+    "eventAEligible": true,
+    "eventBStatus": "UNDONE",
+    "secondUndo": "ALREADY_UNDONE",
+    "writes": 0
+  },
+  "legacySchema3": {
+    "status": "FAIL_CLOSED_COMPATIBLE",
+    "undoFieldsFabricated": false,
+    "unknownFieldPreserved": true
+  },
+  "v003Migration": {
+    "status": "UNCHANGED",
+    "craftHistoryCount": 0,
+    "quantitySemantics": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+    "revisionValues": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "conservation": {
+    "relevantDurableDelta": 0,
+    "backupDataLoss": 0,
+    "normalizationRerun": false,
+    "liveApiUsed": false
+  },
+  "singleFile": {
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "localScriptSrc": 0,
+    "localStylesheet": 0
+  }
+}

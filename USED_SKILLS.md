@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C006.1 Undo Backup Round-Trip
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-10`, a clean C006 checkpoint bounded resume-a, célzott backup/import audit, minimális repair, Chrome-kapu és helyi checkpoint során.
+- Mire segített: a backup/History releváns kódrészeinek szűk olvasására, a teljes regresszió kihagyására, current-byte evidence-re és a protected V003 baseline megőrzésére.
+- Mely fájlokat vagy döntéseket érintett: V004 pristine `REPLACE` import, C006.1 tools/evidence/report és projektmeta; skillfájl, V003 release/tag, remote és C007 nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C006 Craft History Undo
 
 - Skill neve: `credit-efficient-project-runner`.

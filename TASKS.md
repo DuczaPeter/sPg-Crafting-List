@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C006.1 Undo Backup Round-Trip
+
+- [x] Exact C006 checkpoint, input application SHA, `develop/V004` és protected V003 baseline ellenőrizve; C007 nem indult el.
+- [x] Partial és full Complete → Undo → schema-3 export → tiszta izolált V004 DB `REPLACE` import → reload exact round-trip PASS.
+- [x] Tiszta céladatbázis exact restore megőrzi a revisionöket; nem üres cél és `MERGE` eddigi invalidálása változatlan.
+- [x] `UNDONE` History, consumed delta, restored-batch/revision evidence, Card, inventory, meta és ismeretlen extra History mező megőrzése PASS; data loss 0.
+- [x] Import utáni History grouping/order és Cardonkénti LIFO PASS; második Undo `ALREADY_UNDONE`, durable write 0.
+- [x] Legacy schema 3 fail-closed kompatibilis, nem fabrikál Undo-mezőket; backup schema maradt 3.
+- [x] C002 V003 read-only migráció és C006 Undo regresszió, Chrome, direct `file://`, single-file, diff-check és protected V003 bounded validator PASS.
+- [x] Full regression és push nincs; helyi checkpoint után megállás.
+- [ ] C007 csak új, explicit feladatban indulhat.
+
 ### V004-C006 Craft History Undo
 
 - [x] Megszakadt dirty C006 állapot célzottan auditálva és megőrizve; branch/input HEAD/staged state/application SHA ellenőrizve.

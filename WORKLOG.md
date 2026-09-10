@@ -2,6 +2,15 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260910-172400-000000-WORKLOG.md`.
 
+## 2026-09-10 — V004-C006.1 Undo Backup Round-Trip
+
+- Resume: `develop/V004 @ 4bb3303...`, clean input, app SHA `ad0457c...`; `$credit-efficient-project-runner`, C007 nem indult.
+- Hiba: tiszta V004 célba `REPLACE` import indokolatlanul revisiont növelt. Javítás: kizárólag bizonyított pristine célnál exact incoming állapot; non-pristine/MERGE invalidálás változatlan.
+- Partial/full Complete→Undo→export→isolated clean DB import→reload: History/delta/restore/Card/inventory/meta exact; unknown event mező megmaradt; data loss 0.
+- Import utáni grouping/LIFO PASS; double Undo `ALREADY_UNDONE`, 0 write; legacy schema 3 fail-closed, schema bump nélkül.
+- C002 V003 read-only migration és C006 Undo current-byte regresszió, VM/Chrome/direct-file/single-file/protected V003 bounded kapu PASS; full regression/push nincs.
+- Riport: `docs/V004_C006_1_UNDO_BACKUP_ROUNDTRIP_REPORT.md`; rollback a helyi C006.1 commit normál revertje.
+
 ## 2026-09-10 — V004-C006 Craft History Undo
 
 - Resume: `develop/V004 @ 7972659...`; a credit-limit miatt félbemaradt dirty C006 diff megőrizve és célzottan auditálva; input app SHA `fd37d3a...`.

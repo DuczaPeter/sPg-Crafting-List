@@ -23,6 +23,8 @@
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
 - Baseline validalas: `tools/validate-baseline.ps1`.
+- V004-C006.1 Undo backup round-trip kapu: `tools/validate-v004-c0061.ps1`; C002 V003 migration + C006 Undo regresszióval, exact schema-3 pristine `REPLACE`, legacy fail-closed, Chrome/direct-file és protected V003 ellenőrzéssel.
+- V004-C006.1 céltesztek: `tools/run-v004-c0061-tests.mjs` és `tools/run-v004-c0061-browser-tests.mjs`; evidence: `test-artifacts/V004-C006.1/`; riport: `docs/V004_C006_1_UNDO_BACKUP_ROUNDTRIP_REPORT.md`.
 - V004-C006 Craft History Undo kapu: `tools/validate-v004-c006.ps1`; current-byte C004.4/C005 regresszióval, C006 model/Chrome partial/full/LIFO/blocker/rollback/reload/responsive/direct-file és protected V003 ellenőrzéssel.
 - V004-C006 céltesztek: `tools/run-v004-c006-tests.mjs` és `tools/run-v004-c006-browser-tests.mjs`; evidence: `test-artifacts/V004-C006/`; riport: `docs/V004_C006_CRAFT_UNDO_REPORT.md`.
 - M1 modell- es cache-regresszio: `tools/validate-m1.ps1`, amely a `tools/run-m1-tests.mjs` fixture-tesztet is futtatja.

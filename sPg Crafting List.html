@@ -13195,11 +13195,42 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       });
     }
 
+    function v004IsPristineUserDataForExactReplace(data) {
+      var source = data || {};
+      var userDataKeys = ["userInventory", "materialBatches", "craftingCards", "miningLoadouts", "userSettings", "craftHistory"];
+      if (userDataKeys.some(function (key) { return Array.isArray(source[key]) && source[key].length > 0; })) {
+        return false;
+      }
+      var defaults = new Map(v004DefaultUserMetaRecords().map(function (record) { return [record.key, record.value]; }));
+      var meta = Array.isArray(source.userMeta) ? source.userMeta : [];
+      return meta.length === defaults.size && meta.every(function (record) {
+        return record && defaults.has(record.key) && record.value === defaults.get(record.key);
+      });
+    }
+
     function prepareV004RevisionAwareImport(currentData, incomingData, mode) {
       var current = validateM4UserData(currentData);
-      var resultData = validateM4UserData(simulateM4UserDataImport(current, incomingData, mode, false));
+      var importMode = mode === "REPLACE" ? "REPLACE" : "MERGE";
+      var resultData = validateM4UserData(simulateM4UserDataImport(current, incomingData, importMode, false));
       var currentCards = v004CardsInPriorityOrder(current.craftingCards);
       var resultCards = v004CardsInPriorityOrder(resultData.craftingCards);
+      if (importMode === "REPLACE" && v004IsPristineUserDataForExactReplace(current)) {
+        var restoredRevisions = v004RevisionSnapshot(resultData.userMeta);
+        var restoredInventoryChanged = !v004SemanticEqual(current.materialBatches, resultData.materialBatches) ||
+          !v004SemanticEqual(current.userInventory, resultData.userInventory);
+        var restoredCraftListChanged = !v004SemanticEqual(v004CardListSequence(currentCards), v004CardListSequence(resultCards));
+        var restoredAllocationSettingsChanged = !v004SemanticEqual(v004AllocationSettingsSemantic(current.userSettings), v004AllocationSettingsSemantic(resultData.userSettings));
+        return {
+          data: resultData,
+          revisions: restoredRevisions,
+          inventoryChanged: restoredInventoryChanged,
+          craftListChanged: restoredCraftListChanged,
+          allocationChanged: restoredInventoryChanged || restoredCraftListChanged || restoredAllocationSettingsChanged,
+          allocationSettingsChanged: restoredAllocationSettingsChanged,
+          changedCardIds: [],
+          exactPristineRestore: true
+        };
+      }
       var currentById = new Map(currentCards.map(function (card) { return [card.id, card]; }));
       var changedCardIds = [];
       resultCards = resultCards.map(function (card) {
@@ -13245,7 +13276,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         craftListChanged: craftListChanged,
         allocationChanged: allocationChanged,
         allocationSettingsChanged: allocationSettingsChanged,
-        changedCardIds: changedCardIds
+        changedCardIds: changedCardIds,
+        exactPristineRestore: false
       };
     }
     /* V004_C003_REVISION_RESERVATION_MODEL_END */

@@ -58,6 +58,21 @@ Technikai baseline statikus ellenorzese:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-baseline.ps1"
 ```
 
+V004-C006.1 Undo Backup Round-Trip bounded kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c0061.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Külön C006.1 céltesztek:
+
+```powershell
+node .\tools\run-v004-c0061-tests.mjs
+node .\tools\run-v004-c0061-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A validator baseline static, C002 V003 read-only migration és C006 Undo regressziót, majd partial/full Undo schema-3 backup export/import/reload, exact durable state, unknown History field, LIFO/double Undo, legacy fail-closed, direct `file://`, single-file, diff-check és protected V003 kaput futtat. Teljes release-regresszió nincs a scope-ban.
+
 V004-C006 Craft History Undo bounded kapu:
 
 ```powershell
