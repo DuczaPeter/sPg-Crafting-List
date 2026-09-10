@@ -1,24 +1,35 @@
-V004-C004 targeted atomic Craft Complete core validation
+V004-C004.3 targeted craft-run quantity semantics validation
 baseline-static=PASS
 EMBEDDED_APPLICATION_CSS_PASS 4883dfbb469d29caae8175eb6ecd6d107dfb0dce116f3dfc2a31f2ac60836f0c 125010 bytes
 Single-file baseline structure OK
 JavaScript syntax OK
 Embedded CSS markers OK
 BASELINE_STATIC_PASS
-c004-targeted-model=PASS
+c004-atomic-model-regression=PASS
 V004_C004_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004\model-evidence.json
-c004-targeted-chrome=PASS
-V004_C004_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C004\browser-evidence.json
+c0043-targeted-model=PASS
+V004_C0043_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004.3\model-evidence.json
+c0043-targeted-chrome=PASS
+V004_C0043_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C004.3\browser-evidence.json
 git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'test-artifacts/V004-C004/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'test-artifacts/V004-C004/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004/target-summary.json', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tests/fixtures/v004-c003-reservation.json', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tools/run-v004-c004-browser-tests.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tools/run-v004-c004-tests.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tools/validate-v004-c004.ps1', LF will be replaced by CRLF the next time Git touches it
-result=PASS_ATOMIC_CRAFT_COMPLETE_CORE
+result=PASS_CRAFT_RUN_QUANTITY_SEMANTICS
 applicationSha256=1cc18a53ea41e27ae05f69e8195c4120cd5cc4e401446c62c8c2ee3742bcc0eb
+exactProductionBlueprint=280f47b7-8434-410c-b854-380768fdccec
+nonexactProductionBlueprint=5af6beb3-4030-4a32-bb77-2a9b729483f5
 v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
-directFileGate=PASS_AUTOMATED
 fullRegression=NOT_RUN_BY_SCOPE

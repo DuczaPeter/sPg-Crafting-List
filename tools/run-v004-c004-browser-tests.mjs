@@ -119,6 +119,8 @@ const card = {
   active: true,
   collapsed: false,
   quantity: 21,
+  quantitySemantics: "CRAFT_RUN_COUNT",
+  craftRunInputEvidence: "CRAFT_RUN_INPUTS_EXACT",
   outputCountEvidence: sourceFixture.card.outputCountEvidence,
   requirements: [{
     ...sourceFixture.card.requirements[1],
@@ -127,6 +129,10 @@ const card = {
     commodityUuid: "material-c004-browser",
     materialName: "C004 Exact Material",
     requiredQuantityUnits: 10000,
+    sourceQuantityValue: 1,
+    exactRequiredQuantityUnits: 10000,
+    quantityExactness: "EXACT_SAFE_INTEGER_UNITS",
+    quantityExactnessReason: null,
     unit: "SCU",
     qualityCapability: "FIXED"
   }],
@@ -191,7 +197,7 @@ const results = {
   atomicRollback: {},
   fullCompletion: {},
   reloadGate: {},
-  outputCountBlocker: {},
+  craftRunInputBlocker: {},
   fileGate: { status: "DEFERRED" },
   applicationOriginConsoleErrors: errors
 };
@@ -461,7 +467,19 @@ try {
 
   const unprovenErrors = [];
   const unproven = await openApplication(browser, `${origin}/app`, unprovenErrors);
-  const unprovenCard = { ...card, id: "card-c004-unproven", outputCountEvidence: "OUTPUT_COUNT_UNPROVEN", quantity: 1 };
+  const unprovenCard = {
+    ...card,
+    id: "card-c004-unproven",
+    outputCountEvidence: "OUTPUT_COUNT_UNPROVEN",
+    craftRunInputEvidence: "CRAFT_RUN_INPUTS_UNPROVEN",
+    quantity: 1,
+    requirements: card.requirements.map(requirement => ({
+      ...requirement,
+      exactRequiredQuantityUnits: null,
+      quantityExactness: "QUANTITY_UNITS_UNPROVEN",
+      quantityExactnessReason: "SCU_TIMES_10000_NOT_EXACT_SAFE_INTEGER"
+    }))
+  };
   await unproven.page.evaluate(async input => {
     const test = window.__SPG_TEST__;
     await test.userDataRepository.saveCraftingCards([input.card]);
@@ -471,7 +489,7 @@ try {
   await unproven.page.waitForSelector('body[data-app-ready="true"]', { timeout: 30000 });
   await unproven.page.click("#craftingListNav");
   await unproven.page.click("#reallocateCraftingListButton");
-  await unproven.page.waitForFunction(() => document.body.dataset.reservationRunStatus === "VALID");
+  await unproven.page.waitForFunction(() => document.body.dataset.reservationRunStatus === "BLOCKED");
   const unprovenControl = '[data-card-id="card-c004-unproven"].spg-v004-completion-controls';
   assert.equal(await unproven.page.getAttribute(unprovenControl, "data-completion-ready"), "false");
   assert.equal(await unproven.page.isDisabled(`${unprovenControl} .spg-v004-completion-open`), true);
@@ -483,10 +501,16 @@ try {
       return error.code;
     }
   });
-  assert.equal(unprovenCode, "OUTPUT_COUNT_UNPROVEN");
+  assert.equal(unprovenCode, "STALE_RESERVATION");
   assert.equal(await unproven.page.isVisible("#craftCompletionDialog"), false);
   assert.equal(unprovenErrors.length, 0);
-  results.outputCountBlocker = { status: "PASS", code: unprovenCode, confirmationReachable: false };
+  results.craftRunInputBlocker = {
+    status: "PASS",
+    reservationReason: "CRAFT_RUN_INPUTS_UNPROVEN",
+    prepareCode: unprovenCode,
+    confirmationReachable: false,
+    outputCountEvidence: "OUTPUT_COUNT_UNPROVEN"
+  };
   await unproven.context.close();
 
   const fileErrors = [];

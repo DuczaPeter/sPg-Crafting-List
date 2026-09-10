@@ -92,8 +92,8 @@ try {
     if ($modelEvidence.partial.cardRevisionAfter -ne ($modelEvidence.partial.cardRevisionBefore + 1)) { throw 'Partial completion cardRevision mismatch.' }
     if ($modelEvidence.full.craftListRevisionAfter -ne ($modelEvidence.full.craftListRevisionBefore + 1)) { throw 'Full completion craftListRevision mismatch.' }
     if ($modelEvidence.conservation.toleranceUnits -ne 0 -or $modelEvidence.conservation.oneUnitRemainder -ne 1 -or $modelEvidence.conservation.roundingCallsInC004Model -ne 0) { throw 'Exact-unit conservation proof mismatch.' }
-    if ($modelEvidence.outputCountBlocker -ne 'OUTPUT_COUNT_UNPROVEN') { throw 'Output-count blocker mismatch.' }
-    if ($modelEvidence.history.eventSchema -ne 'V004_CRAFT_HISTORY_EVENT_1' -or $modelEvidence.history.status -ne 'COMPLETED') { throw 'Craft History event contract mismatch.' }
+    if ($modelEvidence.outputCountDiagnostic -ne 'OUTPUT_COUNT_UNPROVEN' -or $modelEvidence.craftRunInputBlocker -ne 'CRAFT_RUN_INPUTS_UNPROVEN') { throw 'Craft-run input blocker or output diagnostic mismatch.' }
+    if ($modelEvidence.history.eventSchema -ne 'V004_CRAFT_HISTORY_EVENT_2' -or $modelEvidence.history.status -ne 'COMPLETED') { throw 'Craft History event contract mismatch.' }
     if ($modelEvidence.singleFile.applicationRuntimeFileCount -ne 1 -or $modelEvidence.singleFile.localRuntimeSidecars -ne 0) { throw 'Single-file runtime gate failed.' }
     if ($modelEvidence.exclusions.historyUi -ne 'NOT_IMPLEMENTED' -or $modelEvidence.exclusions.undo -ne 'NOT_IMPLEMENTED' -or $modelEvidence.exclusions.broadcastChannel -ne 'NOT_IMPLEMENTED') { throw 'C004 scope exclusion mismatch.' }
 
@@ -107,7 +107,7 @@ try {
     if ($browserEvidence.fullCompletion.cardRemoved -ne $true -or $browserEvidence.fullCompletion.oneUnitRemainder -ne 1) { throw 'Full completion or exact one-unit remainder mismatch.' }
     if ($browserEvidence.fullCompletion.craftListRevisionAfter -ne ($browserEvidence.fullCompletion.craftListRevisionBefore + 1)) { throw 'Chrome full completion craftListRevision mismatch.' }
     if ($browserEvidence.reloadGate.inventoryUnits -ne 1 -or $browserEvidence.reloadGate.historyEvents -ne 2 -or $browserEvidence.reloadGate.reservationAutomaticallyValid -ne $false) { throw 'Reload persistence proof mismatch.' }
-    if ($browserEvidence.outputCountBlocker.code -ne 'OUTPUT_COUNT_UNPROVEN' -or $browserEvidence.outputCountBlocker.confirmationReachable -ne $false) { throw 'Chrome output-count blocker mismatch.' }
+    if ($browserEvidence.craftRunInputBlocker.reservationReason -ne 'CRAFT_RUN_INPUTS_UNPROVEN' -or $browserEvidence.craftRunInputBlocker.confirmationReachable -ne $false -or $browserEvidence.craftRunInputBlocker.outputCountEvidence -ne 'OUTPUT_COUNT_UNPROVEN') { throw 'Chrome craft-run input blocker mismatch.' }
     if ($browserEvidence.fileGate.status -ne 'PASS_AUTOMATED') { throw 'Direct file gate is not PASS.' }
     if (@($browserEvidence.applicationOriginConsoleErrors).Count -ne 0 -or @($browserEvidence.fileGate.consoleErrors).Count -ne 0) { throw 'Browser console or page error detected.' }
 
@@ -139,7 +139,8 @@ try {
         fullCompletion = $browserEvidence.fullCompletion.status
         atomicRollbackStages = @($browserEvidence.atomicRollback.failures).Count
         reloadPersistence = $browserEvidence.reloadGate.status
-        outputCountBlocker = $browserEvidence.outputCountBlocker.code
+        craftRunInputBlocker = $browserEvidence.craftRunInputBlocker.reservationReason
+        outputCountDiagnostic = $browserEvidence.craftRunInputBlocker.outputCountEvidence
         directFileGate = $browserEvidence.fileGate.status
         applicationOriginConsoleErrors = 0
         localRuntimeSidecars = 0

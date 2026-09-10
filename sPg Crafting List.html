@@ -5168,13 +5168,22 @@ body[data-active-module="blueprintBrowserNav"] #blueprintBrowserPanel .spg-brows
   white-space: nowrap;
 }
 
+.spg-c010-all-crafts {
+  color: #9cecff;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .spg-c0121-recipe-need {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
   min-width: 0;
-  white-space: nowrap;
+  flex-wrap: wrap;
+  white-space: normal;
 }
 
 .spg-c0121-recipe-need .spg-c0121-quality-badge {
@@ -5565,6 +5574,23 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   margin: 0;
   color: #ffd09c;
   font-size: 11px;
+}
+
+.spg-v004-legacy-quantity-confirmation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 166, 82, 0.3);
+  color: #ffd09c;
+  background: rgba(62, 31, 8, 0.36);
+  font-size: 11px;
+}
+
+.spg-v004-legacy-quantity-confirmation p {
+  flex: 1 1 280px;
+  margin: 0;
 }
 
 .spg-v004-craft-dialog {
@@ -6647,16 +6673,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         </header>
         <p id="craftCompletionItemName"></p>
         <div class="spg-v004-craft-dialog-summary">
-          <span>Kész mennyiség: <strong id="craftCompletionRequestedQuantity">0</strong> DB</span>
-          <span>Előtte: <strong id="craftCompletionRemainingBefore">0</strong> DB</span>
-          <span>Utána: <strong id="craftCompletionRemainingAfter">0</strong> DB</span>
+          <span>Lezárt craftok: <strong id="craftCompletionRequestedQuantity">0</strong></span>
+          <span>Előtte fennmaradó craftok: <strong id="craftCompletionRemainingBefore">0</strong></span>
+          <span>Utána fennmaradó craftok: <strong id="craftCompletionRemainingAfter">0</strong></span>
         </div>
         <ul id="craftCompletionMaterialLines" class="spg-v004-craft-dialog-lines"></ul>
         <p class="spg-v004-craft-warning">A művelet módosítja a készletet. A Craft Historyból később egyszer visszavonható.</p>
         <p id="craftCompletionDialogNotice" class="spg-action-notice" role="status" aria-live="polite"></p>
         <div class="spg-v004-craft-dialog-actions">
           <button id="cancelCraftCompletionButton" type="button">Mégse</button>
-          <button id="confirmCraftCompletionButton" type="button">Legyártás rögzítése</button>
+          <button id="confirmCraftCompletionButton" type="button">Craftok lezárása</button>
         </div>
       </div>
     </dialog>
@@ -7686,10 +7712,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
               normalizedSource.userInventory.forEach(function (record) { transaction.objectStore("userInventory").add(m4Clone(record)); });
               normalizedSource.materialBatches.forEach(function (record) { transaction.objectStore("materialBatches").add(m4Clone(record)); });
               normalizedSource.craftingCards.forEach(function (record, index) {
-                transaction.objectStore("craftingCards").add(Object.assign(m4Clone(record), {
+                transaction.objectStore("craftingCards").add(normalizeStoredCraftingCard(Object.assign(m4Clone(record), {
                   order: index,
                   cardRevision: 0
-                }));
+                }), index));
               });
               normalizedSource.miningLoadouts.forEach(function (record) { transaction.objectStore("userLoadouts").add(m4Clone(record)); });
               normalizedSource.userSettings.forEach(function (record) { transaction.objectStore("settings").add(m4Clone(record)); });
@@ -8551,7 +8577,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
       async loadCraftHistory() {
         var history = await this.database.getAll("craftHistory");
-        return history.sort(function (a, b) {
+        return history.map(normalizeStoredCraftHistoryEvent).sort(function (a, b) {
           return Number(a.historySequence || 0) - Number(b.historySequence || 0) || String(a.craftTransactionId).localeCompare(String(b.craftTransactionId));
         });
       }
@@ -8768,6 +8794,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var unit = hasScu ? "SCU" : (hasItems ? "ITEM" : "UNKNOWN");
         var rawQuantity = hasScu ? Number(input.quantity_scu) : (hasItems ? Number(input.quantity) : null);
         var quantityUnits = hasScu ? toScuUnits(rawQuantity) : (hasItems ? Math.round(rawQuantity) : null);
+        var exactQuantityEvidence = v004BuildExactRequirementQuantityEvidence(rawQuantity, unit);
         var slotId = raw.uuid + ":aspect:" + index;
         var ingredientUuid = input.uuid || (matchedIngredient && (matchedIngredient.resource_type_uuid || matchedIngredient.item_uuid)) || null;
         var capability = deriveQualityCapability(aspect);
@@ -8817,9 +8844,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             unit: unit,
             rawValue: rawQuantity,
             internalUnits: quantityUnits,
-            scuUnitScale: unit === "SCU" ? 10000 : null
+            scuUnitScale: unit === "SCU" ? 10000 : null,
+            exactRequiredQuantityUnits: exactQuantityEvidence.exactRequiredQuantityUnits,
+            exactness: exactQuantityEvidence.quantityExactness,
+            exactnessReason: exactQuantityEvidence.quantityExactnessReason
           },
           requiredQuantityUnits: quantityUnits,
+          sourceQuantityValue: exactQuantityEvidence.sourceQuantityValue,
+          exactRequiredQuantityUnits: exactQuantityEvidence.exactRequiredQuantityUnits,
+          quantityExactness: exactQuantityEvidence.quantityExactness,
+          quantityExactnessReason: exactQuantityEvidence.quantityExactnessReason,
           unit: unit,
           qualityCapability: capability,
           quality: {
@@ -12123,7 +12157,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     /* V004_C002_MIGRATION_MODEL_END */
 
     /* V004_C003_REVISION_RESERVATION_MODEL_START */
-    var V004_RESERVATION_SNAPSHOT_MARKER = "V004_RESERVATION_SNAPSHOT_1";
+    var V004_RESERVATION_SNAPSHOT_MARKER = "V004_RESERVATION_SNAPSHOT_2";
     var V004_RESERVATION_STATUS = Object.freeze({
       VALID: "VALID",
       STALE: "STALE",
@@ -12133,6 +12167,81 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       EXACT_PER_FINISHED_ITEM: "PER_FINISHED_ITEM_NORMALIZED_EXACT",
       UNPROVEN: "OUTPUT_COUNT_UNPROVEN"
     });
+    var V004_QUANTITY_SEMANTICS = Object.freeze({
+      CRAFT_RUN_COUNT: "CRAFT_RUN_COUNT",
+      LEGACY_UNCONFIRMED: "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+      LEGACY_HISTORY_UNKNOWN: "LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN"
+    });
+    var V004_CRAFT_RUN_INPUT_EVIDENCE = Object.freeze({
+      EXACT: "CRAFT_RUN_INPUTS_EXACT",
+      UNPROVEN: "CRAFT_RUN_INPUTS_UNPROVEN"
+    });
+    var V004_REQUIREMENT_QUANTITY_EXACTNESS = Object.freeze({
+      EXACT: "EXACT_SAFE_INTEGER_UNITS",
+      UNPROVEN: "QUANTITY_UNITS_UNPROVEN"
+    });
+
+    function v004BuildExactRequirementQuantityEvidence(sourceValue, unit) {
+      var numeric = Number(sourceValue);
+      var evidence = {
+        sourceQuantityValue: Number.isFinite(numeric) ? numeric : null,
+        exactRequiredQuantityUnits: null,
+        quantityExactness: V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN,
+        quantityExactnessReason: "SOURCE_QUANTITY_NOT_EXACT_SAFE_INTEGER_UNITS"
+      };
+      if (!Number.isFinite(numeric) || numeric <= 0) {
+        evidence.quantityExactnessReason = "SOURCE_QUANTITY_NOT_FINITE_POSITIVE";
+        return evidence;
+      }
+      if (unit === "SCU") {
+        var scaledUnits = numeric * 10000;
+        if (!Number.isSafeInteger(scaledUnits) || scaledUnits <= 0) {
+          evidence.quantityExactnessReason = "SCU_TIMES_10000_NOT_EXACT_SAFE_INTEGER";
+          return evidence;
+        }
+        evidence.exactRequiredQuantityUnits = scaledUnits;
+      } else if (unit === "ITEM") {
+        if (!Number.isSafeInteger(numeric)) {
+          evidence.quantityExactnessReason = "ITEM_QUANTITY_NOT_POSITIVE_SAFE_INTEGER";
+          return evidence;
+        }
+        evidence.exactRequiredQuantityUnits = numeric;
+      } else {
+        evidence.quantityExactnessReason = "REQUIREMENT_UNIT_UNSUPPORTED";
+        return evidence;
+      }
+      evidence.quantityExactness = V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT;
+      evidence.quantityExactnessReason = null;
+      return evidence;
+    }
+
+    function v004NormalizeRequirementExactEvidence(requirement) {
+      var source = Object.assign({}, requirement || {});
+      var exactUnits = source.exactRequiredQuantityUnits;
+      var exact = source.quantityExactness === V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT &&
+        Number.isSafeInteger(exactUnits) && exactUnits > 0 &&
+        Number.isSafeInteger(source.requiredQuantityUnits) && source.requiredQuantityUnits === exactUnits;
+      source.sourceQuantityValue = source.sourceQuantityValue !== null && source.sourceQuantityValue !== undefined && source.sourceQuantityValue !== "" && Number.isFinite(Number(source.sourceQuantityValue))
+        ? Number(source.sourceQuantityValue)
+        : null;
+      source.exactRequiredQuantityUnits = exact ? exactUnits : null;
+      source.quantityExactness = exact ? V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT : V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN;
+      source.quantityExactnessReason = exact ? null : (source.quantityExactnessReason || "LEGACY_OR_UNPROVEN_SOURCE_QUANTITY");
+      return source;
+    }
+
+    function v004RequirementHasExactCraftRunInput(requirement) {
+      var normalized = v004NormalizeRequirementExactEvidence(requirement);
+      return normalized.quantityExactness === V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT &&
+        normalized.exactRequiredQuantityUnits === normalized.requiredQuantityUnits;
+    }
+
+    function v004CardCraftRunInputEvidence(card) {
+      var requirements = card && Array.isArray(card.requirements) ? card.requirements : [];
+      return requirements.length && requirements.every(v004RequirementHasExactCraftRunInput)
+        ? V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
+        : V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
+    }
 
     function v004RevisionError(code, message) {
       var error = new Error(message);
@@ -12231,6 +12340,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         resourceTypeUuid: source.resourceTypeUuid || null,
         itemUuid: source.itemUuid || null,
         requiredQuantityUnits: source.requiredQuantityUnits,
+        exactRequiredQuantityUnits: source.exactRequiredQuantityUnits,
+        quantityExactness: source.quantityExactness || V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN,
+        quantityExactnessReason: source.quantityExactnessReason || null,
         unit: source.unit || null,
         qualityCapability: source.qualityCapability || null
       };
@@ -12247,6 +12359,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         blueprintCacheKey: source.blueprintCacheKey || null,
         gameVersion: source.gameVersion || null,
         outputUuid: source.outputUuid || null,
+        quantitySemantics: source.quantitySemantics || V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED,
+        craftRunInputEvidence: source.craftRunInputEvidence || V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN,
         outputCountEvidence: source.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
         requirements: (Array.isArray(source.requirements) ? source.requirements : []).map(v004RequirementAllocationSemantic),
         slotStrategies: source.slotStrategies && typeof source.slotStrategies === "object" ? source.slotStrategies : {},
@@ -12273,11 +12387,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function v004NormalizeImportedCards(cards) {
       return (Array.isArray(cards) ? cards : []).map(function (card, index) {
-        var normalized = Object.assign({}, card);
-        normalized.order = Number.isSafeInteger(card && card.order) ? card.order : index;
-        normalized.cardRevision = v004NormalizeCardRevision(card);
-        return normalized;
+        return normalizeStoredCraftingCard(card, index);
       });
+    }
+
+    function v004NormalizeImportedCraftHistory(events) {
+      return (Array.isArray(events) ? events : []).map(normalizeStoredCraftHistoryEvent);
     }
 
     function v004ReservationError(code, message) {
@@ -12305,6 +12420,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!card.blueprintUuid || !card.outputUuid) {
         throw v004ReservationError("RESERVATION_ITEM_IDENTITY_UNRESOLVED", "A blueprint vagy output UUID hiányzik.");
       }
+      if (card.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
+        throw v004ReservationError(V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED, "A Card quantity mezőjét explicit craft-run szemantikára kell megerősíteni.");
+      }
+      if (card.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
+          v004CardCraftRunInputEvidence(card) !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT) {
+        throw v004ReservationError(V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN, "A Card minden egyes craft-run input mennyisége nem bizonyított exact unit érték.");
+      }
       if (!Array.isArray(cardResult.requirements) || !cardResult.requirements.length) {
         throw v004ReservationError("RESERVATION_ALLOCATION_INCOMPLETE", "A Card allocation eredménye hiányzik.");
       }
@@ -12320,12 +12442,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (!requirement.recipeSlotId || !requirement.ingredientUuid || !requirement.canonicalMaterialUuid || !requirement.unit) {
           throw v004ReservationError("RESERVATION_SLOT_IDENTITY_UNRESOLVED", "A Recipe Slot canonical identityje hiányos.");
         }
-        var perItemRequiredUnits = sourceRequirement.requiredQuantityUnits;
-        if (!Number.isSafeInteger(perItemRequiredUnits) || perItemRequiredUnits <= 0 || !Number.isSafeInteger(requirement.requiredUnits) || requirement.requiredUnits <= 0 || !Number.isSafeInteger(requirement.allocatedUnits) || requirement.allocatedUnits < 0) {
+        var perCraftRequiredUnits = sourceRequirement.exactRequiredQuantityUnits;
+        if (!v004RequirementHasExactCraftRunInput(sourceRequirement) || sourceRequirement.requiredQuantityUnits !== perCraftRequiredUnits ||
+            !Number.isSafeInteger(perCraftRequiredUnits) || perCraftRequiredUnits <= 0 || !Number.isSafeInteger(requirement.requiredUnits) || requirement.requiredUnits <= 0 || !Number.isSafeInteger(requirement.allocatedUnits) || requirement.allocatedUnits < 0) {
           throw v004ReservationError("RESERVATION_REQUIREMENT_NOT_EXACT", "A Recipe Slot total mennyisége nem exact safe integer: " + requirement.recipeSlotId);
         }
-        if (!Number.isSafeInteger(perItemRequiredUnits * remainingQuantity) || perItemRequiredUnits * remainingQuantity !== requirement.requiredUnits) {
-          throw v004ReservationError("RESERVATION_REQUIREMENT_NOT_EXACT", "A Recipe Slot per-item mennyisége nem bizonyított exact safe integer: " + requirement.recipeSlotId);
+        if (!Number.isSafeInteger(perCraftRequiredUnits * remainingQuantity) || perCraftRequiredUnits * remainingQuantity !== requirement.requiredUnits) {
+          throw v004ReservationError("RESERVATION_REQUIREMENT_NOT_EXACT", "A Recipe Slot egy-craft mennyisége nem bizonyított exact safe integer: " + requirement.recipeSlotId);
         }
         if (requirement.status === "POOL_THRESHOLD_UNRESOLVED" || requirement.status === "POOL_RANGE_INVALID" || requirement.status === "QUALITY_UNKNOWN" || requirement.allocationBlockReason) {
           throw v004ReservationError(requirement.allocationBlockReason || requirement.status, "Érvénytelen Quality Pool a Recipe Slotnál: " + requirement.recipeSlotId);
@@ -12360,7 +12483,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           ingredientUuid: requirement.ingredientUuid,
           canonicalMaterialUuid: requirement.canonicalMaterialUuid,
           unit: requirement.unit,
-          perItemRequiredUnits: perItemRequiredUnits,
+          perCraftRequiredUnits: perCraftRequiredUnits,
+          quantityExactness: sourceRequirement.quantityExactness,
           qualityCapability: sourceRequirement.qualityCapability || null,
           effectiveQualityStrategy: requirement.allocationStrategy || requirement.effectiveRule || requirement.rule || null,
           qualityPoolAssignment: requirement.recipePoolAssignmentMode || null,
@@ -12389,6 +12513,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           itemIdentity: card.outputItemUuid || card.outputUuid
         },
         activeStarCitizenDataVersion: activeScDataVersion,
+        quantitySemantics: V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT,
+        craftRunInputEvidence: V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT,
         outputCountEvidence: card.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
         recipeSlots: recipeSlots
       });
@@ -12413,16 +12539,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if (!Number.isSafeInteger(remainingQuantity) || remainingQuantity < 1 || !Array.isArray(payload.recipeSlots) || !payload.recipeSlots.length) {
         return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: Number.isSafeInteger(remainingQuantity) ? remainingQuantity : 0, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
       }
-      if (payload.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM) {
-        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN };
+      if (payload.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
+        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED };
+      }
+      if (payload.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT) {
+        return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN };
       }
       var maximum = remainingQuantity;
       for (var index = 0; index < payload.recipeSlots.length; index += 1) {
         var slot = payload.recipeSlots[index];
-        if (!Number.isSafeInteger(slot.perItemRequiredUnits) || slot.perItemRequiredUnits <= 0 || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
+        if (!Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 || slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
           return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
         }
-        maximum = Math.min(maximum, v004ExactWholeQuotient(slot.reservedTotalUnits, slot.perItemRequiredUnits));
+        maximum = Math.min(maximum, v004ExactWholeQuotient(slot.reservedTotalUnits, slot.perCraftRequiredUnits));
       }
       return {
         status: maximum > 0 ? "READY" : "BLOCKED",
@@ -12441,7 +12570,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         throw v004ReservationError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A partial quantity kívül esik a reservation által támogatott egész tartományon.");
       }
       return payload.recipeSlots.map(function (slot) {
-        var requiredUnits = slot.perItemRequiredUnits * requestedQuantity;
+        var requiredUnits = slot.perCraftRequiredUnits * requestedQuantity;
         if (!Number.isSafeInteger(requiredUnits)) {
           throw v004ReservationError("PARTIAL_REQUIRED_UNITS_UNSAFE", "A partial craft belső unit igénye nem safe integer.");
         }
@@ -12482,6 +12611,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           payload.cardPriorityOrder !== card.order ||
           payload.blueprintIdentity.uuid !== card.blueprintUuid ||
           payload.outputIdentity.uuid !== card.outputUuid ||
+          payload.quantitySemantics !== card.quantitySemantics ||
+          payload.craftRunInputEvidence !== card.craftRunInputEvidence ||
           payload.activeStarCitizenDataVersion !== (activeScDataVersion || card.gameVersion || null)) {
         return false;
       }
@@ -12560,8 +12691,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     /* V004_C003_REVISION_RESERVATION_MODEL_END */
 
     /* V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL_START */
-    var V004_CRAFT_COMPLETE_REQUEST_MARKER = "V004_CRAFT_COMPLETE_REQUEST_1";
-    var V004_CRAFT_HISTORY_EVENT_SCHEMA = "V004_CRAFT_HISTORY_EVENT_1";
+    var V004_CRAFT_COMPLETE_REQUEST_MARKER = "V004_CRAFT_COMPLETE_REQUEST_2";
+    var V004_CRAFT_HISTORY_EVENT_SCHEMA = "V004_CRAFT_HISTORY_EVENT_2";
 
     function v004CraftCompleteError(code, message, detail) {
       var error = new Error(message);
@@ -12583,7 +12714,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function v004AssertCompletionQuantity(value, maximum) {
       if (!Number.isSafeInteger(value) || value < 1 || !Number.isSafeInteger(maximum) || maximum < 1 || value > maximum) {
-        throw v004CraftCompleteError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A legyártott darabszám csak 1 és a jelenlegi reservation MAX értéke közötti egész lehet.");
+        throw v004CraftCompleteError("PARTIAL_QUANTITY_OUT_OF_RANGE", "A lezárt craftok száma csak 1 és a jelenlegi reservation MAX értéke közötti egész lehet.");
       }
       return value;
     }
@@ -12674,21 +12805,27 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       if ((currentCard.gameVersion || null) !== payload.activeStarCitizenDataVersion) {
         throw v004StaleReservationError("ACTIVE_SC_DATA_VERSION_CHANGED");
       }
-      if (currentCard.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM ||
-          payload.outputCountEvidence !== V004_OUTPUT_COUNT_EVIDENCE.EXACT_PER_FINISHED_ITEM) {
-        throw v004CraftCompleteError(V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN, "A finished-item output semantics nem bizonyított.");
+      if (currentCard.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT ||
+          payload.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
+        throw v004CraftCompleteError(V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED, "A Card craft-run quantity szemantikája nincs megerősítve.");
+      }
+      if (currentCard.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
+          payload.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
+          v004CardCraftRunInputEvidence(currentCard) !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT) {
+        throw v004CraftCompleteError(V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN, "A craft-run input mennyiségek nem bizonyítottak exact unit értékként.");
       }
 
       var currentRequirementById = new Map((currentCard.requirements || []).map(function (requirement) { return [requirement.id, requirement]; }));
       var batchById = new Map((Array.isArray(batches) ? batches : []).map(function (batch) { return [batch.id, batch]; }));
       var reservedByBatch = new Map();
       payload.recipeSlots.forEach(function (slot, slotIndex) {
-        if (slot.sequence !== slotIndex || !Number.isSafeInteger(slot.perItemRequiredUnits) || slot.perItemRequiredUnits <= 0) {
+        if (slot.sequence !== slotIndex || !Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 || slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT) {
           throw v004StaleReservationError("RECIPE_SLOT_SEQUENCE_OR_UNITS_CHANGED");
         }
         var requirement = currentRequirementById.get(slot.stableSlotId);
         if (!requirement || requirement.ingredientUuid !== slot.ingredientUuid || requirement.unit !== slot.unit ||
-            requirement.requiredQuantityUnits !== slot.perItemRequiredUnits || (requirement.qualityCapability || null) !== slot.qualityCapability) {
+            !v004RequirementHasExactCraftRunInput(requirement) || requirement.requiredQuantityUnits !== slot.perCraftRequiredUnits ||
+            requirement.exactRequiredQuantityUnits !== slot.perCraftRequiredUnits || (requirement.qualityCapability || null) !== slot.qualityCapability) {
           throw v004StaleReservationError("RECIPE_SLOT_EVIDENCE_CHANGED");
         }
         var slotReservedTotal = 0;
@@ -12780,6 +12917,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function v004ValidateCraftHistoryEvent(event) {
       if (!event || event.eventSchema !== V004_CRAFT_HISTORY_EVENT_SCHEMA || event.status !== "COMPLETED" || event.undoTimestamp !== null ||
+          event.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT || event.craftRunInputEvidence !== V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT ||
           !event.craftTransactionId || !Number.isSafeInteger(event.historySequence) || event.historySequence < 1 || !event.craftingCardId ||
           !Number.isSafeInteger(event.completedQuantity) || event.completedQuantity < 1 ||
           !Number.isSafeInteger(event.remainingBefore) || !Number.isSafeInteger(event.remainingAfter) ||
@@ -12844,6 +12982,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       nextCards.sort(function (a, b) { return Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id)); });
       var historyEvent = v004ValidateCraftHistoryEvent({
         eventSchema: V004_CRAFT_HISTORY_EVENT_SCHEMA,
+        quantitySemantics: V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT,
+        craftRunInputEvidence: V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT,
+        outputCountEvidence: validation.payload.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
         craftTransactionId: request.craftTransactionId,
         historySequence: historySequenceAfter,
         craftingCardId: currentCard.id,
@@ -12981,6 +13122,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     function validateM4UserData(data) {
       var normalized = normalizeM4UserData(data);
       normalized.craftingCards = v004NormalizeImportedCards(normalized.craftingCards);
+      normalized.craftHistory = v004NormalizeImportedCraftHistory(normalized.craftHistory);
       M4_BACKUP_STORE_SPECS.forEach(function (spec) {
         var seen = new Set();
         normalized[spec.dataKey].forEach(function (record, index) {
@@ -13205,6 +13347,18 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var needsCardRevisionInitialization = schemaVersion === M4_BACKUP_SCHEMA_VERSION && (sourceData.craftingCards || []).some(function (card) {
         return !Number.isSafeInteger(card && card.cardRevision) || card.cardRevision < 0;
       });
+      var needsQuantitySemanticsClassification = schemaVersion === M4_BACKUP_SCHEMA_VERSION && (
+        (sourceData.craftingCards || []).some(function (card) {
+          return !card || card.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT ||
+            !Array.isArray(card.requirements) || card.requirements.some(function (requirement) {
+              return !requirement || !requirement.quantityExactness;
+            });
+        }) ||
+        (sourceData.craftHistory || []).some(function (event) {
+          return !event || (event.quantitySemantics !== V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT &&
+            event.quantitySemantics !== V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN);
+        })
+      );
       if (schemaVersion <= 2) {
         var legacySourceData = {
           userInventory: sourceData.userInventory || [],
@@ -13230,19 +13384,24 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           fromSchema: schemaVersion,
           toSchema: M4_BACKUP_SCHEMA_VERSION,
           steps: schemaVersion === 1
-            ? ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT", "EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION"]
-            : ["EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION"]
+            ? ["LOADOUT_KEY_NORMALIZATION", "USER_SETTINGS_DEFAULT", "EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION", "CARD_QUANTITY_SEMANTICS_CLASSIFICATION"]
+            : ["EMPTY_CRAFT_HISTORY", "V004_META_INITIALIZATION", "CARD_REVISION_INITIALIZATION", "CARD_QUANTITY_SEMANTICS_CLASSIFICATION"]
         };
         warnings.push("A schema " + schemaVersion + " backup schema 3 formára migrálva; Craft History üres és a V004 revision meta 0-ról indul.");
       }
       var normalized = validateM4UserData(sourceData);
       var fingerprint = fingerprintUserDataPayload(normalized);
       if (schemaVersion === M4_BACKUP_SCHEMA_VERSION && parsed.fingerprint && parsed.fingerprint !== fingerprint) {
-        if (!(needsCardRevisionInitialization && parsed.fingerprint === preCardRevisionFingerprint)) {
+        if (!((needsCardRevisionInitialization || needsQuantitySemanticsClassification) && parsed.fingerprint === preCardRevisionFingerprint)) {
           throw m4BackupError("FINGERPRINT_MISMATCH", "A backup fingerprintje nem egyezik a tartalommal.");
         }
-        migration = { fromSchema: M4_BACKUP_SCHEMA_VERSION, toSchema: M4_BACKUP_SCHEMA_VERSION, steps: ["CARD_REVISION_INITIALIZATION"] };
-        warnings.push("A korai schema 3 backup hiányzó cardRevision mezői determinisztikusan 0 értéket kaptak.");
+        var compatibilitySteps = [];
+        if (needsCardRevisionInitialization) { compatibilitySteps.push("CARD_REVISION_INITIALIZATION"); }
+        if (needsQuantitySemanticsClassification) {
+          compatibilitySteps.push("CARD_QUANTITY_SEMANTICS_CLASSIFICATION", "HISTORY_QUANTITY_SEMANTICS_CLASSIFICATION");
+        }
+        migration = { fromSchema: M4_BACKUP_SCHEMA_VERSION, toSchema: M4_BACKUP_SCHEMA_VERSION, steps: compatibilitySteps };
+        warnings.push("A korai schema 3 backup hiányzó revision vagy quantity-semantics mezői biztonságosan legacy/unconfirmed állapotot kaptak.");
       }
       return {
         backup: {
@@ -16097,7 +16256,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function sanitizedCardRequirement(requirement) {
-      return {
+      return v004NormalizeRequirementExactEvidence({
         id: requirement.id,
         aspectIndex: requirement.aspectIndex,
         blueprintUuid: requirement.blueprintUuid,
@@ -16111,6 +16270,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         materialWebUrl: requirement.ingredient && requirement.ingredient.webUrl ? requirement.ingredient.webUrl : null,
         materialName: requirement.materialName,
         requiredQuantityUnits: requirement.requiredQuantityUnits,
+        sourceQuantityValue: requirement.sourceQuantityValue,
+        exactRequiredQuantityUnits: requirement.exactRequiredQuantityUnits,
+        quantityExactness: requirement.quantityExactness,
+        quantityExactnessReason: requirement.quantityExactnessReason,
         unit: requirement.unit,
         qualityCapability: requirement.qualityCapability,
         affectedStats: (requirement.affectedStats || []).map(function (stat) {
@@ -16121,7 +16284,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             betterWhen: stat.betterWhen || null
           };
         })
-      };
+      });
     }
 
     function buildCraftingCard(blueprint) {
@@ -16144,10 +16307,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         active: true,
         collapsed: false,
         quantity: 1,
+        quantitySemantics: V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT,
         blueprintUuid: blueprint.uuid,
         blueprintCacheKey: blueprint.cacheKey,
         gameVersion: blueprint.gameVersion,
         outputUuid: blueprint.outputUuid,
+        craftRunInputEvidence: requirements.length && requirements.every(v004RequirementHasExactCraftRunInput)
+          ? V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
+          : V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN,
         outputCountEvidence: V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN,
         outputName: blueprint.outputName,
         outputType: blueprint.outputType,
@@ -16247,7 +16414,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.finalCardBoundCardId = previousBoundCardId;
         throw error;
       }
-      setNotice(card.outputName + " · " + card.quantity + " db hozzáadva a Crafting Listhez.", "success");
+      setNotice(card.outputName + " · " + card.quantity + " craft hozzáadva a Crafting Listhez.", "success");
       navigateToPanel("craftingListNav", "craftingCardsPanel", "addCurrentBlueprintButton");
       return card;
     }
@@ -16259,7 +16426,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.active = card.active !== false;
       normalized.collapsed = card.collapsed === true;
       normalized.quantity = Number.isInteger(Number(card.quantity)) && Number(card.quantity) > 0 ? Number(card.quantity) : 1;
-      normalized.requirements = Array.isArray(card.requirements) ? card.requirements : [];
+      normalized.quantitySemantics = card.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT
+        ? V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT
+        : V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED;
+      normalized.requirements = Array.isArray(card.requirements) ? card.requirements.map(v004NormalizeRequirementExactEvidence) : [];
+      normalized.craftRunInputEvidence = v004CardCraftRunInputEvidence(normalized);
       normalized.slotStrategies = card.slotStrategies && typeof card.slotStrategies === "object" ? card.slotStrategies : {};
       normalized.recipeSlotQualityPoolAssignments = normalizeRecipeSlotQualityPoolAssignments(card.recipeSlotQualityPoolAssignments, normalized.requirements);
       normalized.outputTypeLabel = card.outputTypeLabel || card.outputType || null;
@@ -16268,6 +16439,20 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.outputWebUrl = card.outputWebUrl || null;
       normalized.craftTimeSeconds = Number.isFinite(Number(card.craftTimeSeconds)) ? Number(card.craftTimeSeconds) : null;
       normalized.isAvailableByDefault = card.isAvailableByDefault === true;
+      return normalized;
+    }
+
+    function normalizeStoredCraftHistoryEvent(event) {
+      var normalized = m4Clone(event || {});
+      if (normalized.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA &&
+          normalized.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
+        normalized.craftRunInputEvidence = normalized.craftRunInputEvidence === V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
+          ? V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
+          : V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
+        return normalized;
+      }
+      normalized.quantitySemantics = V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN;
+      normalized.craftRunInputEvidence = V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
       return normalized;
     }
 
@@ -16759,11 +16944,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       applyMaterialColor(material, requirement.commodityUuid || requirement.materialUuid, requirement.materialName, { label: true });
       var perOne = document.createElement("strong");
       perOne.className = "spg-c010-per-one";
-      perOne.textContent = formatInventoryUnits(requirement.unit, requirement.perCraftUnits);
+      perOne.textContent = "1 crafthoz: " + formatInventoryUnits(requirement.unit, requirement.perCraftUnits);
+      var allRemaining = document.createElement("strong");
+      allRemaining.className = "spg-c010-all-crafts";
+      allRemaining.textContent = String(settings.craftRunCount || 0) + " crafthoz: " + formatInventoryUnits(requirement.unit, requirement.requiredUnits);
       var quality = renderRecipeSlotQualityPoolSelect(requirement, settings);
       var need = document.createElement("span");
       need.className = "spg-c0121-recipe-need";
-      need.append(quality, perOne);
+      need.append(quality, perOne, allRemaining);
       var stock = document.createElement("span");
       var shortage = Number(requirement.shortageUnits || 0);
       stock.className = "spg-c010-stock";
@@ -16772,13 +16960,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       stockValue.textContent = formatInventoryUnits(requirement.unit, requirement.suitableInventoryUnits);
       var stockState = document.createElement("small");
       stockState.textContent = formatRequirementShortageSummary(requirement, formatInventoryUnits);
-      stock.append(stockValue, stockState);
+      var reservationState = document.createElement("small");
+      reservationState.className = "spg-c010-reserved-batches";
+      reservationState.textContent = "Lefoglalt: " + formatInventoryUnits(requirement.unit, requirement.allocatedUnits || 0) +
+        ((requirement.allocatedBatches || []).length
+          ? " · Batch-ek: " + requirement.allocatedBatches.map(function (batch) {
+            return (batch.quality == null ? "Q?" : "Q" + batch.quality) + " " + formatInventoryUnits(requirement.unit, batch.allocatedUnits);
+          }).join("; ")
+          : "");
+      stock.append(stockValue, stockState, reservationState);
       row.append(slot, material, need, stock);
       return row;
     }
 
     function renderFinalCraftingCardContent(viewModel, options) {
-      var settings = options || {};
+      var settings = Object.assign({}, options || {}, { craftRunCount: viewModel.card.requestedQuantity });
       var detailContext = settings.detailContext || null;
       var article = document.createElement("article");
       article.className = "spg-c010-final-card" + (settings.className ? " " + settings.className : "");
@@ -16832,16 +17028,16 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       quantityGroup.className = "spg-c010-quantity";
       var quantityBox = document.createElement(settings.quantityEditable === false ? "span" : "label");
       quantityBox.className = "spg-c010-quantity-box";
-      quantityBox.title = "Gyártani akarok";
+      quantityBox.title = "Craftok száma";
       if (settings.quantityEditable === false) {
-        quantityBox.textContent = viewModel.card.requestedQuantity + " DB";
+        quantityBox.textContent = "Craftok száma: " + viewModel.card.requestedQuantity;
       } else {
         var quantity = document.createElement("input");
         quantity.type = "number";
         quantity.min = "1";
         quantity.step = "1";
         quantity.value = String(viewModel.card.requestedQuantity);
-        quantity.setAttribute("aria-label", viewModel.card.outputName + " – gyártani akarok");
+        quantity.setAttribute("aria-label", viewModel.card.outputName + " – Craftok száma");
         bindCommittedNumericEditor(quantity, {
           resolveDraft: function (draft) {
             return normalizeCommittedNumericDraft(draft, { integer: true, roundInteger: true, min: 1, clamp: true, emptyValue: 1 });
@@ -16857,12 +17053,15 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           }
         });
         var unit = document.createElement("span");
-        unit.textContent = "DB";
-        quantityBox.append(quantity, unit);
+        unit.textContent = "craft";
+        var quantityLabel = document.createElement("span");
+        quantityLabel.textContent = "Craftok száma:";
+        quantityBox.append(quantityLabel, quantity, unit);
       }
       var maximum = document.createElement("span");
       maximum.className = "spg-c010-max";
-      maximum.textContent = "Max: " + viewModel.card.maxCraftable + " DB";
+      var visibleMaximum = Number.isSafeInteger(settings.maximumCraftRuns) ? settings.maximumCraftRuns : viewModel.card.maxCraftable;
+      maximum.textContent = "MAX: " + visibleMaximum + " craft";
       quantityGroup.append(quantityBox, maximum);
       if (settings.stockStatusText) {
         var status = document.createElement("span");
@@ -17483,8 +17682,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         ? Number(allocation ? allocation.missingAmountUnits : required) + Number(allocation ? allocation.missingQualityUnits : 0)
         : view.shortageUnits;
       var valueRows = [
-        ["1 db-hoz", formatInventoryUnits(requirement.unit, view.perCraftUnits === undefined ? requirement.requiredQuantityUnits : view.perCraftUnits), "neutral"],
-        [card.quantity + " db-hoz", formatInventoryUnits(requirement.unit, required), "neutral"],
+        ["1 crafthoz", formatInventoryUnits(requirement.unit, view.perCraftUnits === undefined ? requirement.requiredQuantityUnits : view.perCraftUnits), "neutral"],
+        [card.quantity + " crafthoz", formatInventoryUnits(requirement.unit, required), "neutral"],
         ["Megfelelő készlet", formatInventoryUnits(requirement.unit, view.suitableInventoryUnits === undefined ? (allocation ? allocation.allocatedUnits : 0) : view.suitableInventoryUnits), "neutral"],
         ["Lefoglalt", formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0), "neutral"],
         [shortage > 0 ? "Hiány" : "Maradék", formatInventoryUnits(requirement.unit, shortage > 0 ? shortage : Number(view.remainingUnits || 0)), shortage > 0 ? "shortage" : "remaining"]
@@ -17587,7 +17786,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var shortage = Number(requirementView.shortageUnits || 0);
         allocationText.className = "spg-c012-quality-allocation";
         allocationText.textContent = "Lefoglalt " + formatInventoryUnits(requirement.unit, allocation ? allocation.allocatedUnits : 0) + " · " +
-          (shortage > 0 ? "hiány " + formatInventoryUnits(requirement.unit, shortage) : "marad " + formatInventoryUnits(requirement.unit, requirementView.remainingUnits || 0));
+          (shortage > 0 ? "hiány " + formatInventoryUnits(requirement.unit, shortage) : "marad " + formatInventoryUnits(requirement.unit, requirementView.remainingUnits || 0)) +
+          (allocation && allocation.allocatedBatches && allocation.allocatedBatches.length
+            ? " · Batch-ek: " + allocation.allocatedBatches.map(function (batch) {
+              return (batch.quality == null ? "Q?" : "Q" + batch.quality) + " " + formatInventoryUnits(requirement.unit, batch.allocatedUnits);
+            }).join("; ")
+            : "");
         row.append(identity, editor, allocationText);
         details.append(row);
       });
@@ -17677,9 +17881,46 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         RESERVATION_EVIDENCE_CHANGED: "Reserved batch vagy revision megváltozott",
         HASH_UNAVAILABLE: "SHA-256 nem érhető el",
         RESERVATION_ALLOCATION_INCOMPLETE: "Az allocation nem teljes",
-        OUTPUT_COUNT_UNPROVEN: "MAX blokkolva: OUTPUT_COUNT_UNPROVEN"
+        LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED: "Legacy Card: erősítsd meg, hogy a mennyiség craft-run szám",
+        CRAFT_RUN_INPUTS_UNPROVEN: "Craft Complete blokkolva: CRAFT_RUN_INPUTS_UNPROVEN",
+        OUTPUT_COUNT_UNPROVEN: "Diagnosztika: OUTPUT_COUNT_UNPROVEN"
       };
       return labels[reason] || reason || "";
+    }
+
+    async function confirmLegacyCardCraftRunSemantics(cardId) {
+      var card = state.craftingCards.find(function (item) { return item.id === cardId; });
+      if (!card) { throw new Error("A Crafting Card nem található."); }
+      if (card.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) { return card; }
+      var confirmedQuantity = card.quantity;
+      await updateCraftingCard(cardId, function (updated) {
+        updated.quantitySemantics = V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT;
+        updated.craftRunInputEvidence = v004CardCraftRunInputEvidence(updated);
+      }, "LEGACY_CRAFT_RUN_QUANTITY_CONFIRMATION");
+      var confirmed = state.craftingCards.find(function (item) { return item.id === cardId; });
+      if (!confirmed || confirmed.quantity !== confirmedQuantity) {
+        throw new Error("A legacy quantity megerősítése közben a numerikus érték megváltozott.");
+      }
+      setNotice(confirmedQuantity + " craftként megerősítve. Explicit Reallocate szükséges.", "success");
+      return confirmed;
+    }
+
+    function renderLegacyCardCraftRunConfirmation(card) {
+      if (card.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) { return null; }
+      var wrapper = document.createElement("div");
+      wrapper.className = "spg-v004-legacy-quantity-confirmation";
+      wrapper.dataset.quantitySemantics = V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED;
+      var message = document.createElement("p");
+      message.textContent = "Legacy mennyiség: a szám jelentése nincs automatikusan craft-runként értelmezve.";
+      var button = createC012CardAction(card.quantity + " craftként használom", card.outputName + " legacy mennyiségének explicit craft-run megerősítése", function () {
+        button.disabled = true;
+        confirmLegacyCardCraftRunSemantics(card.id).catch(function (error) {
+          setNotice("A legacy craft-run megerősítés sikertelen: " + error.message, "error");
+          button.disabled = false;
+        });
+      }, false, "spg-v004-legacy-confirm");
+      wrapper.append(message, button);
+      return wrapper;
     }
 
     function createV004CraftTransactionId() {
@@ -17824,7 +18065,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.pendingCraftCompletion = null;
       var dialog = document.getElementById("craftCompletionDialog");
       if (dialog.open) { dialog.close(); }
-      setNotice(result.historyEvent.itemName + " · " + result.historyEvent.completedQuantity + " DB legyártása rögzítve. Új Reallocate szükséges.", "success");
+      setNotice(result.historyEvent.itemName + " · " + result.historyEvent.completedQuantity + " craft lezárása rögzítve. Új Reallocate szükséges.", "success");
       return result;
     }
 
@@ -17835,8 +18076,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       wrapper.className = "spg-v004-completion-controls";
       wrapper.dataset.cardId = card.id;
       wrapper.dataset.completionReady = ready ? "true" : "false";
+      wrapper.dataset.quantitySemantics = card.quantitySemantics || V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED;
+      wrapper.dataset.craftRunInputEvidence = card.craftRunInputEvidence || V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
+      wrapper.dataset.outputCountEvidence = card.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN;
       var label = document.createElement("label");
-      label.textContent = "Kész darabszám";
+      label.textContent = "Lezárt craftok";
       var input = document.createElement("input");
       input.type = "number";
       input.min = "1";
@@ -17845,13 +18089,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       input.value = "1";
       input.disabled = !ready;
       input.className = "spg-v004-completion-quantity";
-      input.setAttribute("aria-label", card.outputName + " legyártott darabszám");
+      input.setAttribute("aria-label", card.outputName + " lezárt craftok száma");
       label.append(input);
       var maxButton = createC012CardAction("MAX", card.outputName + " jelenlegi reservation MAX kitöltése", function () {
         input.value = String(capability.maxCompletableQuantity);
         wrapper.dataset.maxApplied = "true";
       }, !ready, "spg-v004-completion-max");
-      var completeButton = createC012CardAction("Legyártva", card.outputName + " Craft Complete megerősítése", function () {
+      var completeButton = createC012CardAction("Craft Complete", card.outputName + " Craft Complete megerősítése", function () {
         completeButton.disabled = true;
         openV004CraftCompletionConfirmation(card.id, input.value).catch(function (error) {
           if (error.code === "STALE_RESERVATION") { markReservationSnapshotsStale(error.detail || error.code); renderCraftingCards(); }
@@ -17863,7 +18107,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }, !ready, "spg-v004-completion-open");
       var blocker = document.createElement("p");
       blocker.className = "spg-v004-completion-blocker";
-      blocker.textContent = ready ? "A végrehajtás csak megerősítés után, az exact látható reservationből történik." :
+      blocker.textContent = ready ? "Exact craft-run inputok; az output darabszám nincs állítva. Fogyasztás csak a látható reservationből történik." :
         (capability.blockerReason || reservationReasonText(reservation) || "Explicit Reallocate szükséges.");
       wrapper.append(label, maxButton, completeButton, blocker);
       return wrapper;
@@ -18021,7 +18265,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var reservationReason = document.createElement("small");
         reservationReason.className = "spg-v004-reservation-reason";
         reservationReason.textContent = reservation.status === V004_RESERVATION_STATUS.VALID && reservation.capability && reservation.capability.status === "READY"
-          ? "MAX: " + reservation.capability.maxCompletableQuantity + " DB"
+          ? "MAX: " + reservation.capability.maxCompletableQuantity + " craft"
           : reservationReasonText(reservation);
         reservationReason.title = reservationReason.textContent;
         reservationSummary.append(reservationStatus, reservationReason);
@@ -18066,6 +18310,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           collapsed: card.collapsed,
           includeOutputType: true,
           stockStatusText: cardResult.satisfied ? "Készlet rendben" : "Hiány van",
+          maximumCraftRuns: reservation.status === V004_RESERVATION_STATUS.VALID && reservation.capability && reservation.capability.status === "READY"
+            ? reservation.capability.maxCompletableQuantity
+            : 0,
           detailContext: { sourceCardId: card.id, sourceModule: "craftingListNav" },
           onQuantityCommit: function (value) {
             return updateCraftingCard(card.id, function (updated) { updated.quantity = value; }, "CARD_QUANTITY");
@@ -18074,7 +18321,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             return updateRecipeSlotQualityPoolAssignment(card.id, requirement.recipeSlotId, mode);
           }
         });
-        wrapper.append(management, renderV004CraftCompletionControls(card, reservation), finalCard);
+        var legacyConfirmation = renderLegacyCardCraftRunConfirmation(card);
+        wrapper.append(management);
+        if (legacyConfirmation) { wrapper.append(legacyConfirmation); }
+        wrapper.append(renderV004CraftCompletionControls(card, reservation), finalCard);
         if (!card.collapsed) {
           wrapper.append(renderCraftingCardQualityControls(card, cardResult, cardViewModel));
         }
@@ -20228,6 +20478,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             source: null
           },
           unit: requirement.unit,
+          craftRunCount: Number(card.quantity || 1),
           perCraftUnits: requirement.requiredQuantityUnits,
           requiredUnits: requiredUnits,
           availableUnitsAtSlot: availableUnitsAtSlot,
@@ -20438,8 +20689,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         '<span class="spg-export-status ', requirement.status === "SATISFIED" ? "is-pass" : "is-fail", '">', requirement.status === "SATISFIED" ? "Fedezve" : "Hiány", '</span></header>',
         '<div class="spg-export-stats">', stats, '</div>',
         '<div class="spg-export-quantity-grid">',
-        '<span><small>1 darabhoz</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
-        '<span><small>Teljes szükséglet</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.requiredUnits)), '</strong></span>',
+        '<span><small>1 crafthoz</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
+        '<span><small>', m6EscapeHtml(requirement.craftRunCount), ' crafthoz</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.requiredUnits)), '</strong></span>',
         '<span><small>Megfelelő készlet</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong></span>',
         '<span><small>Lefoglalt</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.allocatedUnits)), '</strong></span>',
         '<span><small>', requirement.shortageUnits > 0 ? "Hiány" : "Maradék", '</small><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.shortageUnits > 0 ? requirement.shortageUnits : requirement.remainingUnits)), '</strong></span>',
@@ -20557,7 +20808,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         '<div class="spg-c010-recipe-row" data-status="', m6EscapeHtml(requirement.status || "PENDING"), '">',
         '<span class="spg-recipe-slot">', m6EscapeHtml(requirement.recipeSlotName), '</span>',
         c009RenderApiAnchor(requirement.materialName, requirement.materialDetails && requirement.materialDetails.apiWikiLink, "spg-c010-material-link spg-c009-material-api-link").replace('class="spg-c010-material-link spg-c009-material-api-link"', 'class="spg-c010-material-link spg-c009-material-api-link" style="' + m6EscapeHtml(colorStyle) + '"'),
-        '<span class="spg-c0121-recipe-need spg-c0125c3b2-standalone-quality" data-quality-assignment="', m6EscapeHtml(standaloneQuality.assignmentMode || "LEGACY_FALLBACK"), '" data-quality-resolution="', m6EscapeHtml(standaloneQuality.resolutionStatus), '"><span class="spg-c0121-quality-badge" title="', m6EscapeHtml(standaloneQuality.tooltip), '">', m6EscapeHtml(standaloneQuality.displayLabel), '</span><small class="spg-c0125c3b2-quality-context">', m6EscapeHtml(standaloneQuality.baselineLabel), '</small><strong class="spg-c010-per-one">', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong></span>',
+        '<span class="spg-c0121-recipe-need spg-c0125c3b2-standalone-quality" data-quality-assignment="', m6EscapeHtml(standaloneQuality.assignmentMode || "LEGACY_FALLBACK"), '" data-quality-resolution="', m6EscapeHtml(standaloneQuality.resolutionStatus), '"><span class="spg-c0121-quality-badge" title="', m6EscapeHtml(standaloneQuality.tooltip), '">', m6EscapeHtml(standaloneQuality.displayLabel), '</span><small class="spg-c0125c3b2-quality-context">', m6EscapeHtml(standaloneQuality.baselineLabel), '</small><strong class="spg-c010-per-one">1 crafthoz: ', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.perCraftUnits)), '</strong><strong class="spg-c010-all-crafts">', m6EscapeHtml(requirement.craftRunCount), ' crafthoz: ', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.requiredUnits)), '</strong></span>',
         '<span class="spg-c010-stock" data-status="', shortage > 0 ? "SHORTAGE" : "AVAILABLE", '"><strong>', m6EscapeHtml(m6FormatUnits(requirement.unit, requirement.suitableInventoryUnits)), '</strong><small>', m6EscapeHtml(stockState), '</small></span>',
         '</div>'
       ].join("");
@@ -20575,8 +20826,8 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         '<span><small>Class</small><strong>', m6EscapeHtml(snapshot.card.outputClass), '</strong></span>',
         '<span><small>Type</small><strong>', m6EscapeHtml(snapshot.card.outputType), '</strong></span>',
         '<span><small>Grade</small><strong>', m6EscapeHtml(snapshot.card.outputGrade), '</strong></span>',
-        '<span><small>Gyártani akarok</small><strong>', m6EscapeHtml(snapshot.card.requestedQuantity), ' db</strong></span>',
-        '<span><small>Maximum készletből</small><strong>', m6EscapeHtml(snapshot.card.maxCraftable), ' db</strong></span>',
+        '<span><small>Craftok száma</small><strong>', m6EscapeHtml(snapshot.card.requestedQuantity), ' craft</strong></span>',
+        '<span><small>Maximum craft készletből</small><strong>', m6EscapeHtml(snapshot.card.maxCraftable), ' craft</strong></span>',
         '<span><small>Craft time</small><strong>', m6EscapeHtml(m6FormatCraftTime(snapshot.card.craftTimeSeconds)), '</strong></span>',
         '<span><small>Recipe Slot</small><strong>', m6EscapeHtml(snapshot.summary.ingredientCount), '</strong></span>',
         '</section>', missingData,
@@ -20593,7 +20844,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         '<main class="spg-export-page">',
         '<article class="spg-c010-final-card spg-c010-standalone-card" data-final-card-only="true" data-card-satisfied="', snapshot.card.satisfied ? "true" : "false", '">',
         '<div class="spg-c010-topline"><div class="spg-c010-meta"><span>S', m6EscapeHtml(snapshot.card.outputSize), '</span><span>', m6EscapeHtml(snapshot.card.outputClass), '</span><span>', m6EscapeHtml(snapshot.card.outputGrade), '</span></div><div class="spg-c010-time-cart"><span class="spg-c010-craft-time">◷ ', m6EscapeHtml(c009FormatCraftTime(snapshot.card.craftTimeSeconds)), '</span></div></div>',
-        '<div class="spg-c010-titleline">', c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-c010-item-api-link"), '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "SATISFIED" : "UNSATISFIED", '</span><div class="spg-c010-quantity"><span class="spg-c010-quantity-box">', m6EscapeHtml(snapshot.card.requestedQuantity), ' DB</span><span class="spg-c010-max">Max: ', m6EscapeHtml(snapshot.card.maxCraftable), ' DB</span></div></div>',
+        '<div class="spg-c010-titleline">', c009RenderApiAnchor(snapshot.card.outputName, snapshot.card.apiWikiLink, "spg-c010-item-api-link"), '<span class="spg-export-status ', snapshot.card.satisfied ? "is-pass" : "is-fail", '">', snapshot.card.satisfied ? "SATISFIED" : "UNSATISFIED", '</span><div class="spg-c010-quantity"><span class="spg-c010-quantity-box">Craftok száma: ', m6EscapeHtml(snapshot.card.requestedQuantity), '</span><span class="spg-c010-max">MAX: ', m6EscapeHtml(snapshot.card.maxCraftable), ' craft</span></div></div>',
         '<section class="spg-c010-recipe">', snapshot.requirements.map(c010RenderStandaloneRecipeRow).join(""), '</section>',
         '<div class="spg-c010-material-list">', snapshot.requirements.map(c010RenderStandaloneMaterial).join(""), '</div>',
         '</article>',
@@ -22193,6 +22444,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       toScuUnits: toScuUnits,
       fromScuUnits: fromScuUnits,
       normalizeBlueprint: normalizeBlueprint,
+      buildCraftingCard: buildCraftingCard,
+      normalizeStoredCraftingCard: normalizeStoredCraftingCard,
+      normalizeStoredCraftHistoryEvent: normalizeStoredCraftHistoryEvent,
+      buildExactRequirementQuantityEvidence: v004BuildExactRequirementQuantityEvidence,
       normalizeBlueprintIndex: normalizeBlueprintIndex,
       normalizeOutputTypeFilters: normalizeOutputTypeFilters,
       qualityRules: M2_QUALITY_RULES,
@@ -22249,6 +22504,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       deleteCraftingCard: deleteCraftingCard,
       persistMaterialBatches: persistMaterialBatches,
       reallocateCraftingList: reallocateCraftingList,
+      confirmLegacyCardCraftRunSemantics: confirmLegacyCardCraftRunSemantics,
       prepareCraftCompletion: prepareV004CraftCompletionRequest,
       openCraftCompletionConfirmation: openV004CraftCompletionConfirmation,
       cancelCraftCompletionConfirmation: cancelV004CraftCompletionConfirmation,
@@ -22257,6 +22513,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       v004RevisionReservation: Object.freeze({
         snapshotMarker: V004_RESERVATION_SNAPSHOT_MARKER,
         reservationStatus: V004_RESERVATION_STATUS,
+        quantitySemantics: V004_QUANTITY_SEMANTICS,
+        craftRunInputEvidence: V004_CRAFT_RUN_INPUT_EVIDENCE,
+        requirementQuantityExactness: V004_REQUIREMENT_QUANTITY_EXACTNESS,
         outputCountEvidence: V004_OUTPUT_COUNT_EVIDENCE,
         assertRevisionValue: v004AssertRevisionValue,
         nextRevision: v004NextRevision,

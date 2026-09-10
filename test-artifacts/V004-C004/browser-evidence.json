@@ -1,9 +1,9 @@
 {
   "cycle": "V004-C004",
   "status": "PASS_TARGETED_CHROME",
-  "applicationSha256": "0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764",
+  "applicationSha256": "1cc18a53ea41e27ae05f69e8195c4120cd5cc4e401446c62c8c2ee3742bcc0eb",
   "browser": "Google Chrome",
-  "origin": "http://127.0.0.1:58119",
+  "origin": "http://127.0.0.1:59535",
   "sourceFixture": "tests/fixtures/v004-c003-reservation.json",
   "startup": {
     "status": "PASS",
@@ -170,10 +170,12 @@
     },
     "reservationAutomaticallyValid": false
   },
-  "outputCountBlocker": {
+  "craftRunInputBlocker": {
     "status": "PASS",
-    "code": "OUTPUT_COUNT_UNPROVEN",
-    "confirmationReachable": false
+    "reservationReason": "CRAFT_RUN_INPUTS_UNPROVEN",
+    "prepareCode": "STALE_RESERVATION",
+    "confirmationReachable": false,
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN"
   },
   "fileGate": {
     "status": "PASS_AUTOMATED",

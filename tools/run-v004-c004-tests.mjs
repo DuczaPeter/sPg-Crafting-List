@@ -171,6 +171,10 @@ oneUnitSource.card.quantity = 1;
 oneUnitSource.card.cardRevision = 0;
 oneUnitSource.card.requirements = [clone(fixture.card.requirements[1])];
 oneUnitSource.card.requirements[0].requiredQuantityUnits = 10000;
+oneUnitSource.card.requirements[0].sourceQuantityValue = 1;
+oneUnitSource.card.requirements[0].exactRequiredQuantityUnits = 10000;
+oneUnitSource.card.requirements[0].quantityExactness = "EXACT_SAFE_INTEGER_UNITS";
+oneUnitSource.card.requirements[0].quantityExactnessReason = null;
 oneUnitSource.card.recipeSlotQualityPoolAssignments = {};
 oneUnitSource.cardResult.requestedQuantity = 1;
 oneUnitSource.cardResult.requirements = [clone(fixture.cardResult.requirements[1])];
@@ -230,7 +234,11 @@ assert.throws(() => model.validateRequest(badHashRequest), error => error.code =
 const unprovenPayload = clone(payload);
 unprovenPayload.outputCountEvidence = "OUTPUT_COUNT_UNPROVEN";
 const unprovenRequest = await requestFor(unprovenPayload, 1, "craft-c004-unproven-001");
-assert.throws(() => model.validateRequest(unprovenRequest), error => error.code === "OUTPUT_COUNT_UNPROVEN");
+assert.equal(model.validateRequest(unprovenRequest).capability.status, "READY");
+const nonexactPayload = clone(payload);
+nonexactPayload.craftRunInputEvidence = "CRAFT_RUN_INPUTS_UNPROVEN";
+const nonexactRequest = await requestFor(nonexactPayload, 1, "craft-c004-nonexact-001");
+assert.throws(() => model.validateRequest(nonexactRequest), error => error.code === "CRAFT_RUN_INPUTS_UNPROVEN");
 
 const documentMarkup = appHtml.slice(0, appHtml.indexOf("<script>"));
 const localScriptSources = [...documentMarkup.matchAll(/<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]).filter(value => !/^https?:/i.test(value));
@@ -252,7 +260,7 @@ const evidence = {
   status: "PASS_TARGETED_MODEL",
   applicationSha256: crypto.createHash("sha256").update(appBuffer).digest("hex"),
   sourceFixture: "tests/fixtures/v004-c003-reservation.json",
-  sourceFixtureEvidence: "PER_FINISHED_ITEM_NORMALIZED_EXACT",
+  sourceFixtureEvidence: "CRAFT_RUN_INPUTS_EXACT",
   transaction: {
     stores: ["materialBatches", "userInventory", "craftingCards", "craftHistory", "userMeta"],
     resolvesOn: "transaction.oncomplete",
@@ -287,7 +295,8 @@ const evidence = {
   },
   revisions: partialMutation.revisions,
   staleReasons: mismatchCases.map(([reason]) => reason).concat(["SNAPSHOT_HASH_MISMATCH"]),
-  outputCountBlocker: "OUTPUT_COUNT_UNPROVEN",
+  outputCountDiagnostic: "OUTPUT_COUNT_UNPROVEN",
+  craftRunInputBlocker: "CRAFT_RUN_INPUTS_UNPROVEN",
   history: {
     eventSchema: partialMutation.historyEvent.eventSchema,
     status: partialMutation.historyEvent.status,

@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C004.3 Craft Run Quantity Semantics + Live Completion Enablement
+
+- [x] C004.2 checkpoint, clean `develop/V004` és exact input SHA ellenőrizve; C005 nem indult.
+- [x] A Card quantity explicit craft-run count; output item cardinality továbbra is `OUTPUT_COUNT_UNPROVEN`, és nincs count=1 állítás.
+- [x] Source requirement evidence megőrzése és szigorú exact normalizálás: SCU közvetlen `source * 10000`, ITEM pozitív safe integer; rounding/epsilon/floor/ceil nincs.
+- [x] Exact production Omnisky III Cannon partial 21 → 16, stale/reallocate, majd full completion és minden batchben 1 unit maradék PASS; anyagveszteség 0.
+- [x] Nonexact production Steadfast látható és tervezhető, de `CRAFT_RUN_INPUTS_UNPROVEN` miatt completion tiltva, inventory write 0.
+- [x] Régi Card explicit `LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED`; a `21 craftként használom` megerősítés számváltoztatás nélkül stale + explicit Reallocate állapotot hoz.
+- [x] Markerless History és schema-3 kompatibilitás explicit legacy/unknown osztályozása, craft-run következtetés nélkül.
+- [x] C004/C004.3 model, valódi Chrome, rollback/idempotencia/reload, automatizált direct `file://`, single-file és protected V003 kapu PASS; full regression és push nincs.
+- [ ] C005 csak új, explicit feladatban indulhat; C004.3 checkpoint után itt megállunk.
+
 ### V004-C004.2 Production Output Semantics Audit
 
 - [x] C004.1 checkpoint, clean `develop/V004` és exact application SHA audit-only baselineként ellenőrizve.

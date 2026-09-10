@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C004.3 Craft Run Quantity Semantics
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-10`, a meglévő C004.3 cycle bounded resume, célzott craft-run implementáció, production API/cache Chrome-bizonyítás és helyi checkpoint során.
+- Mire segített: a szükséges projektállapot és érintett kódrészek célzott olvasására, a full regression tudatos kihagyására, az exact scope és a protected V003 baseline megőrzésére.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file craft-run/input-exactness/legacy semantics runtime, C004/C004.3 tesztek és evidence, riport és projektmeta; skillfájl, C005, stabil V003 és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C004.2 Production Output Semantics Audit
 
 - Skillek neve: `credit-efficient-project-runner`, `github-auth-duczapeter`.

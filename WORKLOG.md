@@ -2,6 +2,17 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260909-181120-074755-WORKLOG.md`.
 
+## 2026-09-10 — V004-C004.3 Craft Run Quantity Semantics
+
+- Baseline: clean `develop/V004 @ db3d0a7...`; application SHA `0a0a57ff...`; C004.3 folytatás, C005 nélkül.
+- Döntés: Card quantity = craft-run count; output item cardinality továbbra is unproven és nem állított.
+- Exact input gate: SCU csak közvetlen `source * 10000` pozitív safe integerként, ITEM pozitív safe integerként; kerekítés és epsilon 0.
+- Chrome exact production: Omnisky III Cannon, 21 → partial 5 → 16 → stale block → Reallocate → full; végső batchértékek 1/1/1 unit, loss 0.
+- Chrome nonexact production: Steadfast `0.07 SCU`, látható/tervezhető, completion disabled, inventory write 0.
+- Legacy: explicit `21 craftként használom`, quantity változatlan, Card +1/allocation +1, reservation stale, explicit Reallocate; markerless History unknown.
+- C004 atomic rollback/idempotencia és C004.3 model/Chrome/direct-file/reload/single-file/protected V003 kapu PASS; full regression/push nincs.
+- Riport: `docs/V004_C004_3_CRAFT_RUN_QUANTITY_SEMANTICS_REPORT.md`; rollback normál C004.3 commit-revert.
+
 ## 2026-09-09 — V004-C004.2 Production Output Semantics Audit
 
 - Baseline: clean `develop/V004 @ 82d4814...`; application SHA `0a0a57ff...`; audit-only scope, runtime módosítás nélkül.

@@ -1,0 +1,153 @@
+{
+  "cycle": "V004-C004.3",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "1cc18a53ea41e27ae05f69e8195c4120cd5cc4e401446c62c8c2ee3742bcc0eb",
+  "browser": "Google Chrome",
+  "productionExact": {
+    "status": "PASS",
+    "blueprintUuid": "280f47b7-8434-410c-b854-380768fdccec",
+    "outputName": "Omnisky III Cannon",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "cache": {
+      "key": "4.10.0-LIVE.12519617::280f47b7-8434-410c-b854-380768fdccec",
+      "rawPresent": true,
+      "normalizedPresent": true
+    },
+    "recipeSlots": [
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:0",
+        "materialName": "Agricium",
+        "sourceQuantityValue": 0.36,
+        "exactRequiredQuantityUnits": 3600,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      },
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:1",
+        "materialName": "Hadanite",
+        "sourceQuantityValue": 7,
+        "exactRequiredQuantityUnits": 7,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      },
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:2",
+        "materialName": "Dolivine",
+        "sourceQuantityValue": 7,
+        "exactRequiredQuantityUnits": 7,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      }
+    ],
+    "quantitySemantics": "CRAFT_RUN_COUNT",
+    "craftRunInputEvidence": "CRAFT_RUN_INPUTS_EXACT",
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+    "outputCardinalityClaimed": false,
+    "partial": {
+      "completedCraftRuns": 5,
+      "remainingCraftRuns": 16,
+      "consumedUnits": [
+        18000,
+        35,
+        35
+      ]
+    },
+    "full": {
+      "completedRemainingCraftRuns": 16,
+      "cardRemoved": true,
+      "finalBatchUnits": [
+        1,
+        1,
+        1
+      ]
+    },
+    "staleAttempt": {
+      "code": "STALE_RESERVATION",
+      "detail": "CRAFT_COMPLETE_REQUIRES_REALLOCATION",
+      "writes": 0,
+      "fallbackConsumption": false
+    },
+    "maxWrites": 0,
+    "cancelWrites": 0,
+    "finalRevisions": {
+      "allocationRevision": 4,
+      "craftListRevision": 2,
+      "historySequence": 2,
+      "inventoryRevision": 3
+    },
+    "materialLossUnits": 0
+  },
+  "legacyConfirmation": {
+    "status": "PASS",
+    "visibleAction": "21 craftként használom",
+    "quantityBefore": 21,
+    "quantityAfter": 21,
+    "semanticsBefore": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+    "semanticsAfter": "CRAFT_RUN_COUNT",
+    "cardRevisionBefore": 0,
+    "cardRevisionAfter": 1,
+    "inventoryRevisionDelta": 0,
+    "craftListRevisionDelta": 0,
+    "allocationRevisionDelta": 1,
+    "reservationAfterConfirmation": "STALE",
+    "explicitReallocateRequired": true,
+    "markerlessHistoryClassification": "LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN",
+    "schema3Compatibility": {
+      "cardSemantics": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+      "cardInputEvidence": "CRAFT_RUN_INPUTS_UNPROVEN",
+      "historySemantics": "LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN",
+      "migrationSteps": [
+        "CARD_QUANTITY_SEMANTICS_CLASSIFICATION",
+        "HISTORY_QUANTITY_SEMANTICS_CLASSIFICATION"
+      ]
+    }
+  },
+  "productionNonexact": {
+    "status": "PASS_BLOCKED_ZERO_WRITES",
+    "blueprintUuid": "5af6beb3-4030-4a32-bb77-2a9b729483f5",
+    "outputName": "Steadfast",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "cache": {
+      "key": "4.10.0-LIVE.12519617::5af6beb3-4030-4a32-bb77-2a9b729483f5",
+      "rawPresent": true,
+      "normalizedPresent": true
+    },
+    "visible": true,
+    "semantics": "CRAFT_RUN_COUNT",
+    "inputEvidence": "CRAFT_RUN_INPUTS_UNPROVEN",
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+    "reason": "CRAFT_RUN_INPUTS_UNPROVEN",
+    "completionDisabled": true,
+    "nonexactRequirements": [
+      {
+        "materialName": "Laranite",
+        "sourceQuantityValue": 0.07,
+        "legacyRequiredQuantityUnits": 700,
+        "exactRequiredQuantityUnits": null,
+        "quantityExactnessReason": "SCU_TIMES_10000_NOT_EXACT_SAFE_INTEGER"
+      }
+    ],
+    "attempt": {
+      "code": "STALE_RESERVATION",
+      "detail": "CRAFT_RUN_INPUTS_UNPROVEN"
+    },
+    "inventoryWrites": 0,
+    "completionReached": false
+  },
+  "reload": {
+    "status": "PASS",
+    "activeCards": 0,
+    "historyEvents": 2,
+    "remainingUnits": [
+      1,
+      1,
+      1
+    ]
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "runtimeFileCount": 1,
+    "localRuntimeSidecars": 0,
+    "craftRunLabelsPresent": true,
+    "consoleErrors": []
+  },
+  "consoleErrors": []
+}

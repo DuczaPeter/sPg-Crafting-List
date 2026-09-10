@@ -230,3 +230,14 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Root, nested, tier és kapcsolt item blueprint reprezentáció output count/yield mező nélkül nem jogosít `PER_FINISHED_ITEM_NORMALIZED_EXACT` promotionre, még akkor sem, ha az ingredient-mennyiségek egymással konzisztensen ismétlődnek.
 - A negyedik SCU-tizedesjegy utáni nem nulla source számjegy 0-unit toleranciával nem minősíthető automatikusan lebegőpontos zajnak. Szándék bizonyítása nélkül az exact source-to-unit szemantika unproven.
 - Bizonyítatlan production, régi vagy migrált Card full és partial completionje egyaránt fail-closed; nincs outputCount=1, más batch fallback vagy completion-time reallocation.
+
+## 2026-09-10 - V004-C004.3 craft-run quantity és input-exactness határ
+
+- A Crafting Card `quantity` értéke craft-run count: azt mondja meg, hányszor hajtjuk végre a receptet. Nem késztermék-darabszám, ezért output count/yield/cardinality állítást nem hordoz.
+- A C004.2-ben bizonyítatlan `OUTPUT_COUNT_UNPROVEN` evidence megmarad diagnosztikának, de nem completion gate. A rendszer nem állít és nem feltételez `outputCount = 1` értéket.
+- Completion csak `CRAFT_RUN_INPUTS_EXACT` esetén engedélyezett. SCU requirement exact akkor, ha a source számon közvetlenül végzett `value * 10000` pozitív safe integer; ITEM requirement exact akkor, ha a source pozitív safe integer. Round/floor/ceil/epsilon javítás tilos.
+- A Card megőrzi a source értéket, az exact unitot és az exactness evidence-et. A régi `requiredQuantityUnits` tervezéshez megmarad, de completionkor egyeznie kell az exact értékkel.
+- Régi vagy hiányos Cardból nem következtetünk craft-run szemantikát: `LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED`. A usernek a látható mennyiséget explicit craftként kell megerősítenie; ez a számot nem írja át, revisiont léptet, a reservationt stale-re teszi és explicit Reallocate lépést követel.
+- Marker nélküli History `LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN`; schema-3 backup/import kompatibilitás besorolja, de nem hamisít craft-run bizonyítékot.
+- Full és partial completion pontosan az aktuális Card látható reserved batch allocationját fogyasztja. Hiányzó, kevés, módosult vagy egyébként érvénytelen entry esetén `STALE_RESERVATION`, nulla írás, explicit Reallocate; más batch fallback nincs.
+- Az inventory invariáns toleranciája 0 unit: `before = consumed + after`; History exact unit-deltát őriz, hogy a későbbi Undo ugyanazokat az egységeket állíthassa vissza.

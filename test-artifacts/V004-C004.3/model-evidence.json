@@ -1,0 +1,88 @@
+{
+  "cycle": "V004-C004.3",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "1cc18a53ea41e27ae05f69e8195c4120cd5cc4e401446c62c8c2ee3742bcc0eb",
+  "exactCases": [
+    {
+      "label": "SCU 0.35",
+      "source": 0.35,
+      "unit": "SCU",
+      "expectedUnits": 3500
+    },
+    {
+      "label": "SCU 0.0001",
+      "source": 0.0001,
+      "unit": "SCU",
+      "expectedUnits": 1
+    },
+    {
+      "label": "ITEM 7",
+      "source": 7,
+      "unit": "ITEM",
+      "expectedUnits": 7
+    }
+  ],
+  "blockedCases": [
+    {
+      "label": "SCU 0.11000000000000001",
+      "source": 0.11000000000000001,
+      "unit": "SCU"
+    },
+    {
+      "label": "SCU 3.0999999999999996",
+      "source": 3.0999999999999996,
+      "unit": "SCU"
+    },
+    {
+      "label": "ITEM fractional",
+      "source": 7.5,
+      "unit": "ITEM"
+    },
+    {
+      "label": "ITEM NaN",
+      "source": "NaN",
+      "unit": "ITEM"
+    },
+    {
+      "label": "ITEM Infinity",
+      "source": "Infinity",
+      "unit": "ITEM"
+    },
+    {
+      "label": "ITEM unsafe",
+      "source": 9007199254740992,
+      "unit": "ITEM"
+    }
+  ],
+  "exactArithmetic": {
+    "scuScale": 10000,
+    "roundingCalls": 0,
+    "epsilonTolerance": 0,
+    "legacyExactMismatchBlocked": true
+  },
+  "semantics": {
+    "quantitySemantics": "CRAFT_RUN_COUNT",
+    "craftRunInputEvidence": "CRAFT_RUN_INPUTS_EXACT",
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+    "outputCountIsCompletionGate": false,
+    "legacyMissingSemanticsBlocker": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+    "nonexactInputBlocker": "CRAFT_RUN_INPUTS_UNPROVEN"
+  },
+  "schemas": {
+    "reservation": "V004_RESERVATION_SNAPSHOT_2",
+    "completionRequest": "V004_CRAFT_COMPLETE_REQUEST_2",
+    "historyEvent": "V004_CRAFT_HISTORY_EVENT_2"
+  },
+  "labels": [
+    "Craftok száma",
+    "Lezárt craftok",
+    "1 crafthoz",
+    "<quantity> crafthoz"
+  ],
+  "singleFile": {
+    "localScriptSrc": 0,
+    "localStylesheetDependency": 0,
+    "localRuntimeSidecars": 0,
+    "applicationRuntimeFileCount": 1
+  }
+}

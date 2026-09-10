@@ -1,10 +1,10 @@
 {
     "cycle":  "V004-C004",
     "status":  "PASS_ATOMIC_CRAFT_COMPLETE_CORE",
-    "validationHead":  "f7125a96d092ba2765ad48b09145d40d501f9edd",
+    "validationHead":  "db3d0a71d45e840247ce6f029290104a8f16b84e",
     "c003Checkpoint":  "4a65c6ad02f052198cef4ef69d66f2046be47030",
     "applicationRuntimeIdentity":  "V004-dev",
-    "applicationSha256":  "0a0a57ffe689134bb36f7cffc1443dbafbfbdbd8d5e3647affa9194770ee2764",
+    "applicationSha256":  "1cc18a53ea41e27ae05f69e8195c4120cd5cc4e401446c62c8c2ee3742bcc0eb",
     "transactionStores":  [
                               "materialBatches",
                               "userInventory",
@@ -23,7 +23,8 @@
     "fullCompletion":  "PASS",
     "atomicRollbackStages":  4,
     "reloadPersistence":  "PASS",
-    "outputCountBlocker":  "OUTPUT_COUNT_UNPROVEN",
+    "craftRunInputBlocker":  "CRAFT_RUN_INPUTS_UNPROVEN",
+    "outputCountDiagnostic":  "OUTPUT_COUNT_UNPROVEN",
     "directFileGate":  "PASS_AUTOMATED",
     "applicationOriginConsoleErrors":  0,
     "localRuntimeSidecars":  0,

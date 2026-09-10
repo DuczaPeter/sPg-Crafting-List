@@ -920,7 +920,7 @@ Csak a determinisztikus modell- és static teszt:
 node .\tools\run-v004-c004-tests.mjs
 ```
 
-A célzott Google Chrome-runner: `tools/run-v004-c004-browser-tests.mjs`. A validator kötelezően friss model- és Chrome-evidence-et készít az aktuális HTML-bájtokról, ellenőrzi az exact reservation validációt, a partial/full prefix levonást, a confirmation cancel/MAX nulla írását, a stale/fallback tiltást, az idempotens replayt, a History eventet, a négy injected rollbacket, az 1-unit conservation maradékot, a reloadot, az output-count blockert, a single-file/direct `file://` működést és a V001/V002/V003 integritást. History UI, Undo/Redo, BroadcastChannel és teljes release-regresszió nem része a C004 scope-nak.
+A célzott Google Chrome-runner: `tools/run-v004-c004-browser-tests.mjs`. A validator kötelezően friss model- és Chrome-evidence-et készít az aktuális HTML-bájtokról, ellenőrzi az exact reservation validációt, a partial/full prefix levonást, a confirmation cancel/MAX nulla írását, a stale/fallback tiltást, az idempotens replayt, a History eventet, a négy injected rollbacket, az 1-unit conservation maradékot, a reloadot, a craft-run input exactness blockert és a nem gating output-cardinality diagnosztikát, a single-file/direct `file://` működést és a V001/V002/V003 integritást. History UI, Undo/Redo, BroadcastChannel és teljes release-regresszió nem része a C004 scope-nak.
 
 V004-C004.1 revision semantics és live output eligibility kapu:
 
@@ -949,3 +949,17 @@ node .\tools\audit-v004-c0042-production-output-semantics.mjs
 ```
 
 A kapu a C004.1 application SHA változatlanságát, a teljes live blueprint index ingredient-unit leképezését, négy output-kategória detail/nested/linked reprezentációit, a Wiki OpenAPI-t, a hivatalos API source mappinget és a production Card fail-closed assignmentet ellenőrzi. Kötelező eredmény: `PRODUCTION_OUTPUT_SEMANTICS_UNPROVEN`, `OUTPUT_COUNT_UNPROVEN`, `LIVE_CRAFT_COMPLETE_GATE_BLOCKED_BY_UNPROVEN_OUTPUT_SEMANTICS`. A jelenlegi hat nem-exact JSON `quantity_scu` találat eltűnése vagy új output-cardinality mező új szemantikai auditot igényel. Chrome/full regression és C005 nincs a scope-ban.
+
+V004-C004.3 craft-run quantity semantics és live exact-input completion kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c0043.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Csak a determinisztikus C004.3 modell- és static teszt:
+
+```powershell
+node .\tools\run-v004-c0043-tests.mjs
+```
+
+A célzott Google Chrome-runner: `tools/run-v004-c0043-browser-tests.mjs`. A validator az aktuális HTML-bájtokra újragenerálja a C004.3 model- és Chrome-evidence-et, majd lefuttatja a korábbi C004 atomic modellkaput is. A C004 Chrome-regresszió külön, a `tools/run-v004-c004-browser-tests.mjs` runnerrel futott újra az aktuális bájtokon. Együtt bizonyítják a `CRAFT_RUN_COUNT` Card-szemantikát, a szigorú SCU/ITEM exactness mátrixot, a nem gating `OUTPUT_COUNT_UNPROVEN` diagnosztikát, az exact production partial/stale/reallocate/full utat, a nonexact production nulla-írásos blokkot, legacy confirmationt és schema-3 kompatibilitást, reloadot, rollbacket, idempotenciát, direct `file://` futást, 1 runtime fájlt, 0 sidecart és a protected V003 integritását. A direct-file ellenőrzés automatizált; kézi file gate, Undo/Redo/History UI/BroadcastChannel, teljes release-regresszió és C005 nincs a scope-ban.

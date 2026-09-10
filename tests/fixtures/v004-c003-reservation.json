@@ -11,11 +11,13 @@
     "active": true,
     "collapsed": false,
     "quantity": 5,
+    "quantitySemantics": "CRAFT_RUN_COUNT",
     "blueprintUuid": "blueprint-c003-alpha",
     "blueprintCacheKey": "4.10.0-LIVE.TEST::blueprint-c003-alpha",
     "gameVersion": "4.10.0-LIVE.TEST",
     "outputUuid": "output-c003-alpha",
     "outputName": "Display label is not identity",
+    "craftRunInputEvidence": "CRAFT_RUN_INPUTS_EXACT",
     "outputCountEvidence": "PER_FINISHED_ITEM_NORMALIZED_EXACT",
     "requirements": [
       {
@@ -25,6 +27,10 @@
         "commodityUuid": "material-alpha",
         "materialName": "Material Alpha display",
         "requiredQuantityUnits": 10,
+        "sourceQuantityValue": 0.001,
+        "exactRequiredQuantityUnits": 10,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS",
+        "quantityExactnessReason": null,
         "unit": "SCU",
         "qualityCapability": "DYNAMIC"
       },
@@ -35,6 +41,10 @@
         "commodityUuid": "material-beta",
         "materialName": "Material Beta display",
         "requiredQuantityUnits": 15,
+        "sourceQuantityValue": 0.0015,
+        "exactRequiredQuantityUnits": 15,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS",
+        "quantityExactnessReason": null,
         "unit": "SCU",
         "qualityCapability": "FIXED"
       }
