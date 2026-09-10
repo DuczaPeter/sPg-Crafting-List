@@ -278,6 +278,16 @@
 - `test-artifacts/V004-C004.2/`: production output semantics evidence, target summary és rövid validation log.
 - `docs/V004_C004_2_PRODUCTION_OUTPUT_SEMANTICS_REPORT.md`: exact quantity és per-finished-item proofhatár, hat lebegőpontos source találat és live blocker riport.
 
+## V004-C004.4 determinisztikus 4 tizedes SCU normalizálás
+
+- `sPg Crafting List.html`: canonical decimal/BigInt HALF-UP SCU boundary, Card/reservation/history normalization evidence és látható fail-closed hibaállapot.
+- `tools/run-v004-c0044-tests.mjs`: determinisztikus SCU/ITEM számmátrix, legacy upgrade, static integer-truth és single-file modellkapu.
+- `tools/audit-v004-c0044-production-scu-normalization.mjs`: teljes aktuális Wiki blueprint/ingredient audit, korábbi lebegőpontos reprezentációk és LumaCore/Steadfast/Omnisky minták.
+- `tools/run-v004-c0044-browser-tests.mjs`: valódi Chrome production readiness, Omnisky partial/full/stale, My Materials, legacy/schema-3, `ROUNDS_TO_ZERO`, reload és direct `file://` kapu.
+- `tools/validate-v004-c0044.ps1`: bounded C004.4 current-byte validator, C004 atomikus model-regresszió, single-file és V001/V002/V003 védelem.
+- `test-artifacts/V004-C004.4/`: model-, production-, Chrome-, validation- és target-summary evidence.
+- `docs/V004_C004_4_SCU_NORMALIZATION_REPORT.md`: boundary, production eredmények, conservation, kompatibilitás, tesztek és rollback riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

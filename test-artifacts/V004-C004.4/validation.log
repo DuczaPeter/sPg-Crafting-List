@@ -1,0 +1,33 @@
+V004-C004.4 deterministic 4-decimal SCU normalization validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS 4883dfbb469d29caae8175eb6ecd6d107dfb0dce116f3dfc2a31f2ac60836f0c 125010 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c004-atomic-model-regression=PASS
+V004_C004_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004\model-evidence.json
+c0044-targeted-model=PASS
+V004_C0044_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004.4\model-evidence.json
+c0044-production-dataset-audit=PASS
+V004_C0044_PRODUCTION_AUDIT_PASS blueprints=1606 ingredients=4217 scu=3919/3919 item=298/298 blockedScu=0 blockedItem=0 previousFloatCases=6 evidence=test-artifacts\V004-C004.4\production-scu-normalization.json
+c0044-targeted-chrome=PASS
+V004_C0044_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C004.4\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_4DP_SCU_NORMALIZATION
+applicationSha256=b2b18b94196783984b2164084d184852eea79f2e686fa9b5c6e3ccaf01cdc706
+productionBlueprints=1606
+productionScuNormalized=3919/3919
+roundsToZero=ROUNDS_TO_ZERO
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+fullRegression=NOT_RUN_BY_SCOPE

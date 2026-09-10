@@ -963,3 +963,19 @@ node .\tools\run-v004-c0043-tests.mjs
 ```
 
 A célzott Google Chrome-runner: `tools/run-v004-c0043-browser-tests.mjs`. A validator az aktuális HTML-bájtokra újragenerálja a C004.3 model- és Chrome-evidence-et, majd lefuttatja a korábbi C004 atomic modellkaput is. A C004 Chrome-regresszió külön, a `tools/run-v004-c004-browser-tests.mjs` runnerrel futott újra az aktuális bájtokon. Együtt bizonyítják a `CRAFT_RUN_COUNT` Card-szemantikát, a szigorú SCU/ITEM exactness mátrixot, a nem gating `OUTPUT_COUNT_UNPROVEN` diagnosztikát, az exact production partial/stale/reallocate/full utat, a nonexact production nulla-írásos blokkot, legacy confirmationt és schema-3 kompatibilitást, reloadot, rollbacket, idempotenciát, direct `file://` futást, 1 runtime fájlt, 0 sidecart és a protected V003 integritását. A direct-file ellenőrzés automatizált; kézi file gate, Undo/Redo/History UI/BroadcastChannel, teljes release-regresszió és C005 nincs a scope-ban.
+
+V004-C004.4 determinisztikus 4 tizedes SCU normalizálási kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c0044.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Külön céltesztek:
+
+```powershell
+node .\tools\run-v004-c0044-tests.mjs
+node .\tools\audit-v004-c0044-production-scu-normalization.mjs
+node .\tools\run-v004-c0044-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A validator az aktuális HTML-bájtokra futtatja a baseline static és C004 atomikus model-regressziót, a teljes production SCU/ITEM auditot és a valódi Google Chrome-gate-et. Kötelező a 4 DP decimal HALF-UP boundary, LumaCore/Steadfast readiness, Omnisky 21 → 5 → 16 → stale/Reallocate → full exact conservation, `ROUNDS_TO_ZERO` nulla írás, legacy/schema-3 kompatibilitás, automated direct `file://`, 1 runtime HTML, 0 sidecar és protected V003 integritás. Teljes release-regresszió, kézi file gate, push és C005 nincs a scope-ban.

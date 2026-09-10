@@ -1,0 +1,150 @@
+{
+  "cycle": "V004-C004.4",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "b2b18b94196783984b2164084d184852eea79f2e686fa9b5c6e3ccaf01cdc706",
+  "normalization": {
+    "scuRule": "SCU_4DP_HALF_UP_V1",
+    "itemRule": "ITEM_POSITIVE_SAFE_INTEGER_V1",
+    "decimalSource": "String(finiteNumber)",
+    "rounding": "DECIMAL_HALF_UP_4DP",
+    "floatRoundingCalls": 0,
+    "postNormalizationArithmetic": "SAFE_INTEGER_UNITS_ONLY"
+  },
+  "exactScuCases": [
+    {
+      "source": 0.0001,
+      "normalizedScu": "0.0001",
+      "units": 1
+    },
+    {
+      "source": 0.0002,
+      "normalizedScu": "0.0002",
+      "units": 2
+    },
+    {
+      "source": 0.01,
+      "normalizedScu": "0.0100",
+      "units": 100
+    },
+    {
+      "source": 0.07,
+      "normalizedScu": "0.0700",
+      "units": 700
+    },
+    {
+      "source": 0.11,
+      "normalizedScu": "0.1100",
+      "units": 1100
+    },
+    {
+      "source": 0.14,
+      "normalizedScu": "0.1400",
+      "units": 1400
+    },
+    {
+      "source": 0.35,
+      "normalizedScu": "0.3500",
+      "units": 3500
+    },
+    {
+      "source": 3.1,
+      "normalizedScu": "3.1000",
+      "units": 31000
+    },
+    {
+      "source": 0.11000000000000001,
+      "normalizedScu": "0.1100",
+      "units": 1100
+    },
+    {
+      "source": 3.0999999999999996,
+      "normalizedScu": "3.1000",
+      "units": 31000
+    },
+    {
+      "source": 0.12344,
+      "normalizedScu": "0.1234",
+      "units": 1234
+    },
+    {
+      "source": 0.12345,
+      "normalizedScu": "0.1235",
+      "units": 1235
+    },
+    {
+      "source": 0.00005,
+      "normalizedScu": "0.0001",
+      "units": 1
+    }
+  ],
+  "blockedScuCases": [
+    {
+      "label": "rounds to zero",
+      "source": 0.00004,
+      "reason": "ROUNDS_TO_ZERO"
+    },
+    {
+      "label": "NaN",
+      "source": "NaN",
+      "reason": "SOURCE_QUANTITY_NOT_FINITE"
+    },
+    {
+      "label": "Infinity",
+      "source": "Infinity",
+      "reason": "SOURCE_QUANTITY_NOT_FINITE"
+    },
+    {
+      "label": "negative",
+      "source": -0.1,
+      "reason": "SOURCE_QUANTITY_NOT_POSITIVE"
+    },
+    {
+      "label": "zero",
+      "source": 0,
+      "reason": "SOURCE_QUANTITY_NOT_POSITIVE"
+    },
+    {
+      "label": "unsafe units",
+      "source": 900719925474.0992,
+      "reason": "NORMALIZED_UNITS_UNSAFE"
+    },
+    {
+      "label": "scientific rounds to zero",
+      "source": 1e-7,
+      "reason": "ROUNDS_TO_ZERO"
+    },
+    {
+      "label": "scientific unsafe",
+      "source": 1e+21,
+      "reason": "NORMALIZED_UNITS_UNSAFE"
+    }
+  ],
+  "item": {
+    "sevenUnits": 7,
+    "fractionalBlocked": true,
+    "nonfiniteBlocked": true,
+    "negativeOrZeroBlocked": true,
+    "unsafeBlocked": true
+  },
+  "c0043Compatibility": {
+    "falseNegative014Upgraded": true,
+    "quantitySemantics": "CRAFT_RUN_COUNT",
+    "craftRunInputEvidence": "CRAFT_RUN_INPUTS_EXACT",
+    "legacySemanticsStillRequired": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED"
+  },
+  "outputCardinality": {
+    "evidence": "OUTPUT_COUNT_UNPROVEN",
+    "claimed": false,
+    "completionGate": false
+  },
+  "singleFile": {
+    "embeddedCss": true,
+    "embeddedJavaScript": true,
+    "localScriptSrc": 0,
+    "localStylesheet": 0,
+    "localRuntimeJson": 0,
+    "fixtureRuntimeDependencies": 0,
+    "applicationRuntimeFileCount": 1,
+    "localRuntimeSidecars": 0
+  }
+}

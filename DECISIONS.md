@@ -241,3 +241,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Marker nélküli History `LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN`; schema-3 backup/import kompatibilitás besorolja, de nem hamisít craft-run bizonyítékot.
 - Full és partial completion pontosan az aktuális Card látható reserved batch allocationját fogyasztja. Hiányzó, kevés, módosult vagy egyébként érvénytelen entry esetén `STALE_RESERVATION`, nulla írás, explicit Reallocate; más batch fallback nincs.
 - Az inventory invariáns toleranciája 0 unit: `before = consumed + after`; History exact unit-deltát őriz, hogy a későbbi Undo ugyanazokat az egységeket állíthassa vissza.
+
+## 2026-09-10 - V004-C004.4 determinisztikus SCU normalizálási határ
+
+- `1 SCU = 10 000 unit`, `1 unit = 0.0001 SCU`. Az upstream/API SCU `Number` kanonikus forrása `String(Number)`; ezt scientific notationt is kezelő decimális parser normalizálja négy tizedesre HALF-UP szabállyal, majd egész unitra.
+- A kerekítés kizárólag ezen a source-boundaryn történhet. Utána inventory, allocation, reservation, full/partial completion, History és Undo kizárólag safe integer unitot használ; rounding loss tilos és a conservation tolerancia 0 unit.
+- `0.00004 SCU` négy tizedesre 0 unit, ezért `ROUNDS_TO_ZERO` és fail-closed. Nincs completion, fallback batch vagy durable írás; az adat javítása után explicit Reallocate szükséges.
+- ITEM requirement csak véges, pozitív safe integer lehet. Fractional, nem véges, nulla, negatív vagy unsafe ITEM érték blokkolt.
+- Ez a döntés a C004.2 negyedik tizedes utáni automatikus tiltását és a C004.3 közvetlen bináris `source * 10000` exactness feltételét felülírja. A craft-run szemantika, az unproven output-cardinalitás, a legacy explicit confirmation és a stale-reservation szabály változatlan.
+- A Card, reservation snapshot és History reservation-evidence ugyanazt a canonical decimális, normalizált szöveg-, unit-, státusz- és rule-evidence-et köti; régi C004.3 Card csak egyező source és unit esetén emelhető automatikusan exact normalization evidence-re.

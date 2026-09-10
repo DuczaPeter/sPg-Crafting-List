@@ -2,6 +2,17 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260909-181120-074755-WORKLOG.md`.
 
+## 2026-09-10 — V004-C004.4 Deterministic 4-Decimal SCU Normalization
+
+- Dirty resume: `develop/V004 @ 0b35f8e...`; a félkész C004.4 módosítás megőrizve, staged fájl nem volt.
+- Boundary: API/source `Number` → `String(Number)` → decimális BigInt parser → 4 DP HALF-UP → integer unit; további kerekítés és tolerancia 0.
+- Production 4.10.0 audit: 1606 blueprint/4217 ingredient; SCU 3919/3919, ITEM 298/298, blocker 0; LumaCore és Steadfast completion-ready.
+- Omnisky Chrome: 21 → partial 5 → 16 → stale/Reallocate → full; History exact delta, My Materials/reload, 1/1/1 unit maradék, loss 0.
+- `0.00004 SCU` → `0.0000`/0 unit `ROUNDS_TO_ZERO`; completion disabled, látható javítás + Reallocate üzenet, durable write 0.
+- Legacy confirmation, schema-3 normalization-evidence migration és C004.3 Card upgrade PASS; output cardinality továbbra is unproven/not claimed.
+- C004 model + C004.4 model/production/Chrome/direct-file/single-file/protected V003 validator PASS; full regression/push/C005 nincs.
+- Riport: `docs/V004_C004_4_SCU_NORMALIZATION_REPORT.md`; rollback a helyi C004.4 commit normál revertje.
+
 ## 2026-09-10 — V004-C004.3 Craft Run Quantity Semantics
 
 - Baseline: clean `develop/V004 @ db3d0a7...`; application SHA `0a0a57ff...`; C004.3 folytatás, C005 nélkül.

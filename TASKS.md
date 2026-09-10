@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C004.4 Deterministic 4-Decimal SCU Normalization
+
+- [x] A megszakadt dirty C004.4 állapot visszaállítás nélkül auditálva; branch/HEAD/staged scope és meglévő production evidence ellenőrizve.
+- [x] API/source SCU `Number` kanonikus `String(Number)` decimális reprezentációja determinisztikus BigInt parserrel, 4 tizedes HALF-UP szabállyal egész unitra normalizálódik.
+- [x] `1 SCU = 10 000 unit`; az egyszeri boundary után Card/allocation/reservation/completion/History egész egységeket használ, 0-unit toleranciával.
+- [x] ITEM csak pozitív safe integer; `0.00004 SCU → 0.0000 → 0 unit` fail-closed `ROUNDS_TO_ZERO`, világos hibaállapot és nulla írás.
+- [x] Teljes production audit PASS: 1606 blueprint, 4217 ingredient; SCU 3919/3919 és ITEM 298/298 normalizálva, blocker/affected blueprint 0.
+- [x] LumaCore 0.14, Steadfast 0.07 és 0.11000000000000001, valamint Omnisky production API/cache/normalize/Card/Chrome út PASS.
+- [x] Omnisky 21 → 5 → 16 → stale/Reallocate → full; exact History deltas, My Materials, reload, 1/1/1 unit maradék és 0 loss PASS.
+- [x] C004 atomikus model, C004.4 model/production/Chrome, automated direct `file://`, single-file és protected V003 bounded validator PASS; full regression és push nincs.
+- [ ] C005 csak új, explicit feladatban indulhat; C004.4 checkpoint után itt megállunk.
+
 ### V004-C004.3 Craft Run Quantity Semantics + Live Completion Enablement
 
 - [x] C004.2 checkpoint, clean `develop/V004` és exact input SHA ellenőrizve; C005 nem indult.

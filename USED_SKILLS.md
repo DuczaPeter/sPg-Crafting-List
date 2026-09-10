@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C004.4 Deterministic 4-Decimal SCU Normalization
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-10`, a megszakadt dirty C004.4 állapot biztonságos resume-a, célzott normalizálási implementáció, production audit, Chrome-gate és helyi checkpoint során.
+- Mire segített: a meglévő módosítások megőrzésére, bounded állapot- és source-olvasásra, a már meglévő evidence validálására, a full regression tudatos kihagyására és a protected V003 védelemre.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file SCU normalization runtime, C004.4 tools/evidence/report és projektmeta; skillfájl, C005, stabil V003 és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C004.3 Craft Run Quantity Semantics
 
 - Skill neve: `credit-efficient-project-runner`.

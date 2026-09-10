@@ -1,0 +1,347 @@
+{
+  "cycle": "V004-C004.4",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "b2b18b94196783984b2164084d184852eea79f2e686fa9b5c6e3ccaf01cdc706",
+  "browser": "Google Chrome",
+  "productionExact": {
+    "status": "PASS",
+    "blueprintUuid": "280f47b7-8434-410c-b854-380768fdccec",
+    "outputName": "Omnisky III Cannon",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "cache": {
+      "key": "4.10.0-LIVE.12519617::280f47b7-8434-410c-b854-380768fdccec",
+      "rawPresent": true,
+      "normalizedPresent": true
+    },
+    "recipeSlots": [
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:0",
+        "materialName": "Agricium",
+        "sourceQuantityValue": 0.36,
+        "sourceQuantityCanonicalDecimal": "0.36",
+        "normalizedQuantityText": "0.3600",
+        "normalizedRequiredQuantityUnits": 3600,
+        "quantityNormalizationStatus": "NORMALIZED_EXACT_INTEGER_UNITS",
+        "quantityNormalizationRule": "SCU_4DP_HALF_UP_V1",
+        "exactRequiredQuantityUnits": 3600,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      },
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:1",
+        "materialName": "Hadanite",
+        "sourceQuantityValue": 7,
+        "sourceQuantityCanonicalDecimal": "7",
+        "normalizedQuantityText": "7",
+        "normalizedRequiredQuantityUnits": 7,
+        "quantityNormalizationStatus": "NORMALIZED_EXACT_INTEGER_UNITS",
+        "quantityNormalizationRule": "ITEM_POSITIVE_SAFE_INTEGER_V1",
+        "exactRequiredQuantityUnits": 7,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      },
+      {
+        "id": "280f47b7-8434-410c-b854-380768fdccec:aspect:2",
+        "materialName": "Dolivine",
+        "sourceQuantityValue": 7,
+        "sourceQuantityCanonicalDecimal": "7",
+        "normalizedQuantityText": "7",
+        "normalizedRequiredQuantityUnits": 7,
+        "quantityNormalizationStatus": "NORMALIZED_EXACT_INTEGER_UNITS",
+        "quantityNormalizationRule": "ITEM_POSITIVE_SAFE_INTEGER_V1",
+        "exactRequiredQuantityUnits": 7,
+        "quantityExactness": "EXACT_SAFE_INTEGER_UNITS"
+      }
+    ],
+    "quantitySemantics": "CRAFT_RUN_COUNT",
+    "craftRunInputEvidence": "CRAFT_RUN_INPUTS_EXACT",
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+    "outputCardinalityClaimed": false,
+    "partial": {
+      "completedCraftRuns": 5,
+      "remainingCraftRuns": 16,
+      "consumedUnits": [
+        18000,
+        35,
+        35
+      ]
+    },
+    "full": {
+      "completedRemainingCraftRuns": 16,
+      "cardRemoved": true,
+      "finalBatchUnits": [
+        1,
+        1,
+        1
+      ]
+    },
+    "myMaterials": {
+      "partialRows": [
+        {
+          "batchId": "batch-c0044-1",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n5,7601 SCU · foglalt 0 SCU · szabad 5,7601 SCU\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        },
+        {
+          "batchId": "batch-c0044-2",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n113 db · foglalt 0 db · szabad 113 db\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        },
+        {
+          "batchId": "batch-c0044-3",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n113 db · foglalt 0 db · szabad 113 db\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        }
+      ],
+      "finalRows": [
+        {
+          "batchId": "batch-c0044-1",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n0,0001 SCU · foglalt 0 SCU · szabad 0,0001 SCU\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        },
+        {
+          "batchId": "batch-c0044-2",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n1 db · foglalt 0 db · szabad 1 db\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        },
+        {
+          "batchId": "batch-c0044-3",
+          "visible": true,
+          "quality": "900",
+          "text": "Q900\n1 db · foglalt 0 db · szabad 1 db\nNincs megjegyzés\nSzerkesztés\nTörlés"
+        }
+      ]
+    },
+    "staleAttempt": {
+      "code": "STALE_RESERVATION",
+      "detail": "CRAFT_COMPLETE_REQUIRES_REALLOCATION",
+      "writes": 0,
+      "fallbackConsumption": false
+    },
+    "maxWrites": 0,
+    "cancelWrites": 0,
+    "finalRevisions": {
+      "allocationRevision": 4,
+      "craftListRevision": 2,
+      "historySequence": 2,
+      "inventoryRevision": 3
+    },
+    "materialLossUnits": 0
+  },
+  "productionSamples": {
+    "lumaCore": {
+      "status": "PASS_COMPLETION_READY",
+      "blueprintUuid": "cb32c252-45b9-43d0-b1bf-f2755c2f320f",
+      "outputName": "LumaCore",
+      "gameVersion": "4.10.0-LIVE.12519617",
+      "cache": {
+        "key": "4.10.0-LIVE.12519617::cb32c252-45b9-43d0-b1bf-f2755c2f320f",
+        "rawPresent": true,
+        "normalizedPresent": true
+      },
+      "requirements": [
+        {
+          "materialName": "Borase",
+          "canonicalDecimal": "0.35",
+          "normalizedQuantityText": "0.3500",
+          "normalizedUnits": 3500,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        },
+        {
+          "materialName": "Laranite",
+          "canonicalDecimal": "0.14",
+          "normalizedQuantityText": "0.1400",
+          "normalizedUnits": 1400,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        },
+        {
+          "materialName": "Beryl",
+          "canonicalDecimal": "0.24",
+          "normalizedQuantityText": "0.2400",
+          "normalizedUnits": 2400,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        }
+      ],
+      "ready": true,
+      "reservationStatus": "VALID",
+      "normalizationRules": [
+        "SCU_4DP_HALF_UP_V1",
+        "SCU_4DP_HALF_UP_V1",
+        "SCU_4DP_HALF_UP_V1"
+      ],
+      "normalizationStatuses": [
+        "NORMALIZED_EXACT_INTEGER_UNITS",
+        "NORMALIZED_EXACT_INTEGER_UNITS",
+        "NORMALIZED_EXACT_INTEGER_UNITS"
+      ],
+      "quantitySemantics": "CRAFT_RUN_COUNT",
+      "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN"
+    },
+    "steadfast": {
+      "status": "PASS_COMPLETION_READY",
+      "blueprintUuid": "5af6beb3-4030-4a32-bb77-2a9b729483f5",
+      "outputName": "Steadfast",
+      "gameVersion": "4.10.0-LIVE.12519617",
+      "cache": {
+        "key": "4.10.0-LIVE.12519617::5af6beb3-4030-4a32-bb77-2a9b729483f5",
+        "rawPresent": true,
+        "normalizedPresent": true
+      },
+      "requirements": [
+        {
+          "materialName": "Tungsten",
+          "canonicalDecimal": "0.1",
+          "normalizedQuantityText": "0.1000",
+          "normalizedUnits": 1000,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        },
+        {
+          "materialName": "Laranite",
+          "canonicalDecimal": "0.04",
+          "normalizedQuantityText": "0.0400",
+          "normalizedUnits": 400,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        },
+        {
+          "materialName": "Laranite",
+          "canonicalDecimal": "0.07",
+          "normalizedQuantityText": "0.0700",
+          "normalizedUnits": 700,
+          "status": "NORMALIZED_EXACT_INTEGER_UNITS",
+          "rule": "SCU_4DP_HALF_UP_V1"
+        }
+      ],
+      "ready": true,
+      "reservationStatus": "VALID",
+      "normalizationRules": [
+        "SCU_4DP_HALF_UP_V1",
+        "SCU_4DP_HALF_UP_V1",
+        "SCU_4DP_HALF_UP_V1"
+      ],
+      "normalizationStatuses": [
+        "NORMALIZED_EXACT_INTEGER_UNITS",
+        "NORMALIZED_EXACT_INTEGER_UNITS",
+        "NORMALIZED_EXACT_INTEGER_UNITS"
+      ],
+      "quantitySemantics": "CRAFT_RUN_COUNT",
+      "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN"
+    }
+  },
+  "legacyConfirmation": {
+    "status": "PASS",
+    "visibleAction": "21 craftként használom",
+    "quantityBefore": 21,
+    "quantityAfter": 21,
+    "semanticsBefore": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+    "semanticsAfter": "CRAFT_RUN_COUNT",
+    "cardRevisionBefore": 0,
+    "cardRevisionAfter": 1,
+    "inventoryRevisionDelta": 0,
+    "craftListRevisionDelta": 0,
+    "allocationRevisionDelta": 1,
+    "reservationAfterConfirmation": "STALE",
+    "explicitReallocateRequired": true,
+    "markerlessHistoryClassification": "LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN",
+    "schema3Compatibility": {
+      "cardSemantics": "LEGACY_QUANTITY_SEMANTICS_UNCONFIRMED",
+      "cardInputEvidence": "CRAFT_RUN_INPUTS_UNPROVEN",
+      "historySemantics": "LEGACY_HISTORY_QUANTITY_SEMANTICS_UNKNOWN",
+      "migrationSteps": [
+        "CARD_QUANTITY_SEMANTICS_CLASSIFICATION",
+        "HISTORY_QUANTITY_SEMANTICS_CLASSIFICATION",
+        "REQUIREMENT_QUANTITY_NORMALIZATION_EVIDENCE_V1"
+      ]
+    },
+    "c0043Upgrade": {
+      "quantity": 21,
+      "semantics": "CRAFT_RUN_COUNT",
+      "inputEvidence": "CRAFT_RUN_INPUTS_EXACT",
+      "allNormalized": true
+    }
+  },
+  "invalidZero": {
+    "status": "PASS_BLOCKED_ZERO_WRITES",
+    "sourceQuantityValue": 0.00004,
+    "visible": true,
+    "semantics": "CRAFT_RUN_COUNT",
+    "inputEvidence": "CRAFT_RUN_INPUTS_UNPROVEN",
+    "outputCountEvidence": "OUTPUT_COUNT_UNPROVEN",
+    "reservationReason": "CRAFT_RUN_INPUTS_UNPROVEN",
+    "completionDisabled": true,
+    "normalizedQuantityText": "0.0000",
+    "normalizedUnits": 0,
+    "normalizationStatus": "NORMALIZATION_BLOCKED",
+    "normalizationRule": "SCU_4DP_HALF_UP_V1",
+    "blockerReason": "ROUNDS_TO_ZERO",
+    "visibleErrorText": "Lezárt craftok\nMAX\nCraft Complete\n\nCraft Complete blokkolva: az SCU követelmény 4 tizedesre kerekítve 0 unit (ROUNDS_TO_ZERO). Javítsd az adatot, majd explicit Reallocate szükséges.",
+    "attempt": {
+      "code": "STALE_RESERVATION",
+      "detail": "CRAFT_RUN_INPUTS_UNPROVEN"
+    },
+    "inventoryWrites": 0,
+    "completionReached": false
+  },
+  "reload": {
+    "status": "PASS",
+    "activeCards": 0,
+    "historyEvents": 2,
+    "remainingUnits": [
+      1,
+      1,
+      1
+    ]
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "runtimeFileCount": 1,
+    "localRuntimeSidecars": 0,
+    "craftRunLabelsPresent": true,
+    "luma014": {
+      "sourceQuantityValue": 0.14,
+      "sourceQuantityCanonicalDecimal": "0.14",
+      "normalizedQuantityText": "0.1400",
+      "normalizedRequiredQuantityUnits": 1400,
+      "normalizedUnitText": "1400",
+      "quantityNormalizationStatus": "NORMALIZED_EXACT_INTEGER_UNITS",
+      "quantityNormalizationRule": "SCU_4DP_HALF_UP_V1",
+      "exactRequiredQuantityUnits": 1400,
+      "quantityExactness": "EXACT_SAFE_INTEGER_UNITS",
+      "quantityExactnessReason": null
+    },
+    "noisy011": {
+      "sourceQuantityValue": 0.11000000000000001,
+      "sourceQuantityCanonicalDecimal": "0.11000000000000001",
+      "normalizedQuantityText": "0.1100",
+      "normalizedRequiredQuantityUnits": 1100,
+      "normalizedUnitText": "1100",
+      "quantityNormalizationStatus": "NORMALIZED_EXACT_INTEGER_UNITS",
+      "quantityNormalizationRule": "SCU_4DP_HALF_UP_V1",
+      "exactRequiredQuantityUnits": 1100,
+      "quantityExactness": "EXACT_SAFE_INTEGER_UNITS",
+      "quantityExactnessReason": null
+    },
+    "roundsToZero": {
+      "sourceQuantityValue": 0.00004,
+      "sourceQuantityCanonicalDecimal": "0.00004",
+      "normalizedQuantityText": "0.0000",
+      "normalizedRequiredQuantityUnits": 0,
+      "normalizedUnitText": "0",
+      "quantityNormalizationStatus": "NORMALIZATION_BLOCKED",
+      "quantityNormalizationRule": "SCU_4DP_HALF_UP_V1",
+      "exactRequiredQuantityUnits": null,
+      "quantityExactness": "QUANTITY_UNITS_UNPROVEN",
+      "quantityExactnessReason": "ROUNDS_TO_ZERO"
+    },
+    "consoleErrors": []
+  },
+  "consoleErrors": []
+}

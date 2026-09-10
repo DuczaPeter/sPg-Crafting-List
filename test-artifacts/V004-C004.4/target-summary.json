@@ -1,0 +1,53 @@
+{
+    "cycle":  "V004-C004.4",
+    "status":  "PASS_4DP_SCU_NORMALIZATION",
+    "validationHead":  "0b35f8ef4ba19530a302b3a086047a014e83290a",
+    "applicationRuntimeIdentity":  "V004-dev",
+    "applicationSha256":  "b2b18b94196783984b2164084d184852eea79f2e686fa9b5c6e3ccaf01cdc706",
+    "scuUnitScale":  10000,
+    "scuNormalizationRule":  "SCU_4DP_HALF_UP_V1",
+    "itemNormalizationRule":  "ITEM_POSITIVE_SAFE_INTEGER_V1",
+    "decimalSource":  "String(JSON.parse numeric Number)",
+    "materialLossToleranceUnits":  0,
+    "quantitySemantics":  "CRAFT_RUN_COUNT",
+    "craftRunInputEvidence":  "CRAFT_RUN_INPUTS_EXACT",
+    "outputCountEvidence":  "OUTPUT_COUNT_UNPROVEN",
+    "outputCardinalityClaimed":  false,
+    "productionBlueprintCount":  1606,
+    "productionIngredientCount":  4217,
+    "productionScuNormalized":  "3919/3919",
+    "productionItemNormalized":  "298/298",
+    "lumaCore":  "0.14 SCU -\u003e 0.1400 SCU -\u003e 1400 unit; READY",
+    "steadfastDetail":  "0.07 SCU -\u003e 0.0700 SCU -\u003e 700 unit; READY",
+    "steadfastAggregate":  "0.11000000000000001 SCU -\u003e 0.1100 SCU -\u003e 1100 unit",
+    "omnisky":  {
+                    "blueprintUuid":  "280f47b7-8434-410c-b854-380768fdccec",
+                    "partial":  "21 -\u003e complete 5 -\u003e remain 16",
+                    "full":  "complete 16 -\u003e card removed",
+                    "finalBatchUnits":  [
+                                            1,
+                                            1,
+                                            1
+                                        ]
+                },
+    "roundsToZero":  {
+                         "source":  4E-05,
+                         "normalizedScu":  "0.0000",
+                         "blocker":  "ROUNDS_TO_ZERO",
+                         "writes":  0
+                     },
+    "legacyConfirmation":  "21 craftként használom",
+    "staleReservation":  "STALE_RESERVATION",
+    "materialLossUnits":  0,
+    "exactUnitTolerance":  0,
+    "directFileGate":  "PASS_AUTOMATED",
+    "applicationRuntimeFileCount":  1,
+    "localRuntimeSidecars":  0,
+    "v003TagTarget":  "ebc83281769fd212d988ee55957b1c2754256490",
+    "v003ArtifactBytes":  835820,
+    "v003ArtifactSha256":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+    "fullRegression":  "NOT_RUN_BY_SCOPE",
+    "push":  "NO",
+    "forcePush":  "NO",
+    "c005Started":  false
+}

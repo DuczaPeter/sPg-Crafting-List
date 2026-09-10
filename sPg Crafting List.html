@@ -8793,8 +8793,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var hasItems = hasNumericValue(input.quantity);
         var unit = hasScu ? "SCU" : (hasItems ? "ITEM" : "UNKNOWN");
         var rawQuantity = hasScu ? Number(input.quantity_scu) : (hasItems ? Number(input.quantity) : null);
-        var quantityUnits = hasScu ? toScuUnits(rawQuantity) : (hasItems ? Math.round(rawQuantity) : null);
         var exactQuantityEvidence = v004BuildExactRequirementQuantityEvidence(rawQuantity, unit);
+        var quantityUnits = Number.isSafeInteger(exactQuantityEvidence.normalizedRequiredQuantityUnits)
+          ? exactQuantityEvidence.normalizedRequiredQuantityUnits
+          : 0;
         var slotId = raw.uuid + ":aspect:" + index;
         var ingredientUuid = input.uuid || (matchedIngredient && (matchedIngredient.resource_type_uuid || matchedIngredient.item_uuid)) || null;
         var capability = deriveQualityCapability(aspect);
@@ -8845,12 +8847,24 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             rawValue: rawQuantity,
             internalUnits: quantityUnits,
             scuUnitScale: unit === "SCU" ? 10000 : null,
+            sourceCanonicalDecimal: exactQuantityEvidence.sourceQuantityCanonicalDecimal,
+            normalizedQuantityText: exactQuantityEvidence.normalizedQuantityText,
+            normalizedRequiredQuantityUnits: exactQuantityEvidence.normalizedRequiredQuantityUnits,
+            normalizedUnitText: exactQuantityEvidence.normalizedUnitText,
+            normalizationStatus: exactQuantityEvidence.quantityNormalizationStatus,
+            normalizationRule: exactQuantityEvidence.quantityNormalizationRule,
             exactRequiredQuantityUnits: exactQuantityEvidence.exactRequiredQuantityUnits,
             exactness: exactQuantityEvidence.quantityExactness,
             exactnessReason: exactQuantityEvidence.quantityExactnessReason
           },
           requiredQuantityUnits: quantityUnits,
           sourceQuantityValue: exactQuantityEvidence.sourceQuantityValue,
+          sourceQuantityCanonicalDecimal: exactQuantityEvidence.sourceQuantityCanonicalDecimal,
+          normalizedQuantityText: exactQuantityEvidence.normalizedQuantityText,
+          normalizedRequiredQuantityUnits: exactQuantityEvidence.normalizedRequiredQuantityUnits,
+          normalizedUnitText: exactQuantityEvidence.normalizedUnitText,
+          quantityNormalizationStatus: exactQuantityEvidence.quantityNormalizationStatus,
+          quantityNormalizationRule: exactQuantityEvidence.quantityNormalizationRule,
           exactRequiredQuantityUnits: exactQuantityEvidence.exactRequiredQuantityUnits,
           quantityExactness: exactQuantityEvidence.quantityExactness,
           quantityExactnessReason: exactQuantityEvidence.quantityExactnessReason,
@@ -12180,36 +12194,106 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       EXACT: "EXACT_SAFE_INTEGER_UNITS",
       UNPROVEN: "QUANTITY_UNITS_UNPROVEN"
     });
+    var V004_QUANTITY_NORMALIZATION_STATUS = Object.freeze({
+      EXACT: "NORMALIZED_EXACT_INTEGER_UNITS",
+      BLOCKED: "NORMALIZATION_BLOCKED"
+    });
+    var V004_SCU_NORMALIZATION_RULE = "SCU_4DP_HALF_UP_V1";
+    var V004_ITEM_NORMALIZATION_RULE = "ITEM_POSITIVE_SAFE_INTEGER_V1";
+
+    function v004FixedScuTextFromUnitBigInt(unitValue) {
+      var whole = unitValue / 10000n;
+      var fraction = String(unitValue % 10000n).padStart(4, "0");
+      return String(whole) + "." + fraction;
+    }
+
+    function v004ParsePositiveDecimalToFourDpUnits(canonicalDecimal) {
+      var match = /^(\d+)(?:\.(\d*))?(?:[eE]([+-]?\d+))?$/.exec(canonicalDecimal);
+      if (!match) {
+        return { status: V004_QUANTITY_NORMALIZATION_STATUS.BLOCKED, reason: "DECIMAL_REPRESENTATION_UNSUPPORTED" };
+      }
+      var fraction = match[2] || "";
+      var exponent = match[3] === undefined ? 0 : Number(match[3]);
+      if (!Number.isSafeInteger(exponent) || Math.abs(exponent) > 10000) {
+        return { status: V004_QUANTITY_NORMALIZATION_STATUS.BLOCKED, reason: "DECIMAL_EXPONENT_UNSUPPORTED" };
+      }
+      var digitsText = (match[1] + fraction).replace(/^0+(?=\d)/, "") || "0";
+      var digits = BigInt(digitsText);
+      var unitScaleExponent = exponent - fraction.length + 4;
+      var normalizedUnitsBigInt;
+      if (unitScaleExponent >= 0) {
+        normalizedUnitsBigInt = digits * (10n ** BigInt(unitScaleExponent));
+      } else {
+        var divisor = 10n ** BigInt(-unitScaleExponent);
+        var quotient = digits / divisor;
+        var remainder = digits % divisor;
+        normalizedUnitsBigInt = quotient + (remainder * 2n >= divisor ? 1n : 0n);
+      }
+      return {
+        status: V004_QUANTITY_NORMALIZATION_STATUS.EXACT,
+        reason: null,
+        normalizedUnitsBigInt: normalizedUnitsBigInt,
+        normalizedUnitText: String(normalizedUnitsBigInt),
+        normalizedScuText: v004FixedScuTextFromUnitBigInt(normalizedUnitsBigInt)
+      };
+    }
 
     function v004BuildExactRequirementQuantityEvidence(sourceValue, unit) {
       var numeric = Number(sourceValue);
+      var canonicalDecimal = Number.isFinite(numeric) ? String(numeric) : null;
       var evidence = {
         sourceQuantityValue: Number.isFinite(numeric) ? numeric : null,
+        sourceQuantityCanonicalDecimal: canonicalDecimal,
+        normalizedQuantityText: null,
+        normalizedRequiredQuantityUnits: null,
+        normalizedUnitText: null,
+        quantityNormalizationStatus: V004_QUANTITY_NORMALIZATION_STATUS.BLOCKED,
+        quantityNormalizationRule: unit === "SCU" ? V004_SCU_NORMALIZATION_RULE : (unit === "ITEM" ? V004_ITEM_NORMALIZATION_RULE : null),
         exactRequiredQuantityUnits: null,
         quantityExactness: V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN,
-        quantityExactnessReason: "SOURCE_QUANTITY_NOT_EXACT_SAFE_INTEGER_UNITS"
+        quantityExactnessReason: "SOURCE_QUANTITY_NOT_NORMALIZABLE"
       };
-      if (!Number.isFinite(numeric) || numeric <= 0) {
-        evidence.quantityExactnessReason = "SOURCE_QUANTITY_NOT_FINITE_POSITIVE";
+      if (!Number.isFinite(numeric)) {
+        evidence.quantityExactnessReason = "SOURCE_QUANTITY_NOT_FINITE";
+        return evidence;
+      }
+      if (numeric <= 0) {
+        evidence.quantityExactnessReason = "SOURCE_QUANTITY_NOT_POSITIVE";
         return evidence;
       }
       if (unit === "SCU") {
-        var scaledUnits = numeric * 10000;
-        if (!Number.isSafeInteger(scaledUnits) || scaledUnits <= 0) {
-          evidence.quantityExactnessReason = "SCU_TIMES_10000_NOT_EXACT_SAFE_INTEGER";
+        var normalized = v004ParsePositiveDecimalToFourDpUnits(canonicalDecimal);
+        if (normalized.status !== V004_QUANTITY_NORMALIZATION_STATUS.EXACT) {
+          evidence.quantityExactnessReason = normalized.reason;
           return evidence;
         }
-        evidence.exactRequiredQuantityUnits = scaledUnits;
+        evidence.normalizedQuantityText = normalized.normalizedScuText;
+        evidence.normalizedUnitText = normalized.normalizedUnitText;
+        if (normalized.normalizedUnitsBigInt === 0n) {
+          evidence.normalizedRequiredQuantityUnits = 0;
+          evidence.quantityExactnessReason = "ROUNDS_TO_ZERO";
+          return evidence;
+        }
+        if (normalized.normalizedUnitsBigInt > BigInt(Number.MAX_SAFE_INTEGER)) {
+          evidence.quantityExactnessReason = "NORMALIZED_UNITS_UNSAFE";
+          return evidence;
+        }
+        evidence.normalizedRequiredQuantityUnits = Number(normalized.normalizedUnitsBigInt);
+        evidence.exactRequiredQuantityUnits = evidence.normalizedRequiredQuantityUnits;
       } else if (unit === "ITEM") {
         if (!Number.isSafeInteger(numeric)) {
           evidence.quantityExactnessReason = "ITEM_QUANTITY_NOT_POSITIVE_SAFE_INTEGER";
           return evidence;
         }
+        evidence.normalizedQuantityText = canonicalDecimal;
+        evidence.normalizedUnitText = canonicalDecimal;
+        evidence.normalizedRequiredQuantityUnits = numeric;
         evidence.exactRequiredQuantityUnits = numeric;
       } else {
         evidence.quantityExactnessReason = "REQUIREMENT_UNIT_UNSUPPORTED";
         return evidence;
       }
+      evidence.quantityNormalizationStatus = V004_QUANTITY_NORMALIZATION_STATUS.EXACT;
       evidence.quantityExactness = V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT;
       evidence.quantityExactnessReason = null;
       return evidence;
@@ -12217,22 +12301,34 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     function v004NormalizeRequirementExactEvidence(requirement) {
       var source = Object.assign({}, requirement || {});
-      var exactUnits = source.exactRequiredQuantityUnits;
-      var exact = source.quantityExactness === V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT &&
-        Number.isSafeInteger(exactUnits) && exactUnits > 0 &&
-        Number.isSafeInteger(source.requiredQuantityUnits) && source.requiredQuantityUnits === exactUnits;
-      source.sourceQuantityValue = source.sourceQuantityValue !== null && source.sourceQuantityValue !== undefined && source.sourceQuantityValue !== "" && Number.isFinite(Number(source.sourceQuantityValue))
-        ? Number(source.sourceQuantityValue)
-        : null;
-      source.exactRequiredQuantityUnits = exact ? exactUnits : null;
+      var sourceValue = source.sourceQuantityValue !== undefined && source.sourceQuantityValue !== null && source.sourceQuantityValue !== ""
+        ? source.sourceQuantityValue
+        : (source.quantity && source.quantity.rawValue !== undefined ? source.quantity.rawValue : null);
+      var derived = v004BuildExactRequirementQuantityEvidence(sourceValue, source.unit);
+      var exact = derived.quantityNormalizationStatus === V004_QUANTITY_NORMALIZATION_STATUS.EXACT &&
+        Number.isSafeInteger(derived.normalizedRequiredQuantityUnits) && derived.normalizedRequiredQuantityUnits > 0 &&
+        Number.isSafeInteger(source.requiredQuantityUnits) && source.requiredQuantityUnits === derived.normalizedRequiredQuantityUnits;
+      source.sourceQuantityValue = derived.sourceQuantityValue;
+      source.sourceQuantityCanonicalDecimal = derived.sourceQuantityCanonicalDecimal;
+      source.normalizedQuantityText = derived.normalizedQuantityText;
+      source.normalizedRequiredQuantityUnits = derived.normalizedRequiredQuantityUnits;
+      source.normalizedUnitText = derived.normalizedUnitText;
+      source.quantityNormalizationStatus = exact ? V004_QUANTITY_NORMALIZATION_STATUS.EXACT : V004_QUANTITY_NORMALIZATION_STATUS.BLOCKED;
+      source.quantityNormalizationRule = derived.quantityNormalizationRule;
+      source.exactRequiredQuantityUnits = exact ? derived.normalizedRequiredQuantityUnits : null;
       source.quantityExactness = exact ? V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT : V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN;
-      source.quantityExactnessReason = exact ? null : (source.quantityExactnessReason || "LEGACY_OR_UNPROVEN_SOURCE_QUANTITY");
+      source.quantityExactnessReason = exact ? null : (derived.quantityExactnessReason || "NORMALIZED_UNITS_MISMATCH");
+      if (!exact && derived.quantityNormalizationStatus === V004_QUANTITY_NORMALIZATION_STATUS.EXACT && derived.quantityExactnessReason === null) {
+        source.quantityExactnessReason = "NORMALIZED_UNITS_MISMATCH";
+      }
       return source;
     }
 
     function v004RequirementHasExactCraftRunInput(requirement) {
       var normalized = v004NormalizeRequirementExactEvidence(requirement);
       return normalized.quantityExactness === V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT &&
+        normalized.quantityNormalizationStatus === V004_QUANTITY_NORMALIZATION_STATUS.EXACT &&
+        Boolean(normalized.quantityNormalizationRule) &&
         normalized.exactRequiredQuantityUnits === normalized.requiredQuantityUnits;
     }
 
@@ -12340,6 +12436,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         resourceTypeUuid: source.resourceTypeUuid || null,
         itemUuid: source.itemUuid || null,
         requiredQuantityUnits: source.requiredQuantityUnits,
+        sourceQuantityValue: source.sourceQuantityValue,
+        sourceQuantityCanonicalDecimal: source.sourceQuantityCanonicalDecimal || null,
+        normalizedQuantityText: source.normalizedQuantityText || null,
+        normalizedRequiredQuantityUnits: source.normalizedRequiredQuantityUnits,
+        normalizedUnitText: source.normalizedUnitText || null,
+        quantityNormalizationStatus: source.quantityNormalizationStatus || V004_QUANTITY_NORMALIZATION_STATUS.BLOCKED,
+        quantityNormalizationRule: source.quantityNormalizationRule || null,
         exactRequiredQuantityUnits: source.exactRequiredQuantityUnits,
         quantityExactness: source.quantityExactness || V004_REQUIREMENT_QUANTITY_EXACTNESS.UNPROVEN,
         quantityExactnessReason: source.quantityExactnessReason || null,
@@ -12438,7 +12541,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return [requirement.id, requirement];
       }));
       var recipeSlots = cardResult.requirements.map(function (requirement, slotSequence) {
-        var sourceRequirement = sourceRequirementById.get(requirement.recipeSlotId) || {};
+        var sourceRequirement = v004NormalizeRequirementExactEvidence(sourceRequirementById.get(requirement.recipeSlotId) || {});
         if (!requirement.recipeSlotId || !requirement.ingredientUuid || !requirement.canonicalMaterialUuid || !requirement.unit) {
           throw v004ReservationError("RESERVATION_SLOT_IDENTITY_UNRESOLVED", "A Recipe Slot canonical identityje hiányos.");
         }
@@ -12485,6 +12588,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           unit: requirement.unit,
           perCraftRequiredUnits: perCraftRequiredUnits,
           quantityExactness: sourceRequirement.quantityExactness,
+          sourceQuantityCanonicalDecimal: sourceRequirement.sourceQuantityCanonicalDecimal,
+          normalizedQuantityText: sourceRequirement.normalizedQuantityText,
+          normalizedUnitText: sourceRequirement.normalizedUnitText,
+          quantityNormalizationStatus: sourceRequirement.quantityNormalizationStatus,
+          quantityNormalizationRule: sourceRequirement.quantityNormalizationRule,
           qualityCapability: sourceRequirement.qualityCapability || null,
           effectiveQualityStrategy: requirement.allocationStrategy || requirement.effectiveRule || requirement.rule || null,
           qualityPoolAssignment: requirement.recipePoolAssignmentMode || null,
@@ -12548,7 +12656,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var maximum = remainingQuantity;
       for (var index = 0; index < payload.recipeSlots.length; index += 1) {
         var slot = payload.recipeSlots[index];
-        if (!Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 || slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
+        if (!Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 ||
+            slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT ||
+            slot.quantityNormalizationStatus !== V004_QUANTITY_NORMALIZATION_STATUS.EXACT ||
+            !slot.quantityNormalizationRule || !Number.isSafeInteger(slot.reservedTotalUnits) || slot.reservedTotalUnits < 0) {
           return { status: "BLOCKED", maxCompletableQuantity: 0, remainingQuantity: remainingQuantity, blockerReason: "RESERVATION_REQUIREMENT_NOT_EXACT" };
         }
         maximum = Math.min(maximum, v004ExactWholeQuotient(slot.reservedTotalUnits, slot.perCraftRequiredUnits));
@@ -12819,13 +12930,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var batchById = new Map((Array.isArray(batches) ? batches : []).map(function (batch) { return [batch.id, batch]; }));
       var reservedByBatch = new Map();
       payload.recipeSlots.forEach(function (slot, slotIndex) {
-        if (slot.sequence !== slotIndex || !Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 || slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT) {
+        if (slot.sequence !== slotIndex || !Number.isSafeInteger(slot.perCraftRequiredUnits) || slot.perCraftRequiredUnits <= 0 ||
+            slot.quantityExactness !== V004_REQUIREMENT_QUANTITY_EXACTNESS.EXACT ||
+            slot.quantityNormalizationStatus !== V004_QUANTITY_NORMALIZATION_STATUS.EXACT || !slot.quantityNormalizationRule) {
           throw v004StaleReservationError("RECIPE_SLOT_SEQUENCE_OR_UNITS_CHANGED");
         }
-        var requirement = currentRequirementById.get(slot.stableSlotId);
+        var requirement = v004NormalizeRequirementExactEvidence(currentRequirementById.get(slot.stableSlotId));
         if (!requirement || requirement.ingredientUuid !== slot.ingredientUuid || requirement.unit !== slot.unit ||
             !v004RequirementHasExactCraftRunInput(requirement) || requirement.requiredQuantityUnits !== slot.perCraftRequiredUnits ||
-            requirement.exactRequiredQuantityUnits !== slot.perCraftRequiredUnits || (requirement.qualityCapability || null) !== slot.qualityCapability) {
+            requirement.exactRequiredQuantityUnits !== slot.perCraftRequiredUnits ||
+            requirement.sourceQuantityCanonicalDecimal !== slot.sourceQuantityCanonicalDecimal ||
+            requirement.normalizedQuantityText !== slot.normalizedQuantityText || requirement.normalizedUnitText !== slot.normalizedUnitText ||
+            requirement.quantityNormalizationStatus !== slot.quantityNormalizationStatus || requirement.quantityNormalizationRule !== slot.quantityNormalizationRule ||
+            (requirement.qualityCapability || null) !== slot.qualityCapability) {
           throw v004StaleReservationError("RECIPE_SLOT_EVIDENCE_CHANGED");
         }
         var slotReservedTotal = 0;
@@ -13359,6 +13476,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             event.quantitySemantics !== V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN);
         })
       );
+      var needsQuantityNormalizationUpgrade = schemaVersion === M4_BACKUP_SCHEMA_VERSION &&
+        (sourceData.craftingCards || []).some(function (card) {
+          return Array.isArray(card && card.requirements) && card.requirements.some(function (requirement) {
+            return !requirement || !requirement.quantityNormalizationStatus || !requirement.quantityNormalizationRule ||
+              requirement.sourceQuantityCanonicalDecimal === undefined || requirement.normalizedUnitText === undefined;
+          });
+        });
       if (schemaVersion <= 2) {
         var legacySourceData = {
           userInventory: sourceData.userInventory || [],
@@ -13392,7 +13516,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var normalized = validateM4UserData(sourceData);
       var fingerprint = fingerprintUserDataPayload(normalized);
       if (schemaVersion === M4_BACKUP_SCHEMA_VERSION && parsed.fingerprint && parsed.fingerprint !== fingerprint) {
-        if (!((needsCardRevisionInitialization || needsQuantitySemanticsClassification) && parsed.fingerprint === preCardRevisionFingerprint)) {
+        if (!((needsCardRevisionInitialization || needsQuantitySemanticsClassification || needsQuantityNormalizationUpgrade) && parsed.fingerprint === preCardRevisionFingerprint)) {
           throw m4BackupError("FINGERPRINT_MISMATCH", "A backup fingerprintje nem egyezik a tartalommal.");
         }
         var compatibilitySteps = [];
@@ -13400,8 +13524,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         if (needsQuantitySemanticsClassification) {
           compatibilitySteps.push("CARD_QUANTITY_SEMANTICS_CLASSIFICATION", "HISTORY_QUANTITY_SEMANTICS_CLASSIFICATION");
         }
+        if (needsQuantityNormalizationUpgrade) { compatibilitySteps.push("REQUIREMENT_QUANTITY_NORMALIZATION_EVIDENCE_V1"); }
         migration = { fromSchema: M4_BACKUP_SCHEMA_VERSION, toSchema: M4_BACKUP_SCHEMA_VERSION, steps: compatibilitySteps };
-        warnings.push("A korai schema 3 backup hiányzó revision vagy quantity-semantics mezői biztonságosan legacy/unconfirmed állapotot kaptak.");
+        warnings.push("A korai schema 3 backup hiányzó revision, quantity-semantics vagy normalization-evidence mezői biztonságosan frissültek; legacy Card semantics nem lett automatikusan craft-runként értelmezve.");
       }
       return {
         backup: {
@@ -16271,6 +16396,12 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         materialName: requirement.materialName,
         requiredQuantityUnits: requirement.requiredQuantityUnits,
         sourceQuantityValue: requirement.sourceQuantityValue,
+        sourceQuantityCanonicalDecimal: requirement.sourceQuantityCanonicalDecimal,
+        normalizedQuantityText: requirement.normalizedQuantityText,
+        normalizedRequiredQuantityUnits: requirement.normalizedRequiredQuantityUnits,
+        normalizedUnitText: requirement.normalizedUnitText,
+        quantityNormalizationStatus: requirement.quantityNormalizationStatus,
+        quantityNormalizationRule: requirement.quantityNormalizationRule,
         exactRequiredQuantityUnits: requirement.exactRequiredQuantityUnits,
         quantityExactness: requirement.quantityExactness,
         quantityExactnessReason: requirement.quantityExactnessReason,
@@ -17864,8 +17995,19 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return entry;
     }
 
-    function reservationReasonText(entry) {
+    function reservationReasonText(entry, card) {
       var reason = entry && (entry.reason || entry.capability && entry.capability.blockerReason);
+      if (reason === V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN && card) {
+        var blockedRequirement = (Array.isArray(card.requirements) ? card.requirements : []).map(v004NormalizeRequirementExactEvidence).find(function (requirement) {
+          return !v004RequirementHasExactCraftRunInput(requirement);
+        });
+        var requirementReason = blockedRequirement && blockedRequirement.quantityExactnessReason;
+        if (requirementReason === "ROUNDS_TO_ZERO") {
+          return "Craft Complete blokkolva: az SCU követelmény 4 tizedesre kerekítve 0 unit (ROUNDS_TO_ZERO). Javítsd az adatot, majd explicit Reallocate szükséges.";
+        }
+        return "Craft Complete blokkolva: a recipe input normalizálása nem bizonyított" +
+          (requirementReason ? " (" + requirementReason + ")" : "") + ". Javítsd az adatot, majd explicit Reallocate szükséges.";
+      }
       var labels = {
         RELOAD_REQUIRES_REALLOCATION: "Betöltés után explicit Reallocate szükséges",
         EXPLICIT_REALLOCATION_REQUIRED: "Elavult – új allocation szükséges",
@@ -18108,7 +18250,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       var blocker = document.createElement("p");
       blocker.className = "spg-v004-completion-blocker";
       blocker.textContent = ready ? "Exact craft-run inputok; az output darabszám nincs állítva. Fogyasztás csak a látható reservationből történik." :
-        (capability.blockerReason || reservationReasonText(reservation) || "Explicit Reallocate szükséges.");
+        (reservationReasonText(reservation, card) || capability.blockerReason || "Explicit Reallocate szükséges.");
       wrapper.append(label, maxButton, completeButton, blocker);
       return wrapper;
     }
@@ -18266,7 +18408,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         reservationReason.className = "spg-v004-reservation-reason";
         reservationReason.textContent = reservation.status === V004_RESERVATION_STATUS.VALID && reservation.capability && reservation.capability.status === "READY"
           ? "MAX: " + reservation.capability.maxCompletableQuantity + " craft"
-          : reservationReasonText(reservation);
+          : reservationReasonText(reservation, card);
         reservationReason.title = reservationReason.textContent;
         reservationSummary.append(reservationStatus, reservationReason);
         managementActions.append(
@@ -22448,6 +22590,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalizeStoredCraftingCard: normalizeStoredCraftingCard,
       normalizeStoredCraftHistoryEvent: normalizeStoredCraftHistoryEvent,
       buildExactRequirementQuantityEvidence: v004BuildExactRequirementQuantityEvidence,
+      normalizeScuQuantityToUnits: function (value) { return v004BuildExactRequirementQuantityEvidence(value, "SCU"); },
       normalizeBlueprintIndex: normalizeBlueprintIndex,
       normalizeOutputTypeFilters: normalizeOutputTypeFilters,
       qualityRules: M2_QUALITY_RULES,
@@ -22516,6 +22659,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         quantitySemantics: V004_QUANTITY_SEMANTICS,
         craftRunInputEvidence: V004_CRAFT_RUN_INPUT_EVIDENCE,
         requirementQuantityExactness: V004_REQUIREMENT_QUANTITY_EXACTNESS,
+        quantityNormalizationStatus: V004_QUANTITY_NORMALIZATION_STATUS,
+        scuNormalizationRule: V004_SCU_NORMALIZATION_RULE,
+        itemNormalizationRule: V004_ITEM_NORMALIZATION_RULE,
         outputCountEvidence: V004_OUTPUT_COUNT_EVIDENCE,
         assertRevisionValue: v004AssertRevisionValue,
         nextRevision: v004NextRevision,
