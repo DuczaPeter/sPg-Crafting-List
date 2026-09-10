@@ -1,0 +1,44 @@
+V004-C007 Multi-tab coherence validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS 74787ec68a750e18bafbe7b8a593759f6fe701084ad1868143f4241753c78d1c 130064 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c007-node-syntax-model=PASS
+c007-node-syntax-browser=PASS
+c0044-exact-consumption-model-regression=PASS
+V004_C0044_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004.4\model-evidence.json
+c0044-exact-consumption-chrome-regression=PASS
+V004_C0044_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C004.4\browser-evidence.json
+c005-history-model-regression=PASS
+V004_C005_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C005\model-evidence.json
+c005-history-chrome-regression=PASS
+V004_C005_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C005\browser-evidence.json
+c006-undo-model-regression=PASS
+V004_C006_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C006\model-evidence.json
+c006-undo-chrome-regression=PASS
+V004_C006_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C006\browser-evidence.json
+c0061-backup-model-regression=PASS
+V004_C0061_UNDO_BACKUP_MODEL_PASS evidence=test-artifacts\V004-C006.1\model-evidence.json
+c0061-backup-chrome-regression=PASS
+V004_C0061_UNDO_BACKUP_CHROME_PASS evidence=test-artifacts\V004-C006.1\browser-evidence.json
+c007-multi-tab-model=PASS
+V004_C007_MULTI_TAB_MODEL_PASS evidence=test-artifacts\V004-C007\model-evidence.json
+c007-multi-tab-chrome=PASS
+V004_C007_MULTI_TAB_CHROME_PASS evidence=test-artifacts\V004-C007\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004.4/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004.4/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C005/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C005/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006.1/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006.1/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C006/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_MULTI_TAB_COHERENCE
+applicationSha256=9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365
+craftUndoMaterialLossUnits=0
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+fullRegression=NOT_RUN_BY_SCOPE

@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C007 Multi-Tab Coherence
+
+- [x] Dirty C007 folytatás visszaállítás nélkül auditálva; input HEAD, aktuális application SHA és protected V003 baseline ellenőrizve.
+- [x] `BroadcastChannel` protokoll kizárólag kis UI-signal payloadot közvetít; a receiver minden állapotot IndexedDB-ből olvas újra, payloadból durable adatot nem alkalmaz.
+- [x] Malformed/unsupported/self/duplicate/out-of-order kezelés, tabonként új session ID, egyszeres listener, debounce/coalescing és sender-loop tiltás PASS.
+- [x] Kétfüles Craft Complete és Undo UI-frissítés PASS; stale reservation, explicit Reallocate és History státusz azonnal megjelenik.
+- [x] Konkurens Complete egyetlen commit, konkurens Undo egyetlen restore; lost-message és BroadcastChannel-unavailable fallback fail-closed; material loss 0 unit.
+- [x] Material- és Card-módosítások, Backup import és V003 migráció cross-tab refresh PASS; automatikus Reallocate nincs.
+- [x] C004.4–C006.1 current-byte regresszió, direct `file://`, responsive, single-file, diff-check és protected V003 bounded validator PASS.
+- [x] Full regression és push nincs; C007 helyi checkpoint után megállás.
+
 ### V004-C006.1 Undo Backup Round-Trip
 
 - [x] Exact C006 checkpoint, input application SHA, `develop/V004` és protected V003 baseline ellenőrizve; C007 nem indult el.
@@ -12,7 +23,7 @@
 - [x] Legacy schema 3 fail-closed kompatibilis, nem fabrikál Undo-mezőket; backup schema maradt 3.
 - [x] C002 V003 read-only migráció és C006 Undo regresszió, Chrome, direct `file://`, single-file, diff-check és protected V003 bounded validator PASS.
 - [x] Full regression és push nincs; helyi checkpoint után megállás.
-- [ ] C007 csak új, explicit feladatban indulhat.
+- [x] C007 külön, explicit ciklusban később lezárult.
 
 ### V004-C006 Craft History Undo
 
@@ -24,7 +35,7 @@
 - [x] History Undo gomb, exact confirmation, Cancel 0 write, UNDONE/Redo nélküli állapot, stale reservation és explicit Reallocate flow elkészült.
 - [x] Omnisky partial/full/LIFO, blockers, reload, 1920×1080/390×844 overflow 0 és automated direct `file://` Chrome-kapu PASS; material loss 0.
 - [x] C004.4/C005 targeted regresszió, single-file, `git diff --check` és protected V003 bounded validator PASS; full regression/push nincs.
-- [ ] C007 csak új, explicit feladatban indulhat; C006 checkpoint után itt megállunk.
+- [x] C007 külön, explicit ciklusban később lezárult.
 
 ### V004-C005 Craft History UI
 

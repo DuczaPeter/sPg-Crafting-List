@@ -278,3 +278,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - A backup schema verzió 3 marad. Current-schema History ismeretlen extra mezőit forward-compatible módon meg kell őrizni; legacy schema-3 eventhez Undo evidence nem fabrikálható, ezért fail-closed marad.
 - Import és reload után a stored `UNDONE` state, exact consumed/restored unit deltas, Card/inventory/revision evidence, `historySequence` grouping/order és cardonkénti LIFO az authority. Második Undo továbbra is `ALREADY_UNDONE`, nulla tartós írással.
 - A V003 migrációs út változatlan és read-only; V003 source adatbázisba import vagy round-trip közben nem írható.
+
+## 2026-09-10 - V004-C007 multi-tab authority és signal contract
+
+- A `BroadcastChannel` kizárólag kényelmi UI-változásjelzés. Nem durable authority, és payloadjából inventory, Card, allocation vagy History állapot nem alkalmazható.
+- Minden fogadó fül a jelzés után IndexedDB-ből olvassa újra a durable állapotot. Normál jelzés csak monoton újabb durable revisionnél frissít; `BACKUP_IMPORTED` és `MIGRATION_COMPLETED` dedikált force-refresh jelzés equal vagy alacsonyabb exact revision visszaállítását is kezelheti.
+- Minden böngészőfül session-only azonosítót és monoton sender sequence-et használ. Malformed, unsupported, self, duplicate és out-of-order jelzés ignorálandó; listenerből tabonként pontosan egy lehet.
+- Durable mutation sikerét csak a tranzakció tényleges befejezése után szabad jelezni. Presentation-only művelet nem írhat és nem broadcastolhat.
+- Cross-tab frissítés minden reservationt stale állapotba tesz, bezárja a régi Complete/Undo előkészítést és explicit Reallocate műveletet követel. Automatikus allocation, más batch fallback és payload-alapú állapotcsere tilos.
+- Elveszett üzenet vagy hiányzó BroadcastChannel nem correctness-hiba: a Complete/Undo tranzakció commit előtti IndexedDB újraolvasása és revision/stale guardja marad a biztonsági authority.

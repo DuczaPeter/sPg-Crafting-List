@@ -58,6 +58,21 @@ Technikai baseline statikus ellenorzese:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-baseline.ps1"
 ```
 
+V004-C007 Multi-Tab Coherence bounded kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c007.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Külön C007 céltesztek:
+
+```powershell
+node .\tools\run-v004-c007-tests.mjs
+node .\tools\run-v004-c007-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A validator baseline static, C004.4–C006.1 current-byte regressziót, majd kétfüles Complete/Undo, concurrency, message-loss, material/Card sync, backup import, V003 migráció, reload lifecycle, BroadcastChannel fallback, responsive, direct `file://`, single-file, diff-check és protected V003 kaput futtat. Teljes release-regresszió nincs a scope-ban.
+
 V004-C006.1 Undo Backup Round-Trip bounded kapu:
 
 ```powershell

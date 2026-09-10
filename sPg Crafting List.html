@@ -7020,7 +7020,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       miningPageSize: 200,
       maxMiningPages: 20,
       backupFormat: "spg-crafting-list-backup",
-      backupSchemaVersion: 3
+      backupSchemaVersion: 3,
+      multiTabChannelName: "spg-crafting-list-v004",
+      multiTabProtocol: "V004_MULTI_TAB_SIGNAL_1",
+      multiTabDebounceMs: 60
     });
 
     var STORE_DEFINITIONS = Object.freeze({
@@ -7081,6 +7084,20 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       reservationRunStatus: "ABSENT",
       pendingCraftCompletion: null,
       pendingCraftUndo: null,
+      multiTab: {
+        status: "CLOSED",
+        tabInstanceId: null,
+        listenerRegistrations: 0,
+        sent: 0,
+        received: 0,
+        accepted: 0,
+        ignored: 0,
+        refreshCount: 0,
+        staleTransitions: 0,
+        lastMutationType: null,
+        lastRefreshResult: null,
+        recentDiagnostics: []
+      },
       craftingListView: "ACTIVE",
       allocationResult: null,
       combinedMaterials: [],
@@ -18916,6 +18933,336 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return state.revisions;
     }
 
+    /* V004_C007_MULTI_TAB_COHERENCE_START */
+    var V004_MULTI_TAB_MUTATION_TYPES = Object.freeze([
+      "INVENTORY_CHANGED",
+      "CRAFT_LIST_CHANGED",
+      "ALLOCATION_STATE_CHANGED",
+      "CRAFT_COMPLETED",
+      "CRAFT_UNDONE",
+      "BACKUP_IMPORTED",
+      "MIGRATION_COMPLETED"
+    ]);
+    var V004_MULTI_TAB_FORCE_REFRESH_TYPES = Object.freeze(["BACKUP_IMPORTED", "MIGRATION_COMPLETED"]);
+    var V004_MULTI_TAB_REVISION_KEYS = Object.freeze(["inventoryRevision", "craftListRevision", "allocationRevision", "historySequence"]);
+    var V004_MULTI_TAB_AFFECTED_KEYS = Object.freeze(["cardIds", "historyIds", "materialIds"]);
+    var v004MultiTabRuntime = {
+      channel: null,
+      listener: null,
+      sequence: 0,
+      lastSenderSequence: new Map(),
+      queuedMutationTypes: new Set(),
+      forceRefresh: false,
+      timer: null,
+      refreshInFlight: false,
+      refreshPending: false
+    };
+
+    function v004CreateTabInstanceId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return "tab-" + window.crypto.randomUUID();
+      }
+      return "tab-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 14);
+    }
+
+    function v004RecordMultiTabDiagnostic(code, detail, level) {
+      var record = { code: code, at: nowIso(), detail: detail || null };
+      state.multiTab.recentDiagnostics.push(record);
+      if (state.multiTab.recentDiagnostics.length > 12) { state.multiTab.recentDiagnostics.shift(); }
+      if (level) {
+        logger.event(level, code, code === "MULTI_TAB_SIGNAL_UNAVAILABLE"
+          ? "A multi-tab jelzés nem érhető el; a durable tranzakciós védelem aktív marad."
+          : "V004 multi-tab koherencia diagnosztika.", detail || {});
+      }
+      return record;
+    }
+
+    function v004MultiTabRevisionSnapshot(metaRecords) {
+      var revisions = v004RevisionSnapshot(metaRecords);
+      return {
+        inventoryRevision: revisions.inventoryRevision,
+        craftListRevision: revisions.craftListRevision,
+        allocationRevision: revisions.allocationRevision,
+        historySequence: v004RevisionValue(metaRecords, V004_META_KEYS.historySequence)
+      };
+    }
+
+    function v004NormalizeMultiTabAffected(affected) {
+      var source = affected && typeof affected === "object" && !Array.isArray(affected) ? affected : {};
+      var result = {};
+      V004_MULTI_TAB_AFFECTED_KEYS.forEach(function (key) {
+        if (!Array.isArray(source[key])) { return; }
+        result[key] = Array.from(new Set(source[key].filter(function (value) {
+          return typeof value === "string" && value.length > 0 && value.length <= 160;
+        }))).slice(0, 12);
+      });
+      return result;
+    }
+
+    function v004ValidateMultiTabSignal(input, ownTabInstanceId) {
+      if (!input || typeof input !== "object" || Array.isArray(input)) {
+        return { valid: false, code: "MALFORMED_SIGNAL" };
+      }
+      if (input.protocol !== APP.multiTabProtocol) {
+        return { valid: false, code: "UNSUPPORTED_PROTOCOL" };
+      }
+      if (typeof input.senderTabId !== "string" || input.senderTabId.length < 5 || input.senderTabId.length > 160 ||
+          !Number.isSafeInteger(input.senderSequence) || input.senderSequence < 1 ||
+          V004_MULTI_TAB_MUTATION_TYPES.indexOf(input.mutationType) === -1 ||
+          !input.revisions || typeof input.revisions !== "object" || Array.isArray(input.revisions)) {
+        return { valid: false, code: "MALFORMED_SIGNAL" };
+      }
+      if (input.senderTabId === ownTabInstanceId) {
+        return { valid: false, code: "SELF_SIGNAL" };
+      }
+      var revisions = {};
+      for (var index = 0; index < V004_MULTI_TAB_REVISION_KEYS.length; index += 1) {
+        var key = V004_MULTI_TAB_REVISION_KEYS[index];
+        if (!Number.isSafeInteger(input.revisions[key]) || input.revisions[key] < 0) {
+          return { valid: false, code: "MALFORMED_SIGNAL" };
+        }
+        revisions[key] = input.revisions[key];
+      }
+      return {
+        valid: true,
+        code: "VALID_SIGNAL",
+        signal: {
+          protocol: APP.multiTabProtocol,
+          senderTabId: input.senderTabId,
+          senderSequence: input.senderSequence,
+          mutationType: input.mutationType,
+          revisions: revisions,
+          affected: v004NormalizeMultiTabAffected(input.affected),
+          sentAt: typeof input.sentAt === "string" ? input.sentAt.slice(0, 64) : null
+        }
+      };
+    }
+
+    function v004ShouldRefreshFromDurable(localRevisions, durableRevisions, forceRefresh) {
+      if (forceRefresh === true) { return true; }
+      var regressed = V004_MULTI_TAB_REVISION_KEYS.some(function (key) {
+        return durableRevisions[key] < localRevisions[key];
+      });
+      if (regressed) { return false; }
+      return V004_MULTI_TAB_REVISION_KEYS.some(function (key) {
+        return durableRevisions[key] > localRevisions[key];
+      });
+    }
+
+    function v004ClosePendingOperationsForExternalChange() {
+      if (state.pendingCraftCompletion) {
+        state.pendingCraftCompletion = null;
+        var completionDialog = document.getElementById("craftCompletionDialog");
+        if (completionDialog && completionDialog.open) { completionDialog.close(); }
+        document.body.dataset.craftCompletionState = "STALE_EXTERNAL_CHANGE";
+      }
+      if (state.pendingCraftUndo) {
+        state.pendingCraftUndo = null;
+        var undoDialog = document.getElementById("craftUndoDialog");
+        if (undoDialog && undoDialog.open) { undoDialog.close(); }
+        document.body.dataset.craftUndoState = "STALE_EXTERNAL_CHANGE";
+      }
+    }
+
+    async function v004RefreshUserDataFromDurableSignal(options) {
+      var settings = options || {};
+      if (!state.dbReady) { return { status: "DB_NOT_READY" }; }
+      var localRevisions = v004MultiTabRevisionSnapshot(state.userMeta);
+      var durableMeta = await userDataRepository.loadUserMeta();
+      var durableRevisions = v004MultiTabRevisionSnapshot(durableMeta);
+      if (!v004ShouldRefreshFromDurable(localRevisions, durableRevisions, settings.forceRefresh === true)) {
+        state.multiTab.lastRefreshResult = "NO_NEWER_DURABLE_STATE";
+        document.body.dataset.multiTabLastRefresh = state.multiTab.lastRefreshResult;
+        return { status: state.multiTab.lastRefreshResult, localRevisions: localRevisions, durableRevisions: durableRevisions };
+      }
+      var records = await Promise.all([
+        userDataRepository.loadMaterialBatches(),
+        userDataRepository.loadCraftingCards(),
+        userDataRepository.loadMiningLoadouts(),
+        userDataRepository.loadUserSettings(),
+        userDataRepository.loadCraftHistory()
+      ]);
+      state.materialBatches = records[0];
+      state.craftingCards = records[1];
+      state.miningLoadouts = records[2];
+      state.userSettings = records[3];
+      state.craftHistory = records[4];
+      syncV004RevisionState(durableMeta);
+      state.materialQualityPlans = materialQualityPlansFromUserSettings(state.userSettings);
+      state.materialQualityPools = materialQualityPoolsFromUserSettings(state.userSettings);
+      v004ClosePendingOperationsForExternalChange();
+      markReservationSnapshotsStale("MULTI_TAB_DURABLE_CHANGE");
+      state.allocationResult = null;
+      state.combinedMaterials = [];
+      state.multiTab.refreshCount += 1;
+      state.multiTab.staleTransitions += 1;
+      state.multiTab.lastRefreshResult = "DURABLE_STATE_REFRESHED";
+      updateKnownMaterials();
+      renderCraftingCards();
+      renderCraftHistory();
+      renderMaterialInventory();
+      renderCombinedMaterials();
+      renderMiningLoadoutControls();
+      document.body.dataset.userDataReady = "true";
+      document.body.dataset.materialBatchCount = String(state.materialBatches.length);
+      document.body.dataset.craftingCardCount = String(state.craftingCards.length);
+      document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
+      document.body.dataset.craftHistoryCount = String(state.craftHistory.length);
+      document.body.dataset.multiTabRefreshCount = String(state.multiTab.refreshCount);
+      document.body.dataset.multiTabLastRefresh = state.multiTab.lastRefreshResult;
+      setNotice("Az adatok egy másik megnyitott ablakban megváltoztak. Az allocation elavult. Futtasd az Újraszámítás / Reallocate műveletet.", "warning");
+      v004RecordMultiTabDiagnostic("MULTI_TAB_DURABLE_REFRESH", {
+        mutationTypes: settings.mutationTypes || [],
+        forceRefresh: settings.forceRefresh === true,
+        revisions: durableRevisions,
+        reservationStatus: state.reservationRunStatus
+      }, "INFO");
+      return { status: "DURABLE_STATE_REFRESHED", localRevisions: localRevisions, durableRevisions: durableRevisions };
+    }
+
+    async function v004DrainMultiTabRefreshQueue() {
+      v004MultiTabRuntime.timer = null;
+      if (v004MultiTabRuntime.refreshInFlight) {
+        v004MultiTabRuntime.refreshPending = true;
+        return;
+      }
+      var mutationTypes = Array.from(v004MultiTabRuntime.queuedMutationTypes);
+      var forceRefresh = v004MultiTabRuntime.forceRefresh;
+      v004MultiTabRuntime.queuedMutationTypes.clear();
+      v004MultiTabRuntime.forceRefresh = false;
+      if (!mutationTypes.length) { return; }
+      v004MultiTabRuntime.refreshInFlight = true;
+      try {
+        state.multiTab.lastMutationType = mutationTypes[mutationTypes.length - 1];
+        document.body.dataset.multiTabLastMutation = state.multiTab.lastMutationType;
+        await v004RefreshUserDataFromDurableSignal({ mutationTypes: mutationTypes, forceRefresh: forceRefresh });
+      } catch (error) {
+        state.multiTab.lastRefreshResult = "DURABLE_REFRESH_FAILED";
+        document.body.dataset.multiTabLastRefresh = state.multiTab.lastRefreshResult;
+        v004RecordMultiTabDiagnostic("MULTI_TAB_DURABLE_REFRESH_FAILED", { error: serializeError(error) }, "WARN");
+      } finally {
+        v004MultiTabRuntime.refreshInFlight = false;
+        if (v004MultiTabRuntime.refreshPending || v004MultiTabRuntime.queuedMutationTypes.size) {
+          v004MultiTabRuntime.refreshPending = false;
+          v004ScheduleMultiTabRefresh();
+        }
+      }
+    }
+
+    function v004ScheduleMultiTabRefresh() {
+      if (v004MultiTabRuntime.timer !== null) { return; }
+      v004MultiTabRuntime.timer = window.setTimeout(function () {
+        v004DrainMultiTabRefreshQueue().catch(function () {});
+      }, APP.multiTabDebounceMs);
+    }
+
+    function v004HandleMultiTabSignal(input) {
+      state.multiTab.received += 1;
+      var validation = v004ValidateMultiTabSignal(input, state.multiTab.tabInstanceId);
+      if (!validation.valid) {
+        state.multiTab.ignored += 1;
+        if (validation.code === "MALFORMED_SIGNAL" || validation.code === "UNSUPPORTED_PROTOCOL") {
+          v004RecordMultiTabDiagnostic(validation.code, null, "WARN");
+        }
+        return validation;
+      }
+      var signal = validation.signal;
+      var lastSequence = v004MultiTabRuntime.lastSenderSequence.get(signal.senderTabId) || 0;
+      if (signal.senderSequence <= lastSequence) {
+        state.multiTab.ignored += 1;
+        return { valid: false, code: "DUPLICATE_OR_OUT_OF_ORDER" };
+      }
+      v004MultiTabRuntime.lastSenderSequence.set(signal.senderTabId, signal.senderSequence);
+      v004MultiTabRuntime.queuedMutationTypes.add(signal.mutationType);
+      if (V004_MULTI_TAB_FORCE_REFRESH_TYPES.indexOf(signal.mutationType) !== -1) {
+        v004MultiTabRuntime.forceRefresh = true;
+      }
+      state.multiTab.accepted += 1;
+      v004ScheduleMultiTabRefresh();
+      return validation;
+    }
+
+    function v004OpenMultiTabSignalChannel() {
+      if (v004MultiTabRuntime.channel) { return state.multiTab.status; }
+      if (!state.multiTab.tabInstanceId) { state.multiTab.tabInstanceId = v004CreateTabInstanceId(); }
+      document.body.dataset.multiTabProtocol = APP.multiTabProtocol;
+      document.body.dataset.multiTabChannel = APP.multiTabChannelName;
+      document.body.dataset.multiTabTabId = state.multiTab.tabInstanceId;
+      if (typeof window.BroadcastChannel !== "function") {
+        state.multiTab.status = "MULTI_TAB_SIGNAL_UNAVAILABLE";
+        document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+        v004RecordMultiTabDiagnostic("MULTI_TAB_SIGNAL_UNAVAILABLE", { channel: APP.multiTabChannelName }, "WARN");
+        return state.multiTab.status;
+      }
+      try {
+        var channel = new window.BroadcastChannel(APP.multiTabChannelName);
+        var listener = function (event) { v004HandleMultiTabSignal(event && event.data); };
+        channel.addEventListener("message", listener);
+        v004MultiTabRuntime.channel = channel;
+        v004MultiTabRuntime.listener = listener;
+        state.multiTab.listenerRegistrations += 1;
+        state.multiTab.status = "READY";
+        document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+        document.body.dataset.multiTabListenerRegistrations = String(state.multiTab.listenerRegistrations);
+        v004RecordMultiTabDiagnostic("MULTI_TAB_CHANNEL_READY", { channel: APP.multiTabChannelName }, "INFO");
+        return state.multiTab.status;
+      } catch (error) {
+        state.multiTab.status = "MULTI_TAB_SIGNAL_UNAVAILABLE";
+        document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+        v004RecordMultiTabDiagnostic("MULTI_TAB_SIGNAL_UNAVAILABLE", { channel: APP.multiTabChannelName, error: serializeError(error) }, "WARN");
+        return state.multiTab.status;
+      }
+    }
+
+    function v004CloseMultiTabSignalChannel() {
+      if (v004MultiTabRuntime.timer !== null) {
+        window.clearTimeout(v004MultiTabRuntime.timer);
+        v004MultiTabRuntime.timer = null;
+      }
+      if (v004MultiTabRuntime.channel) {
+        try {
+          if (v004MultiTabRuntime.listener) { v004MultiTabRuntime.channel.removeEventListener("message", v004MultiTabRuntime.listener); }
+          v004MultiTabRuntime.channel.close();
+        } catch (error) {}
+      }
+      v004MultiTabRuntime.channel = null;
+      v004MultiTabRuntime.listener = null;
+      state.multiTab.status = "CLOSED";
+      document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+      return state.multiTab.status;
+    }
+
+    function v004SignalDurableMutation(mutationType, affected) {
+      if (V004_MULTI_TAB_MUTATION_TYPES.indexOf(mutationType) === -1) {
+        throw new Error("Ismeretlen V004 multi-tab mutation type: " + mutationType);
+      }
+      if (!v004MultiTabRuntime.channel || state.multiTab.status !== "READY") {
+        return { sent: false, status: state.multiTab.status };
+      }
+      var message = {
+        protocol: APP.multiTabProtocol,
+        senderTabId: state.multiTab.tabInstanceId,
+        senderSequence: v004MultiTabRuntime.sequence + 1,
+        mutationType: mutationType,
+        revisions: v004MultiTabRevisionSnapshot(state.userMeta),
+        affected: v004NormalizeMultiTabAffected(affected),
+        sentAt: nowIso()
+      };
+      try {
+        v004MultiTabRuntime.channel.postMessage(message);
+        v004MultiTabRuntime.sequence = message.senderSequence;
+        state.multiTab.sent += 1;
+        document.body.dataset.multiTabSignalsSent = String(state.multiTab.sent);
+        return { sent: true, message: message };
+      } catch (error) {
+        state.multiTab.status = "MULTI_TAB_SIGNAL_UNAVAILABLE";
+        document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+        v004RecordMultiTabDiagnostic("MULTI_TAB_SIGNAL_UNAVAILABLE", { error: serializeError(error) }, "WARN");
+        return { sent: false, status: state.multiTab.status };
+      }
+    }
+    /* V004_C007_MULTI_TAB_COHERENCE_END */
+
     function staleReservationEntry(previous, reason) {
       return {
         status: V004_RESERVATION_STATUS.STALE,
@@ -18982,6 +19329,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         CARD_MUTATION: "Kártya allocation-bemenet változott",
         CRAFT_LIST_MUTATION: "Prioritás vagy kártyalista változott",
         QUALITY_POLICY_MUTATION: "Quality beállítás változott",
+        MULTI_TAB_DURABLE_CHANGE: "Másik ablak durable adata változott – Reallocate szükséges",
         USER_DATA_IMPORT: "Import után explicit Reallocate szükséges",
         V003_MIGRATION: "Migráció után explicit Reallocate szükséges",
         CRAFT_COMPLETE_REQUIRES_REALLOCATION: "Craft Complete után explicit Reallocate szükséges",
@@ -19162,6 +19510,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function commitPreparedV004CraftCompletion(request, options) {
       var result = await userDataRepository.completeCraft(request, options);
       applyV004CraftCompletionResult(result);
+      v004SignalDurableMutation("CRAFT_COMPLETED", {
+        cardIds: [result.historyEvent.craftingCardId],
+        historyIds: [result.historyEvent.craftTransactionId],
+        materialIds: result.historyEvent.consumedDeltas.map(function (delta) { return delta.canonicalMaterialUuid; })
+      });
       return result;
     }
 
@@ -19275,6 +19628,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     async function commitPreparedV004CraftUndo(request, options) {
       var result = await userDataRepository.undoCraft(request, options);
       applyV004CraftUndoResult(result);
+      v004SignalDurableMutation("CRAFT_UNDONE", {
+        cardIds: [result.historyEvent.craftingCardId],
+        historyIds: [result.historyEvent.craftTransactionId],
+        materialIds: result.historyEvent.consumedDeltas.map(function (delta) { return delta.canonicalMaterialUuid; })
+      });
       return result;
     }
 
@@ -19880,6 +20238,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.userSettings = await userDataRepository.loadUserSettings();
         syncV004RevisionState(await userDataRepository.loadUserMeta());
         if (saveResult.changed) { markReservationSnapshotsStale("QUALITY_POLICY_MUTATION"); }
+        if (saveResult.changed) { v004SignalDurableMutation("ALLOCATION_STATE_CHANGED", { materialIds: [materialUuid] }); }
         recalculateAllocation("MATERIAL_QUALITY_PLAN_UPDATE");
         logger.finish("PASS", {
           materialUuid: materialUuid,
@@ -19912,6 +20271,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.userSettings = await userDataRepository.loadUserSettings();
         syncV004RevisionState(await userDataRepository.loadUserMeta());
         if (saveResult.changed) { markReservationSnapshotsStale("QUALITY_POLICY_MUTATION"); }
+        if (saveResult.changed) { v004SignalDurableMutation("ALLOCATION_STATE_CHANGED", { materialIds: [materialUuid] }); }
         recalculateAllocation("MATERIAL_QUALITY_POOL_UPDATE");
         logger.finish("PASS", {
           materialUuid: resolveMaterialQualityPoolKey(materialUuid, state.knownMaterials),
@@ -19933,6 +20293,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         state.materialBatches = saveResult.batches;
         syncV004RevisionState(await userDataRepository.loadUserMeta());
         if (saveResult.changed) { markReservationSnapshotsStale("INVENTORY_MUTATION"); }
+        if (saveResult.changed) {
+          v004SignalDurableMutation("INVENTORY_CHANGED", {
+            materialIds: saveResult.batches.map(function (batch) { return batch.materialUuid; })
+          });
+        }
         recalculateAllocation(processType);
         updateKnownMaterials();
         logger.finish("PASS", {
@@ -19954,6 +20319,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         syncV004RevisionState(await userDataRepository.loadUserMeta());
         if (saveResult.allocationChanged) {
           markReservationSnapshotsStale(saveResult.craftListChanged ? "CRAFT_LIST_MUTATION" : "CARD_MUTATION");
+        }
+        if (saveResult.changed) {
+          v004SignalDurableMutation(saveResult.craftListChanged ? "CRAFT_LIST_CHANGED" : "ALLOCATION_STATE_CHANGED", {
+            cardIds: saveResult.craftListChanged ? saveResult.cards.map(function (card) { return card.id; }) : saveResult.changedCardIds
+          });
         }
         recalculateAllocation(processType);
         await Promise.all([
@@ -20310,6 +20680,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         await restoreUserDataState();
         markReservationSnapshotsStale("V003_MIGRATION");
         renderCraftingCards();
+        v004SignalDurableMutation("MIGRATION_COMPLETED", {
+          cardIds: state.craftingCards.map(function (card) { return card.id; }),
+          materialIds: state.materialBatches.map(function (batch) { return batch.materialUuid; })
+        });
         migration.source = sourceAfter;
         migration.status = "SUCCESS";
         migration.errorCode = null;
@@ -20511,6 +20885,11 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         var actualFingerprint = await userDataRepository.fingerprint();
         var expectedFingerprint = fingerprintUserDataPayload(expected);
         assert(actualFingerprint === expectedFingerprint, "Az import utáni User Data fingerprint eltér a várt eredménytől.");
+        v004SignalDurableMutation("BACKUP_IMPORTED", {
+          cardIds: state.craftingCards.map(function (card) { return card.id; }),
+          historyIds: state.craftHistory.map(function (event) { return event.craftTransactionId; }),
+          materialIds: state.materialBatches.map(function (batch) { return batch.materialUuid; })
+        });
         state.backupState.lastImportAt = nowIso();
         state.backupState.lastStatus = "IMPORT_PASS";
         logger.event("INFO", "BACKUP_IMPORT_COMMITTED", "A User Data import tranzakció sikeresen commitolt.", {
@@ -23270,6 +23649,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           normalizedRecordCount: state.uexRefineryRecords.length,
           rankingField: "value_month"
         },
+        multiTab: {
+          protocol: APP.multiTabProtocol,
+          channel: APP.multiTabChannelName,
+          status: state.multiTab.status,
+          listenerRegistrations: state.multiTab.listenerRegistrations,
+          sent: state.multiTab.sent,
+          received: state.multiTab.received,
+          accepted: state.multiTab.accepted,
+          ignored: state.multiTab.ignored,
+          refreshCount: state.multiTab.refreshCount,
+          staleTransitions: state.multiTab.staleTransitions,
+          lastMutationType: state.multiTab.lastMutationType,
+          lastRefreshResult: state.multiTab.lastRefreshResult,
+          recentDiagnostics: m4Clone(state.multiTab.recentDiagnostics)
+        },
         backup: {
           format: M4_BACKUP_FORMAT,
           schemaVersion: M4_BACKUP_SCHEMA_VERSION,
@@ -23307,7 +23701,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       var snapshot = await buildDiagnosticStateSnapshot();
       container.replaceChildren();
-      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Materialnév", snapshot.materialNaming.resolvedCanonicalNames + " resolved · " + snapshot.materialNaming.hiddenInvalidRecords + " hidden"], ["Radar registry", snapshot.radarSignature.verified + " verified · " + snapshot.radarSignature.unmapped + " Nincs adat"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
+      [["User Data fingerprint", snapshot.userData.fingerprint], ["Aktív SC verzió", snapshot.activeScVersion || "Nincs"], ["Materialnév", snapshot.materialNaming.resolvedCanonicalNames + " resolved · " + snapshot.materialNaming.hiddenInvalidRecords + " hidden"], ["Radar registry", snapshot.radarSignature.verified + " verified · " + snapshot.radarSignature.unmapped + " Nincs adat"], ["UEX cache", snapshot.gameDataCache.activeUexRefineryDataset ? snapshot.gameDataCache.activeUexRefineryDataset.recordCount + " rekord" : "Nincs"], ["UEX mapping", snapshot.uexRefinery.mappingSummary.MATCHED + " / " + snapshot.uexRefinery.mappingSummary.total], ["Allocation", snapshot.allocation ? snapshot.allocation.summary.cardCount + " kártya" : "Nincs"], ["Combined Materials", snapshot.combinedMaterials.materialCount + " material"], ["Multi-tab", snapshot.multiTab.status + " · " + snapshot.multiTab.refreshCount + " refresh"], ["Backup schema", String(snapshot.backup.schemaVersion)], ["Warning / error", snapshot.diagnostics.warnings + " / " + snapshot.diagnostics.errors]].forEach(function (value) {
         var item = document.createElement("span");
         var label = document.createElement("small");
         var content = document.createElement("strong");
@@ -23444,6 +23838,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         await restoreUserDataState();
         markReservationSnapshotsStale("USER_DATA_IMPORT");
         renderCraftingCards();
+        v004OpenMultiTabSignalChannel();
         if (state.activeUexRefineryDataset) {
           await rebuildUexRefineryProjection("STARTUP_CACHE_RESTORE");
         } else {
@@ -23534,6 +23929,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     window.addEventListener("offline", function () {
       updateEnvironmentUi();
       setNotice("Offline mód: a mentett játékadatok maradnak aktívak.", "warning");
+    });
+
+    window.addEventListener("pagehide", function () {
+      v004CloseMultiTabSignalChannel();
     });
 
     window.onerror = function (message, source, line, column, error) {
@@ -24094,6 +24493,25 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         evaluateEligibility: v004EvaluateCraftUndoEligibility,
         buildMutation: v004BuildCraftUndoMutation
       }),
+      v004MultiTab: Object.freeze({
+        protocol: APP.multiTabProtocol,
+        channelName: APP.multiTabChannelName,
+        mutationTypes: V004_MULTI_TAB_MUTATION_TYPES,
+        forceRefreshTypes: V004_MULTI_TAB_FORCE_REFRESH_TYPES,
+        revisionKeys: V004_MULTI_TAB_REVISION_KEYS,
+        validateSignal: v004ValidateMultiTabSignal,
+        shouldRefresh: v004ShouldRefreshFromDurable,
+        revisionSnapshot: v004MultiTabRevisionSnapshot,
+        handleSignal: v004HandleMultiTabSignal,
+        open: v004OpenMultiTabSignalChannel,
+        close: v004CloseMultiTabSignalChannel,
+        signalDurableMutation: v004SignalDurableMutation,
+        refreshFromDurable: v004RefreshUserDataFromDurableSignal
+      }),
+      persistMaterialBatches: persistMaterialBatches,
+      persistCraftingCards: persistCraftingCards,
+      persistMaterialQualityPlan: persistMaterialQualityPlan,
+      persistMaterialQualityPoolValue: persistMaterialQualityPoolValue,
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,
       resolveMaterialName: resolveMaterialName,

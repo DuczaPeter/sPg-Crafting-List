@@ -2,6 +2,16 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260910-172400-000000-WORKLOG.md`.
 
+## 2026-09-10 — V004-C007 Multi-Tab Coherence
+
+- Resume: `develop/V004 @ da8515a...`; a megszakadt dirty C007 diff megőrizve; input app SHA `ecbb85c...`; `$credit-efficient-project-runner`.
+- `BroadcastChannel` csak validált, kisméretű UI-signal; durable authority és receiver-refresh kizárólag IndexedDB. Malformed/self/duplicate/out-of-order ignorálás, debounce és egyszeres listener PASS.
+- Kétfüles Complete/Undo, material/Card módosítások, History és stale-reservation UI-frissítés PASS; automatikus Reallocate nincs.
+- Konkurens Complete egy commit, konkurens Undo egy restore; message-loss és unavailable fallback fail-closed; inventory conservation és Craft/Undo material loss 0 unit.
+- Backup import és read-only V003 migráció dedikált force refresh, reload lifecycle, responsive és automated direct `file://` PASS.
+- C004.4–C006.1 current-byte regresszió, VM/Chrome/single-file/git diff/protected V003 bounded kapu PASS; full regression/push nincs.
+- Riport: `docs/V004_C007_MULTI_TAB_COHERENCE_REPORT.md`; rollback a helyi C007 commit normál revertje.
+
 ## 2026-09-10 — V004-C006.1 Undo Backup Round-Trip
 
 - Resume: `develop/V004 @ 4bb3303...`, clean input, app SHA `ad0457c...`; `$credit-efficient-project-runner`, C007 nem indult.

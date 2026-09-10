@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C007 Multi-Tab Coherence
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-10`, a megszakadt dirty C007 biztonságos folytatása, célzott multi-tab implementáció, current-byte regresszió és helyi checkpoint során.
+- Mire segített: a meglévő diff megőrzésére, szűk IndexedDB/BroadcastChannel source-auditra, a teljes regresszió kihagyására és a protected V003 baseline védelmére.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file multi-tab signal/controller, C007 tools/evidence/report és projektmeta; skillfájl, V003 release/tag és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C006.1 Undo Backup Round-Trip
 
 - Skill neve: `credit-efficient-project-runner`.

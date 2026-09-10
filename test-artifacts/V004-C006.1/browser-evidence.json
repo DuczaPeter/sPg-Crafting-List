@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C006.1",
   "status": "PASS_TARGETED_CHROME",
-  "applicationSha256": "ecbb85cee6fc0ae92c0b2338e392806f7fac72befb430e2bbb40f3ab717f71b5",
+  "applicationSha256": "9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365",
   "browser": "Google Chrome",
   "backupSchemaVersion": 3,
   "partialLifoRoundTrip": {
@@ -26,7 +26,7 @@
     "unknownHistoryFieldPreserved": true,
     "historyDom": {
       "groupCount": 1,
-      "cardId": "card-a3c1812a-fbdd-4baa-8b47-2dfe43a80b98",
+      "cardId": "card-b5357de1-e0eb-4537-a581-08bf5376d4a4",
       "sequences": [
         2,
         1

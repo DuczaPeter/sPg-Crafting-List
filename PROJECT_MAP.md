@@ -23,6 +23,8 @@
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
 - Baseline validalas: `tools/validate-baseline.ps1`.
+- V004-C007 Multi-tab coherence kapu: `tools/validate-v004-c007.ps1`; C004.4–C006.1 current-byte regresszióval, kétfüles Complete/Undo/concurrency/lost-message/import/migration/fallback/direct-file és protected V003 ellenőrzéssel.
+- V004-C007 céltesztek: `tools/run-v004-c007-tests.mjs` és `tools/run-v004-c007-browser-tests.mjs`; evidence: `test-artifacts/V004-C007/`; riport: `docs/V004_C007_MULTI_TAB_COHERENCE_REPORT.md`.
 - V004-C006.1 Undo backup round-trip kapu: `tools/validate-v004-c0061.ps1`; C002 V003 migration + C006 Undo regresszióval, exact schema-3 pristine `REPLACE`, legacy fail-closed, Chrome/direct-file és protected V003 ellenőrzéssel.
 - V004-C006.1 céltesztek: `tools/run-v004-c0061-tests.mjs` és `tools/run-v004-c0061-browser-tests.mjs`; evidence: `test-artifacts/V004-C006.1/`; riport: `docs/V004_C006_1_UNDO_BACKUP_ROUNDTRIP_REPORT.md`.
 - V004-C006 Craft History Undo kapu: `tools/validate-v004-c006.ps1`; current-byte C004.4/C005 regresszióval, C006 model/Chrome partial/full/LIFO/blocker/rollback/reload/responsive/direct-file és protected V003 ellenőrzéssel.

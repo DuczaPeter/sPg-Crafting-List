@@ -1,0 +1,197 @@
+{
+  "cycle": "V004-C007",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365",
+  "browser": "Google Chrome",
+  "architecture": {
+    "broadcastChannel": "UI_SIGNAL_ONLY",
+    "indexedDb": "DURABLE_AUTHORITY"
+  },
+  "protocol": {
+    "marker": "V004_MULTI_TAB_SIGNAL_1",
+    "channelName": "spg-crafting-list-v004",
+    "senderTabIdsDistinct": true,
+    "messageAppliesPayloadAsState": false,
+    "debounceAndDurableReread": true,
+    "malformedUnsupportedSelfDuplicateOutOfOrder": "PASS_MODEL"
+  },
+  "twoTabCraftComplete": {
+    "status": "PASS",
+    "cardQuantity": 16,
+    "historyStatus": "COMPLETED",
+    "inventoryExact": true,
+    "reservationStatus": "STALE",
+    "automaticReallocate": false,
+    "doubleConsumptionUnits": 0
+  },
+  "twoTabUndo": {
+    "status": "PASS",
+    "historyStatus": "UNDONE",
+    "undoButtonEnabled": false,
+    "secondUndo": "ALREADY_UNDONE",
+    "doubleRestoreUnits": 0,
+    "inventoryEqualsInitial": true
+  },
+  "messageLoss": {
+    "status": "PASS",
+    "channelDelivery": "BLOCKED_FOR_TEST",
+    "receiverOldRuntimeQuantity": 21,
+    "oldCompletion": "STALE_RESERVATION",
+    "durableHistoryCount": 1,
+    "doubleConsumptionUnits": 0
+  },
+  "concurrency": {
+    "complete": "SINGLE_COMMIT_PASS",
+    "completeResults": [
+      {
+        "status": "COMMITTED",
+        "transactionId": "craft-c007-concurrent-a"
+      },
+      {
+        "status": "BLOCKED",
+        "code": "STALE_RESERVATION",
+        "detail": "INVENTORY_REVISION_MISMATCH"
+      }
+    ],
+    "undo": "SINGLE_RESTORE_PASS",
+    "undoResults": [
+      {
+        "status": "BLOCKED",
+        "code": "ALREADY_UNDONE"
+      },
+      {
+        "status": "RESTORED",
+        "transactionId": "undo-c007-concurrent-b"
+      }
+    ],
+    "negativeInventory": false,
+    "duplicateHistoryCompletion": false,
+    "materialLossUnits": 0
+  },
+  "inventorySync": {
+    "status": "PASS",
+    "mutations": [
+      {
+        "type": "ADD",
+        "quantityUnits": 100,
+        "reservation": "STALE"
+      },
+      {
+        "type": "EDIT",
+        "quantityUnits": 150,
+        "reservation": "STALE"
+      },
+      {
+        "type": "DELETE",
+        "present": false,
+        "reservation": "STALE"
+      }
+    ],
+    "automaticReallocate": false
+  },
+  "cardSync": {
+    "status": "PASS",
+    "mutations": [
+      {
+        "type": "ADD",
+        "cardCount": 2,
+        "reservation": "STALE"
+      },
+      {
+        "type": "REORDER",
+        "firstCardId": "card-63de46cb-dfdb-4662-ae84-1749efaee85a",
+        "reservation": "STALE"
+      },
+      {
+        "type": "QUANTITY",
+        "quantity": 20,
+        "reservation": "STALE"
+      },
+      {
+        "type": "SLOT_QUALITY",
+        "targetQuality": 850,
+        "reservation": "STALE"
+      },
+      {
+        "type": "QUALITY_POOL",
+        "minimumQ": 500,
+        "reservation": "STALE"
+      },
+      {
+        "type": "DELETE",
+        "cardCount": 1,
+        "reservation": "STALE"
+      }
+    ],
+    "automaticReallocate": false
+  },
+  "fullCompletionListGuard": {
+    "status": "PASS",
+    "cardRemovalRefreshed": true,
+    "postCompletionListMutation": true,
+    "undoBlocker": "UNDO_CRAFT_LIST_REVISION_MISMATCH",
+    "broadcastBypass": false
+  },
+  "backupImport": {
+    "status": "PASS",
+    "schemaVersion": 3,
+    "dedicatedSignal": "BACKUP_IMPORTED",
+    "equalRevisionForcedRefresh": true,
+    "exactZeroRevisionsPreserved": true,
+    "cardCountAfterRefresh": 1,
+    "reservationStatus": "STALE",
+    "automaticReallocate": false,
+    "sessionFieldsInBackup": 0
+  },
+  "migration": {
+    "status": "PASS",
+    "dedicatedSignal": "MIGRATION_COMPLETED",
+    "sourceAccess": "READ_ONLY",
+    "sourceUnchanged": true,
+    "targetCardCount": 1,
+    "targetHistoryCount": 0,
+    "reservationStatus": "STALE"
+  },
+  "unavailableFallback": {
+    "status": "PASS",
+    "diagnostic": "MULTI_TAB_SIGNAL_UNAVAILABLE",
+    "appOperational": true,
+    "staleCompletion": "STALE_RESERVATION",
+    "durableHistoryCount": 1,
+    "doubleConsumptionUnits": 0
+  },
+  "lifecycle": {
+    "status": "PASS",
+    "tabIdChangedOnReload": true,
+    "listenerRegistrationsAfterReload": 1,
+    "repeatedOpenListenerRegistrations": 1,
+    "historyStatusAfterReload": "UNDONE",
+    "reservationAfterReload": "STALE"
+  },
+  "directFile": {
+    "status": "PASS_AUTOMATED",
+    "protocol": "file:",
+    "version": "V004-dev",
+    "broadcastStatus": [
+      "READY",
+      "READY"
+    ],
+    "sameFileMultiTabSignal": "PASS",
+    "durableAuthority": "PASS",
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "overflow": 0
+  },
+  "responsive": {
+    "status": "PASS_NO_HORIZONTAL_OVERFLOW",
+    "desktop": {
+      "overflow": 0,
+      "noticeOverflow": 0
+    },
+    "mobile": {
+      "overflow": 0,
+      "noticeOverflow": 0
+    }
+  },
+  "consoleErrors": []
+}
