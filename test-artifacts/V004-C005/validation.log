@@ -1,0 +1,32 @@
+V004-C005 Craft History UI validation
+baseline-static=PASS
+EMBEDDED_APPLICATION_CSS_PASS e03ddfa3c6857e5e3f406cda8899286c1352a4894ed5b0f0fbd70796435eecaf 129490 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+c0044-completion-model-regression=PASS
+V004_C0044_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004.4\model-evidence.json
+c0044-completion-chrome-regression=PASS
+V004_C0044_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C004.4\browser-evidence.json
+c005-history-model=PASS
+V004_C005_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C005\model-evidence.json
+c005-history-chrome=PASS
+V004_C005_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C005\browser-evidence.json
+git-diff-check=PASS
+warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'PROJECT_MAP.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'STATUS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TASKS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'TEST_COMMANDS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'USED_SKILLS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'WORKLOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'sPg Crafting List.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004.4/browser-evidence.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test-artifacts/V004-C004.4/model-evidence.json', LF will be replaced by CRLF the next time Git touches it
+result=PASS_CRAFT_HISTORY_UI
+applicationSha256=fd37d3a951e95266a15e8807fd09d4dc477351897a60060b59375062f65b3569
+presentationDurableWrites=0
+v003ArtifactSha256=87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8
+fullRegression=NOT_RUN_BY_SCOPE

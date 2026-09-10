@@ -250,3 +250,12 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - ITEM requirement csak véges, pozitív safe integer lehet. Fractional, nem véges, nulla, negatív vagy unsafe ITEM érték blokkolt.
 - Ez a döntés a C004.2 negyedik tizedes utáni automatikus tiltását és a C004.3 közvetlen bináris `source * 10000` exactness feltételét felülírja. A craft-run szemantika, az unproven output-cardinalitás, a legacy explicit confirmation és a stale-reservation szabály változatlan.
 - A Card, reservation snapshot és History reservation-evidence ugyanazt a canonical decimális, normalizált szöveg-, unit-, státusz- és rule-evidence-et köti; régi C004.3 Card csak egyező source és unit esetén emelhető automatikusan exact normalization evidence-re.
+
+## 2026-09-10 - V004-C005 History megjelenítési truth és sorrend
+
+- History group identity kizárólag az eseményben eltárolt eredeti `craftingCardId`. Partial/full eventek egy groupban maradnak az aktív Card törlése után is.
+- Group és event sorrend elsődlegesen `historySequence DESC`; sequence nélküli legacy eseményhez timestamp és stabil, locale-független ID fallback használható. Aktuális locale-rendezés nem történelmi order truth.
+- A History renderer kizárólag az eltárolt event evidence-et fogyasztja. Current Card, current Inventory, live Wiki/API recept és mai blueprint nem írhatja át a múltat; a C004.4 normalizálás nem futhat újra consumed deltán.
+- Az exact truth a stored integer `consumedUnits`; minden batch Qualityje, ID-ja, canonical/source UUID-ja és provenance-e külön auditálható sor marad.
+- Aktív lezárt craft-run total csak bizonyított `COMPLETED + CRAFT_RUN_COUNT` eventből számolható; `UNDONE` kizárt, unknown/legacy bizonytalanság fail-closed. C005 csak olvas/megjelenít, History statust nem módosít.
+- History tab és group/event expand presentation-only: durable User Data write, revision, allocation és reservation mutation tilos. History delete/archive/retention és Undo/Redo C005-ben nincs.

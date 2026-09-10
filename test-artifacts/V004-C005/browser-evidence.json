@@ -1,0 +1,130 @@
+{
+  "cycle": "V004-C005",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "fd37d3a951e95266a15e8807fd09d4dc477351897a60060b59375062f65b3569",
+  "browser": "Google Chrome",
+  "production": {
+    "status": "PASS_PARTIAL_AND_FULL",
+    "blueprintUuid": "280f47b7-8434-410c-b854-380768fdccec",
+    "outputName": "Omnisky III Cannon",
+    "gameVersion": "4.10.0-LIVE.12519617",
+    "craftingCardId": "card-7f346ec7-6183-456b-ad32-8f708f326812",
+    "partial": {
+      "completedCraftRuns": 5,
+      "remainingCraftRuns": 16,
+      "consumedUnits": [
+        18000,
+        35,
+        35
+      ]
+    },
+    "full": {
+      "completedCraftRuns": 16,
+      "activeCards": 0,
+      "finalBatchUnits": [
+        1,
+        1,
+        1
+      ]
+    },
+    "history": {
+      "groups": 1,
+      "events": 2,
+      "newestFirst": [
+        2,
+        1
+      ],
+      "activeCompletedCraftRuns": 21
+    },
+    "materialLossUnits": 0
+  },
+  "fixtures": {
+    "status": "PASS",
+    "groupOrder": [
+      "card-a",
+      "card-b",
+      "legacy-missing"
+    ],
+    "cardAEventOrder": [
+      4,
+      2,
+      1
+    ],
+    "cardAStatuses": [
+      "COMPLETED",
+      "UNDONE",
+      "COMPLETED"
+    ],
+    "activeTotals": [
+      "6",
+      "3",
+      "unproven"
+    ],
+    "legacy": "FAIL_CLOSED_DISPLAY",
+    "unknownStatusVisible": true,
+    "reloadStable": true
+  },
+  "presentationOnly": {
+    "status": "PASS_ZERO_WRITES",
+    "durableWrites": 0,
+    "revisionChanges": 0,
+    "allocationChanges": 0,
+    "reservationChanges": 0,
+    "activeCardQuantityAfterHistory": 16,
+    "keyboardExpandCollapse": "PASS"
+  },
+  "layout": {
+    "desktop": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "documentClientWidth": 1920,
+      "documentScrollWidth": 1920,
+      "bodyClientWidth": 1920,
+      "bodyScrollWidth": 1920,
+      "historyListWidth": 1440,
+      "deltaOverflow": false
+    },
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentClientWidth": 390,
+      "documentScrollWidth": 390,
+      "bodyClientWidth": 390,
+      "bodyScrollWidth": 390,
+      "historyListWidth": 330,
+      "deltaOverflow": false
+    },
+    "status": "PASS_NO_HORIZONTAL_OVERFLOW"
+  },
+  "reload": {
+    "production": {
+      "status": "PASS",
+      "groups": 1,
+      "events": 2,
+      "newestFirst": [
+        2,
+        1
+      ]
+    },
+    "fixtures": {
+      "status": "PASS",
+      "orderAndStatusesStable": true
+    }
+  },
+  "fileGate": {
+    "status": "PASS_AUTOMATED",
+    "version": "V004-dev",
+    "runtimeFileCount": 1,
+    "localRuntimeSidecars": 0,
+    "view": "HISTORY",
+    "emptyOrHistoryVisible": true,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "consoleErrors": []
+  },
+  "consoleErrors": []
+}

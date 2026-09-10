@@ -2,6 +2,18 @@
 
 ## Aktualis
 
+### V004-C005 Craft History UI
+
+- [x] C004.4 checkpoint, clean `develop/V004`, input application SHA és meglévő History schema/indexek ellenőrizve.
+- [x] Crafting List `Aktív Craftok | Craft History` presentation-only tab, default Active és sidebar nélkül elkészült.
+- [x] Exact `craftingCardId` grouping; `historySequence DESC`, legacy timestamp/stabil fallback; full completion után is megmaradó group.
+- [x] `Kész`/`Visszavonva`/unknown fail-safe status, active COMPLETED craft-run total és markerless legacy fail-closed megjelenítés elkészült.
+- [x] Expanded event kizárólag stored History evidence-ből mutat identityt, timestampeket, hash/revisionöket és külön exact material/Q/batch/unit/provenance sorokat.
+- [x] Production partial/full, két Card group, COMPLETED/UNDONE/unknown/legacy, reload, keyboard, 1920×1080 és 390×844 overflow 0 PASS.
+- [x] History nézet/expand műveletsor durable write 0; revision/allocation/reservation változás 0; History delete és Undo/Redo nincs.
+- [x] C004.4 Craft Complete regresszió, automated direct `file://`, single-file és protected V003 bounded validator PASS; full regression/push nincs.
+- [ ] C006 csak új, explicit feladatban indulhat; C005 checkpoint után itt megállunk.
+
 ### V004-C004.4 Deterministic 4-Decimal SCU Normalization
 
 - [x] A megszakadt dirty C004.4 állapot visszaállítás nélkül auditálva; branch/HEAD/staged scope és meglévő production evidence ellenőrizve.

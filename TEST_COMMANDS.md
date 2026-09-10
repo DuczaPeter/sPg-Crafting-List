@@ -979,3 +979,18 @@ node .\tools\run-v004-c0044-browser-tests.mjs --playwright-module="<workspace Pl
 ```
 
 A validator az aktuális HTML-bájtokra futtatja a baseline static és C004 atomikus model-regressziót, a teljes production SCU/ITEM auditot és a valódi Google Chrome-gate-et. Kötelező a 4 DP decimal HALF-UP boundary, LumaCore/Steadfast readiness, Omnisky 21 → 5 → 16 → stale/Reallocate → full exact conservation, `ROUNDS_TO_ZERO` nulla írás, legacy/schema-3 kompatibilitás, automated direct `file://`, 1 runtime HTML, 0 sidecar és protected V003 integritás. Teljes release-regresszió, kézi file gate, push és C005 nincs a scope-ban.
+
+V004-C005 Craft History UI kapu:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\validate-v004-c005.ps1" -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Külön céltesztek:
+
+```powershell
+node .\tools\run-v004-c005-tests.mjs
+node .\tools\run-v004-c005-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A validator az aktuális HTML-bájtokra futtatja a baseline static kaput, a C004.4 targeted model/production Chrome completion-regressziót és a C005 model/Chrome kaput. Kötelező az exact `craftingCardId` grouping, sequence-first deterministic group/event sorrend, future-safe status/legacy renderer, stored exact material/Q/batch delta truth, production partial/full History, presentation durable write 0, reload, keyboard, 1920×1080 és 390×844 horizontal overflow 0, automated direct `file://`, 1 runtime HTML, 0 sidecar, `git diff --check` és protected V003 integritás. Teljes production input audit, teljes release-regresszió, kézi file gate, History delete, Undo/Redo, push és C006 nincs a scope-ban.

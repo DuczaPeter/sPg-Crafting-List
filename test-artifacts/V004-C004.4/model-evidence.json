@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C004.4",
   "status": "PASS_TARGETED_MODEL",
-  "applicationSha256": "b2b18b94196783984b2164084d184852eea79f2e686fa9b5c6e3ccaf01cdc706",
+  "applicationSha256": "fd37d3a951e95266a15e8807fd09d4dc477351897a60060b59375062f65b3569",
   "normalization": {
     "scuRule": "SCU_4DP_HALF_UP_V1",
     "itemRule": "ITEM_POSITIVE_SAFE_INTEGER_V1",

@@ -5487,6 +5487,213 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
   margin: 0 0 12px;
 }
 
+.spg-c005-history-tabs {
+  display: inline-flex;
+  gap: 4px;
+  max-width: 100%;
+  margin: 8px 0 12px;
+  padding: 4px;
+  border: 1px solid rgba(156, 236, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(2, 18, 29, 0.72);
+}
+
+.spg-c005-history-tabs button {
+  min-height: 34px;
+  padding: 5px 12px;
+  border-color: transparent;
+  color: var(--muted);
+  background: transparent;
+}
+
+.spg-c005-history-tabs button[aria-selected="true"] {
+  border-color: rgba(24, 218, 255, 0.58);
+  color: #e8fbff;
+  background: rgba(24, 218, 255, 0.16);
+  box-shadow: inset 0 -2px 0 #18daff;
+}
+
+.spg-c005-crafting-view,
+.spg-c005-history-list,
+.spg-c005-history-group,
+.spg-c005-history-event,
+.spg-c005-history-event-body,
+.spg-c005-history-delta-list {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.spg-c005-history-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.spg-c005-history-heading h3,
+.spg-c005-history-heading p {
+  margin: 0;
+}
+
+.spg-c005-history-heading p {
+  margin-top: 4px;
+}
+
+.spg-c005-history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.spg-c005-history-group,
+.spg-c005-history-event {
+  overflow: hidden;
+  border: 1px solid rgba(156, 236, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(3, 12, 20, 0.56);
+}
+
+.spg-c005-history-group > summary,
+.spg-c005-history-event > summary {
+  display: grid;
+  min-width: 0;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.spg-c005-history-group > summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  padding: 12px;
+  background: rgba(5, 28, 43, 0.76);
+}
+
+.spg-c005-history-group-title,
+.spg-c005-history-event-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 800;
+}
+
+.spg-c005-history-group-meta,
+.spg-c005-history-group-identity,
+.spg-c005-history-event-meta {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.spg-c005-history-group-identity {
+  grid-column: 1 / -1;
+}
+
+.spg-c005-history-events {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.spg-c005-history-event > summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+}
+
+.spg-c005-history-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid rgba(156, 236, 255, 0.3);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.spg-c005-history-status[data-status="COMPLETED"] {
+  border-color: rgba(77, 218, 154, 0.55);
+  color: #9ff5c8;
+}
+
+.spg-c005-history-status[data-status="UNDONE"],
+.spg-c005-history-status[data-status="UNKNOWN"] {
+  border-color: rgba(255, 166, 82, 0.55);
+  color: #ffd09c;
+}
+
+.spg-c005-history-event-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 10px 12px;
+  border-top: 1px solid rgba(156, 236, 255, 0.12);
+}
+
+.spg-c005-history-legacy-warning {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid #ffa652;
+  color: #ffd09c;
+  background: rgba(62, 31, 8, 0.36);
+}
+
+.spg-c005-history-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+  margin: 10px 0 0;
+}
+
+.spg-c005-history-field {
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid rgba(156, 236, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(0, 9, 16, 0.42);
+}
+
+.spg-c005-history-field dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.spg-c005-history-field dd {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.spg-c005-history-delta-list {
+  display: grid;
+  gap: 6px;
+}
+
+.spg-c005-history-delta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid rgba(156, 236, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(0, 9, 16, 0.46);
+}
+
+.spg-c005-history-delta strong,
+.spg-c005-history-delta span,
+.spg-c005-history-delta small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.spg-c005-history-delta small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+}
+
 .spg-c012-list-summary {
   margin: 0;
   color: #9cecff;
@@ -5836,6 +6043,29 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
   .spg-c012-quality-allocation {
     text-align: left;
+  }
+
+  .spg-c005-history-heading,
+  .spg-c005-history-group > summary,
+  .spg-c005-history-event > summary,
+  .spg-c005-history-delta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .spg-c005-history-heading {
+    display: grid;
+  }
+
+  .spg-c005-history-group-identity {
+    grid-column: auto;
+  }
+
+  .spg-c005-history-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .spg-c005-history-delta small {
+    grid-column: auto;
   }
 }
 
@@ -6302,16 +6532,34 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           </div>
           <span id="craftingCardCount" class="spg-badge spg-badge-neutral">0 kártya</span>
         </div>
-        <div class="spg-m2-heading-actions">
-          <p class="spg-muted">A legfelső kártya foglal először. Az allocation csak terv, a készletet nem csökkenti véglegesen.</p>
-          <div class="spg-v004-reallocate-actions">
-            <button id="reallocateCraftingListButton" type="button" disabled>Újraszámítás / Reallocate</button>
-            <button id="addCurrentBlueprintButton" type="button" disabled>Aktuális blueprint hozzáadása (fallback)</button>
+        <div class="spg-c005-history-tabs" role="tablist" aria-label="Crafting List nézet">
+          <button id="activeCraftsTab" type="button" role="tab" aria-selected="true" aria-controls="craftingActiveView" tabindex="0">Aktív Craftok</button>
+          <button id="craftHistoryTab" type="button" role="tab" aria-selected="false" aria-controls="craftHistoryView" tabindex="-1">Craft History</button>
+        </div>
+        <div id="craftingActiveView" class="spg-c005-crafting-view" role="tabpanel" aria-labelledby="activeCraftsTab">
+          <div class="spg-m2-heading-actions">
+            <p class="spg-muted">A legfelső kártya foglal először. Az allocation csak terv, a készletet nem csökkenti véglegesen.</p>
+            <div class="spg-v004-reallocate-actions">
+              <button id="reallocateCraftingListButton" type="button" disabled>Újraszámítás / Reallocate</button>
+              <button id="addCurrentBlueprintButton" type="button" disabled>Aktuális blueprint hozzáadása (fallback)</button>
+            </div>
+          </div>
+          <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
+          <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
+            <p class="spg-muted">Nyiss meg egy blueprintet, majd add hozzá a Crafting Listhez.</p>
           </div>
         </div>
-        <div id="allocationSummary" class="spg-allocation-summary" aria-live="polite"></div>
-        <div id="craftingCardList" class="spg-crafting-card-list" aria-live="polite">
-          <p class="spg-muted">Nyiss meg egy blueprintet, majd add hozzá a Crafting Listhez.</p>
+        <div id="craftHistoryView" class="spg-c005-crafting-view" role="tabpanel" aria-labelledby="craftHistoryTab" hidden>
+          <div class="spg-c005-history-heading">
+            <div>
+              <h3>Craft History</h3>
+              <p class="spg-muted">Csak sikeresen megerősített Craft Complete után keletkezik History esemény. A történelmi exact unit evidence nem változik az aktuális recepttől vagy készlettől.</p>
+            </div>
+            <span id="craftHistoryGroupCount" class="spg-badge spg-badge-neutral">0 csoport</span>
+          </div>
+          <div id="craftHistoryList" class="spg-c005-history-list" aria-live="polite">
+            <p class="spg-muted">Még nincs rögzített Craft History.</p>
+          </div>
         </div>
       </section>
 
@@ -6777,6 +7025,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       reservationSnapshots: new Map(),
       reservationRunStatus: "ABSENT",
       pendingCraftCompletion: null,
+      craftingListView: "ACTIVE",
       allocationResult: null,
       combinedMaterials: [],
       materialQualityPools: {},
@@ -16587,6 +16836,151 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return normalized;
     }
 
+    /* V004_C005_CRAFT_HISTORY_UI_MODEL_START */
+    var V004_C005_CRAFTING_LIST_VIEW = Object.freeze({
+      ACTIVE: "ACTIVE",
+      HISTORY: "HISTORY"
+    });
+
+    function c005StableTextCompare(left, right) {
+      var a = String(left || "");
+      var b = String(right || "");
+      return a < b ? -1 : (a > b ? 1 : 0);
+    }
+
+    function c005HistorySequence(event) {
+      var value = Number(event && event.historySequence);
+      return Number.isSafeInteger(value) && value > 0 ? value : null;
+    }
+
+    function c005HistoryTimestampRaw(event) {
+      return event && (event.timestamp || event.completedAt || event.createdAt) || null;
+    }
+
+    function c005HistoryTimestampMillis(event) {
+      var raw = c005HistoryTimestampRaw(event);
+      if (!raw) { return null; }
+      var value = Date.parse(raw);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function c005HistoryEventStableId(event) {
+      return String(event && (event.craftTransactionId || event.id || c005HistoryTimestampRaw(event)) || "");
+    }
+
+    function c005CompareHistoryEventsNewest(left, right) {
+      var leftSequence = c005HistorySequence(left);
+      var rightSequence = c005HistorySequence(right);
+      if (leftSequence !== null && rightSequence !== null && leftSequence !== rightSequence) {
+        return rightSequence - leftSequence;
+      }
+      if (leftSequence !== null && rightSequence === null) { return -1; }
+      if (leftSequence === null && rightSequence !== null) { return 1; }
+      var leftTimestamp = c005HistoryTimestampMillis(left);
+      var rightTimestamp = c005HistoryTimestampMillis(right);
+      if (leftTimestamp !== null && rightTimestamp !== null && leftTimestamp !== rightTimestamp) {
+        return rightTimestamp - leftTimestamp;
+      }
+      if (leftTimestamp !== null && rightTimestamp === null) { return -1; }
+      if (leftTimestamp === null && rightTimestamp !== null) { return 1; }
+      return c005StableTextCompare(c005HistoryEventStableId(left), c005HistoryEventStableId(right));
+    }
+
+    function c005HistoryStatusPresentation(event) {
+      var status = String(event && event.status || "UNKNOWN");
+      if (status === "COMPLETED") { return { code: status, label: "Kész", tone: "success" }; }
+      if (status === "UNDONE") { return { code: status, label: "Visszavonva", tone: "warning" }; }
+      return { code: "UNKNOWN", label: "Ismeretlen állapot: " + status, tone: "warning" };
+    }
+
+    function c005HistoryItemName(event) {
+      var card = event && event.preCraftCardSnapshot || {};
+      return event && (event.itemName || event.outputName) || card.outputName || card.outputLabel || card.outputUuid || "Ismeretlen termék";
+    }
+
+    function c005HistoryIdentity(event) {
+      var source = event || {};
+      var card = source.preCraftCardSnapshot || {};
+      var blueprint = source.blueprintIdentity || {};
+      var output = source.outputIdentity || {};
+      return {
+        blueprintUuid: blueprint.uuid || card.blueprintUuid || null,
+        outputUuid: output.uuid || card.outputUuid || null,
+        itemIdentity: output.itemIdentity || card.outputItemUuid || card.outputUuid || null
+      };
+    }
+
+    function c005ActiveCompletedCraftRuns(events) {
+      var total = 0;
+      var sources = Array.isArray(events) ? events : [];
+      for (var index = 0; index < sources.length; index += 1) {
+        var event = sources[index];
+        if (!event || event.status === "UNDONE") { continue; }
+        if (event.status !== "COMPLETED" || event.quantitySemantics !== "CRAFT_RUN_COUNT") { return null; }
+        if (!Number.isSafeInteger(event.completedQuantity) || event.completedQuantity < 1 || !Number.isSafeInteger(total + event.completedQuantity)) {
+          return null;
+        }
+        total += event.completedQuantity;
+      }
+      return total;
+    }
+
+    function c005CompareHistoryGroupsNewest(left, right) {
+      if (left.latestSequence !== null && right.latestSequence !== null && left.latestSequence !== right.latestSequence) {
+        return right.latestSequence - left.latestSequence;
+      }
+      if (left.latestSequence !== null && right.latestSequence === null) { return -1; }
+      if (left.latestSequence === null && right.latestSequence !== null) { return 1; }
+      if (left.latestTimestampMillis !== null && right.latestTimestampMillis !== null && left.latestTimestampMillis !== right.latestTimestampMillis) {
+        return right.latestTimestampMillis - left.latestTimestampMillis;
+      }
+      if (left.latestTimestampMillis !== null && right.latestTimestampMillis === null) { return -1; }
+      if (left.latestTimestampMillis === null && right.latestTimestampMillis !== null) { return 1; }
+      return c005StableTextCompare(left.groupKey, right.groupKey);
+    }
+
+    function c005GroupCraftHistory(events) {
+      var groupsByCard = new Map();
+      (Array.isArray(events) ? events : []).forEach(function (event, inputIndex) {
+        var hasCardIdentity = Boolean(event && event.craftingCardId);
+        var groupKey = hasCardIdentity
+          ? String(event.craftingCardId)
+          : "__legacy_missing_card__:" + (c005HistoryEventStableId(event) || String(inputIndex).padStart(12, "0"));
+        if (!groupsByCard.has(groupKey)) { groupsByCard.set(groupKey, []); }
+        groupsByCard.get(groupKey).push(event);
+      });
+      return Array.from(groupsByCard.entries()).map(function (entry) {
+        var orderedEvents = entry[1].slice().sort(c005CompareHistoryEventsNewest);
+        var sequences = orderedEvents.map(c005HistorySequence).filter(function (value) { return value !== null; });
+        var timestamps = orderedEvents.map(c005HistoryTimestampMillis).filter(function (value) { return value !== null; });
+        var latestEvent = orderedEvents[0] || {};
+        return {
+          groupKey: entry[0],
+          craftingCardId: latestEvent.craftingCardId || null,
+          itemName: c005HistoryItemName(latestEvent),
+          identity: c005HistoryIdentity(latestEvent),
+          eventCount: orderedEvents.length,
+          activeCompletedCraftRuns: c005ActiveCompletedCraftRuns(orderedEvents),
+          latestSequence: sequences.length ? Math.max.apply(Math, sequences) : null,
+          latestTimestampMillis: timestamps.length ? Math.max.apply(Math, timestamps) : null,
+          latestTimestampRaw: c005HistoryTimestampRaw(latestEvent),
+          events: orderedEvents
+        };
+      }).sort(c005CompareHistoryGroupsNewest);
+    }
+
+    function c005FormatStoredConsumedUnits(unit, consumedUnits) {
+      if (!Number.isSafeInteger(consumedUnits) || consumedUnits < 0) { return "Érvénytelen stored delta"; }
+      if (unit === "SCU") {
+        var units = BigInt(consumedUnits);
+        var scuText = String(units / 10000n) + "." + String(units % 10000n).padStart(4, "0");
+        return consumedUnits + " unit · " + scuText + " SCU";
+      }
+      if (unit === "ITEM") { return consumedUnits + " db"; }
+      return consumedUnits + " unit · " + String(unit || "ismeretlen unit");
+    }
+    /* V004_C005_CRAFT_HISTORY_UI_MODEL_END */
+
     /* C0125A_INVENTORY_INDEPENDENCE_MODEL_START */
     function buildKnownMaterialOptions(miningCommodityIndex, materialBatches, craftingCards, normalizedBlueprint, materialIdentityRelations, activeScVersion) {
       var options = [];
@@ -18184,6 +18578,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       state.combinedMaterials = [];
       updateKnownMaterials();
       renderCraftingCards();
+      renderCraftHistory();
       renderMaterialInventory();
       renderCombinedMaterials();
       document.body.dataset.materialBatchCount = String(state.materialBatches.length);
@@ -18335,11 +18730,209 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
     }
 
+    function c005StoredValue(value) {
+      return value === null || value === undefined || value === "" ? "Nincs tárolva" : String(value);
+    }
+
+    function c005AppendHistoryField(container, label, value) {
+      var wrapper = document.createElement("div");
+      wrapper.className = "spg-c005-history-field";
+      var term = document.createElement("dt");
+      term.textContent = label;
+      var description = document.createElement("dd");
+      description.textContent = c005StoredValue(value);
+      wrapper.append(term, description);
+      container.append(wrapper);
+    }
+
+    function c005HistoryDeltaMaterialName(event, delta) {
+      var snapshot = event && event.preCraftCardSnapshot || {};
+      var requirement = (Array.isArray(snapshot.requirements) ? snapshot.requirements : []).find(function (entry) {
+        return entry && entry.id === delta.recipeSlotId;
+      });
+      var batchSnapshot = delta && delta.preCraftBatchSnapshot || {};
+      return requirement && requirement.materialName || batchSnapshot.materialName || delta.canonicalMaterialUuid || "Ismeretlen material";
+    }
+
+    function c005RenderHistoryEvent(event) {
+      var status = c005HistoryStatusPresentation(event);
+      var identity = c005HistoryIdentity(event);
+      var rawTimestamp = c005HistoryTimestampRaw(event);
+      var craftRunProven = event.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT &&
+        Number.isSafeInteger(event.completedQuantity) && event.completedQuantity > 0;
+      var details = document.createElement("details");
+      details.className = "spg-c005-history-event";
+      details.dataset.historyTransactionId = c005HistoryEventStableId(event);
+      details.dataset.historySequence = c005HistorySequence(event) === null ? "legacy" : String(c005HistorySequence(event));
+      details.dataset.historyStatus = status.code;
+      details.dataset.quantitySemantics = event.quantitySemantics || V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN;
+
+      var summary = document.createElement("summary");
+      var title = document.createElement("span");
+      title.className = "spg-c005-history-event-title";
+      title.textContent = craftRunProven
+        ? c005HistoryItemName(event) + " ×" + event.completedQuantity + " craft — " + formatTimestamp(rawTimestamp)
+        : c005HistoryItemName(event) + " — Legacy esemény – mennyiségi szemantika nem bizonyított";
+      var statusBadge = document.createElement("span");
+      statusBadge.className = "spg-c005-history-status";
+      statusBadge.dataset.status = status.code;
+      statusBadge.textContent = status.label;
+      summary.append(title, statusBadge);
+
+      var body = document.createElement("div");
+      body.className = "spg-c005-history-event-body";
+      if (!craftRunProven) {
+        var warning = document.createElement("p");
+        warning.className = "spg-c005-history-legacy-warning";
+        warning.textContent = "Legacy esemény – mennyiségi szemantika nem bizonyított. A tárolt exact batch/unit delták ettől még változtatás nélkül láthatók.";
+        body.append(warning);
+      }
+
+      var fields = document.createElement("dl");
+      fields.className = "spg-c005-history-fields";
+      var sourceVersion = event.reservationSnapshot && event.reservationSnapshot.activeStarCitizenDataVersion ||
+        event.activeStarCitizenDataVersion || event.preCraftCardSnapshot && event.preCraftCardSnapshot.gameVersion || null;
+      c005AppendHistoryField(fields, "Item / product", c005HistoryItemName(event));
+      c005AppendHistoryField(fields, "Blueprint UUID", identity.blueprintUuid);
+      c005AppendHistoryField(fields, "Output / item identity", identity.itemIdentity || identity.outputUuid);
+      c005AppendHistoryField(fields, "craftTransactionId", event.craftTransactionId);
+      c005AppendHistoryField(fields, "Lezárt craft-run", craftRunProven ? event.completedQuantity + " craft" : "Nem bizonyított");
+      c005AppendHistoryField(fields, "Remaining before", event.remainingBefore);
+      c005AppendHistoryField(fields, "Remaining after", event.remainingAfter);
+      c005AppendHistoryField(fields, "Raw History timestamp", rawTimestamp);
+      c005AppendHistoryField(fields, "Helyi időpont", formatTimestamp(rawTimestamp));
+      c005AppendHistoryField(fields, "Quantity semantics", event.quantitySemantics || V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN);
+      c005AppendHistoryField(fields, "SC / reservation source version", sourceVersion);
+      c005AppendHistoryField(fields, "Reservation snapshot hash", event.reservationSnapshotHash);
+      c005AppendHistoryField(fields, "History sequence", c005HistorySequence(event));
+      c005AppendHistoryField(fields, "Inventory revision", c005StoredValue(event.inventoryRevisionBefore) + " → " + c005StoredValue(event.inventoryRevisionAfter));
+      c005AppendHistoryField(fields, "Allocation revision", c005StoredValue(event.allocationRevisionBefore) + " / used " + c005StoredValue(event.allocationRevisionUsed) + " → " + c005StoredValue(event.allocationRevisionAfter));
+      c005AppendHistoryField(fields, "Card revision", c005StoredValue(event.cardRevisionBefore) + " → " + c005StoredValue(event.cardRevisionAfter));
+      c005AppendHistoryField(fields, "Craft List revision", c005StoredValue(event.craftListRevisionBefore) + " → " + c005StoredValue(event.craftListRevisionAfter));
+      body.append(fields);
+
+      var deltaHeading = document.createElement("h4");
+      deltaHeading.textContent = "Ténylegesen fogyasztott batch-ek";
+      body.append(deltaHeading);
+      var deltaList = document.createElement("div");
+      deltaList.className = "spg-c005-history-delta-list";
+      var deltas = (Array.isArray(event.consumedDeltas) ? event.consumedDeltas : []).slice().sort(function (left, right) {
+        var leftSequence = Number.isSafeInteger(left && left.sequence) ? left.sequence : Number.MAX_SAFE_INTEGER;
+        var rightSequence = Number.isSafeInteger(right && right.sequence) ? right.sequence : Number.MAX_SAFE_INTEGER;
+        return leftSequence - rightSequence || c005StableTextCompare(left && left.batchId, right && right.batchId);
+      });
+      if (!deltas.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Ehhez az eseményhez nincs tárolt exact batch delta.";
+        deltaList.append(empty);
+      }
+      deltas.forEach(function (delta) {
+        var row = document.createElement("article");
+        row.className = "spg-c005-history-delta";
+        row.dataset.batchId = delta.batchId || "";
+        row.dataset.canonicalMaterialUuid = delta.canonicalMaterialUuid || "";
+        row.dataset.quality = hasValidQuality(delta.quality) ? String(Number(delta.quality)) : "unknown";
+        row.dataset.unit = delta.unit || "";
+        row.dataset.consumedUnits = Number.isSafeInteger(delta.consumedUnits) ? String(delta.consumedUnits) : "invalid";
+        var material = document.createElement("strong");
+        material.textContent = c005HistoryDeltaMaterialName(event, delta);
+        var quantity = document.createElement("span");
+        quantity.textContent = c005FormatStoredConsumedUnits(delta.unit, delta.consumedUnits);
+        var evidence = document.createElement("small");
+        evidence.textContent = (hasValidQuality(delta.quality) ? "Q" + Number(delta.quality) : "Q?") +
+          " · batch " + c005StoredValue(delta.batchId) + " · canonical " + c005StoredValue(delta.canonicalMaterialUuid) +
+          (delta.sourceMaterialUuid ? " · source " + delta.sourceMaterialUuid : "");
+        row.append(material, quantity, evidence);
+        deltaList.append(row);
+      });
+      body.append(deltaList);
+      details.append(summary, body);
+      return details;
+    }
+
+    function renderCraftHistory() {
+      var normalizedEvents = state.craftHistory.map(normalizeStoredCraftHistoryEvent);
+      var groups = c005GroupCraftHistory(normalizedEvents);
+      var container = document.getElementById("craftHistoryList");
+      setBadge(
+        document.getElementById("craftHistoryGroupCount"),
+        groups.length ? "PASS" : "NEUTRAL",
+        groups.length + " csoport"
+      );
+      container.replaceChildren();
+      if (!groups.length) {
+        var empty = document.createElement("p");
+        empty.className = "spg-muted";
+        empty.textContent = "Még nincs rögzített Craft History. History csak sikeresen megerősített Craft Complete után keletkezik.";
+        container.append(empty);
+      }
+      groups.forEach(function (group) {
+        var details = document.createElement("details");
+        details.className = "spg-c005-history-group";
+        details.dataset.craftingCardId = group.craftingCardId || "legacy-missing";
+        details.dataset.groupKey = group.groupKey;
+        details.dataset.eventCount = String(group.eventCount);
+        details.dataset.latestSequence = group.latestSequence === null ? "legacy" : String(group.latestSequence);
+        details.dataset.activeCompletedCraftRuns = group.activeCompletedCraftRuns === null ? "unproven" : String(group.activeCompletedCraftRuns);
+        var summary = document.createElement("summary");
+        var title = document.createElement("span");
+        title.className = "spg-c005-history-group-title";
+        title.textContent = group.itemName;
+        var meta = document.createElement("span");
+        meta.className = "spg-c005-history-group-meta";
+        meta.textContent = group.eventCount + " esemény · " +
+          (group.activeCompletedCraftRuns === null ? "lezárt craft mennyiség nem bizonyított" : "×" + group.activeCompletedCraftRuns + " lezárt craft") +
+          " · Utolsó: " + formatTimestamp(group.latestTimestampRaw);
+        var identity = document.createElement("small");
+        identity.className = "spg-c005-history-group-identity";
+        identity.textContent = "Card: " + c005StoredValue(group.craftingCardId) + " · Blueprint: " +
+          c005StoredValue(group.identity.blueprintUuid) + " · Output: " + c005StoredValue(group.identity.itemIdentity || group.identity.outputUuid);
+        summary.append(title, meta, identity);
+        var eventList = document.createElement("div");
+        eventList.className = "spg-c005-history-events";
+        group.events.forEach(function (event) { eventList.append(c005RenderHistoryEvent(event)); });
+        details.append(summary, eventList);
+        container.append(details);
+      });
+      document.body.dataset.craftHistoryGroupCount = String(groups.length);
+      document.body.dataset.craftHistoryRenderedEventCount = String(normalizedEvents.length);
+      document.body.dataset.craftHistoryGroupOrder = groups.map(function (group) { return group.groupKey; }).join(",");
+      return groups;
+    }
+
+    function setCraftingListView(view) {
+      var next = view === V004_C005_CRAFTING_LIST_VIEW.HISTORY
+        ? V004_C005_CRAFTING_LIST_VIEW.HISTORY
+        : V004_C005_CRAFTING_LIST_VIEW.ACTIVE;
+      state.craftingListView = next;
+      var activeSelected = next === V004_C005_CRAFTING_LIST_VIEW.ACTIVE;
+      var activeTab = document.getElementById("activeCraftsTab");
+      var historyTab = document.getElementById("craftHistoryTab");
+      activeTab.setAttribute("aria-selected", activeSelected ? "true" : "false");
+      historyTab.setAttribute("aria-selected", activeSelected ? "false" : "true");
+      activeTab.tabIndex = activeSelected ? 0 : -1;
+      historyTab.tabIndex = activeSelected ? -1 : 0;
+      document.getElementById("craftingActiveView").hidden = !activeSelected;
+      document.getElementById("craftHistoryView").hidden = activeSelected;
+      document.body.dataset.craftingListView = next;
+      setBadge(
+        document.getElementById("craftingCardCount"),
+        activeSelected ? (state.craftingCards.length ? "PASS" : "NEUTRAL") : (state.craftHistory.length ? "PASS" : "NEUTRAL"),
+        activeSelected ? state.craftingCards.length + " kártya" : state.craftHistory.length + " esemény"
+      );
+      return next;
+    }
+
     function renderCraftingCards() {
       setBadge(
         document.getElementById("craftingCardCount"),
-        state.craftingCards.length ? "PASS" : "NEUTRAL",
-        state.craftingCards.length + " kártya"
+        state.craftingListView === V004_C005_CRAFTING_LIST_VIEW.HISTORY
+          ? (state.craftHistory.length ? "PASS" : "NEUTRAL")
+          : (state.craftingCards.length ? "PASS" : "NEUTRAL"),
+        state.craftingListView === V004_C005_CRAFTING_LIST_VIEW.HISTORY
+          ? state.craftHistory.length + " esemény"
+          : state.craftingCards.length + " kártya"
       );
       var resultByCard = new Map();
       if (state.allocationResult) {
@@ -18825,6 +19418,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       resetRuntimeReservationSnapshots("RELOAD_REQUIRES_REALLOCATION");
       state.userDataReady = true;
       recalculateAllocation("STARTUP_RESTORE");
+      renderCraftHistory();
       updateKnownMaterials();
       renderMiningLoadoutControls();
       document.body.dataset.userDataReady = "true";
@@ -22092,6 +22686,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function bootstrap() {
       document.body.dataset.appReady = "false";
+      setCraftingListView(V004_C005_CRAFTING_LIST_VIEW.ACTIVE);
       logger.start("Startup", {
         protocol: location.protocol,
         online: navigator.onLine
@@ -22296,6 +22891,21 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           renderMiningLoadoutControls();
         }
       });
+    });
+
+    document.getElementById("activeCraftsTab").addEventListener("click", function () {
+      setCraftingListView(V004_C005_CRAFTING_LIST_VIEW.ACTIVE);
+    });
+    document.getElementById("craftHistoryTab").addEventListener("click", function () {
+      setCraftingListView(V004_C005_CRAFTING_LIST_VIEW.HISTORY);
+    });
+    document.querySelector(".spg-c005-history-tabs").addEventListener("keydown", function (event) {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) { return; }
+      event.preventDefault();
+      var history = event.key === "ArrowRight" || event.key === "End";
+      var target = history ? document.getElementById("craftHistoryTab") : document.getElementById("activeCraftsTab");
+      setCraftingListView(history ? V004_C005_CRAFTING_LIST_VIEW.HISTORY : V004_C005_CRAFTING_LIST_VIEW.ACTIVE);
+      target.focus();
     });
 
     document.getElementById("materialDatabaseSearch").addEventListener("input", renderMaterialDatabaseResults);
@@ -22589,6 +23199,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       buildCraftingCard: buildCraftingCard,
       normalizeStoredCraftingCard: normalizeStoredCraftingCard,
       normalizeStoredCraftHistoryEvent: normalizeStoredCraftHistoryEvent,
+      groupCraftHistory: c005GroupCraftHistory,
+      compareCraftHistoryEventsNewest: c005CompareHistoryEventsNewest,
+      historyStatusPresentation: c005HistoryStatusPresentation,
+      formatStoredHistoryConsumedUnits: c005FormatStoredConsumedUnits,
+      renderCraftHistory: renderCraftHistory,
+      setCraftingListView: setCraftingListView,
+      craftingListViews: V004_C005_CRAFTING_LIST_VIEW,
       buildExactRequirementQuantityEvidence: v004BuildExactRequirementQuantityEvidence,
       normalizeScuQuantityToUnits: function (value) { return v004BuildExactRequirementQuantityEvidence(value, "SCU"); },
       normalizeBlueprintIndex: normalizeBlueprintIndex,

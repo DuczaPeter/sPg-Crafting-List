@@ -288,6 +288,15 @@
 - `test-artifacts/V004-C004.4/`: model-, production-, Chrome-, validation- és target-summary evidence.
 - `docs/V004_C004_4_SCU_NORMALIZATION_REPORT.md`: boundary, production eredmények, conservation, kompatibilitás, tesztek és rollback riport.
 
+## V004-C005 Craft History UI
+
+- `sPg Crafting List.html`: Crafting Listbe ágyazott Active/History tab, exact History grouping/sort/status és stored-evidence-only batch delta renderer.
+- `tools/run-v004-c005-tests.mjs`: determinisztikus grouping/order/status/legacy/truth-source és single-file modellkapu.
+- `tools/run-v004-c005-browser-tests.mjs`: production partial/full History, multi-group/status/legacy, zero-write, reload, keyboard, desktop/mobile overflow és direct `file://` Chrome-kapu.
+- `tools/validate-v004-c005.ps1`: bounded C005 current-byte validator, C004.4 completion-regresszió és V001/V002/V003 védelem.
+- `test-artifacts/V004-C005/`: model-, Chrome-, validation- és target-summary evidence.
+- `docs/V004_C005_CRAFT_HISTORY_UI_REPORT.md`: UI, immutable History truth, tesztek, protected release és rollback riport.
+
 ## Iranyito fajlok
 
 - `README.md`: a stabil V002 teljes angol GitHub-dokumentacioja.

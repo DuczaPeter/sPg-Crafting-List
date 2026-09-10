@@ -2,6 +2,17 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260909-181120-074755-WORKLOG.md`.
 
+## 2026-09-10 — V004-C005 Craft History UI
+
+- Baseline: clean `develop/V004 @ 99744c3...`; input app SHA `b2b18b9...`; meglévő event schema/indexek elegendők, DB/backup schema változatlan.
+- Crafting List Active/History tab, exact `craftingCardId` grouping, sequence-first deterministic sort és nested keyboard-accessible details elkészült.
+- Renderer stored-event-only: identity/hash/revisions/timestamp/status és külön material/Q/batch/canonical/source/exact unit deltas; aktuális Card/Inventory/live API nem truth.
+- Legacy/unknown fail-closed; `UNDONE` aktív totalból kizárva; delete/archive/Undo/Redo nincs.
+- Omnisky Chrome: partial 5 (`18000/35/35`) majd full 16; egy group, két event 2,1, total 21, Card eltűnt, final 1/1/1 unit, loss 0.
+- Presentation műveletsor durable write/revision/allocation/reservation változás 0; reload/multi-group/status/keyboard/1920×1080/390×844 overflow 0 PASS.
+- C004.4 completion-regresszió, automated direct-file, single-file, git diff és protected V003 validator PASS; full regression/push/C006 nincs.
+- Riport: `docs/V004_C005_CRAFT_HISTORY_UI_REPORT.md`; rollback a helyi C005 commit normál revertje.
+
 ## 2026-09-10 — V004-C004.4 Deterministic 4-Decimal SCU Normalization
 
 - Dirty resume: `develop/V004 @ 0b35f8e...`; a félkész C004.4 módosítás megőrizve, staged fájl nem volt.
