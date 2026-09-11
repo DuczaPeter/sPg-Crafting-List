@@ -73,9 +73,9 @@ try {
     $validationHead = (& git rev-parse HEAD).Trim()
     if ($branch -ne 'candidate/V004') { throw "Unexpected branch: $branch" }
     & git merge-base --is-ancestor $candidateSourceHead HEAD
-    if ($LASTEXITCODE -ne 0) { throw 'A candidate identity commit nem őse a validation HEAD-nek.' }
-    if ((& git rev-parse "$candidateSourceHead^").Trim() -ne $inputHead) { throw 'A candidate identity commit nem a C007.1 exact checkpoint közvetlen gyermeke.' }
-    if (@(& git status --porcelain=v1).Count -ne 0) { throw 'A release validator csak clean working tree-ből indulhat.' }
+    if ($LASTEXITCODE -ne 0) { throw 'The candidate identity commit is not an ancestor of validation HEAD.' }
+    if ((& git rev-parse "$candidateSourceHead^").Trim() -ne $inputHead) { throw 'The candidate identity commit is not the direct child of the exact C007.1 checkpoint.' }
+    if (@(& git status --porcelain=v1).Count -ne 0) { throw 'The release validator requires a clean working tree.' }
     if (-not (Test-Path -LiteralPath $PlaywrightModulePath)) { throw "Playwright module not found: $PlaywrightModulePath" }
     if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact path already exists; C008 cannot overwrite it.' }
     & git show-ref --verify --quiet refs/tags/V004
