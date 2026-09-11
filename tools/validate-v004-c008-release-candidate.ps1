@@ -18,21 +18,86 @@ $expectedV003ArtifactSha = '87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4
 $artifactDirectory = Join-Path $projectRoot 'test-artifacts\V004-C010'
 $candidateDirectory = Join-Path $artifactDirectory 'fresh-release-candidate'
 $candidatePath = Join-Path $candidateDirectory 'sPg Crafting List V004 RC.html'
+$invalidCandidatePath = Join-Path $projectRoot 'test-artifacts\V004-C009\fresh-release-candidate\sPg Crafting List V004 RC.html'
 $manifestPath = Join-Path $candidateDirectory 'candidate-manifest.json'
-$validationLogPath = Join-Path $artifactDirectory 'validation.log'
-$regressionEvidencePath = Join-Path $artifactDirectory 'release-regression-evidence.json'
-$targetSummaryPath = Join-Path $artifactDirectory 'target-summary.json'
+$promotionDirectory = Join-Path $projectRoot 'test-artifacts\V004-C010.3'
+$resolvedTempRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath())
+$runEvidenceDirectory = [System.IO.Path]::GetFullPath((Join-Path $resolvedTempRoot ("spg-v004-c0103-evidence-" + [guid]::NewGuid().ToString('N'))))
+if (-not $runEvidenceDirectory.StartsWith($resolvedTempRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Unsafe run evidence directory: $runEvidenceDirectory"
+}
+[System.IO.Directory]::CreateDirectory($runEvidenceDirectory) | Out-Null
+$validationLogPath = Join-Path $runEvidenceDirectory 'validation.log'
+$regressionEvidencePath = Join-Path $runEvidenceDirectory 'release-regression-evidence.json'
+$targetSummaryPath = Join-Path $runEvidenceDirectory 'target-summary.json'
+$candidateBrowserEvidencePath = Join-Path $runEvidenceDirectory 'candidate-browser-evidence.json'
+$promotedEvidenceNames = @('validation.log', 'target-summary.json', 'release-regression-evidence.json', 'candidate-browser-evidence.json')
 $sharedStandaloneRelativePath = 'test-artifacts/V004-C010/standalone-js-300-current-candidate.html'
 $v003ArtifactPath = Join-Path $projectRoot 'releases\V003\sPg Crafting List.html'
 $stableV004Path = Join-Path $projectRoot 'releases\V004'
 $temporaryProject = $null
+$promotionCreatedByThisRun = $false
 $lines = [System.Collections.Generic.List[string]]::new()
-$lines.Add('V004-C010 replacement release candidate validation')
+$lines.Add('V004-C010.3 evidence-managed replacement release candidate validation')
 $leafResults = [ordered]@{}
+Write-Output "V004_C0103_RUN_EVIDENCE_DIRECTORY=$runEvidenceDirectory"
 
 function Write-Utf8NoBom {
     param([string]$Path, [string]$Content)
     [System.IO.File]::WriteAllText($Path, $Content, [System.Text.UTF8Encoding]::new($false))
+}
+
+function Get-EvidenceIdentity {
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "Required run evidence is missing: $Path" }
+    return [pscustomobject]@{
+        path = $Path
+        sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $Path).Hash.ToLowerInvariant()
+        bytes = [int64](Get-Item -LiteralPath $Path).Length
+    }
+}
+
+function Remove-CurrentRunPromotion {
+    if (-not $script:promotionCreatedByThisRun) { return }
+    $resolvedPromotion = [System.IO.Path]::GetFullPath($promotionDirectory)
+    $expectedPromotion = [System.IO.Path]::GetFullPath((Join-Path $projectRoot 'test-artifacts\V004-C010.3'))
+    $expectedParent = [System.IO.Path]::GetFullPath((Join-Path $projectRoot 'test-artifacts'))
+    $resolvedParent = [System.IO.Path]::GetFullPath([System.IO.Directory]::GetParent($resolvedPromotion).FullName)
+    if ($resolvedPromotion -ne $expectedPromotion -or $resolvedParent -ne $expectedParent) {
+        throw "Unsafe promotion cleanup target: $resolvedPromotion"
+    }
+    if (Test-Path -LiteralPath $resolvedPromotion) {
+        Remove-Item -LiteralPath $resolvedPromotion -Recurse -Force -ErrorAction Stop
+    }
+    $script:promotionCreatedByThisRun = $false
+}
+
+function Promote-RunEvidence {
+    $sourceRecords = [ordered]@{}
+    foreach ($name in $promotedEvidenceNames) {
+        $sourceRecords[$name] = Get-EvidenceIdentity (Join-Path $runEvidenceDirectory $name)
+    }
+    if (Test-Path -LiteralPath $promotionDirectory) {
+        throw "C010.3 evidence promotion destination already exists: $promotionDirectory"
+    }
+    [System.IO.Directory]::CreateDirectory($promotionDirectory) | Out-Null
+    $script:promotionCreatedByThisRun = $true
+    try {
+        foreach ($name in $promotedEvidenceNames) {
+            [System.IO.File]::Copy($sourceRecords[$name].path, (Join-Path $promotionDirectory $name), $false)
+        }
+        foreach ($name in $promotedEvidenceNames) {
+            $destination = Get-EvidenceIdentity (Join-Path $promotionDirectory $name)
+            $source = $sourceRecords[$name]
+            if ($destination.sha256 -ne $source.sha256 -or $destination.bytes -ne $source.bytes) {
+                throw "C010.3 evidence promotion parity mismatch: $name"
+            }
+            Write-Output ("V004_C0103_EVIDENCE_PROMOTED name={0} sha256={1} bytes={2}" -f $name, $source.sha256, $source.bytes)
+        }
+    } catch {
+        Remove-CurrentRunPromotion
+        throw
+    }
 }
 
 function Invoke-BoundedCheck {
@@ -98,6 +163,7 @@ try {
     )
     $unexpectedUntracked = @(& git ls-files --others --exclude-standard | Where-Object { $allowedUntracked -notcontains $_ })
     if ($unexpectedUntracked.Count -ne 0) { throw "Unexpected untracked files before C010: $($unexpectedUntracked -join ', ')" }
+    if (Test-Path -LiteralPath $promotionDirectory) { throw "C010.3 evidence promotion destination already exists: $promotionDirectory" }
     if (-not (Test-Path -LiteralPath $PlaywrightModulePath)) { throw "Playwright module not found: $PlaywrightModulePath" }
     if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact path already exists; C010 cannot overwrite it.' }
     & git show-ref --verify --quiet refs/tags/V004
@@ -120,18 +186,14 @@ try {
 
     & git diff --quiet $candidateSourceHead HEAD -- 'sPg Crafting List.html'
     if ($LASTEXITCODE -ne 0) { throw 'Application commit differs from the frozen candidate source.' }
-    Invoke-BoundedCheck 'history-snapshot-dataset-adapter-freeze' 'node' @('.\tools\run-v004-c010-identity-freeze-tests.mjs')
     Invoke-BoundedCheck 'harness-dependency-wiring-audit' 'node' @('.\tools\audit-v004-c0081-harness-compatibility.mjs')
     Invoke-BoundedCheck 'm4-remaining-harness-closure-audit' 'node' @('.\tools\audit-v004-c0082-harness-closure.mjs')
     $manifest = Read-Json $manifestPath
-    $identityEvidence = Read-Json (Join-Path $artifactDirectory 'identity-freeze-evidence.json')
     $candidateShaBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $candidatePath).Hash.ToLowerInvariant()
     $candidateBytes = (Get-Item -LiteralPath $candidatePath).Length
     if ($candidateShaBefore -ne $expectedCandidateSha -or $candidateBytes -ne $expectedCandidateBytes) { throw 'Frozen candidate SHA/size mismatch.' }
     if ($manifest.sourceHead -ne $candidateSourceHead -or $manifest.sha256 -ne $candidateShaBefore -or [int64]$manifest.bytes -ne $candidateBytes) { throw 'Candidate manifest mismatch.' }
     if ($manifest.runtimeIdentity -ne 'V004' -or $manifest.v004DevRuntimeIdentityOccurrences -ne 0 -or $manifest.backupSchemaVersion -ne 3 -or $manifest.applicationRuntimeFileCount -ne 1 -or $manifest.localRuntimeSidecars -ne 0) { throw 'Candidate identity/schema/single-file manifest mismatch.' }
-    if ($identityEvidence.status -ne 'PASS_HISTORY_SNAPSHOT_ONLY_DATASET_ADAPTER_FREEZE' -or $identityEvidence.allOtherApplicationBytesUnchanged -ne $true -or $identityEvidence.candidateSourceByteIdentical -ne $true -or $identityEvidence.full1606BlueprintAuditRequired -ne $false) { throw 'C010 dataset/adapter freeze proof mismatch.' }
-
     $testPlan = Read-Json (Join-Path $projectRoot 'tests\test-plan.json')
     $releaseTest = @($testPlan.tests | Where-Object { $_.id -eq 'v004-c010-replacement-release-candidate' })
     if ($releaseTest.Count -ne 1) { throw 'Missing or duplicate v004-c010-replacement-release-candidate test-plan entry.' }
@@ -142,6 +204,20 @@ try {
     Copy-Item -LiteralPath $candidatePath -Destination (Join-Path $temporaryProject 'sPg Crafting List.html') -Force
     $isolatedApplicationPath = Join-Path $temporaryProject 'sPg Crafting List.html'
     if ((Get-FileHash -Algorithm SHA256 -LiteralPath $isolatedApplicationPath).Hash.ToLowerInvariant() -ne $candidateShaBefore) { throw 'The isolated test application differs from the exact candidate.' }
+    $isolatedCandidatePath = Join-Path $temporaryProject 'test-artifacts\V004-C010\fresh-release-candidate\sPg Crafting List V004 RC.html'
+    $isolatedInvalidCandidatePath = Join-Path $temporaryProject 'test-artifacts\V004-C009\fresh-release-candidate\sPg Crafting List V004 RC.html'
+    [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($isolatedCandidatePath)) | Out-Null
+    [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($isolatedInvalidCandidatePath)) | Out-Null
+    [System.IO.File]::Copy($candidatePath, $isolatedCandidatePath, $false)
+    [System.IO.File]::Copy($invalidCandidatePath, $isolatedInvalidCandidatePath, $false)
+    Push-Location $temporaryProject
+    try {
+        Invoke-BoundedCheck 'history-snapshot-dataset-adapter-freeze' 'node' @('.\tools\run-v004-c010-identity-freeze-tests.mjs')
+    } finally {
+        Pop-Location
+    }
+    $identityEvidence = Read-Json (Join-Path $temporaryProject 'test-artifacts\V004-C010\identity-freeze-evidence.json')
+    if ($identityEvidence.status -ne 'PASS_HISTORY_SNAPSHOT_ONLY_DATASET_ADAPTER_FREEZE' -or $identityEvidence.allOtherApplicationBytesUnchanged -ne $true -or $identityEvidence.candidateSourceByteIdentical -ne $true -or $identityEvidence.full1606BlueprintAuditRequired -ne $false) { throw 'C010 dataset/adapter freeze proof mismatch.' }
 
     $leafCommands = [ordered]@{
         'baseline-static' = @{ Executable = 'powershell.exe'; Arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '.\tools\validate-baseline.ps1') }
@@ -198,7 +274,7 @@ try {
         'v004-c007-multi-tab-chrome' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c007-browser-tests.mjs', "--playwright-module=$PlaywrightModulePath") }
         'v004-c0071-user-data-safety-model' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c0071-tests.mjs') }
         'v004-c0071-user-data-safety-chrome' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c0071-browser-tests.mjs', "--playwright-module=$PlaywrightModulePath") }
-        'v004-c010-candidate-chrome-direct-live' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c008-candidate-browser-tests.mjs', '--application=.\sPg Crafting List.html', '--evidence=.\test-artifacts\V004-C010\candidate-browser-evidence.json', "--playwright-module=$PlaywrightModulePath") }
+        'v004-c010-candidate-chrome-direct-live' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c008-candidate-browser-tests.mjs', '--application=.\sPg Crafting List.html', "--evidence=$candidateBrowserEvidencePath", "--playwright-module=$PlaywrightModulePath") }
     }
     if ($configuredLeafTests.Count -ne $leafCommands.Count) { throw "Test-plan/validator leaf count mismatch: $($configuredLeafTests.Count) vs $($leafCommands.Count)" }
     foreach ($leafId in $configuredLeafTests) {
@@ -309,10 +385,7 @@ try {
         if ($evidence.applicationSha256 -ne $candidateShaBefore) { throw "Current V004 evidence is not candidate-byte scoped: $relativePath" }
     }
 
-    $candidateBrowserSource = Join-Path $temporaryProject 'test-artifacts\V004-C010\candidate-browser-evidence.json'
-    $candidateBrowserTarget = Join-Path $artifactDirectory 'candidate-browser-evidence.json'
-    Copy-Item -LiteralPath $candidateBrowserSource -Destination $candidateBrowserTarget -Force
-    $candidateBrowser = Read-Json $candidateBrowserTarget
+    $candidateBrowser = Read-Json $candidateBrowserEvidencePath
     if ($candidateBrowser.status -ne 'PASS_CANDIDATE_GOOGLE_CHROME' -or $candidateBrowser.candidateSha256 -ne $candidateShaBefore -or $candidateBrowser.runtimeIdentity -ne 'V004') { throw 'Candidate Chrome identity/SHA gate failed.' }
     if ($candidateBrowser.desktop.overflow -ne 0 -or $candidateBrowser.mobile.overflow -ne 0 -or @($candidateBrowser.consoleErrors).Count -ne 0 -or @($candidateBrowser.pageErrors).Count -ne 0) { throw 'Candidate Chrome responsive/console/page gate failed.' }
     if ($candidateBrowser.directFile.status -ne 'PASS_AUTOMATED' -or $candidateBrowser.directFile.protocol -ne 'file:' -or $candidateBrowser.directFile.gameDataIdentity -ne '4.10.0-LIVE.12519617' -or $candidateBrowser.directFile.uexHttpStatus -ne 200) { throw 'Candidate direct-file live Wiki/UEX gate failed.' }
@@ -329,7 +402,7 @@ try {
     Invoke-BoundedCheck 'git-diff-check' 'git' @('diff', '--check')
 
     $regressionEvidence = [ordered]@{
-        cycle = 'V004-C010'
+        cycle = 'V004-C010.3'
         status = 'PASS_FULL_INTEGRATION_EXACT_CANDIDATE_BYTES'
         candidateSourceHead = $candidateSourceHead
         validationHead = $validationHead
@@ -355,7 +428,7 @@ try {
     Write-Utf8NoBom $regressionEvidencePath (($regressionEvidence | ConvertTo-Json -Depth 12) + "`n")
 
     $summary = [ordered]@{
-        cycle = 'V004-C010'
+        cycle = 'V004-C010.3'
         status = 'AUTOMATED_RELEASE_CANDIDATE_PASS_MANUAL_FILE_GATE_REQUIRED'
         inputCheckpoint = $inputHead
         candidateBranch = 'candidate/V004'
@@ -376,6 +449,8 @@ try {
         localRuntimeSidecars = 0
         protectedV001V002V003 = 'PASS'
         manualFileGate = 'REQUIRED'
+        runEvidenceDirectory = $runEvidenceDirectory
+        promotedEvidenceDirectory = 'test-artifacts/V004-C010.3'
         stableArtifact = 'NOT_CREATED'
         v004Tag = 'NOT_CREATED'
         push = 'NO'
@@ -384,30 +459,37 @@ try {
     $lines.Add('result=AUTOMATED_RELEASE_CANDIDATE_PASS_MANUAL_FILE_GATE_REQUIRED')
     $lines.Add("candidateSha256=$candidateShaAfter")
     $lines.Add("candidateBytes=$candidateBytes")
+    $lines.Add("runEvidenceDirectory=$runEvidenceDirectory")
+    $lines.Add('promotedEvidenceDirectory=test-artifacts/V004-C010.3')
     $lines.Add('manualFileGate=REQUIRED')
     $lines.Add('stableArtifact=NOT_CREATED')
     $lines.Add('v004Tag=NOT_CREATED')
     $lines.Add('push=NO')
     Write-Utf8NoBom $validationLogPath (($lines -join "`n") + "`n")
-    Write-Output "V004_C010_AUTOMATED_REPLACEMENT_RELEASE_CANDIDATE_PASS candidate=$candidatePath bytes=$candidateBytes sha256=$candidateShaAfter"
+    Promote-RunEvidence
+    Write-Output "V004_C0103_RUN_EVIDENCE_DIRECTORY=$runEvidenceDirectory"
+    Write-Output "V004_C0103_AUTOMATED_REPLACEMENT_RELEASE_CANDIDATE_PASS candidate=$candidatePath bytes=$candidateBytes sha256=$candidateShaAfter"
 } catch {
     $failure = $_.Exception.Message
     $lines.Add("result=V004-C010_REPLACEMENT_RELEASE_CANDIDATE_BLOCKED")
     $lines.Add("failure=$failure")
+    $lines.Add("runEvidenceDirectory=$runEvidenceDirectory")
     $lines.Add('stableArtifact=NOT_CREATED')
     $lines.Add('v004Tag=NOT_CREATED')
     $lines.Add('push=NO')
     Write-Utf8NoBom $validationLogPath (($lines -join "`n") + "`n")
     $blocked = [ordered]@{
-        cycle = 'V004-C010'
+        cycle = 'V004-C010.3'
         status = 'RELEASE_CANDIDATE_BLOCKED'
         failure = $failure
         candidateCommit = $candidateSourceHead
+        runEvidenceDirectory = $runEvidenceDirectory
         stableArtifact = 'NOT_CREATED'
         v004Tag = 'NOT_CREATED'
         push = 'NO'
     }
     Write-Utf8NoBom $targetSummaryPath (($blocked | ConvertTo-Json -Depth 6) + "`n")
+    Write-Output "V004_C0103_RUN_EVIDENCE_DIRECTORY=$runEvidenceDirectory"
     throw
 } finally {
     Pop-Location
