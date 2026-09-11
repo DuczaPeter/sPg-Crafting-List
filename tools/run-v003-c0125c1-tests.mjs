@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -10,7 +11,9 @@ const appPath = path.join(projectDirectory, "sPg Crafting List.html");
 const fixturePath = path.join(projectDirectory, "tests", "fixtures", "v003-c0125c1-fr86-assignment-model.json");
 const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V003-C012.5C1");
 const evidencePath = path.join(artifactDirectory, "assignment-model-evidence.json");
-const html = fs.readFileSync(appPath, "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const html = verifiedApplication.html;
+const m4HarnessSource = buildM4HarnessSource(html);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 
 const block = (name) => {
@@ -18,20 +21,15 @@ const block = (name) => {
   assert.ok(match, `A ${name} modellblokk hiányzik.`);
   return match[1];
 };
-const storedCardNormalizer = html.match(/function normalizeStoredCraftingCard\(card, fallbackOrder\) \{[\s\S]*?\n    \}(?=\n\n    \/\* C0125A_)/);
-assert.ok(storedCardNormalizer, "A Crafting Card storage normalizer hiányzik.");
 const context = vm.createContext({
   console,
   nowIso: () => "2026-08-31T12:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000),
   foldSearchText: (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
-${block("M2_ALLOCATION_ENGINE")}
+vm.runInContext(`${m4HarnessSource}
 ${block("MATERIAL_NAMING_MODEL")}
-${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
-${storedCardNormalizer[0]}
 globalThis.__C0125C1__ = {
   RECIPE_SLOT_QUALITY_POOL_MODES,
   normalizeRecipeSlotQualityPoolMode,
@@ -42,7 +40,8 @@ globalThis.__C0125C1__ = {
   allocateCardsDeterministically,
   buildM4BackupEnvelope,
   validateAndMigrateM4Backup,
-  simulateM4UserDataImport
+  simulateM4UserDataImport,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords
 };`, context, { filename: "spg-v003-c0125c1-model.js" });
 
 const model = context.__C0125C1__;
@@ -109,7 +108,10 @@ const afterDelete = [cardA, cardB].filter((card) => card.id !== cardA.id);
 assert.equal(afterDelete.length, 1);
 assert.equal(afterDelete[0].recipeSlotQualityPoolAssignments[shell.id], modes.MAXIMUM_Q_POOL);
 
-const userData = { userInventory: [], materialBatches: [], craftingCards: [cardA, cardB], miningLoadouts: [], userSettings: [] };
+const userData = {
+  userInventory: [], materialBatches: [], craftingCards: [cardA, cardB], miningLoadouts: [], userSettings: [],
+  craftHistory: [], userMeta: clone(model.defaultUserMetaRecords())
+};
 const backup = model.buildM4BackupEnvelope(userData, { applicationVersion: "V003-dev" });
 const restored = model.validateAndMigrateM4Backup(backup).backup.data;
 assert.deepEqual(JSON.parse(JSON.stringify(restored.craftingCards.map((card) => card.recipeSlotQualityPoolAssignments))), [clone(assignments), { [shell.id]: modes.MAXIMUM_Q_POOL }]);

@@ -5,7 +5,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
-import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -16,7 +16,7 @@ const standalonePath = path.join(artifactDirectory, "standalone-metamaterial-tes
 const evidencePath = path.join(artifactDirectory, "quality-constraint-evidence.json");
 const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
 const appHtml = verifiedApplication.html;
-const m1HarnessSource = buildM1HarnessSource(appHtml);
+const m4HarnessSource = buildM4HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 
@@ -30,9 +30,7 @@ const context = vm.createContext({
   nowIso: () => "2026-08-29T12:30:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${m1HarnessSource}
-${block("M2_ALLOCATION_ENGINE")}
-${block("M4_COMBINED_BACKUP_MODEL")}
+vm.runInContext(`${m4HarnessSource}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
 ${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 ${block("MATERIAL_NAMING_MODEL")}
@@ -49,6 +47,7 @@ globalThis.__C0123__ = {
   buildFinalCraftingCardViewModel,
   buildM4BackupEnvelope,
   validateAndMigrateM4Backup,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords,
   materialQualityPlansFromUserSettings,
   buildStandaloneSnapshot: m6BuildStandaloneSnapshot,
   renderStandaloneHtml: m6RenderStandaloneHtml
@@ -230,7 +229,9 @@ const userData = {
   materialBatches: sufficientBatches,
   craftingCards: [card],
   miningLoadouts: [{ id: "loadout-c0123", materialUuid: stileronUuid, materialName: "Stileron", name: "C012.3", stations: [], gadgets: [], isDefault: true }],
-  userSettings
+  userSettings,
+  craftHistory: [],
+  userMeta: clone(model.defaultUserMetaRecords())
 };
 const envelope = model.buildM4BackupEnvelope(userData, { applicationVersion: "V003-dev" });
 const restored = model.validateAndMigrateM4Backup(JSON.stringify(envelope));

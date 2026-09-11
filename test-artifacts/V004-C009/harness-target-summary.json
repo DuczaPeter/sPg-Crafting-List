@@ -1,0 +1,8 @@
+{
+    "cycle":  "V004-C009",
+    "status":  "REPLACEMENT_RC_HARNESS_TARGETED_GATE_BLOCKED",
+    "failure":  "v004-c0061-backup-model-targeted failed with exit code 1",
+    "stableArtifact":  "NOT_CREATED",
+    "v004Tag":  "NOT_CREATED",
+    "push":  "NO"
+}

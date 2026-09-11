@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildHistorySnapshotCardNormalizerSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -11,8 +12,8 @@ const appPath = path.join(projectDirectory, "sPg Crafting List.html");
 const fixturePath = path.join(projectDirectory, "tests", "fixtures", "v004-c003-reservation.json");
 const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V004-C006");
 const evidencePath = path.join(artifactDirectory, "model-evidence.json");
-const appBuffer = fs.readFileSync(appPath);
-const appHtml = appBuffer.toString("utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const appHtml = verifiedApplication.html;
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const clone = value => JSON.parse(JSON.stringify(value));
 
@@ -27,6 +28,7 @@ function block(name) {
 
 const m4Block = block("M4_COMBINED_BACKUP_MODEL");
 const m4Foundation = m4Block.slice(0, m4Block.indexOf("function buildCombinedCanonicalMaterialLookup"));
+const historySnapshotCardNormalizerSource = buildHistorySnapshotCardNormalizerSource(appHtml);
 const context = vm.createContext({ console, crypto: webcrypto, TextEncoder, Uint8Array, Map, Set, Number, Object, Array, JSON, String, RegExp, Math, Date });
 vm.runInContext(`
   function hasValidQuality(value) { return Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 1000; }
@@ -36,6 +38,7 @@ vm.runInContext(`
   var MATERIAL_QUALITY_POOL_SETTING_KEY = "user:materialQualityPools";
   ${block("V004_C002_MIGRATION_MODEL")}
   ${m4Foundation}
+  ${historySnapshotCardNormalizerSource}
   ${block("V004_C003_REVISION_RESERVATION_MODEL")}
   ${block("V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL")}
   ${block("V004_C005_CRAFT_HISTORY_UI_MODEL")}
@@ -318,7 +321,7 @@ assert.equal(localStylesheets.length, 0);
 const evidence = {
   cycle: "V004-C006",
   status: "PASS_TARGETED_MODEL",
-  applicationSha256: crypto.createHash("sha256").update(appBuffer).digest("hex"),
+  applicationSha256: verifiedApplication.sha256,
   eligibility: { latestActiveOnly: true, lifo: true, legacy: "BLOCKED", cardEdit: "BLOCKED", fullListChange: "BLOCKED" },
   partialUndo: {
     quantity: "1 -> 5",

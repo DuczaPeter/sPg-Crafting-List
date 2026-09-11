@@ -10,9 +10,9 @@ import {
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const expectedSha256 = "7ac2c27bc7a35f719f4a4526e6839f8460a51e2ab6d881e1a95c3ed16f58b050";
-const expectedBytes = 1083258;
-const candidatePath = path.join(projectDirectory, "test-artifacts", "V004-C008", "fresh-release-candidate", "sPg Crafting List V004 RC.html");
+const expectedSha256 = "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5";
+const expectedBytes = 1083886;
+const candidatePath = path.join(projectDirectory, "test-artifacts", "V004-C010", "fresh-release-candidate", "sPg Crafting List V004 RC.html");
 const validatorPath = path.join(toolsDirectory, "validate-v004-c008-release-candidate.ps1");
 const affected = Object.freeze([
   ["m1-model-cache", "run-m1-tests.mjs"],
@@ -33,7 +33,7 @@ assert.ok(m1HarnessSource.includes("function normalizeBlueprint(raw, provenance)
 assert.ok(m1HarnessSource.includes("function v004BuildExactRequirementQuantityEvidence(sourceValue, unit)"), "Az exact-quantity helper hiányzik.");
 
 const validatorSource = fs.readFileSync(validatorPath, "utf8");
-assert.doesNotMatch(validatorSource, /candidate-raw-byte-build/, "A C008 validator nem regenerálhatja a frozen candidate-et.");
+assert.doesNotMatch(validatorSource, /candidate-raw-byte-build/, "A C010 validator nem regenerálhatja a frozen candidate-et.");
 for (const required of [
   "SPG_V004_RELEASE_CANDIDATE_MODE",
   "SPG_V004_VERIFIED_CANDIDATE_PATH",
@@ -52,10 +52,10 @@ const unresolved = [];
 for (const [leafId, filename] of configuredNodeRunners) {
   const runnerPath = path.join(toolsDirectory, filename);
   const source = fs.readFileSync(runnerPath, "utf8");
-  const referencesM1 = source.includes("M1_PURE_MODEL") || source.includes("buildM1HarnessSource");
+  const referencesM1 = source.includes("M1_PURE_MODEL") || /buildM[14]HarnessSource/.test(source);
   const dereferencesNormalizer = /normalizeBlueprint\s*\(/.test(source);
   const hasCurrentC003Closure = source.includes('block("V004_C003_REVISION_RESERVATION_MODEL")');
-  const usesSharedLoader = source.includes("buildM1HarnessSource") && source.includes("loadVerifiedCandidateHtml");
+  const usesSharedLoader = /buildM[14]HarnessSource/.test(source) && source.includes("loadVerifiedCandidateHtml");
   if (referencesM1 && dereferencesNormalizer && !hasCurrentC003Closure && !usesSharedLoader) {
     unresolved.push({ leafId, filename });
   }
@@ -67,13 +67,13 @@ for (const [leafId, filename] of affected) {
   const source = fs.readFileSync(path.join(toolsDirectory, filename), "utf8");
   assert.match(source, /from "\.\/v004-c0081-harness-loader\.mjs"/, `${filename}: shared loader import hiányzik.`);
   assert.match(source, /loadVerifiedCandidateHtml\s*\(/, `${filename}: verified candidate load hiányzik.`);
-  assert.match(source, /buildM1HarnessSource\s*\(/, `${filename}: candidate-bound M1 prelude hiányzik.`);
+  assert.match(source, /buildM[14]HarnessSource\s*\(/, `${filename}: candidate-bound M1-capable prelude hiányzik.`);
   assert.doesNotMatch(source, /block\("M1_PURE_MODEL"\)|M1_PURE_MODEL_START/, `${filename}: régi közvetlen M1 extraction maradt.`);
   assert.doesNotMatch(source, /readFileSync\([^\r\n]*sPg Crafting List\.html[^\r\n]*utf8/, `${filename}: checkout HTML közvetlen olvasás maradt.`);
 }
 
 const evidence = {
-  cycle: "V004-C008.1",
+  cycle: "V004-C010",
   status: "PASS_HARNESS_DEPENDENCY_AND_WIRING_AUDIT",
   candidateSha256: verified.sha256,
   candidateBytes: verified.bytes,
@@ -94,7 +94,7 @@ if (evidenceArgument) {
   fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
 }
 
-console.log("V004_C0081_HARNESS_AUDIT_PASS");
+console.log("V004_C010_M1_HARNESS_AUDIT_PASS");
 console.log(JSON.stringify({
   candidateSha256: verified.sha256,
   candidateBytes: verified.bytes,

@@ -1,0 +1,33 @@
+{
+  "cycle": "V004-C010",
+  "status": "PASS_HISTORY_SNAPSHOT_ONLY_DATASET_ADAPTER_FREEZE",
+  "invalidCandidateHead": "3f94ad079c95234599c56f84347c48a0d11ecc25",
+  "candidateHead": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+  "invalidCandidateApplicationSha256": "e4763a54deca8755ec9604ccc16e2d00be53896040572b41a777d1e89357f8b4",
+  "invalidCandidateArtifactSha256": "e4763a54deca8755ec9604ccc16e2d00be53896040572b41a777d1e89357f8b4",
+  "candidateApplicationSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateArtifactSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateBytes": 1083886,
+  "candidateSourceByteIdentical": true,
+  "applicationDiffFromInvalidC009": "EXACT_HISTORY_SNAPSHOT_CANONICALIZATION_ONLY",
+  "applicationDiffInsertions": 8,
+  "applicationDiffDeletions": 4,
+  "v004DevRuntimeIdentityOccurrences": 0,
+  "runtimeIdentity": "V004",
+  "allOtherApplicationBytesUnchanged": true,
+  "gameDataIdentity": "4.10.0-LIVE.12519617",
+  "unchangedContracts": {
+    "wikiDataset": true,
+    "wikiAdapter": true,
+    "recipeParsing": true,
+    "exactQuantityNormalization": true,
+    "scuNormalization": true,
+    "canonicalIdentityMapping": true,
+    "uexAdapter": true,
+    "indexedDbSchema": true,
+    "backupSchemaVersion": 3,
+    "craftTimeNormalization": true
+  },
+  "full1606BlueprintAuditRequired": false,
+  "reason": "C010 is byte-identical to the invalid C009 candidate except for the exact History snapshot canonicalization repair."
+}

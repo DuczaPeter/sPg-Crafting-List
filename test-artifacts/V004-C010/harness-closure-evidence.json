@@ -1,0 +1,114 @@
+{
+  "cycle": "V004-C010",
+  "status": "PASS_M4_REMAINING_RELEASE_HARNESS_CLOSURE_AUDIT",
+  "candidateSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateBytes": 1083886,
+  "candidateBinding": "FROZEN_CANDIDATE",
+  "directM4Dependencies": [
+    "V004_CRAFT_HISTORY_EVENT_SCHEMA",
+    "V004_META_KEYS",
+    "V004_QUANTITY_SEMANTICS",
+    "v004DefaultUserMetaRecords",
+    "v004MigrationError",
+    "v004NormalizeImportedCards",
+    "v004NormalizeImportedCraftHistory",
+    "v004ValidateCraftHistoryEvent"
+  ],
+  "m4Closure": [
+    "V004_REQUIREMENT_QUANTITY_EXACTNESS",
+    "V004_QUANTITY_NORMALIZATION_STATUS",
+    "V004_SCU_NORMALIZATION_RULE",
+    "V004_ITEM_NORMALIZATION_RULE",
+    "v004FixedScuTextFromUnitBigInt",
+    "v004ParsePositiveDecimalToFourDpUnits",
+    "v004BuildExactRequirementQuantityEvidence",
+    "V004_CRAFT_HISTORY_EVENT_SCHEMA",
+    "V004_CRAFT_RUN_INPUT_EVIDENCE",
+    "V004_META_KEYS",
+    "V004_OUTPUT_COUNT_EVIDENCE",
+    "V004_QUANTITY_SEMANTICS",
+    "V004_RESERVATION_SNAPSHOT_MARKER",
+    "v004CardCraftRunInputEvidence",
+    "v004CanonicalizeCraftHistoryCardSnapshot",
+    "v004CraftCompleteError",
+    "v004DefaultUserMetaRecords",
+    "v004MigrationError",
+    "v004NormalizeCardRevision",
+    "v004NormalizeImportedCards",
+    "v004NormalizeImportedCraftHistory",
+    "v004NormalizeRequirementExactEvidence",
+    "v004RequirementHasExactCraftRunInput",
+    "v004ValidateCraftHistoryEvent"
+  ],
+  "requiredRunnerCount": 11,
+  "requiredLeaves": [
+    {
+      "leafId": "m4-combined-backup",
+      "filename": "run-m4-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0121-quality-planner",
+      "filename": "run-v003-c0121-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0123-quality-constraints",
+      "filename": "run-v003-c0123-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0125a-inventory-independence",
+      "filename": "run-v003-c0125a-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0125b-quality-pools",
+      "filename": "run-v003-c0125b-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0125c1-slot-assignment",
+      "filename": "run-v003-c0125c1-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0125d1-integrated-fixture",
+      "filename": "run-v003-c0125d1-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0133-disjoint-canonical",
+      "filename": "run-v003-c0133-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0135-canonical-picker",
+      "filename": "run-v003-c0135-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0137-user-data-independent-picker",
+      "filename": "run-v003-c0137-tests.mjs"
+    },
+    {
+      "leafId": "v004-c0061-backup-model",
+      "filename": "run-v004-c0061-tests.mjs"
+    }
+  ],
+  "currentSchema3FixtureCount": 10,
+  "legacyFixtureRegionsUnchanged": 9,
+  "copiedC0061Normalizers": 0,
+  "historySnapshotRunnerCount": 4,
+  "historySnapshotRunners": [
+    {
+      "leafId": "v004-c004-complete-model",
+      "filename": "run-v004-c004-tests.mjs"
+    },
+    {
+      "leafId": "v004-c0044-normalization-model",
+      "filename": "run-v004-c0044-tests.mjs"
+    },
+    {
+      "leafId": "v004-c006-undo-model",
+      "filename": "run-v004-c006-tests.mjs"
+    },
+    {
+      "leafId": "v004-c0061-backup-model",
+      "filename": "run-v004-c0061-tests.mjs"
+    }
+  ],
+  "checkoutHtmlReleaseFallbacks": 0,
+  "unresolvedKnownReleaseHarnessDependencyGaps": 0
+}

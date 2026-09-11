@@ -6,6 +6,7 @@ import vm from "node:vm";
 import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -19,12 +20,12 @@ const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
 const evidencePath = path.join(artifactDirectory, "integration-evidence.json");
 const standaloneOutputPath = process.env.SPG_STANDALONE_OUTPUT ? path.resolve(process.env.SPG_STANDALONE_OUTPUT) : null;
 const cycleId = process.env.SPG_CYCLE_ID || "V003-C012.5D1";
-const appHtml = fs.readFileSync(appPath, "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const appHtml = verifiedApplication.html;
+const m4HarnessSource = buildM4HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const baseline = execFileSync("git", ["rev-parse", "HEAD"], { cwd: projectDirectory, encoding: "utf8" }).trim();
-const expectedBaseline = process.env.SPG_EXPECTED_HEAD || "42f94e9ecc40076174ac1c732e70d26402ea291f";
-assert.equal(baseline, expectedBaseline);
 const applicationCodeChanged = spawnSync("git", ["diff", "--quiet", "--", "sPg Crafting List.html"], { cwd: projectDirectory }).status !== 0;
 if (applicationCodeChanged && process.env.SPG_ALLOW_APP_DIFF !== "1") {
   assert.fail("A D1 gate nem módosíthat application code-ot explicit repair-cycle engedély nélkül.");
@@ -35,23 +36,18 @@ const block = (name) => {
   assert.ok(match, `A ${name} modellblokk hiányzik.`);
   return match[1];
 };
-const storedCardNormalizer = appHtml.match(/function normalizeStoredCraftingCard\(card, fallbackOrder\) \{[\s\S]*?\n    \}(?=\n\n    \/\* C0125A_)/);
-assert.ok(storedCardNormalizer, "A Crafting Card storage normalizer hiányzik.");
 const context = vm.createContext({
   console,
   nowIso: () => "2026-09-01T00:30:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000),
   foldSearchText: (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
-${block("M2_ALLOCATION_ENGINE")}
+vm.runInContext(`${m4HarnessSource}
 ${block("MATERIAL_NAMING_MODEL")}
-${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
 ${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 ${block("MATERIAL_COLOR_MODEL")}
 ${block("M6_STANDALONE_EXPORT_MODEL")}
-${storedCardNormalizer[0]}
 globalThis.__C0125D1__ = {
   rules: M2_QUALITY_RULES,
   planModes: MATERIAL_QUALITY_PLAN_MODES,
@@ -66,6 +62,7 @@ globalThis.__C0125D1__ = {
   validateBackup: validateAndMigrateM4Backup,
   importBackup: simulateM4UserDataImport,
   normalizeCard: normalizeStoredCraftingCard,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords,
   poolsFromSettings: materialQualityPoolsFromUserSettings,
   plansFromSettings: materialQualityPlansFromUserSettings,
   assignmentFor: recipeSlotQualityPoolAssignmentFor
@@ -252,7 +249,10 @@ assert.equal(inventoryOnly.totals.availableUnits, 31000);
 // Integrated backup -> mutation -> restore returns inventory, thresholds, assignments and allocation.
 const poolSetting = { key: "user:materialQualityPools", scope: "USER", value: clone(pools), updatedAt: "2026-09-01T00:30:00.000Z" };
 const planSetting = { key: "user:materialQualityPlans", scope: "USER", value: {}, updatedAt: "2026-09-01T00:30:00.000Z" };
-const userData = { userInventory: [], materialBatches: clone(happyBatches), craftingCards: [clone(card)], miningLoadouts: [], userSettings: [planSetting, poolSetting] };
+const userData = {
+  userInventory: [], materialBatches: clone(happyBatches), craftingCards: [clone(card)], miningLoadouts: [], userSettings: [planSetting, poolSetting],
+  craftHistory: [], userMeta: clone(model.defaultUserMetaRecords())
+};
 const envelope = model.buildBackup(clone(userData), { applicationVersion: "V003-dev", exportedAt: "2026-09-01T00:30:01.000Z" });
 const restoredEnvelope = model.validateBackup(envelope);
 const modified = clone(userData);

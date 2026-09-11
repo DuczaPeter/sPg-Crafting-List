@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -14,7 +15,9 @@ const artifactDirectory = process.env.SPG_ARTIFACT_DIRECTORY
   ? path.resolve(process.env.SPG_ARTIFACT_DIRECTORY)
   : path.join(projectDirectory, "test-artifacts", "V003-C013.5");
 const evidencePath = path.join(artifactDirectory, "canonical-material-picker-evidence.json");
-const html = fs.readFileSync(appPath, "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const html = verifiedApplication.html;
+const m4HarnessSource = buildM4HarnessSource(html);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 
 const block = (name) => {
@@ -28,10 +31,8 @@ const context = vm.createContext({
   toScuUnits: (value) => Math.round(Number(value) * 10000),
   foldSearchText: (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
-${block("M2_ALLOCATION_ENGINE")}
+vm.runInContext(`${m4HarnessSource}
 ${block("MATERIAL_NAMING_MODEL")}
-${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
 ${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 globalThis.__C0135__ = {
@@ -46,7 +47,8 @@ globalThis.__C0135__ = {
   allocate: allocateCardsDeterministically,
   buildCombined: buildCombinedMaterials,
   buildBackup: buildM4BackupEnvelope,
-  validateBackup: validateAndMigrateM4Backup
+  validateBackup: validateAndMigrateM4Backup,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords
 };`, context, { filename: "spg-v003-c0135-model.js" });
 
 const model = context.__C0135__;
@@ -156,7 +158,10 @@ assert.equal(combined[0].missingUnits, 0);
 
 const reloadedKnown = model.buildKnown(clone(fixture.miningCommodityIndex), clone(fixture.batches), [clone(card)], null, [clone(relation)], fixture.scVersion);
 assert.deepEqual(clone(reloadedKnown), clone(known), "Reload után a canonical picker determinisztikus.");
-const userData = { userInventory: [], materialBatches: clone(fixture.batches).concat(newBatch), craftingCards: [clone(card)], miningLoadouts: [], userSettings: [] };
+const userData = {
+  userInventory: [], materialBatches: clone(fixture.batches).concat(newBatch), craftingCards: [clone(card)], miningLoadouts: [], userSettings: [],
+  craftHistory: [], userMeta: clone(model.defaultUserMetaRecords())
+};
 const backup = model.buildBackup(userData, { applicationVersion: "V003-dev", exportedAt: "2026-09-07T10:02:00.000Z" });
 const restored = model.validateBackup(backup).backup.data;
 assert.equal(restored.materialBatches.length, 3);

@@ -8,14 +8,14 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$inputHead = '4923aae9948666aeb6acdb793b64f77706419648'
-$candidateSourceHead = 'c4fef88d5d0a910437b814aa2bd9f90b9375c877'
-$expectedCandidateSha = '7ac2c27bc7a35f719f4a4526e6839f8460a51e2ab6d881e1a95c3ed16f58b050'
-$expectedCandidateBytes = 1083258
+$inputHead = '3f94ad079c95234599c56f84347c48a0d11ecc25'
+$candidateSourceHead = 'a6a5d35592d9777c6b740eeb7ec44c4c58b27443'
+$expectedCandidateSha = '16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5'
+$expectedCandidateBytes = 1083886
 $expectedV003TagTarget = 'ebc83281769fd212d988ee55957b1c2754256490'
 $expectedV003ArtifactSize = 835820
 $expectedV003ArtifactSha = '87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8'
-$artifactDirectory = Join-Path $projectRoot 'test-artifacts\V004-C008'
+$artifactDirectory = Join-Path $projectRoot 'test-artifacts\V004-C010'
 $candidateDirectory = Join-Path $artifactDirectory 'fresh-release-candidate'
 $candidatePath = Join-Path $candidateDirectory 'sPg Crafting List V004 RC.html'
 $manifestPath = Join-Path $candidateDirectory 'candidate-manifest.json'
@@ -26,7 +26,7 @@ $v003ArtifactPath = Join-Path $projectRoot 'releases\V003\sPg Crafting List.html
 $stableV004Path = Join-Path $projectRoot 'releases\V004'
 $temporaryProject = $null
 $lines = [System.Collections.Generic.List[string]]::new()
-$lines.Add('V004-C008 fresh release candidate validation')
+$lines.Add('V004-C010 replacement release candidate validation')
 $leafResults = [ordered]@{}
 
 function Write-Utf8NoBom {
@@ -76,7 +76,7 @@ try {
     if ($branch -ne 'candidate/V004') { throw "Unexpected branch: $branch" }
     & git merge-base --is-ancestor $candidateSourceHead HEAD
     if ($LASTEXITCODE -ne 0) { throw 'The candidate identity commit is not an ancestor of validation HEAD.' }
-    if ((& git rev-parse "$candidateSourceHead^").Trim() -ne $inputHead) { throw 'The candidate identity commit is not the direct child of the exact C007.1 checkpoint.' }
+    if ((& git rev-parse "$candidateSourceHead^").Trim() -ne $inputHead) { throw 'The C010 application repair commit is not the direct child of the preserved invalid C009 source commit.' }
     & git diff --quiet
     if ($LASTEXITCODE -ne 0) { throw 'The release validator requires no tracked working-tree changes.' }
     & git diff --cached --quiet
@@ -85,15 +85,22 @@ try {
         'test-artifacts/V004-C008/fresh-release-candidate/candidate-manifest.json',
         'test-artifacts/V004-C008/fresh-release-candidate/sPg Crafting List V004 RC.html',
         'test-artifacts/V004-C008/identity-freeze-evidence.json',
-        'test-artifacts/V004-C008/target-summary.json',
-        'test-artifacts/V004-C008/validation.log'
+        'test-artifacts/V004-C008/validation.log',
+        'test-artifacts/V004-C008.2/harness-closure-evidence.json',
+        'test-artifacts/V004-C008.2/target-summary.json',
+        'test-artifacts/V004-C009/fresh-release-candidate/candidate-manifest.json',
+        'test-artifacts/V004-C009/fresh-release-candidate/sPg Crafting List V004 RC.html',
+        'test-artifacts/V004-C009/harness-closure-evidence.json',
+        'test-artifacts/V004-C009/harness-target-summary.json',
+        'test-artifacts/V004-C010/fresh-release-candidate/candidate-manifest.json',
+        'test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html'
     )
     $unexpectedUntracked = @(& git ls-files --others --exclude-standard | Where-Object { $allowedUntracked -notcontains $_ })
-    if ($unexpectedUntracked.Count -ne 0) { throw "Unexpected untracked files before C008: $($unexpectedUntracked -join ', ')" }
+    if ($unexpectedUntracked.Count -ne 0) { throw "Unexpected untracked files before C010: $($unexpectedUntracked -join ', ')" }
     if (-not (Test-Path -LiteralPath $PlaywrightModulePath)) { throw "Playwright module not found: $PlaywrightModulePath" }
-    if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact path already exists; C008 cannot overwrite it.' }
+    if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact path already exists; C010 cannot overwrite it.' }
     & git show-ref --verify --quiet refs/tags/V004
-    if ($LASTEXITCODE -eq 0) { throw 'V004 tag already exists; C008 cannot continue.' }
+    if ($LASTEXITCODE -eq 0) { throw 'V004 tag already exists; C010 cannot continue.' }
 
     $gitDir = (& git rev-parse --git-dir).Trim()
     $operations = @(@('MERGE_HEAD', 'REBASE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply') | Where-Object {
@@ -112,8 +119,9 @@ try {
 
     & git diff --quiet $candidateSourceHead HEAD -- 'sPg Crafting List.html'
     if ($LASTEXITCODE -ne 0) { throw 'Application commit differs from the frozen candidate source.' }
-    Invoke-BoundedCheck 'identity-dataset-adapter-freeze' 'node' @('.\tools\run-v004-c008-identity-freeze-tests.mjs')
+    Invoke-BoundedCheck 'history-snapshot-dataset-adapter-freeze' 'node' @('.\tools\run-v004-c010-identity-freeze-tests.mjs')
     Invoke-BoundedCheck 'harness-dependency-wiring-audit' 'node' @('.\tools\audit-v004-c0081-harness-compatibility.mjs')
+    Invoke-BoundedCheck 'm4-remaining-harness-closure-audit' 'node' @('.\tools\audit-v004-c0082-harness-closure.mjs')
     $manifest = Read-Json $manifestPath
     $identityEvidence = Read-Json (Join-Path $artifactDirectory 'identity-freeze-evidence.json')
     $candidateShaBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $candidatePath).Hash.ToLowerInvariant()
@@ -121,14 +129,14 @@ try {
     if ($candidateShaBefore -ne $expectedCandidateSha -or $candidateBytes -ne $expectedCandidateBytes) { throw 'Frozen candidate SHA/size mismatch.' }
     if ($manifest.sourceHead -ne $candidateSourceHead -or $manifest.sha256 -ne $candidateShaBefore -or [int64]$manifest.bytes -ne $candidateBytes) { throw 'Candidate manifest mismatch.' }
     if ($manifest.runtimeIdentity -ne 'V004' -or $manifest.v004DevRuntimeIdentityOccurrences -ne 0 -or $manifest.backupSchemaVersion -ne 3 -or $manifest.applicationRuntimeFileCount -ne 1 -or $manifest.localRuntimeSidecars -ne 0) { throw 'Candidate identity/schema/single-file manifest mismatch.' }
-    if ($identityEvidence.status -ne 'PASS_IDENTITY_ONLY_DATASET_ADAPTER_FREEZE' -or $identityEvidence.allOtherApplicationBytesUnchanged -ne $true -or $identityEvidence.full1606BlueprintAuditRequired -ne $false) { throw 'Dataset/adapter freeze proof mismatch.' }
+    if ($identityEvidence.status -ne 'PASS_HISTORY_SNAPSHOT_ONLY_DATASET_ADAPTER_FREEZE' -or $identityEvidence.allOtherApplicationBytesUnchanged -ne $true -or $identityEvidence.candidateSourceByteIdentical -ne $true -or $identityEvidence.full1606BlueprintAuditRequired -ne $false) { throw 'C010 dataset/adapter freeze proof mismatch.' }
 
     $testPlan = Read-Json (Join-Path $projectRoot 'tests\test-plan.json')
-    $releaseTest = @($testPlan.tests | Where-Object { $_.id -eq 'v004-c008-release-candidate' })
-    if ($releaseTest.Count -ne 1) { throw 'Missing or duplicate v004-c008-release-candidate test-plan entry.' }
+    $releaseTest = @($testPlan.tests | Where-Object { $_.id -eq 'v004-c010-replacement-release-candidate' })
+    if ($releaseTest.Count -ne 1) { throw 'Missing or duplicate v004-c010-replacement-release-candidate test-plan entry.' }
     $configuredLeafTests = @($releaseTest[0].leafTests)
 
-    $temporaryProject = Join-Path ([System.IO.Path]::GetTempPath()) ("spg-v004-c008-" + [guid]::NewGuid().ToString('N'))
+    $temporaryProject = Join-Path ([System.IO.Path]::GetTempPath()) ("spg-v004-c010-" + [guid]::NewGuid().ToString('N'))
     Invoke-BoundedCheck 'isolated-candidate-clone' 'git' @('clone', '--no-hardlinks', '--no-tags', '--single-branch', '--branch', 'candidate/V004', $projectRoot, $temporaryProject)
     Copy-Item -LiteralPath $candidatePath -Destination (Join-Path $temporaryProject 'sPg Crafting List.html') -Force
     $isolatedApplicationPath = Join-Path $temporaryProject 'sPg Crafting List.html'
@@ -189,11 +197,11 @@ try {
         'v004-c007-multi-tab-chrome' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c007-browser-tests.mjs', "--playwright-module=$PlaywrightModulePath") }
         'v004-c0071-user-data-safety-model' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c0071-tests.mjs') }
         'v004-c0071-user-data-safety-chrome' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c0071-browser-tests.mjs', "--playwright-module=$PlaywrightModulePath") }
-        'v004-c008-candidate-chrome-direct-live' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c008-candidate-browser-tests.mjs', '--application=.\sPg Crafting List.html', '--evidence=.\test-artifacts\V004-C008\candidate-browser-evidence.json', "--playwright-module=$PlaywrightModulePath") }
+        'v004-c010-candidate-chrome-direct-live' = @{ Executable = 'node'; Arguments = @('.\tools\run-v004-c008-candidate-browser-tests.mjs', '--application=.\sPg Crafting List.html', '--evidence=.\test-artifacts\V004-C010\candidate-browser-evidence.json', "--playwright-module=$PlaywrightModulePath") }
     }
     if ($configuredLeafTests.Count -ne $leafCommands.Count) { throw "Test-plan/validator leaf count mismatch: $($configuredLeafTests.Count) vs $($leafCommands.Count)" }
     foreach ($leafId in $configuredLeafTests) {
-        if (-not $leafCommands.Contains($leafId)) { throw "Unknown configured C008 leaf: $leafId" }
+        if (-not $leafCommands.Contains($leafId)) { throw "Unknown configured C010 leaf: $leafId" }
     }
     foreach ($leafId in $leafCommands.Keys) {
         if ($configuredLeafTests -notcontains $leafId) { throw "Validator leaf missing from test plan: $leafId" }
@@ -252,7 +260,7 @@ try {
         if ($evidence.applicationSha256 -ne $candidateShaBefore) { throw "Current V004 evidence is not candidate-byte scoped: $relativePath" }
     }
 
-    $candidateBrowserSource = Join-Path $temporaryProject 'test-artifacts\V004-C008\candidate-browser-evidence.json'
+    $candidateBrowserSource = Join-Path $temporaryProject 'test-artifacts\V004-C010\candidate-browser-evidence.json'
     $candidateBrowserTarget = Join-Path $artifactDirectory 'candidate-browser-evidence.json'
     Copy-Item -LiteralPath $candidateBrowserSource -Destination $candidateBrowserTarget -Force
     $candidateBrowser = Read-Json $candidateBrowserTarget
@@ -264,15 +272,15 @@ try {
     $v003TagTargetAfter = (& git rev-parse 'V003^{}').Trim()
     $v003ArtifactAfter = Get-Item -LiteralPath $v003ArtifactPath
     $v003ArtifactShaAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $v003ArtifactPath).Hash.ToLowerInvariant()
-    if ($v003TagTypeAfter -ne $v003TagTypeBefore -or $v003TagTargetAfter -ne $v003TagTargetBefore) { throw 'V003 tag changed during C008.' }
-    if ($v003ArtifactAfter.Length -ne $v003ArtifactBefore.Length -or $v003ArtifactShaAfter -ne $v003ArtifactShaBefore) { throw 'V003 artifact changed during C008.' }
+    if ($v003TagTypeAfter -ne $v003TagTypeBefore -or $v003TagTargetAfter -ne $v003TagTargetBefore) { throw 'V003 tag changed during C010.' }
+    if ($v003ArtifactAfter.Length -ne $v003ArtifactBefore.Length -or $v003ArtifactShaAfter -ne $v003ArtifactShaBefore) { throw 'V003 artifact changed during C010.' }
     & git show-ref --verify --quiet refs/tags/V004
-    if ($LASTEXITCODE -eq 0) { throw 'V004 tag was created during C008.' }
-    if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact was created during C008.' }
+    if ($LASTEXITCODE -eq 0) { throw 'V004 tag was created during C010.' }
+    if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact was created during C010.' }
     Invoke-BoundedCheck 'git-diff-check' 'git' @('diff', '--check')
 
     $regressionEvidence = [ordered]@{
-        cycle = 'V004-C008'
+        cycle = 'V004-C010'
         status = 'PASS_FULL_INTEGRATION_EXACT_CANDIDATE_BYTES'
         candidateSourceHead = $candidateSourceHead
         validationHead = $validationHead
@@ -283,7 +291,7 @@ try {
         leafTestCount = $leafResults.Count
         nestedLegacyValidators = 0
         gameDataIdentity = $candidateBrowser.directFile.gameDataIdentity
-        datasetAdapterFreeze = 'PASS_IDENTITY_ONLY'
+        datasetAdapterFreeze = 'PASS_HISTORY_SNAPSHOT_ONLY_APPLICATION_DIFF'
         full1606BlueprintAudit = 'NOT_RERUN_UNCHANGED_ADAPTER_AND_DATASET_CONTRACT'
         representativeWikiSmoke = 'PASS'
         representativeUexSmoke = 'PASS'
@@ -298,13 +306,13 @@ try {
     Write-Utf8NoBom $regressionEvidencePath (($regressionEvidence | ConvertTo-Json -Depth 12) + "`n")
 
     $summary = [ordered]@{
-        cycle = 'V004-C008'
+        cycle = 'V004-C010'
         status = 'AUTOMATED_RELEASE_CANDIDATE_PASS_MANUAL_FILE_GATE_REQUIRED'
         inputCheckpoint = $inputHead
         candidateBranch = 'candidate/V004'
         candidateCommit = $candidateSourceHead
         validationHead = $validationHead
-        candidatePath = 'test-artifacts/V004-C008/fresh-release-candidate/sPg Crafting List V004 RC.html'
+        candidatePath = 'test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html'
         candidateSha256 = $candidateShaAfter
         candidateBytes = $candidateBytes
         runtimeIdentity = 'V004'
@@ -332,17 +340,17 @@ try {
     $lines.Add('v004Tag=NOT_CREATED')
     $lines.Add('push=NO')
     Write-Utf8NoBom $validationLogPath (($lines -join "`n") + "`n")
-    Write-Output "V004_C008_AUTOMATED_RELEASE_CANDIDATE_PASS candidate=$candidatePath bytes=$candidateBytes sha256=$candidateShaAfter"
+    Write-Output "V004_C010_AUTOMATED_REPLACEMENT_RELEASE_CANDIDATE_PASS candidate=$candidatePath bytes=$candidateBytes sha256=$candidateShaAfter"
 } catch {
     $failure = $_.Exception.Message
-    $lines.Add("result=V004-C008_RELEASE_CANDIDATE_BLOCKED")
+    $lines.Add("result=V004-C010_REPLACEMENT_RELEASE_CANDIDATE_BLOCKED")
     $lines.Add("failure=$failure")
     $lines.Add('stableArtifact=NOT_CREATED')
     $lines.Add('v004Tag=NOT_CREATED')
     $lines.Add('push=NO')
     Write-Utf8NoBom $validationLogPath (($lines -join "`n") + "`n")
     $blocked = [ordered]@{
-        cycle = 'V004-C008'
+        cycle = 'V004-C010'
         status = 'RELEASE_CANDIDATE_BLOCKED'
         failure = $failure
         candidateCommit = $candidateSourceHead

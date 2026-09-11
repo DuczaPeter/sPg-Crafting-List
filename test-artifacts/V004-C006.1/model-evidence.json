@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C006.1",
   "status": "PASS_TARGETED_MODEL",
-  "applicationSha256": "9fc09f1884feedcea64390f5f4ce34b37e9798bf823c78f7e840d51406427798",
+  "applicationSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
   "backupSchemaVersion": 3,
   "pristineReplace": {
     "exactRestore": true,
@@ -18,6 +18,14 @@
     "restoredCardPreserved": true,
     "unknownHistoryFieldPreserved": true
   },
+  "snapshotCompatibility": {
+    "rawHistoryCanonicalCurrentEligible": true,
+    "canonicalHistoryRawCurrentEligible": true,
+    "canonicalSnapshotIdempotent": true,
+    "semanticChangeBlocker": "UNDO_CARD_STATE_CHANGED",
+    "newCompleteSnapshotCanonical": true,
+    "fullRawSnapshotRestoreCanonical": true
+  },
   "fullUndo": {
     "structuralRoundTrip": true,
     "restoredInventoryPreserved": true,
@@ -25,6 +33,7 @@
     "userMetaPreserved": true
   },
   "lifoAfterImport": {
+    "eventAEligibleBeforeBackup": true,
     "eventAEligible": true,
     "eventBStatus": "UNDONE",
     "secondUndo": "ALREADY_UNDONE",

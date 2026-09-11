@@ -1,0 +1,8 @@
+{
+    "cycle":  "V004-C008.2",
+    "status":  "REMAINING_HARNESS_REPAIR_BLOCKED",
+    "failure":  "m4-combined-backup-targeted failed with exit code 1",
+    "stableArtifact":  "NOT_CREATED",
+    "v004Tag":  "NOT_CREATED",
+    "push":  "NO"
+}

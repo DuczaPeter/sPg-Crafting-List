@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
-import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const html = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
+const appPath = path.join(projectDirectory, "sPg Crafting List.html");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const html = verifiedApplication.html;
+const m4HarnessSource = buildM4HarnessSource(html);
 const block = (name) => {
   const match = html.match(new RegExp(`/\\* ${name}_START \\*/([\\s\\S]*?)/\\* ${name}_END \\*/`));
   assert.ok(match, `A ${name} modellblokk hiányzik.`);
@@ -18,9 +21,7 @@ const context = vm.createContext({
   nowIso: () => "2026-08-22T12:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
-${block("M2_ALLOCATION_ENGINE")}
-${block("M4_COMBINED_BACKUP_MODEL")}
+vm.runInContext(`${m4HarnessSource}
 globalThis.__M4__ = {
   rules: M2_QUALITY_RULES,
   allocateCardsDeterministically,
@@ -30,7 +31,8 @@ globalThis.__M4__ = {
   buildM4ImportPreview,
   simulateM4UserDataImport,
   fingerprintUserDataPayload,
-  normalizeM4UserData
+  normalizeM4UserData,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords
 };`, context, { filename: "spg-m4-model.js" });
 
 const m4 = context.__M4__;
@@ -109,14 +111,24 @@ const userData = {
   materialBatches: dualBatches,
   craftingCards: [dualCard],
   miningLoadouts: [{ id: "loadout-1", materialUuid, materialName: "Shared Material", name: "Fixture", stations: [], gadgets: [], isDefault: true }],
-  userSettings: [{ key: "user:locale", scope: "USER", value: "hu-HU" }]
+  userSettings: [{ key: "user:locale", scope: "USER", value: "hu-HU" }],
+  craftHistory: [],
+  userMeta: clone(m4.defaultUserMetaRecords())
 };
 
 // 5. Export -> deletion -> replace import restores a bit-identical fingerprint.
 const envelope = m4.buildM4BackupEnvelope(userData, { application: "sPg Crafting List", applicationVersion: "V001-dev" });
-const validated = m4.validateAndMigrateM4Backup(JSON.stringify(envelope));
-const emptyData = { userInventory: [], materialBatches: [], craftingCards: [], miningLoadouts: [], userSettings: [] };
+assert.equal(envelope.data.craftingCards[0].craftTimeSeconds, null, "The canonical export must preserve missing craft time as null.");
+const serializedEnvelope = JSON.stringify(envelope);
+const validated = m4.validateAndMigrateM4Backup(serializedEnvelope);
+assert.equal(validated.backup.data.craftingCards[0].craftTimeSeconds, null, "JSON round-trip must preserve craftTimeSeconds null.");
+assert.equal(m4.fingerprintUserDataPayload(validated.backup.data), envelope.fingerprint, "JSON round-trip changed the canonical fingerprint.");
+const emptyData = {
+  userInventory: [], materialBatches: [], craftingCards: [], miningLoadouts: [], userSettings: [],
+  craftHistory: [], userMeta: clone(m4.defaultUserMetaRecords())
+};
 const restored = m4.simulateM4UserDataImport(emptyData, validated.backup.data, "REPLACE", false);
+assert.equal(restored.craftingCards[0].craftTimeSeconds, null, "REPLACE restore must preserve craftTimeSeconds null.");
 assert.equal(m4.fingerprintUserDataPayload(restored), envelope.fingerprint);
 
 // 6. Invalid JSON is rejected.
@@ -138,7 +150,17 @@ const schema1 = m4.validateAndMigrateM4Backup({
   data: { userInventory: userData.userInventory, materialBatches: userData.materialBatches, craftingCards: userData.craftingCards, userLoadouts: userData.miningLoadouts }
 });
 assert.equal(schema1.migration.fromSchema, 1);
-assert.equal(schema1.migration.toSchema, 2);
+assert.equal(schema1.backup.schemaVersion, 3);
+assert.equal(schema1.backup.schemaVersion, envelope.schemaVersion);
+assert.equal(schema1.migration.toSchema, schema1.backup.schemaVersion);
+assert.deepEqual(Array.from(schema1.migration.steps), [
+  "LOADOUT_KEY_NORMALIZATION",
+  "USER_SETTINGS_DEFAULT",
+  "EMPTY_CRAFT_HISTORY",
+  "V004_META_INITIALIZATION",
+  "CARD_REVISION_INITIALIZATION",
+  "CARD_QUANTITY_SEMANTICS_CLASSIFICATION"
+]);
 assert.equal(schema1.backup.data.miningLoadouts.length, 1);
 assert.equal(schema1.backup.data.userSettings.length, 0);
 
@@ -216,6 +238,8 @@ console.log(JSON.stringify({
   mandatoryCases: 12,
   backupSchemaVersion: envelope.schemaVersion,
   roundtripFingerprint: envelope.fingerprint,
+  craftTimeSecondsNullJsonRoundTrip: true,
+  canonicalFingerprintUnchanged: true,
   performance: {
     cards: 1000,
     recipeSlots: 3000,

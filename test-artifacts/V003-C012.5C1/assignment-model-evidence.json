@@ -16,7 +16,8 @@
   "deleteCleanup": "PASS",
   "backupRestore": "PASS",
   "oldBackupCompatibility": "PASS",
-  "legacyAllocationUnchanged": "PASS",
+  "legacyFallbackAllocationCompatibility": "PASS",
   "c0125c2Started": false,
-  "c0125c3Started": false
+  "c0125c3aIntegrationExpected": true,
+  "c0125c3bStarted": false
 }

@@ -5,14 +5,14 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
-import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const appPath = path.join(projectDirectory, "sPg Crafting List.html");
 const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
 const appHtml = verifiedApplication.html;
-const m1HarnessSource = buildM1HarnessSource(appHtml);
+const m4HarnessSource = buildM4HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const standaloneArgument = process.argv.find((argument) => argument.startsWith("--standalone="));
 const standalonePath = standaloneArgument
@@ -30,9 +30,7 @@ const context = vm.createContext({
   nowIso: () => "2026-08-29T12:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${m1HarnessSource}
-${block("M2_ALLOCATION_ENGINE")}
-${block("M4_COMBINED_BACKUP_MODEL")}
+vm.runInContext(`${m4HarnessSource}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}
 ${block("C0125B_COMBINED_QUALITY_POOL_MODEL")}
 ${block("MATERIAL_NAMING_MODEL")}
@@ -51,6 +49,7 @@ globalThis.__C0121__ = {
   buildCombinedMaterialsOverviewViewModel,
   buildM4BackupEnvelope,
   validateAndMigrateM4Backup,
+  defaultUserMetaRecords: v004DefaultUserMetaRecords,
   buildStandaloneSnapshot: m6BuildStandaloneSnapshot,
   renderStandaloneHtml: m6RenderStandaloneHtml
 };`, context, { filename: "spg-v003-c0121-model.js" });
@@ -194,7 +193,10 @@ const normalizedPlans = model.normalizeMaterialQualityPlans({
 assert.deepEqual(JSON.parse(JSON.stringify(normalizedPlans)), { [materialUuid]: target900 });
 const userSettings = [{ key: "user:materialQualityPlans", scope: "USER", value: normalizedPlans, updatedAt: "2026-08-29T12:00:00.000Z" }];
 assert.deepEqual(JSON.parse(JSON.stringify(model.materialQualityPlansFromUserSettings(userSettings))), { [materialUuid]: target900 });
-const userData = { userInventory: [], materialBatches: dualBatches, craftingCards: [dualCard], miningLoadouts: [], userSettings };
+const userData = {
+  userInventory: [], materialBatches: dualBatches, craftingCards: [dualCard], miningLoadouts: [], userSettings,
+  craftHistory: [], userMeta: clone(model.defaultUserMetaRecords())
+};
 const envelope = model.buildM4BackupEnvelope(userData, { applicationVersion: "V003-dev" });
 const restored = model.validateAndMigrateM4Backup(JSON.stringify(envelope));
 assert.deepEqual(JSON.parse(JSON.stringify(model.materialQualityPlansFromUserSettings(restored.backup.data.userSettings))), { [materialUuid]: target900 });

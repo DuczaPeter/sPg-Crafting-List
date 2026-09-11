@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import crypto, { webcrypto } from "node:crypto";
+import { webcrypto } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildM4HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -11,10 +12,48 @@ const appPath = path.join(projectDirectory, "sPg Crafting List.html");
 const fixturePath = path.join(projectDirectory, "tests", "fixtures", "v004-c003-reservation.json");
 const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V004-C006.1");
 const evidencePath = path.join(artifactDirectory, "model-evidence.json");
-const appBuffer = fs.readFileSync(appPath);
-const appHtml = appBuffer.toString("utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const appHtml = verifiedApplication.html;
+const m4HarnessSource = buildM4HarnessSource(appHtml);
 const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf8"));
 const clone = value => JSON.parse(JSON.stringify(value));
+
+function cardSemanticProjection(card) {
+  const source = card || {};
+  const assignments = source.recipeSlotQualityPoolAssignments && typeof source.recipeSlotQualityPoolAssignments === "object"
+    ? source.recipeSlotQualityPoolAssignments
+    : {};
+  return {
+    id: source.id,
+    quantity: source.quantity,
+    cardRevision: source.cardRevision,
+    craftRunInputEvidence: source.craftRunInputEvidence,
+    recipeSlotQualityPoolAssignments: Object.fromEntries(Object.entries(assignments).sort(([left], [right]) => left.localeCompare(right))),
+    requirements: (Array.isArray(source.requirements) ? source.requirements : []).map(requirement => {
+      const hasExactUnits = requirement.exactRequiredQuantityUnits !== undefined && requirement.exactRequiredQuantityUnits !== null;
+      const hasNormalizedUnits = requirement.normalizedRequiredQuantityUnits !== undefined && requirement.normalizedRequiredQuantityUnits !== null;
+      if (hasExactUnits && hasNormalizedUnits) {
+        assert.equal(
+          requirement.normalizedRequiredQuantityUnits,
+          requirement.exactRequiredQuantityUnits,
+          `Requirement exact-unit evidence mismatch: ${requirement.id}`
+        );
+      }
+      const effectiveExactRequiredUnits = hasNormalizedUnits
+        ? requirement.normalizedRequiredQuantityUnits
+        : requirement.exactRequiredQuantityUnits;
+      assert.ok(Number.isSafeInteger(effectiveExactRequiredUnits) && effectiveExactRequiredUnits > 0, `Requirement exact units missing: ${requirement.id}`);
+      return {
+        slotId: requirement.id,
+        aspectIndex: requirement.aspectIndex,
+        ingredientUuid: requirement.ingredientUuid,
+        commodityUuid: requirement.commodityUuid,
+        unit: requirement.unit,
+        effectiveExactRequiredUnits
+      };
+    })
+  };
+}
 
 function block(name) {
   const startMarker = `/* ${name}_START */`;
@@ -25,45 +64,10 @@ function block(name) {
   return appHtml.slice(start, end + endMarker.length);
 }
 
-const m4Block = block("M4_COMBINED_BACKUP_MODEL");
-const m4Foundation = m4Block.slice(0, m4Block.indexOf("function buildCombinedCanonicalMaterialLookup"));
 const context = vm.createContext({ console, crypto: webcrypto, TextEncoder, Uint8Array, Map, Set, Number, Object, Array, JSON, String, RegExp, Math, Date });
 vm.runInContext(`
-  function hasValidQuality(value) { return Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 1000; }
-  function isUserSettingRecord(record) { return Boolean(record && (record.scope === "USER" || String(record.key || "").indexOf("user:") === 0)); }
-  function compareStableIdentity(a, b) { return String(a && a.id || "").localeCompare(String(b && b.id || "")); }
-  var MATERIAL_QUALITY_PLAN_SETTING_KEY = "user:materialQualityPlans";
-  var MATERIAL_QUALITY_POOL_SETTING_KEY = "user:materialQualityPools";
+  ${m4HarnessSource}
   ${block("V004_C002_MIGRATION_MODEL")}
-  ${m4Foundation}
-  function normalizeStoredCraftingCard(card, fallbackOrder) {
-    var normalized = Object.assign({}, card || {});
-    normalized.order = Number.isInteger(Number(normalized.order)) ? Number(normalized.order) : fallbackOrder;
-    normalized.cardRevision = v004NormalizeCardRevision(normalized);
-    normalized.active = normalized.active !== false;
-    normalized.collapsed = normalized.collapsed === true;
-    normalized.quantity = Number.isInteger(Number(normalized.quantity)) && Number(normalized.quantity) > 0 ? Number(normalized.quantity) : 1;
-    normalized.quantitySemantics = normalized.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT
-      ? V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT : V004_QUANTITY_SEMANTICS.LEGACY_UNCONFIRMED;
-    normalized.requirements = Array.isArray(normalized.requirements) ? normalized.requirements.map(m4Clone) : [];
-    normalized.craftRunInputEvidence = normalized.craftRunInputEvidence === V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
-      ? V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT : V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
-    normalized.slotStrategies = normalized.slotStrategies && typeof normalized.slotStrategies === "object" ? normalized.slotStrategies : {};
-    normalized.recipeSlotQualityPoolAssignments = normalized.recipeSlotQualityPoolAssignments && typeof normalized.recipeSlotQualityPoolAssignments === "object"
-      ? normalized.recipeSlotQualityPoolAssignments : {};
-    return normalized;
-  }
-  function normalizeStoredCraftHistoryEvent(event) {
-    var normalized = m4Clone(event || {});
-    if (normalized.eventSchema === V004_CRAFT_HISTORY_EVENT_SCHEMA && normalized.quantitySemantics === V004_QUANTITY_SEMANTICS.CRAFT_RUN_COUNT) {
-      normalized.craftRunInputEvidence = normalized.craftRunInputEvidence === V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT
-        ? V004_CRAFT_RUN_INPUT_EVIDENCE.EXACT : V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
-      return normalized;
-    }
-    normalized.quantitySemantics = V004_QUANTITY_SEMANTICS.LEGACY_HISTORY_UNKNOWN;
-    normalized.craftRunInputEvidence = V004_CRAFT_RUN_INPUT_EVIDENCE.UNPROVEN;
-    return normalized;
-  }
   ${block("V004_C003_REVISION_RESERVATION_MODEL")}
   ${block("V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL")}
   ${block("V004_C005_CRAFT_HISTORY_UI_MODEL")}
@@ -80,7 +84,9 @@ vm.runInContext(`
     buildBackup: buildM4BackupEnvelope,
     validateBackup: validateAndMigrateM4Backup,
     prepareImport: prepareV004RevisionAwareImport,
-    fingerprint: fingerprintUserDataPayload
+    fingerprint: fingerprintUserDataPayload,
+    normalizeCard: normalizeStoredCraftingCard,
+    canonicalSnapshot: v004CanonicalizeCraftHistoryCardSnapshot
   };
 `, context);
 const model = context.__C0061__;
@@ -154,16 +160,67 @@ function exactRoundTrip(data, label) {
 
 const payload = payloadFrom(fixture);
 const baseMeta = metaRecords(fixture.revisions, 0);
+const rawFixtureCard = clone(fixture.card);
 
 const partialComplete = clone(model.completeMutation(
   await completionRequest(payload, 4, "craft-c0061-partial-0001"),
   clone(fixture.card), [clone(fixture.card)], baseMeta, clone(fixture.batches), "2026-09-10T18:01:00.000Z"
 ));
+const canonicalFixtureCard = clone(model.normalizeCard(rawFixtureCard, rawFixtureCard.order));
+const canonicalCompleteSnapshot = clone(partialComplete.historyEvent.preCraftCardSnapshot);
+assert.deepEqual(canonicalCompleteSnapshot, canonicalFixtureCard, "new Complete did not persist a production-canonical Card snapshot");
+assert.deepEqual(
+  clone(model.canonicalSnapshot(canonicalCompleteSnapshot, canonicalCompleteSnapshot.order)),
+  canonicalCompleteSnapshot,
+  "canonical History Card snapshot normalization is not idempotent"
+);
+assert.deepEqual(fixture.card, rawFixtureCard, "snapshot canonicalization mutated the source Card");
+
+const partialMetaAfterComplete = metaRecords(partialComplete.revisions, 1);
+const canonicalHistoryRawCurrentEligibility = clone(model.evaluateUndo(
+  partialComplete.historyEvent,
+  [partialComplete.historyEvent],
+  partialComplete.craftingCards,
+  partialMetaAfterComplete,
+  partialComplete.materialBatches
+));
+assert.equal(canonicalHistoryRawCurrentEligibility.eligible, true, "canonical History + raw current Card must remain Undo-eligible");
+
+const rawHistoryEvent = clone(partialComplete.historyEvent);
+rawHistoryEvent.preCraftCardSnapshot = clone(rawFixtureCard);
+const canonicalCurrentCard = clone(model.normalizeCard(partialComplete.craftingCards[0], partialComplete.craftingCards[0].order));
+const rawHistoryCanonicalCurrentEligibility = clone(model.evaluateUndo(
+  rawHistoryEvent,
+  [rawHistoryEvent],
+  [canonicalCurrentCard],
+  partialMetaAfterComplete,
+  partialComplete.materialBatches
+));
+assert.equal(rawHistoryCanonicalCurrentEligibility.eligible, true, "raw History + canonical current Card must remain Undo-eligible");
+
+const semanticallyChangedCurrentCard = clone(canonicalCurrentCard);
+semanticallyChangedCurrentCard.recipeSlotQualityPoolAssignments["slot-alpha"] = "MAXIMUM_Q_POOL";
+const changedEligibility = clone(model.evaluateUndo(
+  partialComplete.historyEvent,
+  [partialComplete.historyEvent],
+  [semanticallyChangedCurrentCard],
+  partialMetaAfterComplete,
+  partialComplete.materialBatches
+));
+assert.equal(changedEligibility.code, "UNDO_CARD_STATE_CHANGED", "real allocation semantics change must remain fail-closed");
+
 const partialUndo = clone(model.undoMutation(
   undoRequest(partialComplete.historyEvent, "undo-c0061-partial-0001"),
   partialComplete.historyEvent, [partialComplete.historyEvent], partialComplete.craftingCards,
-  metaRecords(partialComplete.revisions, 1), partialComplete.materialBatches, "2026-09-10T18:03:00.000Z"
+  partialMetaAfterComplete, partialComplete.materialBatches, "2026-09-10T18:03:00.000Z"
 ));
+assert.equal(partialUndo.historyEvent.craftTransactionId, partialComplete.historyEvent.craftTransactionId);
+assert.equal(partialUndo.historyEvent.reservationSnapshotHash, partialComplete.historyEvent.reservationSnapshotHash);
+assert.equal(partialUndo.historyEvent.reservationSnapshotSchema, partialComplete.historyEvent.reservationSnapshotSchema);
+assert.equal(partialUndo.historyEvent.historySequence, partialComplete.historyEvent.historySequence);
+assert.equal(partialUndo.historyEvent.timestamp, partialComplete.historyEvent.timestamp);
+assert.deepEqual(partialUndo.historyEvent.reservationSnapshot, partialComplete.historyEvent.reservationSnapshot);
+assert.deepEqual(partialUndo.historyEvent.consumedDeltas, partialComplete.historyEvent.consumedDeltas);
 partialUndo.historyEvent.forwardCompatibleProbe = { preserved: true, value: "C006.1_UNKNOWN_EVENT_FIELD" };
 const partialData = dataFromMutation(partialUndo);
 const partialRoundTrip = exactRoundTrip(partialData, "partial");
@@ -175,7 +232,11 @@ assert.deepEqual(partialImportedEvent.consumedDeltas, partialUndo.historyEvent.c
 assert.deepEqual(partialImportedEvent.restoredBatches, partialUndo.historyEvent.restoredBatches);
 assert.deepEqual(partialImportedEvent.undoRevisionEvidence, partialUndo.historyEvent.undoRevisionEvidence);
 assert.deepEqual(partialImportedEvent.forwardCompatibleProbe, partialUndo.historyEvent.forwardCompatibleProbe);
-assert.deepEqual(partialRoundTrip.prepared.data.craftingCards, partialData.craftingCards);
+assert.deepEqual(
+  partialRoundTrip.prepared.data.craftingCards.map(cardSemanticProjection),
+  partialData.craftingCards.map(cardSemanticProjection),
+  "partial: Card semantics changed during backup round-trip"
+);
 assert.deepEqual(partialRoundTrip.prepared.data.materialBatches, partialData.materialBatches);
 assert.deepEqual(partialRoundTrip.prepared.data.userMeta, partialRoundTrip.envelope.data.userMeta);
 
@@ -194,6 +255,22 @@ const fullComplete = clone(model.completeMutation(
   await completionRequest(payload, 5, "craft-c0061-full-000001"),
   clone(fixture.card), [clone(fixture.card)], baseMeta, clone(fixture.batches), "2026-09-10T18:20:00.000Z"
 ));
+const rawFullEvent = clone(fullComplete.historyEvent);
+rawFullEvent.preCraftCardSnapshot = clone(rawFixtureCard);
+const rawFullUndoTimestamp = "2026-09-10T18:20:30.000Z";
+const rawFullUndo = clone(model.undoMutation(
+  undoRequest(rawFullEvent, "undo-c0061-full-raw-0001"),
+  rawFullEvent, [rawFullEvent], fullComplete.craftingCards,
+  metaRecords(fullComplete.revisions, 1), fullComplete.materialBatches, rawFullUndoTimestamp
+));
+const expectedCanonicalFullRestore = {
+  ...clone(model.canonicalSnapshot(rawFixtureCard, rawFixtureCard.order)),
+  order: rawFullEvent.originalOrder,
+  cardRevision: rawFullEvent.cardRevisionAfter + 1,
+  updatedAt: rawFullUndoTimestamp
+};
+assert.deepEqual(rawFullUndo.craftingCards[0], expectedCanonicalFullRestore, "Full Undo did not restore a canonical Card from a raw History snapshot");
+
 const fullUndo = clone(model.undoMutation(
   undoRequest(fullComplete.historyEvent, "undo-c0061-full-000001"),
   fullComplete.historyEvent, [fullComplete.historyEvent], fullComplete.craftingCards,
@@ -201,7 +278,11 @@ const fullUndo = clone(model.undoMutation(
 ));
 const fullData = dataFromMutation(fullUndo);
 const fullRoundTrip = exactRoundTrip(fullData, "full");
-assert.deepEqual(fullRoundTrip.prepared.data.craftingCards, fullData.craftingCards);
+assert.deepEqual(
+  fullRoundTrip.prepared.data.craftingCards.map(cardSemanticProjection),
+  fullData.craftingCards.map(cardSemanticProjection),
+  "full: Card semantics changed during backup round-trip"
+);
 assert.deepEqual(fullRoundTrip.prepared.data.materialBatches, fullData.materialBatches);
 assert.deepEqual(fullRoundTrip.prepared.data.craftHistory, fullData.craftHistory);
 assert.deepEqual(fullRoundTrip.prepared.data.userMeta, fullRoundTrip.envelope.data.userMeta);
@@ -242,6 +323,14 @@ const undoB = clone(model.undoMutation(
   undoRequest(eventB, "undo-c0061-lifo-b-0001"), eventB, [eventA, eventB], [],
   metaRecords({ inventoryRevision: 6, allocationRevision: 9, craftListRevision: 3 }, 2), batchesAfterB, "2026-09-10T18:31:00.000Z"
 ));
+const eligibilityABeforeBackup = clone(model.evaluateUndo(
+  eventA,
+  [eventA, undoB.historyEvent],
+  undoB.craftingCards,
+  metaRecords(undoB.revisions, 2),
+  undoB.materialBatches
+));
+assert.equal(eligibilityABeforeBackup.eligible, true, "A must become eligible immediately after B Undo");
 const lifoData = dataFromMutation(undoB, [eventA, undoB.historyEvent]);
 const lifoRoundTrip = exactRoundTrip(lifoData, "lifo");
 const importedEvents = lifoRoundTrip.prepared.data.craftHistory;
@@ -303,7 +392,7 @@ assert.doesNotMatch(block("V004_C006_CRAFT_HISTORY_UNDO_MODEL"), /normalizeScuQu
 const evidence = {
   cycle: "V004-C006.1",
   status: "PASS_TARGETED_MODEL",
-  applicationSha256: crypto.createHash("sha256").update(appBuffer).digest("hex"),
+  applicationSha256: verifiedApplication.sha256,
   backupSchemaVersion: 3,
   pristineReplace: { exactRestore: true, revisionIncrementAtSerializationBoundary: 0, nonPristineRevisionInvalidationUnchanged: nonPristinePrepared.exactPristineRestore === false },
   partialUndo: {
@@ -316,8 +405,16 @@ const evidence = {
     restoredCardPreserved: true,
     unknownHistoryFieldPreserved: true
   },
+  snapshotCompatibility: {
+    rawHistoryCanonicalCurrentEligible: rawHistoryCanonicalCurrentEligibility.eligible,
+    canonicalHistoryRawCurrentEligible: canonicalHistoryRawCurrentEligibility.eligible,
+    canonicalSnapshotIdempotent: true,
+    semanticChangeBlocker: changedEligibility.code,
+    newCompleteSnapshotCanonical: true,
+    fullRawSnapshotRestoreCanonical: true
+  },
   fullUndo: { structuralRoundTrip: true, restoredInventoryPreserved: true, restoredCardPreserved: true, userMetaPreserved: true },
-  lifoAfterImport: { eventAEligible: eligibilityA.eligible, eventBStatus: importedB.status, secondUndo: eligibilityB.code, writes: 0 },
+  lifoAfterImport: { eventAEligibleBeforeBackup: eligibilityABeforeBackup.eligible, eventAEligible: eligibilityA.eligible, eventBStatus: importedB.status, secondUndo: eligibilityB.code, writes: 0 },
   legacySchema3: { status: "FAIL_CLOSED_COMPATIBLE", undoFieldsFabricated: false, unknownFieldPreserved: true },
   v003Migration: { status: "UNCHANGED", craftHistoryCount: 0, quantitySemantics: v003Validated.backup.data.craftingCards[0].quantitySemantics, revisionValues: [0, 0, 0, 0] },
   conservation: { relevantDurableDelta: 0, backupDataLoss: 0, normalizationRerun: false, liveApiUsed: false },

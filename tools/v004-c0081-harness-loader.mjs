@@ -21,6 +21,65 @@ const EXACT_QUANTITY_DECLARATIONS = Object.freeze([
   ["v004BuildExactRequirementQuantityEvidence", "function v004BuildExactRequirementQuantityEvidence("]
 ]);
 
+const DIRECT_M4_VERSIONED_DEPENDENCIES = Object.freeze([
+  "V004_CRAFT_HISTORY_EVENT_SCHEMA",
+  "V004_META_KEYS",
+  "V004_QUANTITY_SEMANTICS",
+  "v004DefaultUserMetaRecords",
+  "v004MigrationError",
+  "v004NormalizeImportedCards",
+  "v004NormalizeImportedCraftHistory",
+  "v004ValidateCraftHistoryEvent"
+]);
+
+const M4_REQUIRED_DECLARATIONS = Object.freeze([
+  ["APP", "var APP = Object.freeze({"],
+  ["isUserSettingRecord", "function isUserSettingRecord(record) {"],
+  ["V004_META_KEYS", "var V004_META_KEYS = Object.freeze({"],
+  ["V003_SOURCE_DATABASE", "var V003_SOURCE_DATABASE = Object.freeze({"],
+  ["V003_SOURCE_STORE_SPECS", "var V003_SOURCE_STORE_SPECS = Object.freeze(["],
+  ["v004MigrationError", "function v004MigrationError(code, message) {"],
+  ["v004DefaultUserMetaRecords", "function v004DefaultUserMetaRecords() {"],
+  ["normalizeV003SourceUserData", "function normalizeV003SourceUserData(data) {"],
+  ["V004_RESERVATION_SNAPSHOT_MARKER", "var V004_RESERVATION_SNAPSHOT_MARKER = "],
+  ["V004_OUTPUT_COUNT_EVIDENCE", "var V004_OUTPUT_COUNT_EVIDENCE = Object.freeze({"],
+  ["V004_QUANTITY_SEMANTICS", "var V004_QUANTITY_SEMANTICS = Object.freeze({"],
+  ["V004_CRAFT_RUN_INPUT_EVIDENCE", "var V004_CRAFT_RUN_INPUT_EVIDENCE = Object.freeze({"],
+  ["v004NormalizeRequirementExactEvidence", "function v004NormalizeRequirementExactEvidence(requirement) {"],
+  ["v004RequirementHasExactCraftRunInput", "function v004RequirementHasExactCraftRunInput(requirement) {"],
+  ["v004CardCraftRunInputEvidence", "function v004CardCraftRunInputEvidence(card) {"],
+  ["v004NormalizeCardRevision", "function v004NormalizeCardRevision(card) {"],
+  ["v004NormalizeImportedCards", "function v004NormalizeImportedCards(cards) {"],
+  ["v004NormalizeImportedCraftHistory", "function v004NormalizeImportedCraftHistory(events) {"],
+  ["v004CanonicalizeCraftHistoryCardSnapshot", "function v004CanonicalizeCraftHistoryCardSnapshot(snapshot, fallbackOrder) {"],
+  ["V004_CRAFT_HISTORY_EVENT_SCHEMA", "var V004_CRAFT_HISTORY_EVENT_SCHEMA = "],
+  ["v004CraftCompleteError", "function v004CraftCompleteError(code, message, detail) {"],
+  ["v004ValidateCraftHistoryEvent", "function v004ValidateCraftHistoryEvent(event) {"],
+  ["normalizeStoredCraftingCard", "function normalizeStoredCraftingCard(card, fallbackOrder) {"],
+  ["normalizeStoredCraftHistoryEvent", "function normalizeStoredCraftHistoryEvent(event) {"]
+]);
+
+const M4_CLOSURE_VERSIONED_IDENTIFIERS = Object.freeze([
+  ...EXACT_QUANTITY_DECLARATIONS.map(([identifier]) => identifier),
+  "V004_CRAFT_HISTORY_EVENT_SCHEMA",
+  "V004_CRAFT_RUN_INPUT_EVIDENCE",
+  "V004_META_KEYS",
+  "V004_OUTPUT_COUNT_EVIDENCE",
+  "V004_QUANTITY_SEMANTICS",
+  "V004_RESERVATION_SNAPSHOT_MARKER",
+  "v004CardCraftRunInputEvidence",
+  "v004CanonicalizeCraftHistoryCardSnapshot",
+  "v004CraftCompleteError",
+  "v004DefaultUserMetaRecords",
+  "v004MigrationError",
+  "v004NormalizeCardRevision",
+  "v004NormalizeImportedCards",
+  "v004NormalizeImportedCraftHistory",
+  "v004NormalizeRequirementExactEvidence",
+  "v004RequirementHasExactCraftRunInput",
+  "v004ValidateCraftHistoryEvent"
+]);
+
 function fail(code, message) {
   const error = new Error(`${code}: ${message}`);
   error.code = code;
@@ -64,6 +123,18 @@ function extractUniqueMarkerBlock(source, markerName) {
     fail("PRODUCTION_SOURCE_RANGE_INVALID", `${markerName} marker sorrend hibás.`);
   }
   return { source: source.slice(start, end), start, end };
+}
+
+function extractUniqueRange(source, startAnchor, endAnchor, label, bounds) {
+  const start = uniqueIndex(source, startAnchor, `${label} start`);
+  const end = uniqueIndex(source, endAnchor, `${label} end`);
+  if (end <= start) {
+    fail("PRODUCTION_SOURCE_RANGE_INVALID", `${label}: a source range sorrendje hibás.`);
+  }
+  if (bounds && (start < bounds.start || end > bounds.end)) {
+    fail("PRODUCTION_SOURCE_MARKER_BOUNDARY_INVALID", `${label}: a source range kilépett a várt markerblokkból.`);
+  }
+  return source.slice(start, end);
 }
 
 function executableVersionedIdentifiers(source) {
@@ -223,7 +294,72 @@ export function buildM1HarnessSource(verifiedCandidateHtml) {
   return `${quantitySource}\n${m1.source}`;
 }
 
+export function buildM4HarnessSource(verifiedCandidateHtml) {
+  if (typeof verifiedCandidateHtml !== "string" || !verifiedCandidateHtml.length) {
+    fail("VERIFIED_CANDIDATE_HTML_INVALID", "A candidate HTML string hiányzik.");
+  }
+  const c002 = extractUniqueMarkerBlock(verifiedCandidateHtml, "V004_C002_MIGRATION_MODEL");
+  const c003 = extractUniqueMarkerBlock(verifiedCandidateHtml, "V004_C003_REVISION_RESERVATION_MODEL");
+  const c004 = extractUniqueMarkerBlock(verifiedCandidateHtml, "V004_C004_ATOMIC_CRAFT_COMPLETE_MODEL");
+  const m2 = extractUniqueMarkerBlock(verifiedCandidateHtml, "M2_ALLOCATION_ENGINE");
+  const m4 = extractUniqueMarkerBlock(verifiedCandidateHtml, "M4_COMBINED_BACKUP_MODEL");
+  const m1HarnessSource = buildM1HarnessSource(verifiedCandidateHtml);
+
+  const m4DependencySource = [
+    extractUniqueRange(verifiedCandidateHtml, "var APP = Object.freeze({", "var STORE_DEFINITIONS = Object.freeze({", "APP declaration"),
+    extractUniqueRange(verifiedCandidateHtml, "function isUserSettingRecord(record) {", "class UserDataRepository", "User Setting predicate"),
+    extractUniqueRange(verifiedCandidateHtml, "var V004_META_KEYS = Object.freeze({", "function buildV003MigrationCanonicalPayload", "M4 meta and V003 source normalization", c002),
+    extractUniqueRange(verifiedCandidateHtml, "var V004_RESERVATION_SNAPSHOT_MARKER = ", "var V004_RESERVATION_STATUS", "reservation snapshot marker", c003),
+    extractUniqueRange(verifiedCandidateHtml, "var V004_OUTPUT_COUNT_EVIDENCE = Object.freeze({", "var V004_REQUIREMENT_QUANTITY_EXACTNESS", "Card quantity constants", c003),
+    extractUniqueRange(verifiedCandidateHtml, "function v004NormalizeRequirementExactEvidence(requirement) {", "function v004RevisionError", "Card exact-evidence normalization", c003),
+    extractUniqueRange(verifiedCandidateHtml, "function v004NormalizeCardRevision(card) {", "function v004RequirementAllocationSemantic", "Card revision normalization", c003),
+    extractUniqueRange(verifiedCandidateHtml, "function v004NormalizeImportedCards(cards) {", "function v004ReservationError", "imported Card and History normalization", c003),
+    extractUniqueRange(verifiedCandidateHtml, "var V004_CRAFT_HISTORY_EVENT_SCHEMA = ", "function v004StaleReservationError", "Craft History schema and error", c004),
+    extractUniqueRange(verifiedCandidateHtml, "function v004ValidateCraftHistoryEvent(event) {", "function v004BuildCraftCompletionMutation", "Craft History validation", c004),
+    extractUniqueRange(verifiedCandidateHtml, "function normalizeStoredCraftingCard(card, fallbackOrder) {", "/* V004_C005_CRAFT_HISTORY_UI_MODEL_START */", "stored Card and History normalization")
+  ].join("\n");
+
+  for (const [identifier, declaration] of M4_REQUIRED_DECLARATIONS) {
+    uniqueIndex(m4DependencySource, declaration, `${identifier} declaration`);
+  }
+  assertExactSet(
+    executableVersionedIdentifiers(m4.source),
+    DIRECT_M4_VERSIONED_DEPENDENCIES,
+    "M4_VERSIONED_DEPENDENCY_CONTRACT_MISMATCH",
+    "Az M4 direct versioned dependency készlete megváltozott"
+  );
+  assertExactSet(
+    executableVersionedIdentifiers(`${m1HarnessSource}\n${m4DependencySource}`),
+    M4_CLOSURE_VERSIONED_IDENTIFIERS,
+    "M4_CLOSURE_CONTRACT_MISMATCH",
+    "Az M4 explicit versioned dependency closure megváltozott"
+  );
+  return `${m1HarnessSource}\n${m2.source}\n${m4DependencySource}\n${m4.source}`;
+}
+
+export function buildHistorySnapshotCardNormalizerSource(verifiedCandidateHtml) {
+  if (typeof verifiedCandidateHtml !== "string" || !verifiedCandidateHtml.length) {
+    fail("VERIFIED_CANDIDATE_HTML_INVALID", "A candidate HTML string hiányzik.");
+  }
+  const recipeSlotAssignments = extractUniqueMarkerBlock(verifiedCandidateHtml, "C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL");
+  const storedCardNormalizer = extractUniqueRange(
+    verifiedCandidateHtml,
+    "function normalizeStoredCraftingCard(card, fallbackOrder) {",
+    "function normalizeStoredCraftHistoryEvent(event) {",
+    "stored Card normalizer"
+  );
+  uniqueIndex(storedCardNormalizer, "function normalizeStoredCraftingCard(card, fallbackOrder) {", "stored Card normalizer declaration");
+  return `${recipeSlotAssignments.source}\n${storedCardNormalizer}`;
+}
+
 export const V004_C0081_HARNESS_CONTRACT = Object.freeze({
   directDependencies: DIRECT_M1_VERSIONED_DEPENDENCIES,
-  quantityClosure: EXACT_QUANTITY_DECLARATIONS.map(([identifier]) => identifier)
+  quantityClosure: EXACT_QUANTITY_DECLARATIONS.map(([identifier]) => identifier),
+  directM4Dependencies: DIRECT_M4_VERSIONED_DEPENDENCIES,
+  m4RequiredDeclarations: M4_REQUIRED_DECLARATIONS.map(([identifier]) => identifier),
+  m4Closure: M4_CLOSURE_VERSIONED_IDENTIFIERS,
+  historySnapshotCardNormalizer: Object.freeze([
+    "C0125C_RECIPE_SLOT_POOL_ASSIGNMENT_MODEL",
+    "normalizeStoredCraftingCard"
+  ])
 });

@@ -12,10 +12,10 @@ const evidenceArgument = process.argv.find(value => value.startsWith("--evidence
 const moduleArgument = process.argv.find(value => value.startsWith("--playwright-module="));
 const applicationPath = applicationArgument
   ? path.resolve(projectDirectory, applicationArgument.slice("--application=".length))
-  : path.join(projectDirectory, "test-artifacts", "V004-C008", "fresh-release-candidate", "sPg Crafting List V004 RC.html");
+  : path.join(projectDirectory, "test-artifacts", "V004-C010", "fresh-release-candidate", "sPg Crafting List V004 RC.html");
 const evidencePath = evidenceArgument
   ? path.resolve(projectDirectory, evidenceArgument.slice("--evidence=".length))
-  : path.join(projectDirectory, "test-artifacts", "V004-C008", "candidate-browser-evidence.json");
+  : path.join(projectDirectory, "test-artifacts", "V004-C010", "candidate-browser-evidence.json");
 const applicationBytes = fs.readFileSync(applicationPath);
 
 async function loadPlaywright() {
@@ -148,7 +148,7 @@ try {
   const mobile = await verifyViewport(browser, `${origin}/candidate`, { width: 390, height: 844 });
   const directFile = await verifyDirectFileLive(browser);
   const evidence = {
-    cycle: "V004-C008",
+    cycle: "V004-C010",
     status: "PASS_CANDIDATE_GOOGLE_CHROME",
     browser: "Google Chrome",
     candidatePath: path.relative(projectDirectory, applicationPath).replaceAll("\\", "/"),
@@ -165,7 +165,7 @@ try {
   assert.equal(evidence.pageErrors.length, 0);
   fs.mkdirSync(path.dirname(evidencePath), { recursive: true });
   fs.writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
-  console.log(`V004_C008_CANDIDATE_CHROME_PASS evidence=${path.relative(projectDirectory, evidencePath)}`);
+  console.log(`V004_C009_CANDIDATE_CHROME_PASS evidence=${path.relative(projectDirectory, evidencePath)}`);
 } finally {
   if (browser) await browser.close();
   await closeServer(server);
