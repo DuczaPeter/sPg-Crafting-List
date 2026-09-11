@@ -12991,6 +12991,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       return (Array.isArray(events) ? events : []).map(normalizeStoredCraftHistoryEvent);
     }
 
+    function v004CanonicalizeCraftHistoryCardSnapshot(snapshot, fallbackOrder) {
+      return normalizeStoredCraftingCard(m4Clone(snapshot || {}), fallbackOrder);
+    }
+
     function v004ReservationError(code, message) {
       var error = new Error(message);
       error.code = code;
@@ -13686,7 +13690,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         timestamp: timestamp,
         status: "COMPLETED",
         undoTimestamp: null,
-        preCraftCardSnapshot: m4Clone(currentCard),
+        preCraftCardSnapshot: v004CanonicalizeCraftHistoryCardSnapshot(currentCard, currentCard.order),
         cardRemoved: remainingAfter === 0,
         shiftedCardRevisions: shiftedCardRevisions,
         inventoryConservation: "BEFORE_EQUALS_CONSUMED_PLUS_AFTER_ZERO_UNIT_LOSS",
@@ -13815,7 +13819,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
     }
 
     function v004ExpectedPostCraftCard(event) {
-      var expected = m4Clone(event.preCraftCardSnapshot);
+      var expected = v004CanonicalizeCraftHistoryCardSnapshot(event.preCraftCardSnapshot, event.originalOrder);
       expected.quantity = event.remainingAfter;
       expected.order = event.originalOrder;
       expected.cardRevision = event.cardRevisionAfter;
@@ -13874,7 +13878,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
           throw v004CraftUndoError("UNDO_CARD_REVISION_MISMATCH", "A Card revisionje megváltozott a Craft után.");
         }
         if (!v004SemanticEqual(
-          v004CardAllocationSemantic(currentCard, currentCard.order),
+          v004CardAllocationSemantic(v004CanonicalizeCraftHistoryCardSnapshot(currentCard, currentCard.order), currentCard.order),
           v004CardAllocationSemantic(v004ExpectedPostCraftCard(event), event.originalOrder)
         )) {
           throw v004CraftUndoError("UNDO_CARD_STATE_CHANGED", "A Card semantic state-je megváltozott a Craft után.");
@@ -13955,7 +13959,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         });
       } else {
         cardRevisionAfter = v004NextRevision(event.cardRevisionAfter, "cardRevision:" + event.craftingCardId);
-        restoredCard = Object.assign({}, m4Clone(event.preCraftCardSnapshot), {
+        restoredCard = Object.assign({}, v004CanonicalizeCraftHistoryCardSnapshot(event.preCraftCardSnapshot, event.originalOrder), {
           order: event.originalOrder,
           cardRevision: cardRevisionAfter,
           updatedAt: timestamp
