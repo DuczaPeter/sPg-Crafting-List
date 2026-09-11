@@ -10,6 +10,8 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $inputHead = '4923aae9948666aeb6acdb793b64f77706419648'
 $candidateSourceHead = 'c4fef88d5d0a910437b814aa2bd9f90b9375c877'
+$expectedCandidateSha = '7ac2c27bc7a35f719f4a4526e6839f8460a51e2ab6d881e1a95c3ed16f58b050'
+$expectedCandidateBytes = 1083258
 $expectedV003TagTarget = 'ebc83281769fd212d988ee55957b1c2754256490'
 $expectedV003ArtifactSize = 835820
 $expectedV003ArtifactSha = '87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8'
@@ -75,7 +77,19 @@ try {
     & git merge-base --is-ancestor $candidateSourceHead HEAD
     if ($LASTEXITCODE -ne 0) { throw 'The candidate identity commit is not an ancestor of validation HEAD.' }
     if ((& git rev-parse "$candidateSourceHead^").Trim() -ne $inputHead) { throw 'The candidate identity commit is not the direct child of the exact C007.1 checkpoint.' }
-    if (@(& git status --porcelain=v1).Count -ne 0) { throw 'The release validator requires a clean working tree.' }
+    & git diff --quiet
+    if ($LASTEXITCODE -ne 0) { throw 'The release validator requires no tracked working-tree changes.' }
+    & git diff --cached --quiet
+    if ($LASTEXITCODE -ne 0) { throw 'The release validator requires no staged changes.' }
+    $allowedUntracked = @(
+        'test-artifacts/V004-C008/fresh-release-candidate/candidate-manifest.json',
+        'test-artifacts/V004-C008/fresh-release-candidate/sPg Crafting List V004 RC.html',
+        'test-artifacts/V004-C008/identity-freeze-evidence.json',
+        'test-artifacts/V004-C008/target-summary.json',
+        'test-artifacts/V004-C008/validation.log'
+    )
+    $unexpectedUntracked = @(& git ls-files --others --exclude-standard | Where-Object { $allowedUntracked -notcontains $_ })
+    if ($unexpectedUntracked.Count -ne 0) { throw "Unexpected untracked files before C008: $($unexpectedUntracked -join ', ')" }
     if (-not (Test-Path -LiteralPath $PlaywrightModulePath)) { throw "Playwright module not found: $PlaywrightModulePath" }
     if (Test-Path -LiteralPath $stableV004Path) { throw 'V004 stable artifact path already exists; C008 cannot overwrite it.' }
     & git show-ref --verify --quiet refs/tags/V004
@@ -96,12 +110,15 @@ try {
     & git diff --quiet V003 HEAD -- releases/V001 releases/V002 releases/V003
     if ($LASTEXITCODE -ne 0) { throw 'Protected V001/V002/V003 release path differs from V003.' }
 
-    Invoke-BoundedCheck 'candidate-raw-byte-build' 'node' @('.\tools\build-v004-c008-release-candidate.mjs')
+    & git diff --quiet $candidateSourceHead HEAD -- 'sPg Crafting List.html'
+    if ($LASTEXITCODE -ne 0) { throw 'Application commit differs from the frozen candidate source.' }
     Invoke-BoundedCheck 'identity-dataset-adapter-freeze' 'node' @('.\tools\run-v004-c008-identity-freeze-tests.mjs')
+    Invoke-BoundedCheck 'harness-dependency-wiring-audit' 'node' @('.\tools\audit-v004-c0081-harness-compatibility.mjs')
     $manifest = Read-Json $manifestPath
     $identityEvidence = Read-Json (Join-Path $artifactDirectory 'identity-freeze-evidence.json')
     $candidateShaBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $candidatePath).Hash.ToLowerInvariant()
     $candidateBytes = (Get-Item -LiteralPath $candidatePath).Length
+    if ($candidateShaBefore -ne $expectedCandidateSha -or $candidateBytes -ne $expectedCandidateBytes) { throw 'Frozen candidate SHA/size mismatch.' }
     if ($manifest.sourceHead -ne $candidateSourceHead -or $manifest.sha256 -ne $candidateShaBefore -or [int64]$manifest.bytes -ne $candidateBytes) { throw 'Candidate manifest mismatch.' }
     if ($manifest.runtimeIdentity -ne 'V004' -or $manifest.v004DevRuntimeIdentityOccurrences -ne 0 -or $manifest.backupSchemaVersion -ne 3 -or $manifest.applicationRuntimeFileCount -ne 1 -or $manifest.localRuntimeSidecars -ne 0) { throw 'Candidate identity/schema/single-file manifest mismatch.' }
     if ($identityEvidence.status -ne 'PASS_IDENTITY_ONLY_DATASET_ADAPTER_FREEZE' -or $identityEvidence.allOtherApplicationBytesUnchanged -ne $true -or $identityEvidence.full1606BlueprintAuditRequired -ne $false) { throw 'Dataset/adapter freeze proof mismatch.' }
@@ -183,7 +200,15 @@ try {
     }
 
     $previousExpectedRuntimeIdentity = $env:SPG_EXPECTED_RUNTIME_IDENTITY
+    $previousReleaseCandidateMode = $env:SPG_V004_RELEASE_CANDIDATE_MODE
+    $previousVerifiedCandidatePath = $env:SPG_V004_VERIFIED_CANDIDATE_PATH
+    $previousVerifiedCandidateSha = $env:SPG_V004_VERIFIED_CANDIDATE_SHA256
+    $previousVerifiedCandidateBytes = $env:SPG_V004_VERIFIED_CANDIDATE_BYTES
     $env:SPG_EXPECTED_RUNTIME_IDENTITY = 'V004'
+    $env:SPG_V004_RELEASE_CANDIDATE_MODE = '1'
+    $env:SPG_V004_VERIFIED_CANDIDATE_PATH = $isolatedApplicationPath
+    $env:SPG_V004_VERIFIED_CANDIDATE_SHA256 = $candidateShaBefore
+    $env:SPG_V004_VERIFIED_CANDIDATE_BYTES = [string]$candidateBytes
     Push-Location $temporaryProject
     try {
         foreach ($leafId in $configuredLeafTests) {
@@ -192,6 +217,10 @@ try {
     } finally {
         Pop-Location
         $env:SPG_EXPECTED_RUNTIME_IDENTITY = $previousExpectedRuntimeIdentity
+        $env:SPG_V004_RELEASE_CANDIDATE_MODE = $previousReleaseCandidateMode
+        $env:SPG_V004_VERIFIED_CANDIDATE_PATH = $previousVerifiedCandidatePath
+        $env:SPG_V004_VERIFIED_CANDIDATE_SHA256 = $previousVerifiedCandidateSha
+        $env:SPG_V004_VERIFIED_CANDIDATE_BYTES = $previousVerifiedCandidateBytes
     }
 
     $isolatedShaAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $isolatedApplicationPath).Hash.ToLowerInvariant()

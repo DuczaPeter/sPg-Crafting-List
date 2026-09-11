@@ -4,18 +4,19 @@ import path from "node:path";
 import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const fixtureDirectory = path.join(projectDirectory, "tests", "fixtures");
-const html = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
-const m1Match = html.match(/\/\* M1_PURE_MODEL_START \*\/([\s\S]*?)\/\* M1_PURE_MODEL_END \*\//);
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: path.join(projectDirectory, "sPg Crafting List.html") });
+const html = verifiedApplication.html;
+const m1HarnessSource = buildM1HarnessSource(html);
 const m2Match = html.match(/\/\* M2_ALLOCATION_ENGINE_START \*\/([\s\S]*?)\/\* M2_ALLOCATION_ENGINE_END \*\//);
 const namingMatch = html.match(/\/\* MATERIAL_NAMING_MODEL_START \*\/([\s\S]*?)\/\* MATERIAL_NAMING_MODEL_END \*\//);
 const m4Match = html.match(/\/\* M4_COMBINED_BACKUP_MODEL_START \*\/([\s\S]*?)\/\* M4_COMBINED_BACKUP_MODEL_END \*\//);
 const c0125aMatch = html.match(/\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_START \*\/([\s\S]*?)\/\* C0125A_INVENTORY_INDEPENDENCE_MODEL_END \*\//);
 
-assert.ok(m1Match, "Az M1 modellblokk hiányzik.");
 assert.ok(m2Match, "Az M2 Allocation Engine blokk hiányzik.");
 assert.ok(namingMatch, "A Material Naming modellblokk hiányzik.");
 assert.ok(m4Match, "Az M4 Combined/backup modellblokk hiányzik.");
@@ -28,7 +29,7 @@ const context = vm.createContext({
   foldSearchText: (value) => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 });
 
-vm.runInContext(`${m1Match[1]}
+vm.runInContext(`${m1HarnessSource}
 ${m2Match[1]}
 ${namingMatch[1]}
 ${m4Match[1]}

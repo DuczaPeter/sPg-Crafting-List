@@ -1,0 +1,20 @@
+{
+    "cycle":  "V004-C008.1",
+    "status":  "PASS_RELEASE_HARNESS_COMPATIBILITY_TARGETED",
+    "candidateSourceHead":  "c4fef88d5d0a910437b814aa2bd9f90b9375c877",
+    "candidateSha256":  "7ac2c27bc7a35f719f4a4526e6839f8460a51e2ab6d881e1a95c3ed16f58b050",
+    "candidateBytes":  1083258,
+    "applicationDiffFromCandidateSource":  0,
+    "sharedLoaderSyntax":  "PASS",
+    "affectedRunnerSyntax":  "PASS",
+    "affectedRunnerCount":  10,
+    "unresolvedAffectedHarnesses":  0,
+    "checkoutHtmlReleaseFallbacks":  0,
+    "m1ModelCache":  "PASS",
+    "representativeTransitiveConsumer":  "m2-inventory-allocation_PASS",
+    "fullTenLeafPreRun":  "NOT_REQUIRED_NOT_RUN",
+    "candidateRegenerated":  false,
+    "candidateApplicationModified":  false,
+    "protectedV001V002V003":  "PASS",
+    "push":  "NO"
+}

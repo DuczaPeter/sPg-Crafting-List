@@ -1,0 +1,65 @@
+{
+  "cycle": "V004-C008.1",
+  "status": "PASS_HARNESS_DEPENDENCY_AND_WIRING_AUDIT",
+  "candidateSha256": "7ac2c27bc7a35f719f4a4526e6839f8460a51e2ab6d881e1a95c3ed16f58b050",
+  "candidateBytes": 1083258,
+  "candidateBinding": "FROZEN_CANDIDATE",
+  "directM1Dependencies": [
+    "v004BuildExactRequirementQuantityEvidence"
+  ],
+  "exactQuantityClosure": [
+    "V004_REQUIREMENT_QUANTITY_EXACTNESS",
+    "V004_QUANTITY_NORMALIZATION_STATUS",
+    "V004_SCU_NORMALIZATION_RULE",
+    "V004_ITEM_NORMALIZATION_RULE",
+    "v004FixedScuTextFromUnitBigInt",
+    "v004ParsePositiveDecimalToFourDpUnits",
+    "v004BuildExactRequirementQuantityEvidence"
+  ],
+  "affectedLeafCount": 10,
+  "affectedLeaves": [
+    {
+      "leafId": "m1-model-cache",
+      "filename": "run-m1-tests.mjs"
+    },
+    {
+      "leafId": "m2-inventory-allocation",
+      "filename": "run-m2-tests.mjs"
+    },
+    {
+      "leafId": "m6-standalone-export",
+      "filename": "run-m6-tests.mjs"
+    },
+    {
+      "leafId": "v003-c006-final-card",
+      "filename": "run-v003-c006-tests.mjs"
+    },
+    {
+      "leafId": "v003-c007-color",
+      "filename": "run-v003-c007-tests.mjs"
+    },
+    {
+      "leafId": "v003-c008-detail",
+      "filename": "run-v003-c008-tests.mjs"
+    },
+    {
+      "leafId": "v003-c011-visual-cleanup",
+      "filename": "run-v003-c011-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0121-quality-planner",
+      "filename": "run-v003-c0121-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0122-version-consistency",
+      "filename": "run-v003-c0122-tests.mjs"
+    },
+    {
+      "leafId": "v003-c0123-quality-constraints",
+      "filename": "run-v003-c0123-tests.mjs"
+    }
+  ],
+  "unresolvedAffectedHarnesses": 0,
+  "checkoutHtmlReleaseFallbacks": 0,
+  "fullTenLeafPreRunRequired": false
+}

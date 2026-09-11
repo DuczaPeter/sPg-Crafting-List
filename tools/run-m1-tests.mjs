@@ -3,15 +3,14 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
+import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const htmlPath = path.join(projectDirectory, "sPg Crafting List.html");
 const fixtureDirectory = path.join(projectDirectory, "tests", "fixtures");
-const html = fs.readFileSync(htmlPath, "utf8");
-const modelMatch = html.match(/\/\* M1_PURE_MODEL_START \*\/([\s\S]*?)\/\* M1_PURE_MODEL_END \*\//);
-
-assert.ok(modelMatch, "Az M1 tiszta modell blokk nem található a fő HTML-ben.");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: htmlPath });
+const m1HarnessSource = buildM1HarnessSource(verifiedApplication.html);
 
 const context = vm.createContext({
   console,
@@ -19,7 +18,7 @@ const context = vm.createContext({
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
 
-vm.runInContext(`${modelMatch[1]}
+vm.runInContext(`${m1HarnessSource}
 globalThis.__MODEL__ = {
   deriveQualityCapability,
   normalizeOutputTypeFilters,

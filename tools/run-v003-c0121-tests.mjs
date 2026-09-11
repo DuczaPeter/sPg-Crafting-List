@@ -5,11 +5,14 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
+import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const appPath = path.join(projectDirectory, "sPg Crafting List.html");
-const appHtml = fs.readFileSync(appPath, "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const appHtml = verifiedApplication.html;
+const m1HarnessSource = buildM1HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const standaloneArgument = process.argv.find((argument) => argument.startsWith("--standalone="));
 const standalonePath = standaloneArgument
@@ -27,7 +30,7 @@ const context = vm.createContext({
   nowIso: () => "2026-08-29T12:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
+vm.runInContext(`${m1HarnessSource}
 ${block("M2_ALLOCATION_ENGINE")}
 ${block("M4_COMBINED_BACKUP_MODEL")}
 ${block("C0125A_INVENTORY_INDEPENDENCE_MODEL")}

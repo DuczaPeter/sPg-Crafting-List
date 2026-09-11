@@ -5,6 +5,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { assertSingleFileRuntimeMarkup, extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
+import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
@@ -13,7 +14,9 @@ const standalonePath = standaloneArgument
   ? path.resolve(projectDirectory, standaloneArgument.slice("--standalone=".length))
   : path.join(projectDirectory, "test-artifacts", "V003-C011", "standalone-js-300-final-card.html");
 const appPath = path.join(projectDirectory, "sPg Crafting List.html");
-const appHtml = fs.readFileSync(appPath, "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: appPath });
+const appHtml = verifiedApplication.html;
+const m1HarnessSource = buildM1HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const standalone = fs.readFileSync(standalonePath, "utf8");
 
@@ -58,14 +61,12 @@ assert.match(detailLoader[1], /state\.normalizedBlueprint\s*=\s*normalized/, "A 
 assert.match(detailLoader[1], /renderBlueprintBrowserResults\(\)/, "A bal oldali kijelölés nem renderelődik újra.");
 assert.match(detailLoader[1], /await prepareC010FinalCraftingCard\(\{ resetQuantity: true \}\)/, "A Final Crafting Card frissítése elveszett.");
 
-const modelMatch = appHtml.match(/\/\* M1_PURE_MODEL_START \*\/([\s\S]*?)\/\* M1_PURE_MODEL_END \*\//);
-assert.ok(modelMatch, "Az M1 normalizált modellblokk hiányzik.");
 const context = vm.createContext({
   console,
   nowIso: () => "2026-08-25T10:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${modelMatch[1]}
+vm.runInContext(`${m1HarnessSource}
 globalThis.__C011_MODEL__ = { normalizeBlueprint };`, context, { filename: "spg-v003-c011-model.js" });
 const rawBlueprint = JSON.parse(fs.readFileSync(path.join(projectDirectory, "tests", "fixtures", "js-300-blueprint.json"), "utf8"));
 const provenance = {

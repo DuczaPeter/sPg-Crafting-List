@@ -429,6 +429,14 @@
       "captureRequired": { "appLog": false, "browserConsole": false }
     },
     {
+      "id": "v004-c0081-release-harness-compatibility",
+      "level": "targeted-regression",
+      "description": "V004-C008.1 tooling-only repair: exact frozen candidate SHA/size binding, candidate-sourced M1 plus explicit exact-quantity dependency closure, ten affected harness wiring audit, M1 and representative M2 targeted proof, zero application/candidate/protected-release modification, and no candidate regeneration.",
+      "executable": "powershell.exe",
+      "arguments": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\tools\\validate-v004-c0081.ps1"],
+      "captureRequired": { "appLog": false, "browserConsole": false }
+    },
+    {
       "id": "v004-c008-release-candidate",
       "level": "full-regression",
       "description": "V004-C008 fresh release candidate from the exact C007.1 checkpoint: identity-only V004-dev to V004 commit, deterministic committed-byte single-file artifact, one non-nested full integration pass, representative live Wiki/UEX Chrome smoke, automated direct file, immutable candidate SHA and protected V001/V002/V003; manual exact candidate file gate remains required and no stable artifact/tag/push is allowed.",

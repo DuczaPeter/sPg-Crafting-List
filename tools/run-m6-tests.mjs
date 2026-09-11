@@ -6,10 +6,13 @@ import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
 import { extractEmbeddedApplicationCss } from "./embedded-css-utils.mjs";
+import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-harness-loader.mjs";
 
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
-const htmlSource = fs.readFileSync(path.join(projectDirectory, "sPg Crafting List.html"), "utf8");
+const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: path.join(projectDirectory, "sPg Crafting List.html") });
+const htmlSource = verifiedApplication.html;
+const m1HarnessSource = buildM1HarnessSource(htmlSource);
 const cssSource = extractEmbeddedApplicationCss(htmlSource);
 const block = (name) => {
   const match = htmlSource.match(new RegExp(`/\\* ${name}_START \\*/([\\s\\S]*?)/\\* ${name}_END \\*/`));
@@ -21,7 +24,7 @@ const context = vm.createContext({
   nowIso: () => "2026-08-22T14:00:00.000Z",
   toScuUnits: (value) => Math.round(Number(value) * 10000)
 });
-vm.runInContext(`${block("M1_PURE_MODEL")}
+vm.runInContext(`${m1HarnessSource}
 ${block("M2_ALLOCATION_ENGINE")}
 ${block("MATERIAL_NAMING_MODEL")}
 ${block("MATERIAL_COLOR_MODEL")}
