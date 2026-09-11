@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C008.1 Release Harness Compatibility
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-11`, a frozen candidate-bound tooling repair, M1/M2 célteszt és egyszeri teljes C008 rerun során.
+- Mire segített: a tíz érintett harness célzott feltárására, a full ten-leaf pre-run elhagyására, candidate-regenerálás tiltására és az új M4 blockernél történő megállásra.
+- Mely fájlokat vagy döntéseket érintett: shared loader, érintett runner bootstraps, C008/C008.1 validator/evidence/report és projektmeta; application, candidate, protected release és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C007.1 Multi-Tab User Data Safety
 
 - Skill neve: `credit-efficient-project-runner`.

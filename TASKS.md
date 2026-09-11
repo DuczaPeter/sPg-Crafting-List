@@ -2,6 +2,16 @@
 
 ## Aktualis
 
+### V004-C008.1 Release Harness Compatibility Repair + C008 Resume
+
+- [x] Frozen `c4fef88d...` candidate SHA `7ac2c27b...`, `1083258` byte és application diff `0` ellenőrizve; candidate-regenerálás nincs.
+- [x] Shared verified-candidate loader, explicit 7-declaration exact-quantity closure és fail-closed dependency-contract elkészült.
+- [x] Tíz tényleges `normalizeBlueprint()` consumer candidate-bound; unresolved harness és release checkout fallback `0`.
+- [x] Syntax, static wiring, M1 és reprezentatív M2 targeted PASS; repair commit `ab6b081`.
+- [x] A teljes C008 gate egyszer elölről újraindult; identity/clone/baseline/M1/M2/M3 PASS.
+- [ ] `m4-combined-backup` új harness blocker: `v004NormalizeImportedCards` nincs a VM-ben; automatikus repair tilos, külön audit szükséges.
+- [ ] Chrome, automated és manual exact `file://` csak egy új, explicit harness-repair után folytatható; stable/tag/push nincs.
+
 ### V004-C007.1 Multi-Tab User Data Safety
 
 - [x] C007 checkpoint, input application SHA, `develop/V004` és protected V003 baseline célzottan ellenőrizve.

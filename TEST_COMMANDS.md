@@ -4,6 +4,22 @@
 
 Itt csak a tenylegesen futtathato vagy roviden elvegezheto ellenorzesek legyenek. Ne legyen hosszu magyarazat.
 
+## V004-C008.1 Release Harness Compatibility
+
+Célzott tooling kapu az exact frozen candidate-en:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c0081.ps1
+```
+
+Teljes C008 integrated candidate gate, csak clean tooling HEAD-ről:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c008-release-candidate.ps1 -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A célzott C008.1 kapu M1+M2 PASS. A teljes C008 gate jelenleg `m4-combined-backup` harness dependency hibánál BLOCKED; középről resume, candidate-regenerálás és vak további repair tilos.
+
 ## V004-C007.1 Multi-Tab User Data Safety
 
 Teljes célzott validálás C006.1/C007 current-byte regresszióval:

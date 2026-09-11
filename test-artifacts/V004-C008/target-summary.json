@@ -1,0 +1,9 @@
+{
+    "cycle":  "V004-C008",
+    "status":  "RELEASE_CANDIDATE_BLOCKED",
+    "failure":  "m4-combined-backup failed with exit code 1",
+    "candidateCommit":  "c4fef88d5d0a910437b814aa2bd9f90b9375c877",
+    "stableArtifact":  "NOT_CREATED",
+    "v004Tag":  "NOT_CREATED",
+    "push":  "NO"
+}

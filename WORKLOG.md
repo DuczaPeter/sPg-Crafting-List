@@ -2,6 +2,15 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260910-172400-000000-WORKLOG.md`.
 
+## 2026-09-11 — V004-C008.1 Release Harness Compatibility + blocked C008 rerun
+
+- Resume: `candidate/V004 @ 53b34ae...`; frozen candidate `7ac2c27b...`, `1083258` byte; `$credit-efficient-project-runner`.
+- Az M1 VM kizárólagos modellblokkja mellől hiányzó exact-quantity production closure shared, candidate-bound loaderrel javítva; production helper-copy és application diff nincs.
+- Tíz tényleges consumer wiring/syntax audit PASS; unresolved harness és checkout fallback 0; M1 és M2 targeted PASS.
+- Tooling-only repair commit: `ab6b081 V004-C008.1-RELEASE-HARNESS-COMPATIBILITY`; candidate/regenerálás/push nincs.
+- A teljes C008 gate egyszer elölről futott: identity/clone/baseline/M1/M2/M3 PASS, majd M4 `v004NormalizeImportedCards` hiánnyal BLOCKED.
+- További automatikus repair, Chrome, direct/manual `file://`, stable artifact, tag és push nincs; riport: `docs/V004_C008_1_RELEASE_HARNESS_COMPATIBILITY_REPORT.md`.
+
 ## 2026-09-11 — V004-C007.1 Multi-Tab User Data Safety
 
 - Resume: `develop/V004 @ 8b7efea...`, clean input, app SHA `9cf7952...`; `$credit-efficient-project-runner`.
