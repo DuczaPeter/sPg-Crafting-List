@@ -410,7 +410,7 @@ try {
     historyStatus: window.__SPG_TEST__.state.craftHistory[0].status,
     cardQuantity: window.__SPG_TEST__.state.craftingCards[0].quantity
   }));
-  assert.equal(fileUi.version, "V004-dev");
+  assert.equal(fileUi.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(fileUi.protocol, "file:");
   assert.equal(fileUi.historyStatus, "UNDONE");
   assert.equal(fileUi.cardQuantity, 3);

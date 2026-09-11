@@ -412,7 +412,7 @@ try {
     scrollWidth: document.documentElement.scrollWidth,
     clientWidth: document.documentElement.clientWidth
   }));
-  assert.equal(fileState.version, "V004-dev");
+  assert.equal(fileState.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(fileState.view, "HISTORY");
   assert.equal(fileState.emptyOrHistoryVisible, true);
   assert.ok(fileState.scrollWidth <= fileState.clientWidth + 1);

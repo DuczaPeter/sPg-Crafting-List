@@ -771,7 +771,7 @@ try {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
   }));
   assert.equal(fileLayout.protocol, "file:");
-  assert.equal(fileLayout.version, "V004-dev");
+  assert.equal(fileLayout.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.ok(fileLayout.overflow <= 1);
   results.directFile = {
     status: "PASS_AUTOMATED",

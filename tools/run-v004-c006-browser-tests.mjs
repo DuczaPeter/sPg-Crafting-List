@@ -514,7 +514,7 @@ try {
     localRuntimeSidecars: 0,
     documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
   }));
-  assert.equal(fileState.version, "V004-dev");
+  assert.equal(fileState.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(fileState.undoDialogPresent, true);
   assert.ok(fileState.documentOverflow <= 1);
   assert.equal(fileErrors.length, 0);

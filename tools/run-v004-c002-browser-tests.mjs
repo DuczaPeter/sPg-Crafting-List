@@ -157,7 +157,7 @@ try {
       craftHistoryCount: test.state.craftHistory.length
     };
   });
-  assert.equal(startup.app.version, "V004-dev");
+  assert.equal(startup.app.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(startup.app.schemaVersion, 7);
   assert.equal(startup.app.dbName, "spg-crafting-list-v004");
   assert.equal(startup.app.dbVersion, 1);
@@ -369,7 +369,7 @@ try {
       migrationStatus: document.body.dataset.v003MigrationStatus,
       sourceDbExists: (await indexedDB.databases()).some(entry => entry.name === "spg-crafting-list")
     }));
-    assert.equal(fileIdentity.version, "V004-dev");
+    assert.equal(fileIdentity.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
     assert.equal(fileIdentity.dbName, "spg-crafting-list-v004");
     assert.equal(fileIdentity.dbVersion, 1);
     assert.equal(fileIdentity.sourceDbExists, false, "A hiányzó V003 adatbázis véletlenül létrejött.");

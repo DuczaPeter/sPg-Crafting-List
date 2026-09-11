@@ -631,7 +631,7 @@ try {
     noisy011: window.__SPG_TEST__.normalizeScuQuantityToUnits(0.11000000000000001),
     roundsToZero: window.__SPG_TEST__.normalizeScuQuantityToUnits(0.00004)
   }));
-  assert.equal(fileState.version, "V004-dev");
+  assert.equal(fileState.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(fileState.craftRunLabelsPresent, true);
   assert.deepEqual({ text: fileState.luma014.normalizedQuantityText, units: fileState.luma014.normalizedRequiredQuantityUnits, rule: fileState.luma014.quantityNormalizationRule }, { text: "0.1400", units: 1400, rule: "SCU_4DP_HALF_UP_V1" });
   assert.deepEqual({ text: fileState.noisy011.normalizedQuantityText, units: fileState.noisy011.normalizedRequiredQuantityUnits }, { text: "0.1100", units: 1100 });

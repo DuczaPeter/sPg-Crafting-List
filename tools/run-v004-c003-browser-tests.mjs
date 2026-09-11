@@ -215,7 +215,7 @@ try {
       }
     };
   });
-  assert.equal(startup.app.version, "V004-dev");
+  assert.equal(startup.app.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
   assert.equal(startup.app.schemaVersion, 7);
   assert.equal(startup.app.dbName, "spg-crafting-list-v004");
   assert.equal(startup.app.dbVersion, 1);
@@ -224,7 +224,7 @@ try {
   assert.equal(startup.cards, 0);
   assert.equal(startup.batches, 0);
   assert.equal(startup.reservationRunStatus, "ABSENT");
-  assert.deepEqual(startup.baseUi, { moduleNavButtons: 8, applicationStatus: "V004-dev · schema 7", blueprintBrowserVisible: true });
+  assert.deepEqual(startup.baseUi, { moduleNavButtons: 8, applicationStatus: `${process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev"} · schema 7`, blueprintBrowserVisible: true });
   results.startup = { status: "PASS", ...startup };
 
   const seeded = await page.evaluate(async input => {
@@ -397,7 +397,7 @@ try {
       reservationRunStatus: window.__SPG_TEST__.state.reservationRunStatus,
       sourceDbExists: (await indexedDB.databases()).some(entry => entry.name === "spg-crafting-list")
     }));
-    assert.equal(fileIdentity.version, "V004-dev");
+    assert.equal(fileIdentity.version, process.env.SPG_EXPECTED_RUNTIME_IDENTITY || "V004-dev");
     assert.equal(fileIdentity.dbName, "spg-crafting-list-v004");
     assert.equal(fileIdentity.dbVersion, 1);
     assert.equal(fileIdentity.reservationRunStatus, "ABSENT");
