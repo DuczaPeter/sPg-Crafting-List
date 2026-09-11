@@ -32,13 +32,21 @@ $regressionEvidencePath = Join-Path $runEvidenceDirectory 'release-regression-ev
 $targetSummaryPath = Join-Path $runEvidenceDirectory 'target-summary.json'
 $candidateBrowserEvidencePath = Join-Path $runEvidenceDirectory 'candidate-browser-evidence.json'
 $promotedEvidenceNames = @('validation.log', 'target-summary.json', 'release-regression-evidence.json', 'candidate-browser-evidence.json')
-$sharedStandaloneRelativePath = 'test-artifacts/V004-C010/standalone-js-300-current-candidate.html'
+$sharedStandalonePath = [System.IO.Path]::GetFullPath((Join-Path $runEvidenceDirectory 'standalone-js-300-current-candidate.html'))
+$resolvedRunEvidenceDirectory = [System.IO.Path]::GetFullPath($runEvidenceDirectory).TrimEnd([System.IO.Path]::DirectorySeparatorChar)
+$sharedStandaloneParent = [System.IO.Path]::GetFullPath([System.IO.Path]::GetDirectoryName($sharedStandalonePath)).TrimEnd([System.IO.Path]::DirectorySeparatorChar)
+if ($sharedStandaloneParent -ne $resolvedRunEvidenceDirectory) {
+    throw "Shared standalone path escaped the run evidence directory: $sharedStandalonePath"
+}
 $v003ArtifactPath = Join-Path $projectRoot 'releases\V003\sPg Crafting List.html'
 $stableV004Path = Join-Path $projectRoot 'releases\V004'
 $temporaryProject = $null
 $promotionCreatedByThisRun = $false
+$sharedStandaloneSha = $null
+$sharedStandaloneBytes = $null
 $lines = [System.Collections.Generic.List[string]]::new()
 $lines.Add('V004-C010.3 evidence-managed replacement release candidate validation')
+$lines.Add("sharedStandalonePath=$sharedStandalonePath")
 $leafResults = [ordered]@{}
 Write-Output "V004_C0103_RUN_EVIDENCE_DIRECTORY=$runEvidenceDirectory"
 
@@ -235,14 +243,14 @@ try {
         'v003-c005-consistency' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c005-tests.mjs') }
         'v003-c006-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c006-tests.mjs') }
         'v003-c007-color' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c007-tests.mjs') }
-        'v003-c008-detail' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c008-tests.mjs', "--artifact=$sharedStandaloneRelativePath") }
-        'v003-c0081-detail-fix' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0081-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c009-api-main-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c009-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c010-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c010-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c0101-compact-mining-refinery' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0101-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c011-visual-cleanup' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c011-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c012-card-parity' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c012-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
-        'v003-c0121-quality-planner' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0121-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c008-detail' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c008-tests.mjs', "--artifact=$sharedStandalonePath") }
+        'v003-c0081-detail-fix' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0081-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c009-api-main-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c009-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c010-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c010-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c0101-compact-mining-refinery' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0101-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c011-visual-cleanup' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c011-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c012-card-parity' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c012-tests.mjs', "--standalone=$sharedStandalonePath") }
+        'v003-c0121-quality-planner' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0121-tests.mjs', "--standalone=$sharedStandalonePath") }
         'v003-c0122-version-consistency' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0122-tests.mjs') }
         'v003-c0123-quality-constraints' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0123-tests.mjs') }
         'v003-c0124-numeric-editing' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0124-tests.mjs') }
@@ -293,11 +301,11 @@ try {
         'v003-c012-card-parity',
         'v003-c0121-quality-planner'
     )
-    $expectedProducerBinding = "--artifact=$sharedStandaloneRelativePath"
+    $expectedProducerBinding = "--artifact=$sharedStandalonePath"
     $producerBindingCount = @($leafCommands['v003-c008-detail'].Arguments | Where-Object { $_ -eq $expectedProducerBinding }).Count
     if ($producerBindingCount -ne 1) { throw "Shared standalone producer binding mismatch: $producerBindingCount" }
     foreach ($consumerLeafId in $standaloneConsumerLeafIds) {
-        $expectedConsumerBinding = "--standalone=$sharedStandaloneRelativePath"
+        $expectedConsumerBinding = "--standalone=$sharedStandalonePath"
         $consumerBindingCount = @($leafCommands[$consumerLeafId].Arguments | Where-Object { $_ -eq $expectedConsumerBinding }).Count
         if ($consumerBindingCount -ne 1) { throw "Shared standalone consumer binding mismatch: $consumerLeafId ($consumerBindingCount)" }
     }
@@ -317,10 +325,15 @@ try {
     $env:SPG_V004_VERIFIED_CANDIDATE_BYTES = [string]$candidateBytes
     Push-Location $temporaryProject
     try {
-        $sharedStandalonePath = Join-Path $temporaryProject ($sharedStandaloneRelativePath -replace '/', '\')
-        $sharedStandaloneSha = $null
-        $sharedStandaloneBytes = $null
         foreach ($leafId in $configuredLeafTests) {
+            if ($leafId -eq 'v003-c008-detail') {
+                if (-not (Test-Path -LiteralPath $runEvidenceDirectory -PathType Container)) {
+                    throw "Run evidence directory is missing before shared standalone production: $runEvidenceDirectory"
+                }
+                if (Test-Path -LiteralPath $sharedStandalonePath) {
+                    throw "Shared standalone artifact already exists before producer: $sharedStandalonePath"
+                }
+            }
             if ($standaloneConsumerLeafIds -contains $leafId) {
                 if ($null -eq $sharedStandaloneSha -or -not (Test-Path -LiteralPath $sharedStandalonePath)) {
                     throw "Shared standalone artifact is missing before consumer: $leafId"
@@ -336,7 +349,7 @@ try {
                 if (-not (Test-Path -LiteralPath $sharedStandalonePath)) { throw 'Shared standalone producer did not create the artifact.' }
                 $sharedStandaloneSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $sharedStandalonePath).Hash.ToLowerInvariant()
                 $sharedStandaloneBytes = (Get-Item -LiteralPath $sharedStandalonePath).Length
-                $lines.Add("sharedStandalonePath=$sharedStandaloneRelativePath")
+                if ($sharedStandaloneBytes -le 0) { throw 'Shared standalone producer created an empty artifact.' }
                 $lines.Add("sharedStandaloneSha256=$sharedStandaloneSha")
                 $lines.Add("sharedStandaloneBytes=$sharedStandaloneBytes")
             } elseif ($standaloneConsumerLeafIds -contains $leafId) {
@@ -471,6 +484,16 @@ try {
     Write-Output "V004_C0103_AUTOMATED_REPLACEMENT_RELEASE_CANDIDATE_PASS candidate=$candidatePath bytes=$candidateBytes sha256=$candidateShaAfter"
 } catch {
     $failure = $_.Exception.Message
+    if (Test-Path -LiteralPath $sharedStandalonePath -PathType Leaf) {
+        $failureStandaloneSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $sharedStandalonePath).Hash.ToLowerInvariant()
+        $failureStandaloneBytes = (Get-Item -LiteralPath $sharedStandalonePath).Length
+        $lines.Add("failureSharedStandaloneSha256=$failureStandaloneSha")
+        $lines.Add("failureSharedStandaloneBytes=$failureStandaloneBytes")
+        Write-Output "V004_C0104_SHARED_STANDALONE path=$sharedStandalonePath bytes=$failureStandaloneBytes sha256=$failureStandaloneSha"
+    } else {
+        $lines.Add('failureSharedStandaloneStatus=NOT_CREATED')
+        Write-Output "V004_C0104_SHARED_STANDALONE path=$sharedStandalonePath status=NOT_CREATED"
+    }
     $lines.Add("result=V004-C010_REPLACEMENT_RELEASE_CANDIDATE_BLOCKED")
     $lines.Add("failure=$failure")
     $lines.Add("runEvidenceDirectory=$runEvidenceDirectory")
