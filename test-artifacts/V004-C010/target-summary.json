@@ -1,0 +1,9 @@
+{
+    "cycle":  "V004-C010",
+    "status":  "RELEASE_CANDIDATE_BLOCKED",
+    "failure":  "v003-c0081-detail-fix failed with exit code 1",
+    "candidateCommit":  "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+    "stableArtifact":  "NOT_CREATED",
+    "v004Tag":  "NOT_CREATED",
+    "push":  "NO"
+}

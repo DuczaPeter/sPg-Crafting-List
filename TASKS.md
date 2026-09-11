@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C010 History Snapshot Canonicalization + Replacement RC
+
+- [x] A valós Complete/Undo raw-vs-canonical snapshot hiba Boundary B szerint javítva; régi durable History evidence nem íródik át.
+- [x] Új Complete canonical snapshotot ír; eligibility mindkét Card-oldalt production-normalizál; Full Undo canonical Cardot restore-ol; strict comparator és Partial Undo mutation változatlan.
+- [x] Tízpontos snapshot/Undo célbizonyítás PASS; application commit `a6a5d35592d9777c6b740eeb7ec44c4c58b27443`.
+- [x] Exact C010 candidate SHA `16f186cc...`, `1083886` byte; C009 invalid candidate változatlan evidence.
+- [x] M4/C0125C1/C006.1 targeted PASS; 11-runner wiring, legacy fixture, source binding, checkout fallback 0 és unresolved gap 0 PASS.
+- [x] Harness commit `9d17b68527f3f8df450c65bef8d5c146475ce47d`; application/candidate change ebben 0.
+- [ ] A teljes C010 gate egyszer elölről futott, de a 17. leaf `v003-c0081-detail-fix` line 54 standalone public-Wiki-link assertionnél BLOCKED; automatikus repair és rerun nincs.
+- [ ] Candidate Chrome, automated/manual exact `file://`, stable V004 artifact/tag/push/GitHub Release nem történt.
+
 ### V004-C008.1 Release Harness Compatibility Repair + C008 Resume
 
 - [x] Frozen `c4fef88d...` candidate SHA `7ac2c27b...`, `1083258` byte és application diff `0` ellenőrizve; candidate-regenerálás nincs.

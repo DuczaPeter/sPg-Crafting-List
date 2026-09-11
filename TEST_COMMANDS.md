@@ -4,6 +4,22 @@
 
 Itt csak a tenylegesen futtathato vagy roviden elvegezheto ellenorzesek legyenek. Ne legyen hosszu magyarazat.
 
+## V004-C010 History Snapshot Canonicalization
+
+C010 candidate-bound targeted harness gate:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c0082.ps1
+```
+
+Teljes C010 release gate:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c008-release-candidate.ps1 -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+A targeted M4/C0125C1/C006.1 kapu PASS. A teljes C010 gate egyszer elölről futott és `v003-c0081-detail-fix` line 54 assertionnél BLOCKED; audit/explicit repair nélkül ne futtasd újra.
+
 ## V004-C008.1 Release Harness Compatibility
 
 Célzott tooling kapu az exact frozen candidate-en:

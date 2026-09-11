@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C010 History Snapshot Canonicalization + Replacement RC
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-11`, a dirty C009/C008.2 repair folytatásához, célzott production-javításhoz, candidate/harness rebindinghoz és az egyszeri C010 release gate-hez.
+- Mire segített: a C009 invalid evidence megőrzésére, az application és tooling commitok szétválasztására, a duplikált regressziók elkerülésére és a release gate első új blockerénél történő megállásra.
+- Mely fájlokat vagy döntéseket érintett: Boundary B History snapshot canonicalization, candidate-bound harness closure, C010 candidate/evidence/report és projektmeta; skillfájl, V001/V002/V003, stable artifact és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C008.1 Release Harness Compatibility
 
 - Skill neve: `credit-efficient-project-runner`.
