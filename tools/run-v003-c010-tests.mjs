@@ -74,8 +74,8 @@ assert.equal((main.match(/spg-c010-recipe-row/g) || []).length, 3, "A recipe nem
 assert.equal((main.match(/<section class="spg-c010-material"/g) || []).length, 3, "Nem pontosan három material intelligence blokk renderelt.");
 assert.equal((main.match(/class="spg-c010-stock"/g) || []).length, 3, "A jobboldali készletoszlop hiányos.");
 assert.equal((main.match(/15:00/g) || []).length, 1, "A Crafting Time duplikált vagy hiányzik.");
-assert.equal((main.match(/2 DB/g) || []).length, 1, "A quantity duplikált vagy hiányzik.");
-assert.equal((main.match(/Max: 3 DB/g) || []).length, 1, "A max craftable duplikált vagy hiányzik.");
+assert.equal((main.match(/Craftok száma: 2/g) || []).length, 1, "A quantity duplikált vagy hiányzik.");
+assert.equal((main.match(/MAX: 3 craft/g) || []).length, 1, "A max craftable duplikált vagy hiányzik.");
 for (const marker of ["Shell", "Stileron", "0,35 SCU", "Voltage Regulator", "Beryl", "0,14 SCU", "Stator Cores", "Savrilium", "0,24 SCU", "Mining", "Refinery", "Radar", "Stanton:", "Pyro:", "Nyx:"]) {
   assert.ok(main.includes(marker), `A kompakt C010 kártyából hiányzik: ${marker}`);
 }

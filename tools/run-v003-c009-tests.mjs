@@ -73,7 +73,7 @@ for (const marker of ["15:00", "Mining / Farm helyek", "UEX refinery ajánló", 
   assert.ok(standalone.includes(marker), `A standalone C009 kártyából hiányzik: ${marker}`);
 }
 if (standalone.includes("spg-c010-final-card")) {
-  for (const marker of ["2 DB", "Max: 3 DB", "Mining", "Refinery", "Radar", "spg-c010-recipe-row", "spg-c010-material"]) {
+  for (const marker of ["Craftok száma: 2", "MAX: 3 craft", "Mining", "Refinery", "Radar", "spg-c010-recipe-row", "spg-c010-material"]) {
     assert.ok(standalone.includes(marker), `A C010-cel korrigált C009 projekcióból hiányzik: ${marker}`);
   }
 } else {
