@@ -1,0 +1,72 @@
+{
+  "cycle": "V004-C007.1",
+  "status": "PASS_TARGETED_CHROME",
+  "applicationSha256": "9fc09f1884feedcea64390f5f4ce34b37e9798bf823c78f7e840d51406427798",
+  "browser": "Google Chrome",
+  "miningLoadoutsCrossTab": {
+    "status": "PASS",
+    "add": "Első",
+    "edit": "Első szerkesztve",
+    "defaultId": "loadout-c0071-b",
+    "deleteRemainingIds": [
+      "loadout-c0071-b"
+    ],
+    "uiLoadoutCount": 1,
+    "mutationType": "MINING_LOADOUTS_CHANGED",
+    "payloadContainsLoadoutData": false,
+    "presentationOnlyBroadcasts": 0,
+    "presentationOnlyDurableWrites": 0,
+    "automaticReallocate": false
+  },
+  "concurrentCompleteImport": {
+    "status": "PRESERVED",
+    "blocker": "IMPORT_BASE_STATE_CHANGED",
+    "cardQuantityAfterBlockedImport": 16,
+    "historyStatusAfterBlockedImport": "COMPLETED",
+    "blockedSnapshotWrites": 0,
+    "newPreviewImport": "PASS",
+    "automaticRetry": false,
+    "exactPreImportSnapshot": true
+  },
+  "concurrentUndoImport": {
+    "status": "PRESERVED",
+    "blocker": "IMPORT_BASE_STATE_CHANGED",
+    "historyStatus": "UNDONE",
+    "blockedSnapshotWrites": 0,
+    "automaticRetry": false
+  },
+  "concurrentLoadoutImport": {
+    "status": "PRESERVED",
+    "blocker": "IMPORT_BASE_STATE_CHANGED",
+    "loadoutId": "loadout-c0071-import-race",
+    "blockedSnapshotWrites": 0
+  },
+  "pristineReplace": {
+    "status": "PASS",
+    "schemaVersion": 3,
+    "structuralJsonEqual": true,
+    "extraRevisionIncrement": 0,
+    "backupDataLoss": 0
+  },
+  "bfcache": {
+    "status": "PASS",
+    "persisted": true,
+    "channelAfterReturn": "READY",
+    "durableUiRefreshed": true,
+    "listenerCount": 1,
+    "duplicateListener": 0,
+    "tabIdPreservedAcrossBfcache": true,
+    "reloadTabIdChanged": true,
+    "listenerAfterReload": 1
+  },
+  "directFile": {
+    "status": "PASS_AUTOMATED",
+    "protocol": "file:",
+    "miningLoadoutSignal": "PASS",
+    "durableReread": "PASS",
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "overflow": 0
+  },
+  "consoleErrors": []
+}

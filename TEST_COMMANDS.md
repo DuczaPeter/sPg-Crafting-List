@@ -4,6 +4,33 @@
 
 Itt csak a tenylegesen futtathato vagy roviden elvegezheto ellenorzesek legyenek. Ne legyen hosszu magyarazat.
 
+## V004-C007.1 Multi-Tab User Data Safety
+
+Teljes célzott validálás C006.1/C007 current-byte regresszióval:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c0071.ps1 -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+Frissen lefuttatott current-byte evidence-ek szigorú újraellenőrzése Chrome-duplázás nélkül:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-v004-c0071.ps1 -PlaywrightModulePath "<workspace Playwright index.mjs abszolút útvonala>" -ReuseExistingEvidence
+```
+
+Célzott model/source és valós Chrome:
+
+```powershell
+node .\tools\run-v004-c0071-tests.mjs
+node .\tools\run-v004-c0071-browser-tests.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>"
+```
+
+BFCache input-checkpoint reprodukció; a várt exit code `2`, mert a pre-fix hibát kell bizonyítania:
+
+```powershell
+node .\tools\probe-v004-c0071-bfcache.mjs --playwright-module="<workspace Playwright index.mjs abszolút útvonala>" --git-ref=8b7efea39a79d7d22cc61ef8634b1320c8db81ed --checkpoint-working-tree-sha=9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365 --evidence=test-artifacts/V004-C007.1/bfcache-pre-fix-evidence.json
+```
+
 ## Alap ellenorzesek
 
 ```powershell

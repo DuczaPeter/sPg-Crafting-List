@@ -8055,6 +8055,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             return;
           }
           var storeNames = M4_BACKUP_STORE_SPECS.map(function (spec) { return spec.storeName; });
+          if (settings.preImportSnapshot) { storeNames.push("snapshots"); }
           var transaction = self.db.transaction(storeNames, "readwrite");
           var abortReason = null;
           var currentByDataKey = {};
@@ -8070,7 +8071,33 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
             if (remainingReads !== 0) { return; }
             try {
               currentByDataKey.userSettings = (currentByDataKey.userSettings || []).filter(isUserSettingRecord);
+              var durableBaseFingerprint = fingerprintUserDataPayload(currentByDataKey);
+              if (settings.expectedBaseFingerprint !== undefined &&
+                  durableBaseFingerprint !== settings.expectedBaseFingerprint) {
+                var baseChangedError = m4BackupError(
+                  "IMPORT_BASE_STATE_CHANGED",
+                  "Az adatok az import előnézete óta megváltoztak. Frissítsd az import előnézetét, majd erősítsd meg újra."
+                );
+                baseChangedError.expectedBaseFingerprint = settings.expectedBaseFingerprint;
+                baseChangedError.actualBaseFingerprint = durableBaseFingerprint;
+                throw baseChangedError;
+              }
               prepared = prepareV004RevisionAwareImport(currentByDataKey, normalized, importMode);
+              prepared.baseFingerprint = durableBaseFingerprint;
+              prepared.preImportSnapshot = null;
+              if (settings.preImportSnapshot) {
+                var snapshotTemplate = settings.preImportSnapshot;
+                var snapshot = {
+                  id: snapshotTemplate.id,
+                  createdAt: snapshotTemplate.createdAt || nowIso(),
+                  reason: snapshotTemplate.reason || "BEFORE_BACKUP_IMPORT",
+                  schemaVersion: M4_BACKUP_SCHEMA_VERSION,
+                  fingerprint: durableBaseFingerprint,
+                  userData: m4Clone(currentByDataKey)
+                };
+                transaction.objectStore("snapshots").add(snapshot);
+                prepared.preImportSnapshot = snapshot;
+              }
               ["userInventory", "materialBatches", "craftingCards", "userLoadouts", "craftHistory", "userMeta"].forEach(function (storeName) {
                 transaction.objectStore(storeName).clear();
               });
@@ -18938,12 +18965,13 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       "INVENTORY_CHANGED",
       "CRAFT_LIST_CHANGED",
       "ALLOCATION_STATE_CHANGED",
+      "MINING_LOADOUTS_CHANGED",
       "CRAFT_COMPLETED",
       "CRAFT_UNDONE",
       "BACKUP_IMPORTED",
       "MIGRATION_COMPLETED"
     ]);
-    var V004_MULTI_TAB_FORCE_REFRESH_TYPES = Object.freeze(["BACKUP_IMPORTED", "MIGRATION_COMPLETED"]);
+    var V004_MULTI_TAB_FORCE_REFRESH_TYPES = Object.freeze(["MINING_LOADOUTS_CHANGED", "BACKUP_IMPORTED", "MIGRATION_COMPLETED"]);
     var V004_MULTI_TAB_REVISION_KEYS = Object.freeze(["inventoryRevision", "craftListRevision", "allocationRevision", "historySequence"]);
     var V004_MULTI_TAB_AFFECTED_KEYS = Object.freeze(["cardIds", "historyIds", "materialIds"]);
     var v004MultiTabRuntime = {
@@ -19103,6 +19131,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       renderMaterialInventory();
       renderCombinedMaterials();
       renderMiningLoadoutControls();
+      renderMaterialDatabaseDefaultLoadout(state.selectedMiningCommodity);
       document.body.dataset.userDataReady = "true";
       document.body.dataset.materialBatchCount = String(state.materialBatches.length);
       document.body.dataset.craftingCardCount = String(state.craftingCards.length);
@@ -19200,7 +19229,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         channel.addEventListener("message", listener);
         v004MultiTabRuntime.channel = channel;
         v004MultiTabRuntime.listener = listener;
-        state.multiTab.listenerRegistrations += 1;
+        state.multiTab.listenerRegistrations = 1;
         state.multiTab.status = "READY";
         document.body.dataset.multiTabSignalStatus = state.multiTab.status;
         document.body.dataset.multiTabListenerRegistrations = String(state.multiTab.listenerRegistrations);
@@ -19227,8 +19256,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       }
       v004MultiTabRuntime.channel = null;
       v004MultiTabRuntime.listener = null;
+      state.multiTab.listenerRegistrations = 0;
       state.multiTab.status = "CLOSED";
       document.body.dataset.multiTabSignalStatus = state.multiTab.status;
+      document.body.dataset.multiTabListenerRegistrations = "0";
       return state.multiTab.status;
     }
 
@@ -20856,34 +20887,28 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         mode: previewState.mode,
         incomingFingerprint: previewState.preview.incomingFingerprint
       });
-      var beforeData = await userDataRepository.readAllUserData();
-      var beforeFingerprint = fingerprintUserDataPayload(beforeData);
+      var expectedBaseFingerprint = previewState.preview.currentFingerprint;
       var snapshotId = makeId("snapshot");
       try {
-        var snapshot = {
-          id: snapshotId,
-          createdAt: nowIso(),
-          reason: "BEFORE_BACKUP_IMPORT",
-          schemaVersion: M4_BACKUP_SCHEMA_VERSION,
-          fingerprint: beforeFingerprint,
-          userData: beforeData
-        };
-        await database.createUserDataSnapshot(snapshot);
+        var importResult = await database.commitUserDataImport(previewState.validated.backup.data, previewState.mode, {
+          expectedBaseFingerprint: expectedBaseFingerprint,
+          preImportSnapshot: {
+            id: snapshotId,
+            createdAt: nowIso(),
+            reason: "BEFORE_BACKUP_IMPORT"
+          }
+        });
         state.backupState.lastSnapshotId = snapshotId;
         logger.event("INFO", "BACKUP_SNAPSHOT_CREATED", "Import előtti automatikus User Data snapshot elkészült.", {
           snapshotId: snapshotId,
-          fingerprint: beforeFingerprint
-        });
-        var expected = prepareV004RevisionAwareImport(beforeData, previewState.validated.backup.data, previewState.mode).data;
-        await database.commitUserDataImport(previewState.validated.backup.data, previewState.mode, {
-          currentUserSettingKeys: beforeData.userSettings.map(function (record) { return record.key; })
+          fingerprint: importResult.baseFingerprint
         });
         await restoreUserDataState();
         if (state.activeUexRefineryDataset) {
           await rebuildUexRefineryProjection("BACKUP_IMPORT_USER_OVERRIDES");
         }
         var actualFingerprint = await userDataRepository.fingerprint();
-        var expectedFingerprint = fingerprintUserDataPayload(expected);
+        var expectedFingerprint = fingerprintUserDataPayload(importResult.data);
         assert(actualFingerprint === expectedFingerprint, "Az import utáni User Data fingerprint eltér a várt eredménytől.");
         v004SignalDurableMutation("BACKUP_IMPORTED", {
           cardIds: state.craftingCards.map(function (card) { return card.id; }),
@@ -20895,7 +20920,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         logger.event("INFO", "BACKUP_IMPORT_COMMITTED", "A User Data import tranzakció sikeresen commitolt.", {
           mode: previewState.mode,
           snapshotId: snapshotId,
-          beforeFingerprint: beforeFingerprint,
+          beforeFingerprint: importResult.baseFingerprint,
           afterFingerprint: actualFingerprint,
           totals: previewState.preview.totals
         });
@@ -20907,11 +20932,29 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
         return actualFingerprint;
       } catch (error) {
         var afterFailureFingerprint = await userDataRepository.fingerprint().catch(function () { return null; });
-        var rollbackPreserved = afterFailureFingerprint === beforeFingerprint;
+        var baseStateChanged = error && error.code === "IMPORT_BASE_STATE_CHANGED";
+        var rollbackPreserved = baseStateChanged
+          ? afterFailureFingerprint === error.actualBaseFingerprint
+          : afterFailureFingerprint === expectedBaseFingerprint;
+        if (baseStateChanged) {
+          state.backupState.lastStatus = "IMPORT_BASE_STATE_CHANGED";
+          state.backupPreview = null;
+          renderBackupPreview();
+          logger.event("WARN", "IMPORT_BASE_STATE_CHANGED", error.message, {
+            snapshotId: snapshotId,
+            expectedBaseFingerprint: error.expectedBaseFingerprint,
+            actualBaseFingerprint: error.actualBaseFingerprint,
+            afterFailureFingerprint: afterFailureFingerprint,
+            preserved: rollbackPreserved
+          });
+          logger.finish("BLOCKED", { code: error.code, rollbackPreserved: rollbackPreserved });
+          setBackupNotice(error.message, "error");
+          throw error;
+        }
         state.backupState.lastStatus = rollbackPreserved ? "IMPORT_ROLLBACK" : "IMPORT_FAIL";
         logger.event(rollbackPreserved ? "WARN" : "ERROR", "BACKUP_IMPORT_ROLLBACK", "A sikertelen import tranzakció visszagörgetése ellenőrizve.", {
           snapshotId: snapshotId,
-          beforeFingerprint: beforeFingerprint,
+          beforeFingerprint: expectedBaseFingerprint,
           afterFailureFingerprint: afterFailureFingerprint,
           preserved: rollbackPreserved,
           error: serializeError(error)
@@ -21070,6 +21113,9 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
 
     async function persistMiningLoadouts(nextLoadouts, eventCode) {
       state.miningLoadouts = await userDataRepository.saveMiningLoadouts(nextLoadouts);
+      v004SignalDurableMutation("MINING_LOADOUTS_CHANGED", {
+        materialIds: state.miningLoadouts.map(function (loadout) { return loadout.materialUuid; })
+      });
       document.body.dataset.miningLoadoutCount = String(state.miningLoadouts.length);
       document.body.dataset.miningLoadoutFingerprint = await userDataRepository.miningLoadoutFingerprint();
       logger.event("INFO", eventCode, "Mining loadout User Data mentve.", {
@@ -23935,6 +23981,14 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       v004CloseMultiTabSignalChannel();
     });
 
+    window.addEventListener("pageshow", function (event) {
+      if (!event.persisted) { return; }
+      v004OpenMultiTabSignalChannel();
+      v004RefreshUserDataFromDurableSignal({ mutationTypes: ["BFCACHE_RESTORED"], forceRefresh: true }).catch(function (error) {
+        v004RecordMultiTabDiagnostic("MULTI_TAB_BFCACHE_REFRESH_FAILED", { error: serializeError(error) }, "WARN");
+      });
+    });
+
     window.onerror = function (message, source, line, column, error) {
       logger.event("ERROR", "WINDOW_ERROR", message || "Globális JavaScript hiba.", {
         source: source || null,
@@ -24512,6 +24566,7 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       persistCraftingCards: persistCraftingCards,
       persistMaterialQualityPlan: persistMaterialQualityPlan,
       persistMaterialQualityPoolValue: persistMaterialQualityPoolValue,
+      persistMiningLoadouts: persistMiningLoadouts,
       classifyMiningCommodity: classifyMiningCommodity,
       normalizeMiningCommodity: normalizeMiningCommodity,
       resolveMaterialName: resolveMaterialName,

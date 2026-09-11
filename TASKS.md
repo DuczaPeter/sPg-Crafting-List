@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004-C007.1 Multi-Tab User Data Safety
+
+- [x] C007 checkpoint, input application SHA, `develop/V004` és protected V003 baseline célzottan ellenőrizve.
+- [x] Mining Loadouts add/edit/default/delete csak durable commit után jelez; a receiver force-reread alapján frissít, payload durable loadout adatot nem hordoz.
+- [x] Import preview exact base fingerprintje ugyanazon IndexedDB readwrite tranzakció preconditionje; eltérés `IMPORT_BASE_STATE_CHANGED`, nulla import- és snapshot-írás.
+- [x] Konkurens Complete, Undo és Mining Loadout mutation megmarad; automatikus retry nincs; friss preview + explicit import és exact pre-import snapshot PASS.
+- [x] C006.1 pristine schema-3 `REPLACE` exact; extra revision `0`, backup data loss `0`; schema bump nincs.
+- [x] Valós Chrome BFCache inputhiba reprodukálva; persisted `pageshow` reopen+reread után channel READY, listener 1, duplicate 0.
+- [x] C006.1/C007 current-byte regresszió, C007.1 model/Chrome/direct-file/single-file/diff/protected V003 bounded kapu PASS.
+- [x] Full regression, release gate és push nincs; helyi checkpoint után megállás.
+
 ### V004-C007 Multi-Tab Coherence
 
 - [x] Dirty C007 folytatás visszaállítás nélkül auditálva; input HEAD, aktuális application SHA és protected V003 baseline ellenőrizve.

@@ -287,3 +287,11 @@ Ez a kezdeti dontes a kesobbi teljes specifikacio elott szuletett. A nev- es faj
 - Durable mutation sikerét csak a tranzakció tényleges befejezése után szabad jelezni. Presentation-only művelet nem írhat és nem broadcastolhat.
 - Cross-tab frissítés minden reservationt stale állapotba tesz, bezárja a régi Complete/Undo előkészítést és explicit Reallocate műveletet követel. Automatikus allocation, más batch fallback és payload-alapú állapotcsere tilos.
 - Elveszett üzenet vagy hiányzó BroadcastChannel nem correctness-hiba: a Complete/Undo tranzakció commit előtti IndexedDB újraolvasása és revision/stale guardja marad a biztonsági authority.
+
+## 2026-09-11 - V004-C007.1 multi-tab User Data safety
+
+- Mining Loadouts minden durable add/edit/default/delete commitja után `MINING_LOADOUTS_CHANGED` UI-signalt küld. A payload nem hordoz loadout állapotot; a receiver IndexedDB force-reread útvonalon frissít, mert ehhez nincs külön durable revision.
+- A backup import preview current fingerprintje commit-precondition. Az exact durable előállapot olvasása, fingerprint-ellenőrzése, pre-import snapshotja és céladatcseréje ugyanabban a readwrite tranzakcióban történik.
+- Preview utáni bármely User Data változás `IMPORT_BASE_STATE_CHANGED`: nulla import- és snapshot-írás, nincs automatikus retry, a usernek friss preview után újra explicit meg kell erősítenie az importot.
+- A BFCache valóban futtat `pagehide` eseményt, ezért persisted `pageshow` esetén a BroadcastChannel egyszer újranyitandó és kötelező durable force-reread követi. Aktív listener darabszáma reopen után pontosan 1, duplicate 0.
+- A backup schema marad 3; session/tab/BroadcastChannel mező nem backupadat. A C006.1 exact pristine `REPLACE`, Complete/Undo stale guard és automatikus Reallocate tiltása változatlan.

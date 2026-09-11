@@ -2,6 +2,14 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## V004-C007.1 Multi-Tab User Data Safety
+
+- Skill neve: `credit-efficient-project-runner`.
+- Mikor használtuk: `2026-09-11`, a clean C007 checkpoint bounded resume-a, három célzott user-data safety gap javítása, current-byte regresszió és helyi checkpoint során.
+- Mire segített: a Mining Loadouts/import/BFCache releváns source szűk olvasására, a full regresszió és Wiki datasetaudit kihagyására, current-byte evidence-re és a protected V003 baseline megőrzésére.
+- Mely fájlokat vagy döntéseket érintett: V004 single-file durable signal/import-precondition/BFCache lifecycle, C007.1 tools/evidence/report és projektmeta; skillfájl, V003 release/tag és remote nem változott.
+- Kell-e később tanulságot visszaírni a skillbe: `nem`.
+
 ## V004-C007 Multi-Tab Coherence
 
 - Skill neve: `credit-efficient-project-runner`.

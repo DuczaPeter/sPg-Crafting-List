@@ -23,6 +23,8 @@
 - `archive/`: regi vagy levaltott anyagok; csak celzottan olvasd.
 - `tools/`: segedscriptek.
 - Baseline validalas: `tools/validate-baseline.ps1`.
+- V004-C007.1 Multi-tab User Data Safety kapu: `tools/validate-v004-c0071.ps1`; C006.1/C007 current-byte regresszióval, Mining Loadouts signal+reread, konkurens backup-import precondition, valós BFCache, direct-file és protected V003 ellenőrzéssel.
+- V004-C007.1 céltesztek: `tools/run-v004-c0071-tests.mjs`, `tools/run-v004-c0071-browser-tests.mjs` és `tools/probe-v004-c0071-bfcache.mjs`; evidence: `test-artifacts/V004-C007.1/`; riport: `docs/V004_C007_1_MULTI_TAB_USER_DATA_SAFETY_REPORT.md`.
 - V004-C007 Multi-tab coherence kapu: `tools/validate-v004-c007.ps1`; C004.4–C006.1 current-byte regresszióval, kétfüles Complete/Undo/concurrency/lost-message/import/migration/fallback/direct-file és protected V003 ellenőrzéssel.
 - V004-C007 céltesztek: `tools/run-v004-c007-tests.mjs` és `tools/run-v004-c007-browser-tests.mjs`; evidence: `test-artifacts/V004-C007/`; riport: `docs/V004_C007_MULTI_TAB_COHERENCE_REPORT.md`.
 - V004-C006.1 Undo backup round-trip kapu: `tools/validate-v004-c0061.ps1`; C002 V003 migration + C006 Undo regresszióval, exact schema-3 pristine `REPLACE`, legacy fail-closed, Chrome/direct-file és protected V003 ellenőrzéssel.

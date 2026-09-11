@@ -1,0 +1,34 @@
+{
+  "cycle": "V004-C007.1",
+  "purpose": "BFCACHE_PRE_FIX_REPRODUCTION",
+  "applicationRef": "8b7efea39a79d7d22cc61ef8634b1320c8db81ed",
+  "servedSource": "GIT_OBJECT_CANONICAL_LF",
+  "servedApplicationSha256": "2bbe32e26e7871c79cb1e06dc9507fdc45c8ce86f45ac750f1d7ae7b0bacb195",
+  "checkpointWorkingTreeSha256": "9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365",
+  "status": "FAIL_REPRODUCED",
+  "initial": {
+    "tabId": "tab-5b2ff39a-d0f3-4e04-b3ca-26e132c48a29",
+    "listenerRegistrations": 1,
+    "batchCount": 0
+  },
+  "result": {
+    "pageShows": [
+      {
+        "persisted": false,
+        "at": 1789100082489
+      },
+      {
+        "persisted": true,
+        "at": 1789100082759
+      }
+    ],
+    "navigationType": "navigate",
+    "signalStatus": "CLOSED",
+    "tabId": "tab-5b2ff39a-d0f3-4e04-b3ca-26e132c48a29",
+    "listenerRegistrations": 1,
+    "runtimeBatchCount": 0,
+    "durableBatchCount": 1,
+    "refreshCount": 0
+  },
+  "bfcacheNotUsed": []
+}

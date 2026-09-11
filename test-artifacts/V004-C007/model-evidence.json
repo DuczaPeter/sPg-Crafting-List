@@ -1,7 +1,7 @@
 {
   "cycle": "V004-C007",
   "status": "PASS_TARGETED_MODEL",
-  "applicationSha256": "9cf79521aa9d1e46ed2494cdbbed80723f6cb52c2937497f264bc146ed20d365",
+  "applicationSha256": "9fc09f1884feedcea64390f5f4ce34b37e9798bf823c78f7e840d51406427798",
   "protocol": {
     "marker": "V004_MULTI_TAB_SIGNAL_1",
     "channelName": "spg-crafting-list-v004",
@@ -9,6 +9,7 @@
       "INVENTORY_CHANGED",
       "CRAFT_LIST_CHANGED",
       "ALLOCATION_STATE_CHANGED",
+      "MINING_LOADOUTS_CHANGED",
       "CRAFT_COMPLETED",
       "CRAFT_UNDONE",
       "BACKUP_IMPORTED",
@@ -32,7 +33,7 @@
     "backupImportForceAllowsExactLowerOrEqualRestore": true
   },
   "lifecycle": {
-    "repeatedOpenListenerRegistrations": 1,
+    "repeatedOpenListenerRegistrations": 0,
     "senderRefreshLoop": false,
     "unavailableFallback": "MULTI_TAB_SIGNAL_UNAVAILABLE"
   },

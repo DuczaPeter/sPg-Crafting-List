@@ -2,6 +2,16 @@
 
 Current cycle/session notes only. Previous raw log archived losslessly at `logs/archive/20260910-172400-000000-WORKLOG.md`.
 
+## 2026-09-11 — V004-C007.1 Multi-Tab User Data Safety
+
+- Resume: `develop/V004 @ 8b7efea...`, clean input, app SHA `9cf7952...`; `$credit-efficient-project-runner`.
+- Mining Loadouts durable commit után `MINING_LOADOUTS_CHANGED`; kis signal payload, fogadó oldali IndexedDB force-reread, add/edit/default/delete kétfüles PASS.
+- Backup import exact preview-base fingerprint precondition ugyanazon readwrite tranzakcióban; eltérés `IMPORT_BASE_STATE_CHANGED`, nulla import/snapshot írás és kötelező friss preview.
+- Konkurens Complete/Undo/loadout állapot megmaradt; friss preview utáni import és exact durable pre-state snapshot PASS; schema 3, data loss 0.
+- C007 checkpoint BFCache-hiba valós Chrome-ban reprodukálva; persisted pageshow reopen+reread után channel READY, listener 1, duplicate 0.
+- C006.1/C007 current-byte regresszió, C007.1 model/Chrome/direct-file/single-file/diff/protected V003 bounded kapu PASS; full regression/release gate/push nincs.
+- Riport: `docs/V004_C007_1_MULTI_TAB_USER_DATA_SAFETY_REPORT.md`; rollback a helyi C007.1 commit normál revertje.
+
 ## 2026-09-10 — V004-C007 Multi-Tab Coherence
 
 - Resume: `develop/V004 @ da8515a...`; a megszakadt dirty C007 diff megőrizve; input app SHA `ecbb85c...`; `$credit-efficient-project-runner`.

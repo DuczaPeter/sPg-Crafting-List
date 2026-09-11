@@ -1,0 +1,35 @@
+{
+  "cycle": "V004-C007.1",
+  "status": "PASS_TARGETED_MODEL",
+  "applicationSha256": "9fc09f1884feedcea64390f5f4ce34b37e9798bf823c78f7e840d51406427798",
+  "miningLoadouts": {
+    "mutationType": "MINING_LOADOUTS_CHANGED",
+    "signalAfterDurableCommit": true,
+    "payloadContainsLoadoutData": false,
+    "durableRereadForced": true
+  },
+  "importPrecondition": {
+    "authority": "INDEXEDDB_TRANSACTION_EXACT_PRE_STATE_FINGERPRINT",
+    "comparisonBeforeWrite": true,
+    "blocker": "IMPORT_BASE_STATE_CHANGED",
+    "automaticRetry": false,
+    "snapshotSameTransaction": true,
+    "snapshotUsesExactDurablePreState": true
+  },
+  "bfcache": {
+    "pagehideClose": true,
+    "persistedPageshowReopen": true,
+    "durableReread": true,
+    "activeListenerCountContract": 1
+  },
+  "backup": {
+    "schemaVersion": 3,
+    "sessionFieldsIncluded": 0
+  },
+  "singleFile": {
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "localScriptSrc": 0,
+    "localStylesheet": 0
+  }
+}
