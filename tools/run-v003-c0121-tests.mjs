@@ -15,6 +15,11 @@ const appHtml = verifiedApplication.html;
 const m4HarnessSource = buildM4HarnessSource(appHtml);
 const appCss = extractEmbeddedApplicationCss(appHtml);
 const standaloneArgument = process.argv.find((argument) => argument.startsWith("--standalone="));
+const releaseCandidateMode = process.env.SPG_V004_RELEASE_CANDIDATE_MODE === "1";
+if (releaseCandidateMode) {
+  assert.ok(standaloneArgument, "Release-candidate módban kötelező az explicit --standalone binding.");
+  assert.ok(standaloneArgument.slice("--standalone=".length).trim(), "Release-candidate módban a --standalone útvonal nem lehet üres.");
+}
 const standalonePath = standaloneArgument
   ? path.resolve(projectDirectory, standaloneArgument.slice("--standalone=".length))
   : path.join(projectDirectory, "test-artifacts", "V003-C012.1", "standalone-js-300-quality-plan.html");

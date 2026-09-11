@@ -6,6 +6,11 @@ import { fileURLToPath } from "node:url";
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const standaloneArgument = process.argv.find((argument) => argument.startsWith("--standalone="));
+const releaseCandidateMode = process.env.SPG_V004_RELEASE_CANDIDATE_MODE === "1";
+if (releaseCandidateMode) {
+  assert.ok(standaloneArgument, "Release-candidate módban kötelező az explicit --standalone binding.");
+  assert.ok(standaloneArgument.slice("--standalone=".length).trim(), "Release-candidate módban a --standalone útvonal nem lehet üres.");
+}
 const standalonePath = standaloneArgument
   ? path.resolve(projectDirectory, standaloneArgument.slice("--standalone=".length))
   : path.join(projectDirectory, "test-artifacts", "V003-C009", "standalone-js-300-final-card.html");

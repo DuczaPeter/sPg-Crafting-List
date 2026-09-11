@@ -9,6 +9,11 @@ import { buildM1HarnessSource, loadVerifiedCandidateHtml } from "./v004-c0081-ha
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const artifactArgument = process.argv.find((argument) => argument.startsWith("--artifact="));
+const releaseCandidateMode = process.env.SPG_V004_RELEASE_CANDIDATE_MODE === "1";
+if (releaseCandidateMode) {
+  assert.ok(artifactArgument, "Release-candidate módban kötelező az explicit --artifact binding.");
+  assert.ok(artifactArgument.slice("--artifact=".length).trim(), "Release-candidate módban az --artifact útvonal nem lehet üres.");
+}
 const artifactPath = artifactArgument ? path.resolve(projectDirectory, artifactArgument.slice("--artifact=".length)) : null;
 const verifiedApplication = loadVerifiedCandidateHtml({ localApplicationPath: path.join(projectDirectory, "sPg Crafting List.html") });
 const htmlSource = verifiedApplication.html;

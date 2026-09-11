@@ -22,6 +22,7 @@ $manifestPath = Join-Path $candidateDirectory 'candidate-manifest.json'
 $validationLogPath = Join-Path $artifactDirectory 'validation.log'
 $regressionEvidencePath = Join-Path $artifactDirectory 'release-regression-evidence.json'
 $targetSummaryPath = Join-Path $artifactDirectory 'target-summary.json'
+$sharedStandaloneRelativePath = 'test-artifacts/V004-C010/standalone-js-300-current-candidate.html'
 $v003ArtifactPath = Join-Path $projectRoot 'releases\V003\sPg Crafting List.html'
 $stableV004Path = Join-Path $projectRoot 'releases\V004'
 $temporaryProject = $null
@@ -158,14 +159,14 @@ try {
         'v003-c005-consistency' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c005-tests.mjs') }
         'v003-c006-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c006-tests.mjs') }
         'v003-c007-color' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c007-tests.mjs') }
-        'v003-c008-detail' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c008-tests.mjs') }
-        'v003-c0081-detail-fix' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0081-tests.mjs') }
-        'v003-c009-api-main-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c009-tests.mjs') }
-        'v003-c010-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c010-tests.mjs') }
-        'v003-c0101-compact-mining-refinery' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0101-tests.mjs') }
-        'v003-c011-visual-cleanup' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c011-tests.mjs') }
-        'v003-c012-card-parity' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c012-tests.mjs') }
-        'v003-c0121-quality-planner' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0121-tests.mjs') }
+        'v003-c008-detail' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c008-tests.mjs', "--artifact=$sharedStandaloneRelativePath") }
+        'v003-c0081-detail-fix' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0081-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c009-api-main-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c009-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c010-final-card' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c010-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c0101-compact-mining-refinery' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0101-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c011-visual-cleanup' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c011-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c012-card-parity' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c012-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
+        'v003-c0121-quality-planner' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0121-tests.mjs', "--standalone=$sharedStandaloneRelativePath") }
         'v003-c0122-version-consistency' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0122-tests.mjs') }
         'v003-c0123-quality-constraints' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0123-tests.mjs') }
         'v003-c0124-numeric-editing' = @{ Executable = 'node'; Arguments = @('.\tools\run-v003-c0124-tests.mjs') }
@@ -207,6 +208,27 @@ try {
         if ($configuredLeafTests -notcontains $leafId) { throw "Validator leaf missing from test plan: $leafId" }
     }
 
+    $standaloneConsumerLeafIds = @(
+        'v003-c0081-detail-fix',
+        'v003-c009-api-main-card',
+        'v003-c010-final-card',
+        'v003-c0101-compact-mining-refinery',
+        'v003-c011-visual-cleanup',
+        'v003-c012-card-parity',
+        'v003-c0121-quality-planner'
+    )
+    $expectedProducerBinding = "--artifact=$sharedStandaloneRelativePath"
+    $producerBindingCount = @($leafCommands['v003-c008-detail'].Arguments | Where-Object { $_ -eq $expectedProducerBinding }).Count
+    if ($producerBindingCount -ne 1) { throw "Shared standalone producer binding mismatch: $producerBindingCount" }
+    foreach ($consumerLeafId in $standaloneConsumerLeafIds) {
+        $expectedConsumerBinding = "--standalone=$sharedStandaloneRelativePath"
+        $consumerBindingCount = @($leafCommands[$consumerLeafId].Arguments | Where-Object { $_ -eq $expectedConsumerBinding }).Count
+        if ($consumerBindingCount -ne 1) { throw "Shared standalone consumer binding mismatch: $consumerLeafId ($consumerBindingCount)" }
+    }
+    $lines.Add('sharedStandaloneProducer=1')
+    $lines.Add("sharedStandaloneConsumers=$($standaloneConsumerLeafIds.Count)")
+    $lines.Add('releaseStandaloneHistoricalFallbacks=0')
+
     $previousExpectedRuntimeIdentity = $env:SPG_EXPECTED_RUNTIME_IDENTITY
     $previousReleaseCandidateMode = $env:SPG_V004_RELEASE_CANDIDATE_MODE
     $previousVerifiedCandidatePath = $env:SPG_V004_VERIFIED_CANDIDATE_PATH
@@ -219,8 +241,35 @@ try {
     $env:SPG_V004_VERIFIED_CANDIDATE_BYTES = [string]$candidateBytes
     Push-Location $temporaryProject
     try {
+        $sharedStandalonePath = Join-Path $temporaryProject ($sharedStandaloneRelativePath -replace '/', '\')
+        $sharedStandaloneSha = $null
+        $sharedStandaloneBytes = $null
         foreach ($leafId in $configuredLeafTests) {
+            if ($standaloneConsumerLeafIds -contains $leafId) {
+                if ($null -eq $sharedStandaloneSha -or -not (Test-Path -LiteralPath $sharedStandalonePath)) {
+                    throw "Shared standalone artifact is missing before consumer: $leafId"
+                }
+                $consumerInputSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $sharedStandalonePath).Hash.ToLowerInvariant()
+                $consumerInputBytes = (Get-Item -LiteralPath $sharedStandalonePath).Length
+                if ($consumerInputSha -ne $sharedStandaloneSha -or $consumerInputBytes -ne $sharedStandaloneBytes) {
+                    throw "Shared standalone artifact changed before consumer: $leafId"
+                }
+            }
             Invoke-LeafCheck $leafId $leafCommands[$leafId]
+            if ($leafId -eq 'v003-c008-detail') {
+                if (-not (Test-Path -LiteralPath $sharedStandalonePath)) { throw 'Shared standalone producer did not create the artifact.' }
+                $sharedStandaloneSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $sharedStandalonePath).Hash.ToLowerInvariant()
+                $sharedStandaloneBytes = (Get-Item -LiteralPath $sharedStandalonePath).Length
+                $lines.Add("sharedStandalonePath=$sharedStandaloneRelativePath")
+                $lines.Add("sharedStandaloneSha256=$sharedStandaloneSha")
+                $lines.Add("sharedStandaloneBytes=$sharedStandaloneBytes")
+            } elseif ($standaloneConsumerLeafIds -contains $leafId) {
+                $consumerOutputSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $sharedStandalonePath).Hash.ToLowerInvariant()
+                $consumerOutputBytes = (Get-Item -LiteralPath $sharedStandalonePath).Length
+                if ($consumerOutputSha -ne $sharedStandaloneSha -or $consumerOutputBytes -ne $sharedStandaloneBytes) {
+                    throw "Shared standalone artifact changed during consumer: $leafId"
+                }
+            }
         }
     } finally {
         Pop-Location
