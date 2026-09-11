@@ -17433,7 +17433,10 @@ body[data-active-module="craftingListNav"] .spg-allocation-summary {
       normalized.outputCountEvidence = card.outputCountEvidence || V004_OUTPUT_COUNT_EVIDENCE.UNPROVEN;
       normalized.blueprintWebUrl = card.blueprintWebUrl || null;
       normalized.outputWebUrl = card.outputWebUrl || null;
-      normalized.craftTimeSeconds = Number.isFinite(Number(card.craftTimeSeconds)) ? Number(card.craftTimeSeconds) : null;
+      var craftTimeSeconds = card.craftTimeSeconds;
+      var craftTimeMissing = craftTimeSeconds === undefined || craftTimeSeconds === null ||
+        (typeof craftTimeSeconds === "string" && craftTimeSeconds.trim() === "");
+      normalized.craftTimeSeconds = !craftTimeMissing && Number.isFinite(Number(craftTimeSeconds)) ? Number(craftTimeSeconds) : null;
       normalized.isAvailableByDefault = card.isAvailableByDefault === true;
       return normalized;
     }
