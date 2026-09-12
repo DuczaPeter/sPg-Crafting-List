@@ -1,0 +1,37 @@
+{
+  "cycle": "V004-C010",
+  "status": "BUILT_PENDING_GATES",
+  "sourceHead": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+  "invalidCandidateSourceHead": "3f94ad079c95234599c56f84347c48a0d11ecc25",
+  "source": "sPg Crafting List.html",
+  "output": "test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html",
+  "bytes": 1083886,
+  "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "generatedAt": "2026-09-11T16:19:53.788Z",
+  "buildModel": "GIT_COMMIT_RAW_BYTE_COPY",
+  "sourceByteIdentical": true,
+  "applicationDiffFromInvalidC009": {
+    "classification": "EXACT_HISTORY_SNAPSHOT_CANONICALIZATION_ONLY",
+    "insertions": 8,
+    "deletions": 4,
+    "runtimeIdentityReplacementRequired": false
+  },
+  "invalidCandidate": {
+    "path": "test-artifacts/V004-C009/fresh-release-candidate/sPg Crafting List V004 RC.html",
+    "bytes": 1083495,
+    "sha256": "e4763a54deca8755ec9604ccc16e2d00be53896040572b41a777d1e89357f8b4",
+    "preserved": true,
+    "releaseTarget": false
+  },
+  "runtimeIdentity": "V004",
+  "v004DevRuntimeIdentityOccurrences": 0,
+  "gameDataIdentity": "4.10.0-LIVE.12519617",
+  "backupSchemaVersion": 3,
+  "applicationRuntimeFileCount": 1,
+  "localRuntimeSidecars": 0,
+  "embeddedCss": true,
+  "embeddedJavaScript": true,
+  "stableArtifactCreated": false,
+  "v004TagCreated": false,
+  "manualCandidateFileGate": "REQUIRED"
+}

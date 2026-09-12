@@ -1,0 +1,705 @@
+V004-C010.3 evidence-managed replacement release candidate validation
+sharedStandalonePath=C:\Users\ganos\AppData\Local\Temp\spg-v004-c0103-evidence-62452cf66d2841238c101fe5b99efda1\standalone-js-300-current-candidate.html
+harness-dependency-wiring-audit=PASS durationMs=60
+V004_C010_M1_HARNESS_AUDIT_PASS
+{"candidateSha256":"16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5","candidateBytes":1083886,"affectedLeafCount":10,"unresolvedAffectedHarnesses":0,"checkoutHtmlReleaseFallbacks":0}
+m4-remaining-harness-closure-audit=PASS durationMs=343
+V004_C010_HARNESS_CLOSURE_AUDIT_PASS
+{"candidateSha256":"16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5","candidateBytes":1083886,"requiredRunnerCount":11,"legacyFixtureRegionsUnchanged":9,"unresolvedKnownReleaseHarnessDependencyGaps":0}
+isolated-candidate-clone=PASS durationMs=2088
+Cloning into 'C:\Users\ganos\AppData\Local\Temp\spg-v004-c010-9c87cd233164495e96a9a3acde8c5775'...
+done.
+From C:\Users\ganos\OneDrive\Munka\Codex\sPg Crafring List
+ * [new tag]         V001       -> V001
+ * [new tag]         V002       -> V002
+ * [new tag]         V003       -> V003
+history-snapshot-dataset-adapter-freeze=PASS durationMs=111
+V004_C010_HISTORY_SNAPSHOT_DATASET_ADAPTER_FREEZE_PASS
+{
+  "cycle": "V004-C010",
+  "status": "PASS_HISTORY_SNAPSHOT_ONLY_DATASET_ADAPTER_FREEZE",
+  "invalidCandidateHead": "3f94ad079c95234599c56f84347c48a0d11ecc25",
+  "candidateHead": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+  "invalidCandidateApplicationSha256": "e4763a54deca8755ec9604ccc16e2d00be53896040572b41a777d1e89357f8b4",
+  "invalidCandidateArtifactSha256": "e4763a54deca8755ec9604ccc16e2d00be53896040572b41a777d1e89357f8b4",
+  "candidateApplicationSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateArtifactSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateBytes": 1083886,
+  "candidateSourceByteIdentical": true,
+  "applicationDiffFromInvalidC009": "EXACT_HISTORY_SNAPSHOT_CANONICALIZATION_ONLY",
+  "applicationDiffInsertions": 8,
+  "applicationDiffDeletions": 4,
+  "v004DevRuntimeIdentityOccurrences": 0,
+  "runtimeIdentity": "V004",
+  "allOtherApplicationBytesUnchanged": true,
+  "gameDataIdentity": "4.10.0-LIVE.12519617",
+  "unchangedContracts": {
+    "wikiDataset": true,
+    "wikiAdapter": true,
+    "recipeParsing": true,
+    "exactQuantityNormalization": true,
+    "scuNormalization": true,
+    "canonicalIdentityMapping": true,
+    "uexAdapter": true,
+    "indexedDbSchema": true,
+    "backupSchemaVersion": 3,
+    "craftTimeNormalization": true
+  },
+  "full1606BlueprintAuditRequired": false,
+  "reason": "C010 is byte-identical to the invalid C009 candidate except for the exact History snapshot canonicalization repair."
+}
+sharedStandaloneProducer=1
+sharedStandaloneConsumers=7
+releaseStandaloneHistoricalFallbacks=0
+baseline-static=PASS durationMs=485
+EMBEDDED_APPLICATION_CSS_PASS da7df1ce3ae788fd9dddea88f545378846c30289f8337903496f0cb5c120854b 123924 bytes
+Single-file baseline structure OK
+JavaScript syntax OK
+Embedded CSS markers OK
+BASELINE_STATIC_PASS
+m1-model-cache=PASS durationMs=51
+M1_MODEL_TEST_PASS
+{
+  "js300": {
+    "slots": 3,
+    "dynamic": 1,
+    "fixed": 2
+  },
+  "hofstede": {
+    "units": [
+      "SCU",
+      "ITEM",
+      "SCU"
+    ]
+  },
+  "duplicateMaterial": {
+    "sourceOccurrences": 1,
+    "normalizedSlots": 2
+  },
+  "unknownCapability": "UNKNOWN"
+}
+m2-inventory-allocation=PASS durationMs=866
+M2_ALLOCATION_TEST_PASS
+{
+  "mandatoryCases": 8,
+  "js300Rules": [
+    "HP_MIN_500",
+    "FIXED",
+    "FIXED"
+  ],
+  "hofstedeRules": [
+    "HP_MIN_500",
+    "HIGHEST_Q",
+    "HIGHEST_Q"
+  ],
+  "deterministicPriority": true,
+  "performance": {
+    "batches": 1000,
+    "cards": 100,
+    "requirements": 300,
+    "durationMs": 795.69
+  }
+}
+m3-mining=PASS durationMs=221
+M3_MINING_TEST_PASS
+{
+  "mandatoryCases": 33,
+  "realFixtures": [
+    "Aluminum (Ore)",
+    "Agricium (Ore)",
+    "Stileron (Ore)",
+    "Beradom",
+    "Aphorite",
+    "Bluemoon Fungus",
+    "Arbor MH1",
+    "Helix II",
+    "MOLE"
+  ],
+  "performance": {
+    "locations": 5000,
+    "durationMs": 149.32
+  }
+}
+m4-combined-backup=PASS durationMs=411
+M4_COMBINED_BACKUP_TEST_PASS
+{
+  "mandatoryCases": 12,
+  "backupSchemaVersion": 3,
+  "roundtripFingerprint": "8875b5b7",
+  "craftTimeSecondsNullJsonRoundTrip": true,
+  "canonicalFingerprintUnchanged": true,
+  "performance": {
+    "cards": 1000,
+    "recipeSlots": 3000,
+    "batches": 5000,
+    "materials": 100,
+    "durationMs": 318.68
+  }
+}
+m5-uex-refinery=PASS durationMs=69
+      "uex": "Hephaestanite (Raw)",
+      "canonical": "RAW:HEPHAESTANITE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Raw Ice (Organic)",
+      "uex": "Ice (Raw)",
+      "canonical": "RAW:ICE",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    },
+    {
+      "wiki": "Raw Silicon (Nonmetal)",
+      "uex": "Silicon (Raw)",
+      "canonical": "RAW:SILICON",
+      "origin": "VERIFIED_CANONICAL_ALIAS"
+    }
+  ],
+  "systems": [
+    {
+      "name": "Nyx",
+      "best": -2,
+      "ties": 1
+    },
+    {
+      "name": "Pyro",
+      "best": 0,
+      "ties": 1
+    },
+    {
+      "name": "Stanton",
+      "best": 7,
+      "ties": 2
+    }
+  ],
+  "performance": {
+    "records": 500,
+    "commodities": 20,
+    "durationMs": 10.3
+  }
+}
+m6-standalone-export=PASS durationMs=112
+M6_STANDALONE_EXPORT_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "output": "JS-300",
+  "recipeSlots": 3,
+  "locations": 3,
+  "loadouts": 1,
+  "refinerySystems": 1,
+  "exportBytes": 192283,
+  "automatedExportArtifact": null,
+  "performance": {
+    "recipeSlots": 120,
+    "durationMs": 32.55
+  }
+}
+m61-ui-completeness=PASS durationMs=51
+M61_UI_COMPLETENESS_TEST_PASS
+{
+  "mandatoryCases": 14,
+  "navigation": [
+    "Crafting List",
+    "Blueprint Browser",
+    "My Materials",
+    "Material Database",
+    "Mining Loadouts",
+    "UEX Refinery",
+    "Combined Materials",
+    "Data / Settings"
+  ],
+  "materialCategories": [
+    "All",
+    "Ship Mining",
+    "Vehicle Mining",
+    "FPS Mining",
+    "Harvestable"
+  ],
+  "usesExistingMiningRanking": true,
+  "usesExistingRefineryRanking": true,
+  "usesExistingLoadoutStore": true
+}
+c04-embedded-css=PASS durationMs=48
+EMBEDDED_APPLICATION_CSS_PASS da7df1ce3ae788fd9dddea88f545378846c30289f8337903496f0cb5c120854b 123924 bytes
+c04-file-export=PASS durationMs=69
+C04_SINGLE_FILE_CSS_TEST_PASS
+{
+  "source": "embedded-style",
+  "sha256": "da7df1ce3ae788fd9dddea88f545378846c30289f8337903496f0cb5c120854b",
+  "bytes": 123924,
+  "fileProtocolCssNetworkReads": 0,
+  "httpProtocolCssNetworkReads": 0,
+  "localSidecarFilesRequired": 0,
+  "duplicateCssSnapshot": false,
+  "externalFontDependencyRemoved": true
+}
+v003-c003-material-naming=PASS durationMs=57
+            "apiName": "Fixture Crystal",
+            "kind": null,
+            "categories": [
+              "HARVESTABLE"
+            ],
+            "refinedVersionUuid": null
+          }
+        ]
+      },
+      {
+        "canonicalName": "Tungsten",
+        "recordCount": 2,
+        "relatedPairs": 1,
+        "decision": "RELATED_TECHNICAL_RECORDS",
+        "records": [
+          {
+            "uuid": "addc9aa4-5d2d-4c0d-b01b-ad2b2e50a5d6",
+            "rawName": "Tungsten (Ore) (UnrefinedOres)",
+            "apiName": "Tungsten (Ore)",
+            "kind": "mineable",
+            "categories": [
+              "SHIP_MINING"
+            ],
+            "refinedVersionUuid": "60f116f4-c02a-45b2-9ded-333747795124"
+          },
+          {
+            "uuid": "60f116f4-c02a-45b2-9ded-333747795124",
+            "rawName": "Tungsten (Metal)",
+            "apiName": "Tungsten",
+            "kind": "harvestable",
+            "categories": [
+              "UNKNOWN"
+            ],
+            "refinedVersionUuid": null
+          }
+        ]
+      }
+    ]
+  }
+}
+v003-c004-radar-top3=PASS durationMs=65
+V003_C004_RADAR_TOP3_TEST_PASS
+{
+  "registryVersion": "V003-C004-1",
+  "verifiedMaterialRecords": 33,
+  "directShipRows": 26,
+  "categoryDerivedRecords": 7,
+  "topThree": {
+    "normalTiers": 3,
+    "spaceTiers": 3,
+    "tiedWinnerLocations": 2
+  },
+  "nonShipSpaceSuppressed": true,
+  "scmdbComparison": {
+    "MATCH": 6,
+    "EXPLAINED_DIFFERENCE": 1,
+    "UNVERIFIED": 2
+  }
+}
+v003-c005-consistency=PASS durationMs=58
+V003_C005_CONSISTENCY_TEST_PASS
+{
+  "radarRegistryRecords": 33,
+  "provenRocFpsRecords": 7,
+  "newlyVerifiedFromPreviouslyUnmapped": 0,
+  "targetedRightfullyUnmapped": 4,
+  "lagrangeFScmdbReasonCorrected": true,
+  "legacyCacheGuards": "PASS",
+  "roadmapCycles": [
+    "V003-C006",
+    "V003-C007",
+    "V003-C008",
+    "V003-C009",
+    "V003-C010"
+  ]
+}
+v003-c006-final-card=PASS durationMs=80
+V003_C006_FINAL_CARD_TEST_PASS
+{
+  "mandatoryCases": 12,
+  "output": "JS-300",
+  "requestedQuantity": 2,
+  "maxCraftable": 3,
+  "materialSnapshots": [
+    {
+      "material": "Stileron",
+      "radar": "3185–6370 (1–2× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "MAPPING_UNRESOLVED"
+    },
+    {
+      "material": "Beryl",
+      "radar": "3540–14160 (1–4× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "AVAILABLE"
+    },
+    {
+      "material": "Savrilium",
+      "radar": "3200–6400 (1–2× cluster)",
+      "mining": "AVAILABLE",
+      "refinery": "AVAILABLE"
+    }
+  ],
+  "standaloneBytes": 192294,
+  "externalRuntimeResources": 0
+}
+v003-c007-color=PASS durationMs=76
+V003_C007_MATERIAL_COLOR_TEST_PASS
+{
+  "registryVersion": "V003-C007-1",
+  "registryRecords": 33,
+  "shipMaterialChecks": 14,
+  "rocChecks": 3,
+  "fpsChecks": 4,
+  "unmappedFallback": "PASS",
+  "js300": [
+    {
+      "material": "Stileron",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)"
+    },
+    {
+      "material": "Beryl",
+      "foreground": "#3399ff",
+      "background": "rgba(51, 153, 255, 0.16)"
+    },
+    {
+      "material": "Savrilium",
+      "foreground": "#ffaa33",
+      "background": "rgba(255, 170, 51, 0.16)"
+    }
+  ],
+  "requestedQuantity": 2,
+  "maxCraftable": 3,
+  "standaloneBytes": 188525,
+  "externalRuntimeResources": 0
+}
+v003-c008-detail=PASS durationMs=82
+    "material",
+    "radar",
+    "mining",
+    "refinery"
+  ],
+  "publicWikiResolver": "resolvePublicWikiDeepLink",
+  "apiWikiResolver": "resolveWikiApiDeepLink",
+  "js300PublicWiki": {
+    "status": "VERIFIED",
+    "targetUuid": "b1c89d89-d408-4998-9b17-76986d78a9dd",
+    "canonicalName": "JS-300",
+    "publicWikiUrl": "https://star-citizen.wiki/JS-300",
+    "url": "https://star-citizen.wiki/JS-300",
+    "resolutionStatus": "VERIFIED",
+    "resolutionOrigin": "MEDIAWIKI_EXACT_TITLE",
+    "origin": "MEDIAWIKI_EXACT_TITLE",
+    "verifiedAt": "2026-08-25T04:24:48.744Z",
+    "requiresInternet": true
+  },
+  "js300ApiWiki": {
+    "status": "AVAILABLE",
+    "url": "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+    "origin": "API_WEB_URL",
+    "versionOrigin": "ACTIVE_SC_VERSION",
+    "resourceType": "items",
+    "requiresInternet": true
+  },
+  "detailTargets": 13,
+  "materials": [
+    "Stileron",
+    "Beryl",
+    "Savrilium"
+  ],
+  "stileronUex": "MAPPING_UNRESOLVED_PASS",
+  "invalidTarget": "PASS",
+  "oldCacheSlugFallback": "PASS",
+  "standaloneBytes": 235932,
+  "standaloneArtifact": "..\\spg-v004-c0103-evidence-62452cf66d2841238c101fe5b99efda1\\standalone-js-300-current-candidate.html",
+  "standaloneExternalRuntimeResources": 0
+}
+sharedStandaloneSha256=8c8537c13838f69e19c74307b8278f1108fb2fef340d67e93138f7e10fdf2520
+sharedStandaloneBytes=235932
+v003-c0081-detail-fix=PASS durationMs=46
+V003_C0081_PUBLIC_WIKI_TEST_PASS
+{
+  "publicWikiResolver": "resolvePublicWikiDeepLink",
+  "apiWikiResolver": "resolveWikiApiDeepLink",
+  "js300PublicWikiUrl": "https://star-citizen.wiki/JS-300",
+  "berylPublicWikiUrl": "https://star-citizen.wiki/Beryl",
+  "stileronStatus": "NO_PROVEN_PUBLIC_WIKI_URL",
+  "savriliumStatus": "NO_PROVEN_PUBLIC_WIKI_URL",
+  "standaloneRuntimeFetch": 0,
+  "standaloneExternalRuntimeResources": 0
+}
+v003-c009-api-main-card=PASS durationMs=45
+V003_C009_FINAL_MAIN_CARD_TEST_PASS
+{
+  "itemApiResolver": "resolveItemApiDeepLink",
+  "materialApiResolver": "resolveMaterialApiDeepLink",
+  "itemUrl": "https://api.star-citizen.wiki/items/js-300?version=4.9.0-LIVE.12232306",
+  "materialUrls": {
+    "Stileron": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.9.0-LIVE.12232306",
+    "Beryl": "https://api.star-citizen.wiki/commodities/beryl-raw?version=4.9.0-LIVE.12232306",
+    "Savrilium": "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.9.0-LIVE.12232306"
+  },
+  "recipeSlots": 3,
+  "standaloneBytes": 235932,
+  "publicWikiUserActions": 0,
+  "externalRuntimeResources": 0
+}
+v003-c010-final-card=PASS durationMs=46
+V003_C010_EXACT_FINAL_CARD_TEST_PASS
+{
+  "defaultView": "Blueprint Browser + Final Card only",
+  "recipeRows": 3,
+  "materialBlocks": 3,
+  "radarChips": 8,
+  "exactApiLinks": 4,
+  "standaloneBytes": 235932,
+  "externalRuntimeResources": 0
+}
+v003-c0101-compact-mining-refinery=PASS durationMs=51
+V003_C0101_COMPACT_PRESENTATION_TEST_PASS
+{
+  "miningSingleFamily": "Pyro Deep Space Asteroids",
+  "miningSeparateTie": "Bloom (+2 azonos legjobb)",
+  "refineryTieCount": 2,
+  "refineryCompactLabel": "ARC-L1 (+1 azonos legjobb)",
+  "lowerRankedRefineryExcluded": true,
+  "standaloneExternalRuntimeResources": 0
+}
+v003-c011-visual-cleanup=PASS durationMs=57
+V003_C011_FINAL_UI_CLEANUP_TEST_PASS
+{
+  "referenceLock": {
+    "Info/A fö nézet.png": "cfd86011e619d43f73c9fca358974d0c489fc1936e761702f6f1c37cd55689fa",
+    "Info/A Crafting card.png": "2fbc9f4f39d4b33b4a65673ca9daa4af0c81f3b69d4ac8279c76776f503b2be5"
+  },
+  "detailVisibleCount": 0,
+  "technicalModelRetained": true,
+  "selectedResultRetained": true,
+  "listScrollStrategy": "viewport-height + overflow-y:auto",
+  "standaloneBytes": 235932,
+  "standaloneExternalRuntimeResources": 0
+}
+v003-c012-card-parity=PASS durationMs=66
+V003_C012_CRAFTING_LIST_PARITY_TEST_PASS
+{
+  "sharedRenderer": "renderFinalCraftingCardContent",
+  "fixtureCards": [
+    {
+      "priority": 1,
+      "outputName": "JS-300",
+      "renderer": "renderFinalCraftingCardContent",
+      "collapsed": false
+    },
+    {
+      "priority": 2,
+      "outputName": "Hofstede-S1 Mining Laser",
+      "renderer": "renderFinalCraftingCardContent",
+      "collapsed": false
+    },
+    {
+      "priority": 3,
+      "outputName": "Duplicate Material Fixture",
+      "renderer": "renderFinalCraftingCardContent",
+      "collapsed": true
+    }
+  ],
+  "tenCardStress": {
+    "cards": 10,
+    "expanded": 2,
+    "collapsed": 8
+  },
+  "prioritySwap": true,
+  "sourceCardAwareDetail": true,
+  "standaloneBytes": 235932,
+  "externalRuntimeResources": 0
+}
+v003-c0121-quality-planner=PASS durationMs=96
+V003_C0121_MATERIAL_QUALITY_PLANNER_TEST_PASS
+{
+  "policyMatrix": "PASS",
+  "deterministicAllocation": "PASS",
+  "combinedNoDoubleCount": "PASS",
+  "priorityAndMaxCraftable": "PASS",
+  "persistenceAndBackup": "PASS",
+  "standaloneTargetQ900": "PASS",
+  "js300DefaultLabels": [
+    "Q500+",
+    "Bármely Q",
+    "Bármely Q"
+  ],
+  "standaloneBytes": 235932,
+  "referenceSha256": "f1883eca222bb1a5172b90c31cb9be8f724f6366841483f0bdff2cc14bdb7cb6"
+}
+v003-c0122-version-consistency=PASS durationMs=75
+V003_C0122_VERSION_CONSISTENCY_TEST_PASS
+{
+  "activeScVersion": "4.10.0-LIVE.12519617",
+  "itemApiUrl": "https://api.star-citizen.wiki/items/js-300?version=4.10.0-LIVE.12519617",
+  "materialApiUrls": {
+    "Stileron": "https://api.star-citizen.wiki/commodities/stileron-ore?version=4.10.0-LIVE.12519617",
+    "Beryl": "https://api.star-citizen.wiki/commodities/beryl-raw?version=4.10.0-LIVE.12519617",
+    "Savrilium": "https://api.star-citizen.wiki/commodities/savrilium-ore?version=4.10.0-LIVE.12519617"
+  },
+  "materialSourceVersions": {
+    "Stileron": "4.10.0-LIVE.12519617",
+    "Beryl": "4.10.0-LIVE.12519617",
+    "Savrilium": "4.10.0-LIVE.12519617"
+  },
+  "miningSourceVersions": {
+    "Stileron": "4.10.0-LIVE.12519617",
+    "Beryl": "4.10.0-LIVE.12519617",
+    "Savrilium": "4.10.0-LIVE.12519617"
+  },
+  "versionACacheRetained": true,
+  "versionALeakIntoVersionB": false,
+  "crossVersionBlock": "CROSS_VERSION_DATASET_BLOCKED",
+  "standalonePath": "test-artifacts/V003-C012.2/standalone-js-300-version-b.html",
+  "standaloneBytes": 184306
+}
+v003-c0123-quality-constraints=PASS durationMs=95
+    "Stileron": "FIXED",
+    "Ouratite": "FIXED"
+  },
+  "targetQ800LowOnly": {
+    "stileronQ747Eligible": false,
+    "stileronReservedUnits": 0,
+    "stileronMissingAmountUnits": 0,
+    "stileronMissingQualityUnits": 15000,
+    "ouratiteQ860ReservedUnits": 9000,
+    "cardSatisfied": false,
+    "maxCraftable": 0
+  },
+  "targetQ800WithQ850": {
+    "stileronAllocatedQualities": [
+      850
+    ],
+    "cardSatisfied": true,
+    "maxCraftable": 3
+  },
+  "highestQ": {
+    "stileronAllocatedQualities": [
+      950,
+      850
+    ]
+  },
+  "parity": {
+    "combinedLabel": "Q800+",
+    "finalCardLabel": "Q800+",
+    "standaloneLabel": "Q800+"
+  },
+  "backupRestore": "PASS",
+  "priorityAndNoDoubleCount": "PASS",
+  "standalone": {
+    "path": "test-artifacts/V003-C012.3/standalone-metamaterial-test-152-q800.html",
+    "bytes": 167903,
+    "sha256": "43d21d36176c4e2d13e32bf8c1e53a85af48cdccb4ca31e85baabe2198c329a7",
+    "externalRuntimeAssets": 0,
+    "runtimeFetch": 0
+  }
+}
+v003-c0124-numeric-editing=PASS durationMs=48
+    "Crafting requirement Target Q",
+    "My Materials batch quantity",
+    "My Materials batch Quality",
+    "Mining Loadout station count override"
+  ],
+  "craftQuantity": {
+    "oneTo11452": 11452,
+    "elevenFourFiveTwoToThree": 3,
+    "temporaryEmpty": "PASS"
+  },
+  "targetQuality": {
+    "eightHundredToNineFifty": 950,
+    "invalidCommit": "RESTORE_PREVIOUS"
+  },
+  "interaction": {
+    "firstFocusSelectAll": "PASS",
+    "alreadyFocusedCaretEdit": "PASS",
+    "multiCharacterFocusStable": "PASS",
+    "backspaceDeleteDraft": "PASS",
+    "arrowHomeEndNativePathPreserved": "PASS",
+    "enterCommit": "PASS",
+    "blurCommit": "PASS",
+    "changeNoDoubleCommit": "PASS",
+    "tabUsesNativeBlurCommit": "PASS"
+  },
+  "userDataWritesDuringDraft": 0,
+  "craftCompleteNumericControl": {
+    "runtimeOnly": true,
+    "explicitValidation": true,
+    "maxFill": true,
+    "committedNumericEditorBinding": false
+  },
+  "decimalAudit": {
+    "dot": "SUPPORTED_AS_BEFORE",
+    "comma": "NOT_PARSED_AS_BEFORE",
+    "scuPrecision": 4
+  },
+  "staticNumberInputs": 3,
+  "dynamicNumberInputs": 6
+}
+v003-c0125a-inventory-independence=PASS durationMs=77
+V003_C0125A_TARGET_PASS evidence=test-artifacts/V003-C012.5A/inventory-independence-evidence.json
+v003-c0125b-quality-pools=PASS durationMs=76
+V003_C0125B_TARGET_PASS evidence=test-artifacts/V003-C012.5B/combined-quality-pools-evidence.json
+v003-c0125c1-slot-assignment=PASS durationMs=80
+V003_C0125C1_TARGET_PASS evidence=test-artifacts/V003-C012.5C1/assignment-model-evidence.json
+v003-c0125c2-pool-dropdown=PASS durationMs=58
+V003_C0125C2_TARGET_PASS evidence=test-artifacts/V003-C012.5C2/recipe-pool-dropdown-evidence.json
+v003-c0125c3a-allocation-integration=PASS durationMs=62
+V003_C0125C3A_TARGET_PASS evidence=test-artifacts/V003-C012.5C3A/pool-allocation-evidence.json
+v003-c0125c3b1-material-database-pools=PASS durationMs=64
+V003_C0125C3B1_TARGET_PASS evidence=test-artifacts/V003-C012.5C3B1/combined-pool-metrics-evidence.json
+v003-c0125c3b2-preview-parity=PASS durationMs=71
+V003_C0125C3B2_TARGET_PASS evidence=test-artifacts/V003-C012.5C3B2/standalone-effective-quality-evidence.json
+v003-c0125d1-integrated-fixture=PASS durationMs=376
+V003_C0125D1_TARGET_PASS evidence=test-artifacts/V003-C012.5D1/integration-evidence.json
+v003-c0131-strict-allocation=PASS durationMs=73
+V003_C0131_TARGET_PASS evidence=test-artifacts/V003-C013.1/strict-quality-allocation-evidence.json
+v003-c0133-disjoint-canonical=PASS durationMs=83
+V003_C0133_TARGET_PASS evidence=test-artifacts/V003-C013.3/disjoint-pools-canonical-grouping-evidence.json
+v003-c0135-canonical-picker=PASS durationMs=77
+V003_C0135_TARGET_PASS evidence=test-artifacts/V003-C013.5/canonical-material-picker-evidence.json
+v003-c0137-user-data-independent-picker=PASS durationMs=82
+V003_C0137_TARGET_PASS evidence=test-artifacts/V003-C013.7/user-data-independent-canonical-picker-evidence.json
+v004-c002-migration-chrome=PASS durationMs=1757
+V004_C002_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C002\browser-evidence.json
+v004-c003-revision-reservation-chrome=PASS durationMs=1561
+V004_C003_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C003\browser-evidence.json
+v004-c004-complete-model=PASS durationMs=68
+V004_C004_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004\model-evidence.json
+v004-c004-complete-chrome=PASS durationMs=2534
+V004_C004_BROWSER_PASS fileGate=PASS_AUTOMATED evidence=test-artifacts\V004-C004\browser-evidence.json
+v004-c0044-normalization-model=PASS durationMs=51
+V004_C0044_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C004.4\model-evidence.json
+v004-c0044-normalization-chrome-wiki-smoke=PASS durationMs=4681
+V004_C0044_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C004.4\browser-evidence.json
+v004-c005-history-model=PASS durationMs=47
+V004_C005_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C005\model-evidence.json
+v004-c005-history-chrome=PASS durationMs=2936
+V004_C005_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C005\browser-evidence.json
+v004-c006-undo-model=PASS durationMs=66
+V004_C006_TARGETED_MODEL_PASS evidence=test-artifacts\V004-C006\model-evidence.json
+v004-c006-undo-chrome=PASS durationMs=7076
+V004_C006_TARGETED_CHROME_PASS evidence=test-artifacts\V004-C006\browser-evidence.json
+v004-c0061-backup-model=PASS durationMs=96
+V004_C0061_UNDO_BACKUP_MODEL_PASS evidence=test-artifacts\V004-C006.1\model-evidence.json
+v004-c0061-backup-chrome=PASS durationMs=5083
+V004_C0061_UNDO_BACKUP_CHROME_PASS evidence=test-artifacts\V004-C006.1\browser-evidence.json
+v004-c007-multi-tab-model=PASS durationMs=47
+V004_C007_MULTI_TAB_MODEL_PASS evidence=test-artifacts\V004-C007\model-evidence.json
+v004-c007-multi-tab-chrome=PASS durationMs=38221
+V004_C007_MULTI_TAB_CHROME_PASS evidence=test-artifacts\V004-C007\browser-evidence.json
+v004-c0071-user-data-safety-model=PASS durationMs=46
+V004_C0071_USER_DATA_SAFETY_MODEL_PASS evidence=test-artifacts\V004-C007.1\model-evidence.json
+v004-c0071-user-data-safety-chrome=PASS durationMs=4761
+V004_C0071_USER_DATA_SAFETY_CHROME_PASS evidence=test-artifacts\V004-C007.1\browser-evidence.json
+v004-c010-candidate-chrome-direct-live=PASS durationMs=17037
+V004_C009_CANDIDATE_CHROME_PASS evidence=..\spg-v004-c0103-evidence-62452cf66d2841238c101fe5b99efda1\candidate-browser-evidence.json
+git-diff-check=PASS durationMs=45
+result=AUTOMATED_RELEASE_CANDIDATE_PASS_MANUAL_FILE_GATE_REQUIRED
+candidateSha256=16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5
+candidateBytes=1083886
+runEvidenceDirectory=C:\Users\ganos\AppData\Local\Temp\spg-v004-c0103-evidence-62452cf66d2841238c101fe5b99efda1
+promotedEvidenceDirectory=test-artifacts/V004-C010.3
+manualFileGate=REQUIRED
+stableArtifact=NOT_CREATED
+v004Tag=NOT_CREATED
+push=NO

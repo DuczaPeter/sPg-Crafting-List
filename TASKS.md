@@ -2,6 +2,17 @@
 
 ## Aktualis
 
+### V004 stable publication — PLAN-V2
+
+- [x] Candidate változatlan; 55/55 + 4 preflight és user manual file:// PASS elfogadva, újrafuttatás nélkül.
+- [x] Friss H/divergence audit: fast-forward-only; V001 local protected/remote absent; V002/V003 exact.
+- [x] Izolált publication worktree, raw-byte stable artifact, hat evidence-fájl és minimális metadata előkészítve.
+- [ ] S stable commit, annotated V004 tag, main/tag push, draft/published asset verification és P publication-evidence commit. Authority: STATUS.md / VERSION.json.
+
+## Történelmi ciklusjegyzetek
+
+Az alábbi korábbi BLOCKED / NOT RUN állapotok az akkori futásokat írják le, nem a végső elfogadott gate-et.
+
 ### V004-C010 History Snapshot Canonicalization + Replacement RC
 
 - [x] A valós Complete/Undo raw-vs-canonical snapshot hiba Boundary B szerint javítva; régi durable History evidence nem íródik át.
@@ -542,5 +553,5 @@
 
 ## Blokkolo problema
 
-- Nincs. A V003 stable release helyben lezárt; távoli push és `main` merge nem történt.
+- Nincs ismert release-blocker. V004 lokálisan előkészítve; távoli publikálás és visszaellenőrzés még folyamatban, PLAN-V2 szerint.
 

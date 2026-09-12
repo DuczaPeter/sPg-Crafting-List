@@ -2,6 +2,13 @@
 
 Ebben a fajlban roviden vezesd, mely Codex skillek segitettek a projektben. Csak akkor olvasd teljesen, ha skillt hasznalsz, skillt javitasz, vagy skillproblemat vizsgalsz.
 
+## 2026-09-12 — V004 publication PLAN-V2
+
+- `credit-efficient-project-runner`: meglévő ciklus folytatása, evidence megőrzés, zöld kapuk újrafuttatásának mellőzése.
+- `three-model-consensus`: korábbi read-only PLAN-V2 konszenzus, korrigált V001 remote-history feltételezés; végrehajtáskor nem nyitottuk újra.
+- `github-auth-duczapeter`: DuczaPeter Git/GitHub hitelesítés és engedélyezett publikálás.
+- Scope: release artifact, minimális metadata, védett tagek és byte-integritás. Skillfájl/alkalmazás változatlan; transcript nem készült.
+
 ## V004-C010 History Snapshot Canonicalization + Replacement RC
 
 - Skill neve: `credit-efficient-project-runner`.

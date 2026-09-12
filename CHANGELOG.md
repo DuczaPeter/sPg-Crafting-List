@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## V004 - 2026-09-12
+
+- Craft-run mennyiségszemantika, exact integer material units, veszteségmentes partial/full Craft Complete.
+- Stale reservation fail-closed védelem, explicit Reallocate és atomi készletfogyasztás.
+- Craft History, LIFO Undo, pontos batch-delták és canonical snapshot restore.
+- Schema-3 backup/import, legacy kompatibilitás, IndexedDB multi-tab és concurrent műveletvédelem.
+- Egy önálló HTML: `1083886` byte, SHA-256 `16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5`.
+- Acceptance: változatlan candidate; 4 preflight + 55/55 integrated leaf, Chrome/responsive/automated file:// PASS; manual file:// felhasználói megerősítés 2026-09-12. Kapuk újrafuttatása nem történt.
+- V001/V002/V003 változatlan. Provenance és publikálási állapot: `releases/V004/RELEASE.md`, `VERSION.json`.
+
 ## V003 - 2026-09-09
 
 Replacement stable single-file release from the accepted C015 candidate. Runtime, backup and diagnostic identity consistently report `V003`; the release passed the reused C015 automated/Chrome gates and the C016 user-verified exact manual `file://` M1–M7 gate.

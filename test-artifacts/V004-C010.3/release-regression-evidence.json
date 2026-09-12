@@ -1,0 +1,245 @@
+{
+  "cycle": "V004-C010.3",
+  "status": "PASS_FULL_INTEGRATION_EXACT_CANDIDATE_BYTES",
+  "candidateSourceHead": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+  "validationHead": "872699271937e53d48c1d5f9095f6e58bca2ac3c",
+  "candidateSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateBytes": 1083886,
+  "exactCandidateImmutable": true,
+  "leafTests": {
+    "baseline-static": {
+      "status": "PASS",
+      "durationMs": 487
+    },
+    "m1-model-cache": {
+      "status": "PASS",
+      "durationMs": 52
+    },
+    "m2-inventory-allocation": {
+      "status": "PASS",
+      "durationMs": 867
+    },
+    "m3-mining": {
+      "status": "PASS",
+      "durationMs": 222
+    },
+    "m4-combined-backup": {
+      "status": "PASS",
+      "durationMs": 411
+    },
+    "m5-uex-refinery": {
+      "status": "PASS",
+      "durationMs": 70
+    },
+    "m6-standalone-export": {
+      "status": "PASS",
+      "durationMs": 113
+    },
+    "m61-ui-completeness": {
+      "status": "PASS",
+      "durationMs": 52
+    },
+    "c04-embedded-css": {
+      "status": "PASS",
+      "durationMs": 49
+    },
+    "c04-file-export": {
+      "status": "PASS",
+      "durationMs": 70
+    },
+    "v003-c003-material-naming": {
+      "status": "PASS",
+      "durationMs": 58
+    },
+    "v003-c004-radar-top3": {
+      "status": "PASS",
+      "durationMs": 66
+    },
+    "v003-c005-consistency": {
+      "status": "PASS",
+      "durationMs": 58
+    },
+    "v003-c006-final-card": {
+      "status": "PASS",
+      "durationMs": 80
+    },
+    "v003-c007-color": {
+      "status": "PASS",
+      "durationMs": 77
+    },
+    "v003-c008-detail": {
+      "status": "PASS",
+      "durationMs": 83
+    },
+    "v003-c0081-detail-fix": {
+      "status": "PASS",
+      "durationMs": 46
+    },
+    "v003-c009-api-main-card": {
+      "status": "PASS",
+      "durationMs": 46
+    },
+    "v003-c010-final-card": {
+      "status": "PASS",
+      "durationMs": 46
+    },
+    "v003-c0101-compact-mining-refinery": {
+      "status": "PASS",
+      "durationMs": 51
+    },
+    "v003-c011-visual-cleanup": {
+      "status": "PASS",
+      "durationMs": 58
+    },
+    "v003-c012-card-parity": {
+      "status": "PASS",
+      "durationMs": 67
+    },
+    "v003-c0121-quality-planner": {
+      "status": "PASS",
+      "durationMs": 96
+    },
+    "v003-c0122-version-consistency": {
+      "status": "PASS",
+      "durationMs": 76
+    },
+    "v003-c0123-quality-constraints": {
+      "status": "PASS",
+      "durationMs": 95
+    },
+    "v003-c0124-numeric-editing": {
+      "status": "PASS",
+      "durationMs": 49
+    },
+    "v003-c0125a-inventory-independence": {
+      "status": "PASS",
+      "durationMs": 78
+    },
+    "v003-c0125b-quality-pools": {
+      "status": "PASS",
+      "durationMs": 76
+    },
+    "v003-c0125c1-slot-assignment": {
+      "status": "PASS",
+      "durationMs": 80
+    },
+    "v003-c0125c2-pool-dropdown": {
+      "status": "PASS",
+      "durationMs": 59
+    },
+    "v003-c0125c3a-allocation-integration": {
+      "status": "PASS",
+      "durationMs": 62
+    },
+    "v003-c0125c3b1-material-database-pools": {
+      "status": "PASS",
+      "durationMs": 65
+    },
+    "v003-c0125c3b2-preview-parity": {
+      "status": "PASS",
+      "durationMs": 71
+    },
+    "v003-c0125d1-integrated-fixture": {
+      "status": "PASS",
+      "durationMs": 376
+    },
+    "v003-c0131-strict-allocation": {
+      "status": "PASS",
+      "durationMs": 73
+    },
+    "v003-c0133-disjoint-canonical": {
+      "status": "PASS",
+      "durationMs": 83
+    },
+    "v003-c0135-canonical-picker": {
+      "status": "PASS",
+      "durationMs": 77
+    },
+    "v003-c0137-user-data-independent-picker": {
+      "status": "PASS",
+      "durationMs": 83
+    },
+    "v004-c002-migration-chrome": {
+      "status": "PASS",
+      "durationMs": 1757
+    },
+    "v004-c003-revision-reservation-chrome": {
+      "status": "PASS",
+      "durationMs": 1561
+    },
+    "v004-c004-complete-model": {
+      "status": "PASS",
+      "durationMs": 68
+    },
+    "v004-c004-complete-chrome": {
+      "status": "PASS",
+      "durationMs": 2535
+    },
+    "v004-c0044-normalization-model": {
+      "status": "PASS",
+      "durationMs": 51
+    },
+    "v004-c0044-normalization-chrome-wiki-smoke": {
+      "status": "PASS",
+      "durationMs": 4681
+    },
+    "v004-c005-history-model": {
+      "status": "PASS",
+      "durationMs": 47
+    },
+    "v004-c005-history-chrome": {
+      "status": "PASS",
+      "durationMs": 2936
+    },
+    "v004-c006-undo-model": {
+      "status": "PASS",
+      "durationMs": 66
+    },
+    "v004-c006-undo-chrome": {
+      "status": "PASS",
+      "durationMs": 7076
+    },
+    "v004-c0061-backup-model": {
+      "status": "PASS",
+      "durationMs": 97
+    },
+    "v004-c0061-backup-chrome": {
+      "status": "PASS",
+      "durationMs": 5084
+    },
+    "v004-c007-multi-tab-model": {
+      "status": "PASS",
+      "durationMs": 47
+    },
+    "v004-c007-multi-tab-chrome": {
+      "status": "PASS",
+      "durationMs": 38222
+    },
+    "v004-c0071-user-data-safety-model": {
+      "status": "PASS",
+      "durationMs": 47
+    },
+    "v004-c0071-user-data-safety-chrome": {
+      "status": "PASS",
+      "durationMs": 4761
+    },
+    "v004-c010-candidate-chrome-direct-live": {
+      "status": "PASS",
+      "durationMs": 17037
+    }
+  },
+  "leafTestCount": 55,
+  "nestedLegacyValidators": 0,
+  "gameDataIdentity": "4.10.0-LIVE.12519617",
+  "datasetAdapterFreeze": "PASS_HISTORY_SNAPSHOT_ONLY_APPLICATION_DIFF",
+  "full1606BlueprintAudit": "NOT_RERUN_UNCHANGED_ADAPTER_AND_DATASET_CONTRACT",
+  "representativeWikiSmoke": "PASS",
+  "representativeUexSmoke": "PASS",
+  "googleChrome": "PASS",
+  "automatedDirectFile": "PASS",
+  "desktopViewport": "1920x1080_PASS_OVERFLOW_0",
+  "mobileViewport": "390x844_PASS_OVERFLOW_0",
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "protectedV001V002V003": "PASS"
+}

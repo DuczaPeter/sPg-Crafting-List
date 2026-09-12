@@ -1,0 +1,62 @@
+{
+  "cycle": "V004-C010",
+  "status": "PASS_CANDIDATE_GOOGLE_CHROME",
+  "browser": "Google Chrome",
+  "candidatePath": "sPg Crafting List.html",
+  "candidateSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+  "candidateBytes": 1083886,
+  "runtimeIdentity": "V004",
+  "desktop": {
+    "status": "PASS",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "version": "V004",
+    "databaseOpen": true,
+    "appReady": "true",
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "overflow": 0,
+    "craftingList": "PASS",
+    "craftHistory": "PASS",
+    "myMaterials": "PASS",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "mobile": {
+    "status": "PASS",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "version": "V004",
+    "databaseOpen": true,
+    "appReady": "true",
+    "runtimeFiles": 1,
+    "sidecars": 0,
+    "overflow": 0,
+    "craftingList": "PASS",
+    "craftHistory": "PASS",
+    "myMaterials": "PASS",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "directFile": {
+    "status": "PASS_AUTOMATED",
+    "protocol": "file:",
+    "version": "V004",
+    "gameDataIdentity": "4.10.0-LIVE.12519617",
+    "wikiBlueprintUuid": "9585b0dc-b660-4e2a-9136-0092af1e72c1",
+    "wikiRecipeSlots": 3,
+    "uexHttpStatus": 200,
+    "uexRecords": 215,
+    "indexedDbOpen": true,
+    "multiTabSignalStatus": "READY",
+    "overflow": 0,
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  "consoleErrors": [],
+  "pageErrors": []
+}

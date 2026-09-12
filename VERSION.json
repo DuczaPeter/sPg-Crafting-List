@@ -1,41 +1,140 @@
-﻿{
-    "stableRelease":  "V003",
-    "stableFile":  "releases/V003/sPg Crafting List.html",
-    "developmentTarget":  "V004",
-    "currentCycle":  "C010",
-    "currentCycleId":  "V004-C010",
-    "lastSuccessfulCycle":  "V004-C010-TARGETED",
-    "branch":  "candidate/V004",
-    "releaseGate":  "v004-c010-replacement-release-candidate",
-    "lastUpdated":  "2026-09-11T18:29:41+02:00",
-    "currentCyclePurpose":  "Canonicalize Craft History Card snapshots at the Boundary B runtime/use edge, preserve legacy durable evidence, and validate the exact replacement release candidate once",
-    "currentCycleStartedAt":  "2026-09-11T16:00:00+02:00",
-    "currentTestLevel":  "targeted-snapshot-M4-C0125C1-C0061-pass-then-full-C010-blocked-at-v003-c0081",
-    "currentCycleStatus":  "BLOCKED_REPLACEMENT_RELEASE_CANDIDATE_V003_C0081_ORACLE",
-    "currentCycleStatusReason":  "C010 application repair, targeted gate and static harness gate passed, but the once-started full gate stopped at v003-c0081-detail-fix line 54 because its standalone assertion forbids any public star-citizen.wiki href.",
-    "developmentAcceptance":  "V004-C010 – REPLACEMENT RELEASE CANDIDATE BLOCKED",
-    "manualFileGate":  {
-                           "status":  "PASS_USER_VERIFIED_M1_M7",
-                           "candidateCycle":  "V003-C015",
-                           "candidatePath":  "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
-                           "candidateSha256":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
-                           "protocol":  "file:",
-                           "automation":  false,
-                           "scope":  "User verified exact V003-C015 candidate direct file M1-M7 PASS; automated and Chrome localhost PASS reused because candidate bytes are unchanged."
-                       },
-    "releaseTag":  "V003",
-    "releaseApproval":  "V003 STABLE RELEASE – REPLACEMENT SINGLE-FILE RELEASE GATE PASS",
-    "releaseArtifact":  {
-                            "path":  "releases/V003/sPg Crafting List.html",
-                            "sha256":  "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
-                            "bytes":  835820,
-                            "runtimeFilesRequired":  1,
-                            "localSidecarFilesRequired":  0
-                        },
-    "acceptedManualTestWaivers":  [
-
-                                  ],
-    "v003DevelopmentGate":  {
+{
+    "stableRelease": "V004",
+    "stableFile": "releases/V004/sPg Crafting List.html",
+    "developmentTarget": "V004",
+    "currentCycle": "RELEASE",
+    "currentCycleId": "V004-STABLE-RELEASE",
+    "lastSuccessfulCycle": "V004-C010.3",
+    "branch": "codex/publish-v004",
+    "releaseGate": "v004-c010-replacement-release-candidate",
+    "lastUpdated": "2026-09-12T14:08:36Z",
+    "currentCyclePurpose": "Publish the accepted V004 bytes under approved PLAN-V2; no application changes or gate reruns",
+    "currentTestLevel": "REUSED_55_OF_55_PLUS_4_PREFLIGHT_AND_USER_MANUAL_FILE_PASS",
+    "currentCycleStatus": "LOCAL_STABLE_PREPARED_REMOTE_PUBLICATION_PENDING",
+    "currentCycleStatusReason": "Accepted automated evidence and user-confirmed manual file gate reused on unchanged candidate; publication not yet performed.",
+    "developmentAcceptance": "LOCAL V004 STABLE PREPARED – REMOTE PUBLICATION PENDING",
+    "manualFileGate": {
+        "status": "PASS_USER_VERIFIED",
+        "automation": false,
+        "protocol": "file:",
+        "candidatePath": "test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html",
+        "candidateSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+        "bytes": 1083886,
+        "runtime": "V004",
+        "date": "2026-09-12",
+        "dateKind": "USER_CONFIRMATION_DATE",
+        "scope": [
+            "direct file:// load",
+            "navigation",
+            "Crafting List",
+            "My Materials",
+            "Craft Complete confirmation and Cancel without visible inventory mutation",
+            "Craft History",
+            "Complete / History / Undo sanity",
+            "responsive / mobile sanity"
+        ]
+    },
+    "releaseTag": "V004",
+    "releaseApproval": "PLAN-V2 PUBLICATION AUTHORIZED; AUTOMATED AND MANUAL GATES PASS",
+    "releaseArtifact": {
+        "path": "releases/V004/sPg Crafting List.html",
+        "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+        "bytes": 1083886,
+        "runtimeFilesRequired": 1,
+        "localSidecarFilesRequired": 0
+    },
+    "acceptedManualTestWaivers": [],
+    "v004ReleasePublication": {
+        "planVersion": "PLAN-V2",
+        "planSha256": "5b799e0e07b3e43944c5727f9c82d0ec16181de02fd4bd7eac586b4545f57af3",
+        "status": "LOCAL_STABLE_PREPARED_REMOTE_PUBLICATION_PENDING",
+        "applicationSourceCommit": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
+        "validationHead": "872699271937e53d48c1d5f9095f6e58bca2ac3c",
+        "freshRemoteMain": "0a83e4409e2c38442ca8f908dcf101d013061955",
+        "candidatePath": "test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html",
+        "candidateSha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+        "candidateBytes": 1083886,
+        "runtimeIdentity": "V004",
+        "automatedGate": {
+            "status": "PASS_REUSED",
+            "releaseLeafCount": 55,
+            "preflightCount": 4,
+            "evidenceDirectory": "test-artifacts/V004-C010.3",
+            "full1606AuditRerun": false,
+            "reason": "Accepted dataset/adapter/normalization contract unchanged; prior 1606-blueprint audit and full integration evidence retained."
+        },
+        "evidenceFiles": [
+            {
+                "path": "test-artifacts/V004-C010.3/candidate-browser-evidence.json",
+                "bytes": 1497,
+                "sha256": "1895fb803a730a9bbdf4754b1ca8c6445a651215cdec50907b2644612880a4f0"
+            },
+            {
+                "path": "test-artifacts/V004-C010.3/release-regression-evidence.json",
+                "bytes": 6126,
+                "sha256": "0989704c18a2533995f38542ef0f2680395e1edb5cf520a876e1c2305d7a6e2d"
+            },
+            {
+                "path": "test-artifacts/V004-C010.3/target-summary.json",
+                "bytes": 1247,
+                "sha256": "9e5127879a9d03fa3201fde9afe8f9eaf3fc9145abe3a6e75e9eda8a44283df6"
+            },
+            {
+                "path": "test-artifacts/V004-C010.3/validation.log",
+                "bytes": 23144,
+                "sha256": "3504ecd373e559c81be4b2647e47d702bac44eda2334ca14bd988a0c95cd313e"
+            },
+            {
+                "path": "test-artifacts/V004-C010/fresh-release-candidate/candidate-manifest.json",
+                "bytes": 1396,
+                "sha256": "939d608a6ac5d009cc8f2f1fdd4b632b8c12ed6266f7c2ea454bf0ea7bf1671d"
+            },
+            {
+                "path": "test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html",
+                "bytes": 1083886,
+                "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5"
+            }
+        ],
+        "protectedHistory": {
+            "V001": {
+                "localAnnotatedTagObject": "449ff8e4a21d675bc58765202990e0dc55f116a7",
+                "peeledTarget": "b22dbc3c2ef0765e30aa3806537854298c873dff",
+                "artifactSha256": "c422c4dabb3f60378de4a28c441ee8a79c9e180b8bf5853d46ab02a64a6ec259",
+                "remote": "HISTORICALLY_ABSENT_NO_WRITE_AUTHORIZED"
+            },
+            "V002": {
+                "annotatedTagObject": "85780658fce230c6f2101c0bd61d15b4295f5d8a",
+                "peeledTarget": "b326aaff5838aafd5b1f13b16982c29a0e150e35"
+            },
+            "V003": {
+                "annotatedTagObject": "53b2e3ba31b3e843d46d15ee505db97d6f9a0ab9",
+                "peeledTarget": "ebc83281769fd212d988ee55957b1c2754256490"
+            }
+        }
+    },
+    "v003DevelopmentGate": {
+        "previousStableReleaseMetadata": {
+            "stableRelease": "V003",
+            "stableFile": "releases/V003/sPg Crafting List.html",
+            "releaseTag": "V003",
+            "releaseApproval": "V003 STABLE RELEASE – REPLACEMENT SINGLE-FILE RELEASE GATE PASS",
+            "releaseArtifact": {
+                "path": "releases/V003/sPg Crafting List.html",
+                "sha256": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+                "bytes": 835820,
+                "runtimeFilesRequired": 1,
+                "localSidecarFilesRequired": 0
+            },
+            "manualFileGate": {
+                "status": "PASS_USER_VERIFIED_M1_M7",
+                "candidateCycle": "V003-C015",
+                "candidatePath": "test-artifacts/V003-C015/fresh-release-candidate/sPg Crafting List V003 RC.html",
+                "candidateSha256": "87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8",
+                "protocol": "file:",
+                "automation": false,
+                "scope": "User verified exact V003-C015 candidate direct file M1-M7 PASS; automated and Chrome localhost PASS reused because candidate bytes are unchanged."
+            }
+        },
                                 "status":  "V003_REPLACEMENT_STABLE_RELEASE_SINGLE_FILE_GATE_PASS",
                                 "cycle":  "V003-REPLACEMENT-STABLE-RELEASE",
                                 "blockedC013Candidate":  {

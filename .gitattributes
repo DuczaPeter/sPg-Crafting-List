@@ -14,3 +14,10 @@ releases/V001/Info/style.css -text
 "test-artifacts/V003-C013.6/fresh-release-candidate/c0131-mixed-shortage/standalone/sPg Crafting List - FR-86 mixed shortage.html" -text
 "test-artifacts/V003-C013.8/fresh-release-candidate/sPg Crafting List V003 RC.html" -text
 "releases/V003/sPg Crafting List.html" -text
+"releases/V004/sPg Crafting List.html" -text
+"test-artifacts/V004-C010.3/candidate-browser-evidence.json" -text
+"test-artifacts/V004-C010.3/release-regression-evidence.json" -text
+"test-artifacts/V004-C010.3/target-summary.json" -text
+"test-artifacts/V004-C010.3/validation.log" -text
+"test-artifacts/V004-C010/fresh-release-candidate/candidate-manifest.json" -text
+"test-artifacts/V004-C010/fresh-release-candidate/sPg Crafting List V004 RC.html" -text
