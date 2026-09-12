@@ -222,10 +222,57 @@ const stationResult = model.normalizeCommittedNumericDraft("", { allowEmpty: tru
 assert.equal(stationResult.ok, true);
 assert.equal(stationResult.value, null);
 
+function extractFunctionContract(source, functionName, nextFunctionName) {
+  const startPattern = new RegExp("\\bfunction\\s+" + functionName + "\\s*\\(");
+  const nextPattern = new RegExp("\\bfunction\\s+" + nextFunctionName + "\\s*\\(");
+  const start = source.search(startPattern);
+  assert.notEqual(start, -1, `A ${functionName} production function hianyzik.`);
+  const relativeEnd = source.slice(start + 1).search(nextPattern);
+  assert.notEqual(relativeEnd, -1, `A ${functionName} production function hatara nem talalhato.`);
+  return source.slice(start, start + 1 + relativeEnd);
+}
+
+const craftCompleteControlSource = extractFunctionContract(html, "renderV004CraftCompletionControls", "reallocateCraftingList");
+const craftCompletePrepareSource = extractFunctionContract(html, "prepareV004CraftCompletionRequest", "v004CompletionConfirmationLines");
+const craftCompleteOpenSource = extractFunctionContract(html, "openV004CraftCompletionConfirmation", "cancelV004CraftCompletionConfirmation");
+const craftCompleteQuantityAssertionSource = extractFunctionContract(html, "v004AssertCompletionQuantity", "v004ExactUnitAdd");
+
+assert.match(craftCompleteControlSource, /\binput\.type\s*=\s*["']number["']/);
+assert.match(craftCompleteControlSource, /\binput\.className\s*=\s*["']spg-v004-completion-quantity["']/);
+assert.doesNotMatch(craftCompleteControlSource, /\bbindCommittedNumericEditor\s*\(/, "A transient Craft Complete quantity nem lehet perzisztalt numeric editor.");
+assert.doesNotMatch(craftCompleteControlSource, /\b(?:persist[A-Z]\w*|save[A-Z]\w*|updateCraftingCard|userDataRepository)\b/, "A Craft Complete quantity control kozvetlen User Data irast kapott.");
+assert.doesNotMatch(craftCompleteControlSource, /\binput\.addEventListener\s*\(/, "A Craft Complete quantity gepeles kozben lifecycle handlert kapott.");
+
+const craftCompleteMaxAction = craftCompleteControlSource.match(/\bvar\s+maxButton\s*=\s*createC012CardAction\(\s*["']MAX["'][\s\S]*?\bfunction\s*\(\s*\)\s*\{([\s\S]*?)\}\s*,\s*!ready/);
+assert.ok(craftCompleteMaxAction, "A Craft Complete MAX action production blokkja hianyzik.");
+assert.match(craftCompleteMaxAction[1], /\binput\.value\s*=\s*String\s*\(\s*capability\.maxCompletableQuantity\s*\)/);
+assert.doesNotMatch(craftCompleteMaxAction[1], /\b(?:persist[A-Z]\w*|save[A-Z]\w*|updateCraftingCard|userDataRepository|renderCraftingCards)\b/, "A MAX action nem csak runtime input kitoltes.");
+
+assert.match(craftCompleteControlSource, /\bopenV004CraftCompletionConfirmation\s*\(\s*card\.id\s*,\s*input\.value\s*\)/);
+assert.match(craftCompletePrepareSource, /\bNumber\s*\(\s*requestedQuantity\s*\)/);
+assert.match(craftCompletePrepareSource, /\bv004AssertCompletionQuantity\s*\(\s*quantity\s*,\s*capability\.maxCompletableQuantity\s*\)/);
+assert.ok(
+  craftCompletePrepareSource.indexOf("v004AssertCompletionQuantity") < craftCompletePrepareSource.indexOf("var request"),
+  "A Craft Complete quantity validacio csak a request letrehozasa utan fut."
+);
+assert.match(craftCompleteQuantityAssertionSource, /!Number\.isSafeInteger\s*\(\s*value\s*\)/);
+assert.match(craftCompleteQuantityAssertionSource, /\bvalue\s*<\s*1\b/);
+assert.match(craftCompleteQuantityAssertionSource, /\bvalue\s*>\s*maximum\b/);
+assert.match(craftCompleteQuantityAssertionSource, /PARTIAL_QUANTITY_OUT_OF_RANGE/);
+assert.ok(
+  craftCompleteOpenSource.indexOf("await prepareV004CraftCompletionRequest") < craftCompleteOpenSource.indexOf("state.pendingCraftCompletion"),
+  "Invalid quantity utan pending confirmation state johetne letre."
+);
+assert.ok(
+  craftCompleteOpenSource.indexOf("await prepareV004CraftCompletionRequest") < craftCompleteOpenSource.indexOf("renderV004CraftCompletionConfirmation"),
+  "Invalid quantity utan confirmation UI nyilhatna meg."
+);
+assert.doesNotMatch(craftCompleteControlSource, /\b(?:commitPreparedV004CraftCompletion|completeCraft)\s*\(/, "A transient input kozvetlen consumption utat kapott.");
+
 const staticNumberInputs = [...html.matchAll(/<input[^>]+type="number"/g)].length;
 const dynamicNumberInputs = [...html.matchAll(/\.type\s*=\s*"number"/g)].length;
 assert.equal(staticNumberInputs, 3);
-assert.equal(dynamicNumberInputs, 5);
+assert.equal(dynamicNumberInputs, 6);
 assert.doesNotMatch(html, /onQuantityInput\s*:/, "A karakterenkenti quantity callback visszakerult.");
 assert.doesNotMatch(html, /quantityPersistTimer|var inputTimer = null/, "Karakterenkenti numeric mentest/renderelest vezerlo timer maradt.");
 assert.match(html, /bindCommittedNumericEditor\(document\.getElementById\("batchQuality"\)\)/);
@@ -265,6 +312,12 @@ const evidence = {
     tabUsesNativeBlurCommit: "PASS"
   },
   userDataWritesDuringDraft: 0,
+  craftCompleteNumericControl: {
+    runtimeOnly: true,
+    explicitValidation: true,
+    maxFill: true,
+    committedNumericEditorBinding: false
+  },
   decimalAudit: { dot: "SUPPORTED_AS_BEFORE", comma: "NOT_PARSED_AS_BEFORE", scuPrecision: 4 },
   staticNumberInputs,
   dynamicNumberInputs
