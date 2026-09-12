@@ -3,16 +3,16 @@
     "stableFile": "releases/V004/sPg Crafting List.html",
     "developmentTarget": "V004",
     "currentCycle": "RELEASE",
-    "currentCycleId": "V004-STABLE-RELEASE",
+    "currentCycleId": "V004-PUBLICATION-EVIDENCE",
     "lastSuccessfulCycle": "V004-C010.3",
-    "branch": "codex/publish-v004",
+    "branch": "main",
     "releaseGate": "v004-c010-replacement-release-candidate",
-    "lastUpdated": "2026-09-12T14:08:36Z",
-    "currentCyclePurpose": "Publish the accepted V004 bytes under approved PLAN-V2; no application changes or gate reruns",
+    "lastUpdated": "2026-09-12T18:41:01.516Z",
+    "currentCyclePurpose": "Record verified V004 publication; preserve stable commit/tag and all accepted candidate/evidence bytes",
     "currentTestLevel": "REUSED_55_OF_55_PLUS_4_PREFLIGHT_AND_USER_MANUAL_FILE_PASS",
-    "currentCycleStatus": "LOCAL_STABLE_PREPARED_REMOTE_PUBLICATION_PENDING",
-    "currentCycleStatusReason": "Accepted automated evidence and user-confirmed manual file gate reused on unchanged candidate; publication not yet performed.",
-    "developmentAcceptance": "LOCAL V004 STABLE PREPARED – REMOTE PUBLICATION PENDING",
+    "currentCycleStatus": "PUBLISHED_REMOTE_ASSET_VERIFIED",
+    "currentCycleStatusReason": "Stable S and annotated V004 tag pushed without force; draft and published assets independently downloaded and matched the frozen candidate. This metadata snapshot precedes the separate P evidence commit/push.",
+    "developmentAcceptance": "V004 STABLE RELEASE – PUBLISHED",
     "manualFileGate": {
         "status": "PASS_USER_VERIFIED",
         "automation": false,
@@ -35,7 +35,7 @@
         ]
     },
     "releaseTag": "V004",
-    "releaseApproval": "PLAN-V2 PUBLICATION AUTHORIZED; AUTOMATED AND MANUAL GATES PASS",
+    "releaseApproval": "PLAN-V2 EXECUTED; REUSED AUTOMATED 55/55 AND USER MANUAL FILE PASS; PUBLISHED ASSET EXACT",
     "releaseArtifact": {
         "path": "releases/V004/sPg Crafting List.html",
         "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
@@ -47,7 +47,7 @@
     "v004ReleasePublication": {
         "planVersion": "PLAN-V2",
         "planSha256": "5b799e0e07b3e43944c5727f9c82d0ec16181de02fd4bd7eac586b4545f57af3",
-        "status": "LOCAL_STABLE_PREPARED_REMOTE_PUBLICATION_PENDING",
+        "status": "PUBLISHED_REMOTE_ASSET_VERIFIED",
         "applicationSourceCommit": "a6a5d35592d9777c6b740eeb7ec44c4c58b27443",
         "validationHead": "872699271937e53d48c1d5f9095f6e58bca2ac3c",
         "freshRemoteMain": "0a83e4409e2c38442ca8f908dcf101d013061955",
@@ -110,6 +110,69 @@
                 "annotatedTagObject": "53b2e3ba31b3e843d46d15ee505db97d6f9a0ab9",
                 "peeledTarget": "ebc83281769fd212d988ee55957b1c2754256490"
             }
+        },
+        "stableCommit": "a69dd9770877435ae986072b0074ebe3be3e78d2",
+        "annotatedTag": {
+            "name": "V004",
+            "object": "171bef2209d17d1c805343e9e919f5d0932145cb",
+            "peeledTarget": "a69dd9770877435ae986072b0074ebe3be3e78d2"
+        },
+        "githubRelease": {
+            "id": 387667009,
+            "url": "https://github.com/DuczaPeter/sPg-Crafting-List/releases/tag/V004",
+            "publishedAt": "2026-09-12T18:40:34Z",
+            "draft": false,
+            "prerelease": false,
+            "targetCommitish": "a69dd9770877435ae986072b0074ebe3be3e78d2"
+        },
+        "asset": {
+            "id": 559757894,
+            "name": "sPg.Crafting.List.html",
+            "url": "https://github.com/DuczaPeter/sPg-Crafting-List/releases/download/V004/sPg.Crafting.List.html",
+            "apiUrl": "https://api.github.com/repos/DuczaPeter/sPg-Crafting-List/releases/assets/559757894",
+            "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+            "bytes": 1083886,
+            "apiDigest": "sha256:16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+            "runtimeFiles": 1
+        },
+        "draftAssetVerification": {
+            "status": "PASS",
+            "downloaded": true,
+            "verifiedAt": "2026-09-12T18:40:12.046Z",
+            "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+            "bytes": 1083886,
+            "rawByteEquality": true
+        },
+        "publishedAssetVerification": {
+            "status": "PASS",
+            "downloaded": true,
+            "verifiedAt": "2026-09-12T18:41:01.516Z",
+            "sha256": "16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5",
+            "bytes": 1083886,
+            "rawByteEquality": true
+        },
+        "publicationGit": {
+            "verifiedRemoteMainBeforeEvidenceCommit": "a69dd9770877435ae986072b0074ebe3be3e78d2",
+            "stableMainPush": "PASS_FAST_FORWARD",
+            "tagPush": "PASS_EXPLICIT_V004_ONLY",
+            "forcePush": false,
+            "helperBranchPushed": false,
+            "protectedRemote": "PASS",
+            "v001Remote": "ABSENT_EXPECTED",
+            "evidenceCommitSubject": "V004-PUBLICATION-EVIDENCE",
+            "evidenceCommitPolicy": "Separate metadata-only descendant of S; final P hash/push are verified after this snapshot, never embedded self-referentially."
+        },
+        "artifactByteVerification": {
+            "candidateStableStagedCommittedCheckout": "PASS",
+            "draftDownloaded": "PASS",
+            "publishedDownloaded": "PASS",
+            "applicationChanged": false
+        },
+        "verificationTooling": {
+            "gitBlobRead": "STREAM_TO_UNIQUE_OS_TEMP_FILE",
+            "evidenceCRLF": "PRESERVED_RAW_BYTES",
+            "whitespaceCheck": "PASS_COMMAND_SCOPED_core.whitespace=cr-at-eol",
+            "persistentWhitespaceConfigChanged": false
         }
     },
     "v003DevelopmentGate": {

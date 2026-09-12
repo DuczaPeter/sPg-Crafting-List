@@ -7,7 +7,8 @@
 - [x] Candidate változatlan; 55/55 + 4 preflight és user manual file:// PASS elfogadva, újrafuttatás nélkül.
 - [x] Friss H/divergence audit: fast-forward-only; V001 local protected/remote absent; V002/V003 exact.
 - [x] Izolált publication worktree, raw-byte stable artifact, hat evidence-fájl és minimális metadata előkészítve.
-- [ ] S stable commit, annotated V004 tag, main/tag push, draft/published asset verification és P publication-evidence commit. Authority: STATUS.md / VERSION.json.
+- [x] S stable commit, annotated V004 tag, main/tag push és draft/published asset verification PASS.
+- [x] Külön P publication-evidence metadata előkészítve; P commit/push végső ellenőrzése a checkpoint lezárásakor. Authority: STATUS.md / VERSION.json.
 
 ## Történelmi ciklusjegyzetek
 
@@ -553,5 +554,5 @@ Az alábbi korábbi BLOCKED / NOT RUN állapotok az akkori futásokat írják le
 
 ## Blokkolo problema
 
-- Nincs ismert release-blocker. V004 lokálisan előkészítve; távoli publikálás és visszaellenőrzés még folyamatban, PLAN-V2 szerint.
+- Nincs ismert release-blocker. V004 publikálva; draft és published asset byte-verification PASS. A külön P evidence commit végső Git-ellenőrzése nem változtatja a stable artifactot vagy taget.
 
