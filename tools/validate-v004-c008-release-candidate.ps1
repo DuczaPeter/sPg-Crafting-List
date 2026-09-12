@@ -12,7 +12,20 @@ $inputHead = '3f94ad079c95234599c56f84347c48a0d11ecc25'
 $candidateSourceHead = 'a6a5d35592d9777c6b740eeb7ec44c4c58b27443'
 $expectedCandidateSha = '16f186cc7a0ec3d614dbdd690c1ac448261713ff4fd6c32bdfa8876b68641af5'
 $expectedCandidateBytes = 1083886
-$expectedV003TagTarget = 'ebc83281769fd212d988ee55957b1c2754256490'
+$protectedTagContract = [ordered]@{
+    V001 = [pscustomobject]@{
+        objectId = '449ff8e4a21d675bc58765202990e0dc55f116a7'
+        peeledTarget = 'b22dbc3c2ef0765e30aa3806537854298c873dff'
+    }
+    V002 = [pscustomobject]@{
+        objectId = '85780658fce230c6f2101c0bd61d15b4295f5d8a'
+        peeledTarget = 'b326aaff5838aafd5b1f13b16982c29a0e150e35'
+    }
+    V003 = [pscustomobject]@{
+        objectId = '53b2e3ba31b3e843d46d15ee505db97d6f9a0ab9'
+        peeledTarget = 'ebc83281769fd212d988ee55957b1c2754256490'
+    }
+}
 $expectedV003ArtifactSize = 835820
 $expectedV003ArtifactSha = '87382a8f3c43f939647702b30d6c1c2a697e3e76347b788e3ef4555bb44775c8'
 $artifactDirectory = Join-Path $projectRoot 'test-artifacts\V004-C010'
@@ -142,6 +155,72 @@ function Read-Json {
     return [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
 }
 
+function Invoke-GitScalar {
+    param(
+        [string]$RepositoryPath,
+        [string[]]$Arguments,
+        [string]$Description
+    )
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $output = @(& git -C $RepositoryPath @Arguments 2>&1)
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    if ($exitCode -ne 0) { throw "$Description failed with exit code $exitCode" }
+    if ($output.Count -ne 1) { throw "$Description returned $($output.Count) lines; expected exactly one." }
+    return ([string]$output[0]).Trim()
+}
+
+function Get-ProtectedTagSnapshot {
+    param([string]$RepositoryPath)
+    $snapshot = [ordered]@{}
+    foreach ($tagName in $protectedTagContract.Keys) {
+        $tagRef = "refs/tags/$tagName"
+        $tagObjectId = Invoke-GitScalar $RepositoryPath @('rev-parse', '--verify', $tagRef) "$tagName tag ref lookup"
+        $tagType = Invoke-GitScalar $RepositoryPath @('cat-file', '-t', $tagObjectId) "$tagName tag type lookup"
+        $peeledTarget = Invoke-GitScalar $RepositoryPath @('rev-parse', "$tagName^{}") "$tagName peeled target lookup"
+        $snapshot[$tagName] = [pscustomobject]@{
+            type = $tagType
+            objectId = $tagObjectId
+            peeledTarget = $peeledTarget
+        }
+    }
+    return $snapshot
+}
+
+function Assert-ProtectedTagSnapshotExact {
+    param(
+        [System.Collections.IDictionary]$Snapshot,
+        [string]$Context
+    )
+    foreach ($tagName in $protectedTagContract.Keys) {
+        $actual = $Snapshot[$tagName]
+        $expected = $protectedTagContract[$tagName]
+        if ($null -eq $actual) { throw "$Context is missing $tagName." }
+        if ($actual.type -ne 'tag' -or $actual.objectId -ne $expected.objectId -or $actual.peeledTarget -ne $expected.peeledTarget) {
+            throw "$Context $tagName annotated tag mismatch."
+        }
+    }
+}
+
+function Assert-ProtectedTagSnapshotUnchanged {
+    param(
+        [System.Collections.IDictionary]$Before,
+        [System.Collections.IDictionary]$After,
+        [string]$Context
+    )
+    foreach ($tagName in $protectedTagContract.Keys) {
+        if ($Before[$tagName].type -ne $After[$tagName].type -or
+            $Before[$tagName].objectId -ne $After[$tagName].objectId -or
+            $Before[$tagName].peeledTarget -ne $After[$tagName].peeledTarget) {
+            throw "$Context $tagName changed during C010."
+        }
+    }
+}
+
 New-Item -ItemType Directory -Force -Path $artifactDirectory | Out-Null
 Push-Location $projectRoot
 try {
@@ -183,11 +262,10 @@ try {
     })
     if ($operations.Count -gt 0) { throw "Git operation in progress: $($operations -join ', ')" }
 
-    $v003TagTypeBefore = (& git cat-file -t V003).Trim()
-    $v003TagTargetBefore = (& git rev-parse 'V003^{}').Trim()
+    $sourceProtectedTagsBefore = Get-ProtectedTagSnapshot $projectRoot
+    Assert-ProtectedTagSnapshotExact $sourceProtectedTagsBefore 'Source protected tag preflight'
     $v003ArtifactBefore = Get-Item -LiteralPath $v003ArtifactPath
     $v003ArtifactShaBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $v003ArtifactPath).Hash.ToLowerInvariant()
-    if ($v003TagTypeBefore -ne 'tag' -or $v003TagTargetBefore -ne $expectedV003TagTarget) { throw 'V003 annotated tag mismatch.' }
     if ($v003ArtifactBefore.Length -ne $expectedV003ArtifactSize -or $v003ArtifactShaBefore -ne $expectedV003ArtifactSha) { throw 'V003 artifact mismatch.' }
     & git diff --quiet V003 HEAD -- releases/V001 releases/V002 releases/V003
     if ($LASTEXITCODE -ne 0) { throw 'Protected V001/V002/V003 release path differs from V003.' }
@@ -209,6 +287,37 @@ try {
 
     $temporaryProject = Join-Path ([System.IO.Path]::GetTempPath()) ("spg-v004-c010-" + [guid]::NewGuid().ToString('N'))
     Invoke-BoundedCheck 'isolated-candidate-clone' 'git' @('clone', '--no-hardlinks', '--no-tags', '--single-branch', '--branch', 'candidate/V004', $projectRoot, $temporaryProject)
+    $isolatedTagNamesBefore = @(& git -C $temporaryProject for-each-ref '--format=%(refname:short)' refs/tags)
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to enumerate isolated tags before protected tag transfer.' }
+    $isolatedTagNamesBefore = @($isolatedTagNamesBefore | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ })
+    if ($isolatedTagNamesBefore.Count -ne 0) { throw "Isolated clone contains tags before protected tag transfer: $($isolatedTagNamesBefore -join ', ')" }
+
+    $protectedTagRefspecs = @(
+        'refs/tags/V001:refs/tags/V001',
+        'refs/tags/V002:refs/tags/V002',
+        'refs/tags/V003:refs/tags/V003'
+    )
+    $tagTransferArguments = @('-C', $temporaryProject, 'fetch', '--no-tags', $projectRoot) + $protectedTagRefspecs
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $tagTransferOutput = @(& git @tagTransferArguments 2>&1)
+        $tagTransferExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    foreach ($line in @($tagTransferOutput | Select-Object -Last 20)) { $lines.Add([string]$line) }
+    if ($tagTransferExitCode -ne 0) { throw "Local protected tag transfer failed with exit code $tagTransferExitCode" }
+
+    $isolatedTagNamesAfterTransfer = @(& git -C $temporaryProject for-each-ref '--format=%(refname:short)' refs/tags)
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to enumerate isolated tags after protected tag transfer.' }
+    $isolatedTagNamesAfterTransfer = @($isolatedTagNamesAfterTransfer | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ })
+    $expectedProtectedTagNames = @($protectedTagContract.Keys)
+    if (($isolatedTagNamesAfterTransfer -join "`n") -ne ($expectedProtectedTagNames -join "`n")) {
+        throw "Isolated protected tag set mismatch: $($isolatedTagNamesAfterTransfer -join ', ')"
+    }
+    $isolatedProtectedTagsAfterTransfer = Get-ProtectedTagSnapshot $temporaryProject
+    Assert-ProtectedTagSnapshotExact $isolatedProtectedTagsAfterTransfer 'Isolated protected tag transfer'
     Copy-Item -LiteralPath $candidatePath -Destination (Join-Path $temporaryProject 'sPg Crafting List.html') -Force
     $isolatedApplicationPath = Join-Path $temporaryProject 'sPg Crafting List.html'
     if ((Get-FileHash -Algorithm SHA256 -LiteralPath $isolatedApplicationPath).Hash.ToLowerInvariant() -ne $candidateShaBefore) { throw 'The isolated test application differs from the exact candidate.' }
@@ -403,11 +512,20 @@ try {
     if ($candidateBrowser.desktop.overflow -ne 0 -or $candidateBrowser.mobile.overflow -ne 0 -or @($candidateBrowser.consoleErrors).Count -ne 0 -or @($candidateBrowser.pageErrors).Count -ne 0) { throw 'Candidate Chrome responsive/console/page gate failed.' }
     if ($candidateBrowser.directFile.status -ne 'PASS_AUTOMATED' -or $candidateBrowser.directFile.protocol -ne 'file:' -or $candidateBrowser.directFile.gameDataIdentity -ne '4.10.0-LIVE.12519617' -or $candidateBrowser.directFile.uexHttpStatus -ne 200) { throw 'Candidate direct-file live Wiki/UEX gate failed.' }
 
-    $v003TagTypeAfter = (& git cat-file -t V003).Trim()
-    $v003TagTargetAfter = (& git rev-parse 'V003^{}').Trim()
+    $isolatedTagNamesAfterGate = @(& git -C $temporaryProject for-each-ref '--format=%(refname:short)' refs/tags)
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to enumerate isolated tags after the full gate.' }
+    $isolatedTagNamesAfterGate = @($isolatedTagNamesAfterGate | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ })
+    if (($isolatedTagNamesAfterGate -join "`n") -ne ($expectedProtectedTagNames -join "`n")) {
+        throw "Isolated protected tag set changed during the full gate: $($isolatedTagNamesAfterGate -join ', ')"
+    }
+    $isolatedProtectedTagsAfterGate = Get-ProtectedTagSnapshot $temporaryProject
+    Assert-ProtectedTagSnapshotExact $isolatedProtectedTagsAfterGate 'Isolated protected tag final gate'
+    Assert-ProtectedTagSnapshotUnchanged $isolatedProtectedTagsAfterTransfer $isolatedProtectedTagsAfterGate 'Isolated protected tag snapshot'
+    $sourceProtectedTagsAfter = Get-ProtectedTagSnapshot $projectRoot
+    Assert-ProtectedTagSnapshotExact $sourceProtectedTagsAfter 'Source protected tag final gate'
+    Assert-ProtectedTagSnapshotUnchanged $sourceProtectedTagsBefore $sourceProtectedTagsAfter 'Source protected tag snapshot'
     $v003ArtifactAfter = Get-Item -LiteralPath $v003ArtifactPath
     $v003ArtifactShaAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $v003ArtifactPath).Hash.ToLowerInvariant()
-    if ($v003TagTypeAfter -ne $v003TagTypeBefore -or $v003TagTargetAfter -ne $v003TagTargetBefore) { throw 'V003 tag changed during C010.' }
     if ($v003ArtifactAfter.Length -ne $v003ArtifactBefore.Length -or $v003ArtifactShaAfter -ne $v003ArtifactShaBefore) { throw 'V003 artifact changed during C010.' }
     & git show-ref --verify --quiet refs/tags/V004
     if ($LASTEXITCODE -eq 0) { throw 'V004 tag was created during C010.' }
