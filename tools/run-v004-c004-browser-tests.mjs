@@ -111,6 +111,43 @@ async function runtimeSnapshot(page) {
   });
 }
 
+async function reallocateAndSnapshotTerminal(page, cardId) {
+  const buttonSelector = "#reallocateCraftingListButton";
+  assert.equal(await page.isEnabled(buttonSelector), true, "Reallocate must be enabled before the explicit action.");
+  await page.click(buttonSelector);
+  await page.waitForFunction(selector => {
+    const button = document.querySelector(selector);
+    return Boolean(button && button.disabled === false);
+  }, buttonSelector);
+  return page.evaluate(id => {
+    const test = window.__SPG_TEST__;
+    const card = test.state.craftingCards.find(item => item.id === id);
+    const requirement = card && card.requirements[0];
+    const reservation = test.state.reservationSnapshots.get(id);
+    const control = document.querySelector(`[data-card-id="${id}"].spg-v004-completion-controls`);
+    return {
+      stateReservationRunStatus: test.state.reservationRunStatus,
+      bodyReservationRunStatus: document.body.dataset.reservationRunStatus,
+      cardReservationStatus: reservation && reservation.status,
+      reservationReason: reservation && reservation.reason,
+      capability: reservation && reservation.capability,
+      quantitySemantics: card && card.quantitySemantics,
+      craftRunInputEvidence: card && card.craftRunInputEvidence,
+      outputCountEvidence: card && card.outputCountEvidence,
+      sourceQuantityValue: requirement && requirement.sourceQuantityValue,
+      normalizedQuantityText: requirement && requirement.normalizedQuantityText,
+      normalizedRequiredQuantityUnits: requirement && requirement.normalizedRequiredQuantityUnits,
+      quantityNormalizationStatus: requirement && requirement.quantityNormalizationStatus,
+      quantityNormalizationRule: requirement && requirement.quantityNormalizationRule,
+      exactRequiredQuantityUnits: requirement && requirement.exactRequiredQuantityUnits,
+      quantityExactness: requirement && requirement.quantityExactness,
+      quantityExactnessReason: requirement && requirement.quantityExactnessReason,
+      completionReady: control && control.dataset.completionReady,
+      completeDisabled: Boolean(control && control.querySelector(".spg-v004-completion-open").disabled)
+    };
+  }, cardId);
+}
+
 const card = {
   ...sourceFixture.card,
   id: "card-c004-browser",
@@ -471,45 +508,86 @@ try {
     ...card,
     id: "card-c004-unproven",
     outputCountEvidence: "OUTPUT_COUNT_UNPROVEN",
-    craftRunInputEvidence: "CRAFT_RUN_INPUTS_UNPROVEN",
     quantity: 1,
-    requirements: card.requirements.map(requirement => ({
-      ...requirement,
-      exactRequiredQuantityUnits: null,
-      quantityExactness: "QUANTITY_UNITS_UNPROVEN",
-      quantityExactnessReason: "SCU_TIMES_10000_NOT_EXACT_SAFE_INTEGER"
-    }))
+    requirements: card.requirements.map(requirement => {
+      const source = {
+        ...requirement,
+        sourceQuantityValue: 0.00004,
+        requiredQuantityUnits: 0,
+        unit: "SCU"
+      };
+      delete source.sourceQuantityCanonicalDecimal;
+      delete source.normalizedQuantityText;
+      delete source.normalizedRequiredQuantityUnits;
+      delete source.normalizedUnitText;
+      delete source.quantityNormalizationStatus;
+      delete source.quantityNormalizationRule;
+      delete source.exactRequiredQuantityUnits;
+      delete source.quantityExactness;
+      delete source.quantityExactnessReason;
+      return source;
+    })
   };
+  delete unprovenCard.craftRunInputEvidence;
   await unproven.page.evaluate(async input => {
     const test = window.__SPG_TEST__;
-    await test.userDataRepository.saveCraftingCards([input.card]);
+    const canonicalCard = test.normalizeStoredCraftingCard(input.card, 0);
+    await test.userDataRepository.saveCraftingCards([canonicalCard]);
     await test.userDataRepository.saveMaterialBatches(input.batches);
   }, { card: unprovenCard, batches: [batches[2]] });
   await unproven.page.reload({ waitUntil: "domcontentloaded" });
   await unproven.page.waitForSelector('body[data-app-ready="true"]', { timeout: 30000 });
   await unproven.page.click("#craftingListNav");
-  await unproven.page.click("#reallocateCraftingListButton");
-  await unproven.page.waitForFunction(() => document.body.dataset.reservationRunStatus === "BLOCKED");
+  const unprovenTerminal = await reallocateAndSnapshotTerminal(unproven.page, "card-c004-unproven");
+  const unprovenDiagnostic = JSON.stringify(unprovenTerminal);
+  assert.equal(unprovenTerminal.bodyReservationRunStatus, unprovenTerminal.stateReservationRunStatus, `Reservation DOM/state mismatch: ${unprovenDiagnostic}`);
+  assert.equal(unprovenTerminal.stateReservationRunStatus, "BLOCKED", `Expected BLOCKED reservation after Reallocate: ${unprovenDiagnostic}`);
+  assert.equal(unprovenTerminal.cardReservationStatus, "BLOCKED", `Expected blocked Card reservation: ${unprovenDiagnostic}`);
+  assert.equal(unprovenTerminal.reservationReason, "CRAFT_RUN_INPUTS_UNPROVEN");
+  assert.equal(unprovenTerminal.capability.status, "BLOCKED");
+  assert.equal(unprovenTerminal.capability.blockerReason, "CRAFT_RUN_INPUTS_UNPROVEN");
+  assert.equal(unprovenTerminal.quantitySemantics, "CRAFT_RUN_COUNT");
+  assert.equal(unprovenTerminal.craftRunInputEvidence, "CRAFT_RUN_INPUTS_UNPROVEN");
+  assert.equal(unprovenTerminal.sourceQuantityValue, 0.00004);
+  assert.equal(unprovenTerminal.normalizedQuantityText, "0.0000");
+  assert.equal(unprovenTerminal.normalizedRequiredQuantityUnits, 0);
+  assert.equal(unprovenTerminal.quantityNormalizationStatus, "NORMALIZATION_BLOCKED");
+  assert.equal(unprovenTerminal.quantityNormalizationRule, "SCU_4DP_HALF_UP_V1");
+  assert.equal(unprovenTerminal.exactRequiredQuantityUnits, null);
+  assert.equal(unprovenTerminal.quantityExactness, "QUANTITY_UNITS_UNPROVEN");
+  assert.equal(unprovenTerminal.quantityExactnessReason, "ROUNDS_TO_ZERO");
+  assert.equal(unprovenTerminal.completionReady, "false");
+  assert.equal(unprovenTerminal.completeDisabled, true);
   const unprovenControl = '[data-card-id="card-c004-unproven"].spg-v004-completion-controls';
   assert.equal(await unproven.page.getAttribute(unprovenControl, "data-completion-ready"), "false");
   assert.equal(await unproven.page.isDisabled(`${unprovenControl} .spg-v004-completion-open`), true);
-  const unprovenCode = await unproven.page.evaluate(async () => {
+  const unprovenBeforeAttempt = await durableSnapshot(unproven.page);
+  const unprovenAttempt = await unproven.page.evaluate(async () => {
     try {
       await window.__SPG_TEST__.prepareCraftCompletion("card-c004-unproven", 1, "craft-c004-unproven-test");
       return null;
     } catch (error) {
-      return error.code;
+      return { code: error.code, detail: error.detail };
     }
   });
-  assert.equal(unprovenCode, "STALE_RESERVATION");
+  assert.equal(unprovenAttempt.code, "STALE_RESERVATION");
+  assert.deepEqual(await durableSnapshot(unproven.page), unprovenBeforeAttempt, "Blocked ROUNDS_TO_ZERO completion attempt must perform zero durable writes.");
   assert.equal(await unproven.page.isVisible("#craftCompletionDialog"), false);
   assert.equal(unprovenErrors.length, 0);
   results.craftRunInputBlocker = {
     status: "PASS",
-    reservationReason: "CRAFT_RUN_INPUTS_UNPROVEN",
-    prepareCode: unprovenCode,
+    sourceQuantityValue: unprovenTerminal.sourceQuantityValue,
+    normalizedQuantityText: unprovenTerminal.normalizedQuantityText,
+    normalizedRequiredQuantityUnits: unprovenTerminal.normalizedRequiredQuantityUnits,
+    quantityNormalizationStatus: unprovenTerminal.quantityNormalizationStatus,
+    quantityNormalizationRule: unprovenTerminal.quantityNormalizationRule,
+    quantityExactnessReason: unprovenTerminal.quantityExactnessReason,
+    reservationReason: unprovenTerminal.reservationReason,
+    prepareCode: unprovenAttempt.code,
+    durableWrites: 0,
     confirmationReachable: false,
-    outputCountEvidence: "OUTPUT_COUNT_UNPROVEN"
+    outputCountEvidence: unprovenTerminal.outputCountEvidence,
+    capability: unprovenTerminal.capability
   };
   await unproven.context.close();
 
