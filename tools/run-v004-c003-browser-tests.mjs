@@ -8,10 +8,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const toolsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(toolsDirectory);
 const appPath = path.join(projectDirectory, "sPg Crafting List.html");
+const sourceFixturePath = path.join(projectDirectory, "tests", "fixtures", "v004-c003-reservation.json");
 const artifactDirectory = path.join(projectDirectory, "test-artifacts", "V004-C003");
 const evidencePath = path.join(artifactDirectory, "browser-evidence.json");
 const appHtml = fs.readFileSync(appPath);
+const sourceFixture = JSON.parse(fs.readFileSync(sourceFixturePath, "utf8"));
 const moduleArgument = process.argv.find(value => value.startsWith("--playwright-module="));
+const copy = value => JSON.parse(JSON.stringify(value));
 
 async function loadPlaywright() {
   if (moduleArgument) {
@@ -83,10 +86,27 @@ async function runtimeSnapshot(page) {
         quantity: card.quantity,
         cardRevision: card.cardRevision,
         collapsed: card.collapsed,
-        outputCountEvidence: card.outputCountEvidence
+        quantitySemantics: card.quantitySemantics,
+        craftRunInputEvidence: card.craftRunInputEvidence,
+        outputCountEvidence: card.outputCountEvidence,
+        requirements: card.requirements.map(requirement => ({
+          id: requirement.id,
+          sourceQuantityValue: requirement.sourceQuantityValue,
+          requiredQuantityUnits: requirement.requiredQuantityUnits,
+          exactRequiredQuantityUnits: requirement.exactRequiredQuantityUnits,
+          quantityExactness: requirement.quantityExactness,
+          quantityExactnessReason: requirement.quantityExactnessReason,
+          quantityNormalizationStatus: requirement.quantityNormalizationStatus
+        }))
       })),
       reservationRunStatus: test.state.reservationRunStatus,
       bodyReservationRunStatus: document.body.dataset.reservationRunStatus,
+      reservationSnapshots: Array.from(test.state.reservationSnapshots.entries()).map(([cardId, snapshot]) => ({
+        cardId,
+        status: snapshot.status,
+        reason: snapshot.reason,
+        blockerReason: snapshot.capability && snapshot.capability.blockerReason
+      })),
       renderedCards: Array.from(document.querySelectorAll(".spg-c012-list-card")).map(card => ({
         id: card.dataset.cardId,
         order: Number(card.dataset.cardOrder),
@@ -100,64 +120,90 @@ async function runtimeSnapshot(page) {
   });
 }
 
+async function reallocateAndAssertValid(page) {
+  const buttonSelector = "#reallocateCraftingListButton";
+  assert.equal(await page.isEnabled(buttonSelector), true, "Reallocate must be enabled before the explicit action.");
+  await page.click(buttonSelector);
+  await page.waitForFunction(selector => {
+    const button = document.querySelector(selector);
+    return Boolean(button && button.disabled === false);
+  }, buttonSelector);
+  const snapshot = await runtimeSnapshot(page);
+  const diagnostic = JSON.stringify({
+    state: snapshot.reservationRunStatus,
+    body: snapshot.bodyReservationRunStatus,
+    cards: snapshot.reservationSnapshots
+  });
+  assert.equal(snapshot.bodyReservationRunStatus, snapshot.reservationRunStatus, `Reservation DOM/state mismatch after Reallocate: ${diagnostic}`);
+  assert.equal(snapshot.reservationRunStatus, "VALID", `Reallocate completed without a VALID reservation: ${diagnostic}`);
+  return snapshot;
+}
+
+function buildBrowserCard({ id, order, quantity, blueprintUuid, outputUuid, outputName, slotId, timestamp }) {
+  const card = copy(sourceFixture.card);
+  const requirement = copy(card.requirements[0]);
+  Object.assign(card, {
+    id,
+    order,
+    cardRevision: 0,
+    active: true,
+    collapsed: false,
+    quantity,
+    blueprintUuid,
+    blueprintCacheKey: `TEST-LIVE::${blueprintUuid}`,
+    gameVersion: "TEST-LIVE",
+    outputUuid,
+    outputName,
+    requirements: [requirement],
+    slotStrategies: {},
+    recipeSlotQualityPoolAssignments: {},
+    createdAt: timestamp,
+    updatedAt: timestamp
+  });
+  Object.assign(requirement, {
+    id: slotId,
+    ingredientUuid: "material-browser",
+    commodityUuid: "material-browser",
+    materialName: "Browser Material",
+    qualityCapability: "FIXED"
+  });
+  return card;
+}
+
 const cards = [
-  {
+  buildBrowserCard({
     id: "card-browser-a",
     order: 0,
-    cardRevision: 0,
-    active: true,
-    collapsed: false,
     quantity: 5,
     blueprintUuid: "blueprint-browser-a",
-    blueprintCacheKey: "TEST-LIVE::blueprint-browser-a",
-    gameVersion: "TEST-LIVE",
     outputUuid: "output-browser-a",
     outputName: "Browser Output A",
-    outputCountEvidence: "PER_FINISHED_ITEM_NORMALIZED_EXACT",
-    requirements: [{
-      id: "slot-browser-a",
-      aspectIndex: 0,
-      ingredientUuid: "material-browser",
-      commodityUuid: "material-browser",
-      materialName: "Browser Material",
-      requiredQuantityUnits: 10,
-      unit: "SCU",
-      qualityCapability: "FIXED"
-    }],
-    slotStrategies: {},
-    recipeSlotQualityPoolAssignments: {},
-    createdAt: "2026-09-09T08:00:00.000Z",
-    updatedAt: "2026-09-09T08:00:00.000Z"
-  },
-  {
+    slotId: "slot-browser-a",
+    timestamp: "2026-09-09T08:00:00.000Z"
+  }),
+  buildBrowserCard({
     id: "card-browser-b",
     order: 1,
-    cardRevision: 0,
-    active: true,
-    collapsed: false,
     quantity: 2,
     blueprintUuid: "blueprint-browser-b",
-    blueprintCacheKey: "TEST-LIVE::blueprint-browser-b",
-    gameVersion: "TEST-LIVE",
     outputUuid: "output-browser-b",
     outputName: "Browser Output B",
-    outputCountEvidence: "PER_FINISHED_ITEM_NORMALIZED_EXACT",
-    requirements: [{
-      id: "slot-browser-b",
-      aspectIndex: 0,
-      ingredientUuid: "material-browser",
-      commodityUuid: "material-browser",
-      materialName: "Browser Material",
-      requiredQuantityUnits: 10,
-      unit: "SCU",
-      qualityCapability: "FIXED"
-    }],
-    slotStrategies: {},
-    recipeSlotQualityPoolAssignments: {},
-    createdAt: "2026-09-09T08:00:01.000Z",
-    updatedAt: "2026-09-09T08:00:01.000Z"
-  }
+    slotId: "slot-browser-b",
+    timestamp: "2026-09-09T08:00:01.000Z"
+  })
 ];
+
+cards.forEach(card => {
+  assert.equal(card.quantitySemantics, "CRAFT_RUN_COUNT");
+  assert.equal(card.craftRunInputEvidence, "CRAFT_RUN_INPUTS_EXACT");
+  assert.equal(card.outputCountEvidence, "PER_FINISHED_ITEM_NORMALIZED_EXACT");
+  assert.equal(card.requirements.length, 1);
+  assert.equal(card.requirements[0].sourceQuantityValue, 0.001);
+  assert.equal(card.requirements[0].requiredQuantityUnits, 10);
+  assert.equal(card.requirements[0].exactRequiredQuantityUnits, 10);
+  assert.equal(card.requirements[0].quantityExactness, "EXACT_SAFE_INTEGER_UNITS");
+  assert.equal(card.requirements[0].quantityExactnessReason, null);
+});
 
 const batches = [{
   id: "batch-browser",
@@ -229,10 +275,13 @@ try {
 
   const seeded = await page.evaluate(async input => {
     const test = window.__SPG_TEST__;
-    const cardResult = await test.userDataRepository.saveCraftingCards(input.cards);
+    const canonicalCards = input.cards.map((card, index) => test.normalizeStoredCraftingCard(card, index));
+    const cardResult = await test.userDataRepository.saveCraftingCards(canonicalCards);
     const batchResult = await test.userDataRepository.saveMaterialBatches(input.batches);
+    const durableCards = (await test.database.getAll("craftingCards"))
+      .sort((left, right) => left.order - right.order || String(left.id).localeCompare(String(right.id)));
     const meta = Object.fromEntries((await test.userDataRepository.loadUserMeta()).map(record => [record.key, record.value]));
-    return { cardResult, batchResult, meta };
+    return { cardResult, batchResult, durableCards, meta };
   }, { cards, batches });
   assert.equal(seeded.cardResult.craftListChanged, true);
   assert.equal(seeded.cardResult.allocationChanged, true);
@@ -245,6 +294,37 @@ try {
     },
     { inventoryRevision: 1, craftListRevision: 1, allocationRevision: 2 }
   );
+  assert.equal(seeded.durableCards.length, 2);
+  seeded.durableCards.forEach(card => {
+    assert.equal(card.cardRevision, 0);
+    assert.equal(card.requirements.length, 1);
+    const requirement = card.requirements[0];
+    assert.equal(requirement.sourceQuantityCanonicalDecimal, "0.001");
+    assert.equal(requirement.normalizedQuantityText, "0.0010");
+    assert.equal(requirement.normalizedRequiredQuantityUnits, 10);
+    assert.equal(requirement.normalizedUnitText, "10");
+    assert.equal(requirement.quantityNormalizationStatus, "NORMALIZED_EXACT_INTEGER_UNITS");
+    assert.equal(requirement.quantityNormalizationRule, "SCU_4DP_HALF_UP_V1");
+    assert.equal(requirement.exactRequiredQuantityUnits, 10);
+    assert.equal(requirement.quantityExactness, "EXACT_SAFE_INTEGER_UNITS");
+    assert.equal(requirement.quantityExactnessReason, null);
+  });
+  results.reservation.canonicalDurableSeed = {
+    status: "PASS",
+    cardRevisions: seeded.durableCards.map(card => ({ id: card.id, cardRevision: card.cardRevision })),
+    requirementEvidence: seeded.durableCards.map(card => ({
+      id: card.id,
+      sourceQuantityCanonicalDecimal: card.requirements[0].sourceQuantityCanonicalDecimal,
+      normalizedQuantityText: card.requirements[0].normalizedQuantityText,
+      normalizedRequiredQuantityUnits: card.requirements[0].normalizedRequiredQuantityUnits,
+      normalizedUnitText: card.requirements[0].normalizedUnitText,
+      quantityNormalizationStatus: card.requirements[0].quantityNormalizationStatus,
+      quantityNormalizationRule: card.requirements[0].quantityNormalizationRule,
+      exactRequiredQuantityUnits: card.requirements[0].exactRequiredQuantityUnits,
+      quantityExactness: card.requirements[0].quantityExactness,
+      quantityExactnessReason: card.requirements[0].quantityExactnessReason
+    }))
+  };
   results.revisionMutations.push({ action: "seed cards then inventory", revisions: { inventoryRevision: 1, craftListRevision: 1, allocationRevision: 2 } });
 
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -254,11 +334,19 @@ try {
   assert.equal(view.renderedCards.length, 2);
   assert.equal(view.reservationRunStatus, "STALE");
   assert.ok(view.renderedCards.every(card => card.status === "STALE"));
+  assert.ok(view.cards.every(card => card.quantitySemantics === "CRAFT_RUN_COUNT"));
+  assert.ok(view.cards.every(card => card.craftRunInputEvidence === "CRAFT_RUN_INPUTS_EXACT"));
+  assert.ok(view.cards.every(card => card.requirements.every(requirement =>
+    requirement.sourceQuantityValue === 0.001 &&
+    requirement.requiredQuantityUnits === 10 &&
+    requirement.exactRequiredQuantityUnits === 10 &&
+    requirement.quantityExactness === "EXACT_SAFE_INTEGER_UNITS" &&
+    requirement.quantityExactnessReason === null &&
+    requirement.quantityNormalizationStatus === "NORMALIZED_EXACT_INTEGER_UNITS"
+  )));
 
   await page.click("#craftingListNav");
-  await page.click("#reallocateCraftingListButton");
-  await page.waitForFunction(() => document.body.dataset.reservationRunStatus === "VALID");
-  view = await runtimeSnapshot(page);
+  view = await reallocateAndAssertValid(page);
   assert.deepEqual(view.renderedCards.map(card => card.maxCompletableQuantity), [5, 2]);
   assert.ok(view.renderedCards.every(card => card.status === "VALID" && /^[0-9a-f]{64}$/.test(card.hash)));
   const initialHashes = Object.fromEntries(view.renderedCards.map(card => [card.id, card.hash]));
@@ -275,13 +363,24 @@ try {
   assert.ok(view.renderedCards.every(card => card.status === "STALE"));
   await page.evaluate(() => window.__SPG_TEST__.reallocateCraftingList());
   view = await runtimeSnapshot(page);
-  const blockedOutputCard = view.renderedCards.find(card => card.id === "card-browser-b");
-  assert.equal(blockedOutputCard.status, "VALID");
-  assert.equal(blockedOutputCard.maxCompletableQuantity, 0);
+  const diagnosticOutputCard = view.cards.find(card => card.id === "card-browser-b");
+  const renderedDiagnosticOutputCard = view.renderedCards.find(card => card.id === "card-browser-b");
+  assert.equal(view.reservationRunStatus, "VALID");
+  assert.equal(renderedDiagnosticOutputCard.status, "VALID");
+  assert.equal(diagnosticOutputCard.outputCountEvidence, "OUTPUT_COUNT_UNPROVEN");
+  assert.equal(diagnosticOutputCard.quantitySemantics, "CRAFT_RUN_COUNT");
+  assert.equal(diagnosticOutputCard.craftRunInputEvidence, "CRAFT_RUN_INPUTS_EXACT");
+  assert.equal(renderedDiagnosticOutputCard.maxCompletableQuantity, 2);
   const outputCapability = await page.evaluate(() => window.__SPG_TEST__.state.reservationSnapshots.get("card-browser-b").capability);
-  assert.equal(outputCapability.status, "BLOCKED");
-  assert.equal(outputCapability.blockerReason, "OUTPUT_COUNT_UNPROVEN");
-  results.reservation.outputCountBlocker = { status: "PASS", capability: outputCapability };
+  assert.equal(outputCapability.status, "READY");
+  assert.equal(outputCapability.maxCompletableQuantity, 2);
+  assert.equal(outputCapability.blockerReason, null);
+  results.reservation.outputCountBlocker = {
+    status: "PASS_DIAGNOSTIC_ONLY",
+    outputCountEvidence: diagnosticOutputCard.outputCountEvidence,
+    completionGate: false,
+    capability: outputCapability
+  };
   results.revisionMutations.push({ action: "output evidence invalidated", revisions: view.revisions, cardRevision: 1 });
 
   await page.evaluate(() => window.__SPG_TEST__.updateCraftingCard(
@@ -380,9 +479,7 @@ try {
   assert.ok(view.renderedCards.every(card => card.status === "STALE" && card.hash === ""));
   results.reloadGate = { status: "PASS", cardsRendered: 2, reservationStatus: "STALE", explicitReallocateRequired: true };
   await page.click("#craftingListNav");
-  await page.click("#reallocateCraftingListButton");
-  await page.waitForFunction(() => document.body.dataset.reservationRunStatus === "VALID");
-  view = await runtimeSnapshot(page);
+  view = await reallocateAndAssertValid(page);
   assert.ok(view.renderedCards.every(card => card.status === "VALID" && /^[0-9a-f]{64}$/.test(card.hash)));
   results.reloadGate.reallocateAfterReload = "PASS";
   await context.close();
